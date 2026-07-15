@@ -3,6 +3,7 @@ import {
   Upload, X, Sparkles, Scan, CheckCircle2, AlertTriangle, FileText,
   Activity, Droplet, Heart, Weight, Filter, Zap, Microscope, Dna,
   ArrowUpDown, ChevronDown, ChevronUp, Info, Pill, Thermometer,
+  Divide, TrendingUp,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   iron: <Dna className="h-3.5 w-3.5 text-purple-400" />,
   obesity: <Weight className="h-3.5 w-3.5 text-violet-400" />,
   general: <Activity className="h-3.5 w-3.5 text-muted-foreground" />,
+  derived: <TrendingUp className="h-3.5 w-3.5 text-violet-400" />,
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -69,6 +71,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   iron: "Iron",
   obesity: "Obesity",
   general: "General",
+  derived: "Derived Markers",
 };
 
 function getInterpretation(key: string, value: number): { status: "normal" | "high" | "low"; message: string } {
@@ -104,6 +107,40 @@ interface ParsedResult {
   numericValue: number;
   interpretation: { status: "normal" | "high" | "low"; message: string };
   category: string;
+  isDerived?: boolean;
+}
+
+// ── TG/HDL ratio thresholds ──
+interface TghdlInterpretation {
+  ratio: number;
+  risk: "low" | "intermediate" | "high";
+  label: string;
+  description: string;
+}
+
+function interpretTghdl(ratio: number): TghdlInterpretation {
+  if (ratio < 2.0) {
+    return {
+      ratio,
+      risk: "low",
+      label: "Low Risk",
+      description: "Low risk for insulin resistance and cardiovascular events. Lower prevalence of IR and high-risk plaque.",
+    };
+  }
+  if (ratio <= 3.0) {
+    return {
+      ratio,
+      risk: "intermediate",
+      label: "Intermediate Risk",
+      description: "Borderline metabolic risk. Insulin resistance prevalence rises sharply at this level. Consider closer cardiometabolic assessment.",
+    };
+  }
+  return {
+    ratio,
+    risk: "high",
+    label: "High Risk",
+    description: "Significant insulin resistance, small dense LDL, and higher CHD/T2DM/metabolic syndrome risk. Prompt lifestyle and pharmacologic intervention warranted.",
+  };
 }
 
 export default function ImageUploadAnalyzer() {
@@ -171,6 +208,29 @@ export default function ImageUploadAnalyzer() {
         category: range?.category || "general",
       });
     }
+
+    // ── Derived markers ──
+    // TG/HDL ratio
+    const tg = raw["triglycerides"] ? parseFloat(raw["triglycerides"]) : null;
+    const hdl = raw["hdl"] ? parseFloat(raw["hdl"]) : null;
+    if (tg !== null && hdl !== null && hdl > 0) {
+      const ratio = Math.round((tg / hdl) * 100) / 100;
+      const tghdl = interpretTghdl(ratio);
+      results.push({
+        key: "tghdl_ratio",
+        label: "TG/HDL Ratio",
+        value: String(ratio),
+        unit: "",
+        numericValue: ratio,
+        interpretation: {
+          status: tghdl.risk === "low" ? "normal" : "high",
+          message: `${tghdl.label}: ${tghdl.description}`,
+        },
+        category: "derived",
+        isDerived: true,
+      });
+    }
+
     return results;
   }, []);
 
@@ -475,32 +535,46 @@ BP 130/85`}
                           <div className="space-y-1">
                             {items.map((r) => {
                               const isAbnormal = r.interpretation.status !== "normal";
+                              const isDerived = r.isDerived;
                               return (
                                 <div
                                   key={r.key}
                                   className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm border ${
-                                    isAbnormal
-                                      ? "bg-amber-500/5 border-amber-500/20"
-                                      : "bg-background border-border"
+                                    isDerived
+                                      ? "bg-violet-500/5 border-violet-500/20"
+                                      : isAbnormal
+                                        ? "bg-amber-500/5 border-amber-500/20"
+                                        : "bg-background border-border"
                                   }`}
                                 >
                                   <div className="flex items-center gap-2 min-w-0">
                                     <span className={`w-2 h-2 rounded-full shrink-0 ${
+                                      isDerived ? "bg-violet-400" :
                                       r.interpretation.status === "normal" ? "bg-emerald-400" :
                                       r.interpretation.status === "high" ? "bg-amber-400" : "bg-blue-400"
                                     }`} />
                                     <span className="font-medium truncate">{r.label}</span>
+                                    {isDerived && (
+                                      <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 border-violet-500/30 text-violet-400">
+                                        Derived
+                                      </Badge>
+                                    )}
                                   </div>
                                   <div className="flex items-center gap-2 shrink-0">
                                     <span className={`font-mono font-semibold ${
-                                      isAbnormal ? "text-amber-400" : "text-foreground"
+                                      isAbnormal ? "text-amber-400" : isDerived ? "text-violet-400" : "text-foreground"
                                     }`}>
                                       {r.value}
                                     </span>
                                     {r.unit && <span className="text-xs text-muted-foreground">{r.unit}</span>}
-                                    {isAbnormal && (
+                                    {isAbnormal && !isDerived && (
                                       <span className="text-[10px] font-medium text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
                                         {r.interpretation.status === "high" ? "↑ HIGH" : "↓ LOW"}
+                                      </span>
+                                    )}
+                                    {isDerived && r.interpretation.status !== "normal" && (
+                                      <span className="text-[10px] font-medium text-violet-400 bg-violet-500/10 px-1.5 py-0.5 rounded">
+                                        ↑ ELEVATED
                                       </span>
                                     )}
                                   </div>
@@ -532,6 +606,68 @@ BP 130/85`}
                         </ul>
                       </div>
                     )}
+
+                    {/* TG/HDL Ratio deep-dive card */}
+                    {parsedResults.some(r => r.key === "tghdl_ratio") && (() => {
+                      const tghdl = parsedResults.find(r => r.key === "tghdl_ratio")!;
+                      const tg = parsedResults.find(r => r.key === "triglycerides");
+                      const hdl = parsedResults.find(r => r.key === "hdl");
+                      return (
+                        <div className="bg-violet-500/5 border border-violet-500/20 rounded-lg p-3 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Divide className="h-4 w-4 text-violet-400" />
+                            <span className="text-sm font-semibold text-violet-400">TG/HDL Ratio — Detailed Analysis</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="bg-background/50 rounded p-2 border border-border/50">
+                              <span className="text-muted-foreground">Triglycerides</span>
+                              <p className="font-mono font-semibold text-foreground mt-0.5">{tg?.value} {tg?.unit}</p>
+                            </div>
+                            <div className="bg-background/50 rounded p-2 border border-border/50">
+                              <span className="text-muted-foreground">HDL</span>
+                              <p className="font-mono font-semibold text-foreground mt-0.5">{hdl?.value} {hdl?.unit}</p>
+                            </div>
+                            <div className="bg-background/50 rounded p-2 border border-border/50 col-span-2">
+                              <span className="text-muted-foreground">TG/HDL Ratio</span>
+                              <p className={`font-mono font-semibold mt-0.5 ${
+                                tghdl.interpretation.status === "normal" ? "text-emerald-400" : "text-violet-400"
+                              }`}>
+                                {tghdl.value} (calculated: {tg?.value} ÷ {hdl?.value})
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground space-y-1">
+                            <p className="font-medium text-foreground">What this means:</p>
+                            <p>{tghdl.interpretation.message}</p>
+                            <p className="mt-1">
+                              TG/HDL ratio tracks atherogenic dyslipidemia and insulin resistance. Higher ratios
+                              associate with increased cardiovascular and metabolic risk, independent of LDL-C.
+                              It captures residual risk not explained by LDL-C alone.
+                            </p>
+                          </div>
+                          <details className="group">
+                            <summary className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+                              <ChevronDown className="h-3 w-3 group-open:rotate-180 transition-transform" />
+                              Threshold reference
+                            </summary>
+                            <div className="mt-2 text-xs space-y-1 bg-background/50 rounded p-2 border border-border/50">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                                <span><strong>&lt;2.0</strong> — Low risk for IR and CV events</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-amber-400" />
+                                <span><strong>2.0–3.0</strong> — Intermediate/borderline metabolic risk</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-red-400" />
+                                <span><strong>&gt;3.0–3.5</strong> — High risk: significant IR, small dense LDL, higher CHD/T2DM risk</span>
+                              </div>
+                            </div>
+                          </details>
+                        </div>
+                      );
+                    })()}
 
                     {/* Action buttons */}
                     <div className="flex flex-wrap gap-2 pt-1">
