@@ -88,7 +88,7 @@ function getInterpretation(key: string, value: number): { status: "normal" | "hi
 }
 
 // ── All fields for parsing ──
-const ALL_FIELDS: FieldDef[] = React.useMemo(() => [
+const ALL_FIELDS: FieldDef[] = [
   ...DIABETES_FIELDS.fields,
   ...HTN_FIELDS.fields,
   ...LIPID_FIELDS.fields,
@@ -97,7 +97,7 @@ const ALL_FIELDS: FieldDef[] = React.useMemo(() => [
   ...CBC_FIELDS.fields,
   ...RENAL_FIELDS.fields,
   ...IRON_FIELDS.fields,
-], []);
+];
 
 interface ParsedResult {
   key: string;
