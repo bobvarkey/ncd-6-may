@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { Scale, Calculator, Info, ChevronDown, ChevronUp, Pill, Target, Activity, AlertCircle, BookOpen, RotateCcw, Home, InfoIcon, Heart, AlertTriangle } from "lucide-react";
+import { Scale, Calculator, Info, ChevronDown, ChevronUp, Pill, Target, Activity, AlertCircle, BookOpen, RotateCcw, Home, InfoIcon, Heart, AlertTriangle, BrainCircuit, UtensilsCrossed, FlaskConical, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,24 @@ import {
   TREATMENT_MONITORING,
   ADA_2025_CITATION,
 } from "./obesity-guidelines";
+import {
+  evaluateWeightLossEffects,
+  deriveLifestylePrescription,
+  assessMicronutrientRisk,
+  checkPharmacotherapyEligibility,
+  assessAll,
+  BENEFIT_LABELS,
+  COMORBIDITY_LABELS,
+  DIET_PATTERN_LABELS,
+  MICRONUTRIENT_LABELS,
+  WEIGHT_LOSS_BENEFIT_MAP,
+  type Sex,
+  type ComorbidityTag,
+  type DietPatternTag,
+  type WeightLossBenefitTag,
+  type MicronutrientOfConcern,
+  type ObesityCDSAssessment,
+} from "./obesity-cds-engine";
 
 const bmiSchema = z.object({
   height: z.coerce.number().min(100).max(250).describe("Height in cm"),
@@ -50,6 +68,7 @@ interface BmiResult {
 const TABS = [
   { key: "calculator", label: "Calculator", icon: <Calculator className="h-4 w-4" /> },
   { key: "indian-classification", label: "Indian Classification", icon: <Info className="h-4 w-4" /> },
+  { key: "cds-engine", label: "CDS Engine", icon: <BrainCircuit className="h-4 w-4" /> },
   { key: "guidelines", label: "ADA 2025 Guidelines", icon: <BookOpen className="h-4 w-4" /> },
 ];
 
@@ -61,6 +80,21 @@ export default function BmiCalculator() {
   const [showGrades, setShowGrades] = useState(false);
   const [treatmentData, setTreatmentData] = useState<ReturnType<typeof getTreatmentGuidelines>>(null);
   const [activeTab, setActiveTab] = useState("calculator");
+
+  // CDS Engine state
+  const [cdsAssessment, setCdsAssessment] = useState<ObesityCDSAssessment | null>(null);
+  const [cdsSex, setCdsSex] = useState<Sex>("male");
+  const [cdsAge, setCdsAge] = useState("40");
+  const [cdsComorbidities, setCdsComorbidities] = useState<ComorbidityTag[]>([]);
+  const [cdsDietPattern, setCdsDietPattern] = useState<DietPatternTag[]>([]);
+  const [cdsHasMalabsorption, setCdsHasMalabsorption] = useState(false);
+  const [cdsEnergyIntake, setCdsEnergyIntake] = useState("1800");
+  const [cdsRapidLoss, setCdsRapidLoss] = useState("0");
+  const [cdsActivityLevel, setCdsActivityLevel] = useState<"sedentary" | "moderate" | "active">("sedentary");
+  const [cdsShowWeightLoss, setCdsShowWeightLoss] = useState(true);
+  const [cdsShowLifestyle, setCdsShowLifestyle] = useState(true);
+  const [cdsShowMicronutrient, setCdsShowMicronutrient] = useState(true);
+  const [cdsShowPharma, setCdsShowPharma] = useState(true);
 
   // HOMA-IR state
   const [homaInsulin, setHomaInsulin] = useState("");
@@ -135,6 +169,25 @@ export default function BmiCalculator() {
     setResult(null);
     setTreatmentData(null);
     setShowTreatment(false);
+    setCdsAssessment(null);
+  };
+
+  const runCdsAssessment = () => {
+    if (!result) return;
+    const assessment = assessAll({
+      baselineWeightKg: parseFloat(cdsEnergyIntake) > 0 ? parseFloat(cdsEnergyIntake) : undefined,
+      currentWeightKg: parseFloat(cdsEnergyIntake) > 0 ? parseFloat(cdsEnergyIntake) * 0.9 : undefined,
+      sex: cdsSex,
+      age: parseInt(cdsAge) || 40,
+      bmi: result.bmi,
+      comorbidities: cdsComorbidities,
+      dietPattern: cdsDietPattern,
+      hasMalabsorption: cdsHasMalabsorption,
+      currentEnergyIntakeKcal: parseInt(cdsEnergyIntake) || 1800,
+      rapidWeightLossPercentPerMonth: parseFloat(cdsRapidLoss) || 0,
+      activityLevel: cdsActivityLevel,
+    });
+    setCdsAssessment(assessment);
   };
 
   function handleSmartParse(values: Record<string, string>) {
@@ -1121,6 +1174,263 @@ export default function BmiCalculator() {
                         <strong>Example:</strong> Fasting Insulin 12 μIU/mL × Fasting Glucose 95 mg/dL = 1,140 ÷ 405 ={' '}
                         <strong className="text-foreground">2.81</strong> — Moderate insulin resistance (MONO/MOO range)
                       </p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
+
+        {activeTab === "cds-engine" && (
+          <>
+            <Card className="clinical-card border-violet-500/30">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <BrainCircuit className="h-5 w-5 text-violet-500" />
+                  Clinical Decision Support Engine
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Structured guideline-based assessment for weight loss effects, lifestyle prescription, micronutrient risk, and pharmacotherapy eligibility
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Patient Profile */}
+                <div className="rounded-lg border border-border bg-card/50 p-4 space-y-4">
+                  <p className="text-sm font-semibold flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4 text-violet-500" />
+                    Patient Profile
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Sex</Label>
+                      <Select value={cdsSex} onValueChange={(v: Sex) => setCdsSex(v)}>
+                        <SelectTrigger className="h-10 rounded-lg border-border/60">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Age (years)</Label>
+                      <Input type="number" min="18" max="100" value={cdsAge} onChange={e => setCdsAge(e.target.value)} className="h-10 rounded-lg border-border/60" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Current Energy Intake (kcal/day)</Label>
+                      <Input type="number" min="800" max="5000" value={cdsEnergyIntake} onChange={e => setCdsEnergyIntake(e.target.value)} className="h-10 rounded-lg border-border/60" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Rapid Weight Loss (%/month)</Label>
+                      <Input type="number" min="0" max="20" step="0.5" value={cdsRapidLoss} onChange={e => setCdsRapidLoss(e.target.value)} className="h-10 rounded-lg border-border/60" placeholder="e.g., 4" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Activity Level</Label>
+                      <Select value={cdsActivityLevel} onValueChange={(v: "sedentary" | "moderate" | "active") => setCdsActivityLevel(v)}>
+                        <SelectTrigger className="h-10 rounded-lg border-border/60">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sedentary">Sedentary</SelectItem>
+                          <SelectItem value="moderate">Moderate</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Malabsorption Condition</Label>
+                      <div className="flex items-center gap-2 h-10">
+                        <Button variant={cdsHasMalabsorption ? "default" : "outline"} size="sm" className="flex-1" onClick={() => setCdsHasMalabsorption(!cdsHasMalabsorption)}>
+                          {cdsHasMalabsorption ? "Yes" : "No"}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Comorbidities */}
+                  <div className="space-y-2">
+                    <Label className="text-xs">Obesity-Related Comorbidities</Label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(["type_2_diabetes", "hypertension", "dyslipidemia", "obstructive_sleep_apnea", "osteoarthritis", "masld_mash"] as ComorbidityTag[]).map((tag) => (
+                        <Button key={tag} variant={cdsComorbidities.includes(tag) ? "default" : "outline"} size="sm" className="text-xs" onClick={() => { setCdsComorbidities(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]); }}>
+                          {COMORBIDITY_LABELS[tag]}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Diet Pattern */}
+                  <div className="space-y-2">
+                    <Label className="text-xs">Dietary Pattern Concerns</Label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(["low_intake_fruits_vegetables", "low_intake_whole_grains", "low_intake_protein_foods", "low_intake_nuts_seeds", "strict_vegetarian", "other_restrictive_pattern"] as DietPatternTag[]).map((tag) => (
+                        <Button key={tag} variant={cdsDietPattern.includes(tag) ? "default" : "outline"} size="sm" className="text-xs" onClick={() => { setCdsDietPattern(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]); }}>
+                          {DIET_PATTERN_LABELS[tag]}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Button onClick={runCdsAssessment} className="w-full" disabled={!result}>
+                    <BrainCircuit className="h-4 w-4 mr-2" />
+                    Run CDS Assessment
+                  </Button>
+                  {!result && (
+                    <p className="text-xs text-muted-foreground text-center">Calculate BMI first to enable CDS assessment</p>
+                  )}
+                </div>
+
+                {/* CDS Results */}
+                {cdsAssessment && (
+                  <div className="space-y-4">
+                    {/* Weight Loss Effects */}
+                    <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5">
+                      <Button variant="ghost" className="w-full flex items-center justify-between p-4 h-auto" onClick={() => setCdsShowWeightLoss(!cdsShowWeightLoss)}>
+                        <span className="flex items-center gap-2 font-semibold"><Target className="h-4 w-4 text-emerald-500" /> Weight Loss Effects</span>
+                        {cdsShowWeightLoss ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                      {cdsShowWeightLoss && (
+                        <div className="px-4 pb-4 space-y-3">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            {[5, 10, 15, 20].map((pct) => {
+                              const key = `meets_${pct}_percent_target` as keyof NonNullable<typeof cdsAssessment.weightLossEffects>;
+                              const met = cdsAssessment.weightLossEffects?.[key];
+                              return (
+                                <div key={pct} className={`rounded-lg p-2 text-center border ${met ? "bg-emerald-500/20 border-emerald-500/50" : "bg-muted/30 border-border"}`}>
+                                  <p className="text-xs text-muted-foreground">≥{pct}%</p>
+                                  <p className={`text-sm font-bold ${met ? "text-emerald-500" : "text-muted-foreground"}`}>{met ? "✓" : "—"}</p>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {cdsAssessment.weightLossEffects.expected_benefits.length > 0 && (
+                            <div className="space-y-1">
+                              <p className="text-xs font-semibold text-muted-foreground">Expected Benefits:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {cdsAssessment.weightLossEffects.expected_benefits.map((tag) => (
+                                  <Badge key={tag} variant="secondary" className="text-xs">{BENEFIT_LABELS[tag]}</Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {cdsAssessment.weightLossEffects.look_ahead_intensive_lifestyle_like && (
+                            <Alert className="border-emerald-500/30 bg-emerald-500/10">
+                              <Target className="h-4 w-4" />
+                              <AlertDescription className="text-xs">≥10% weight loss achieved — disease-modifying potential. If sustained long-term, associated with reduced all-cause and CV mortality.</AlertDescription>
+                            </Alert>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Lifestyle Prescription */}
+                    <div className="rounded-lg border border-blue-500/30 bg-blue-500/5">
+                      <Button variant="ghost" className="w-full flex items-center justify-between p-4 h-auto" onClick={() => setCdsShowLifestyle(!cdsShowLifestyle)}>
+                        <span className="flex items-center gap-2 font-semibold"><UtensilsCrossed className="h-4 w-4 text-blue-500" /> Lifestyle Prescription</span>
+                        {cdsShowLifestyle ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                      {cdsShowLifestyle && cdsAssessment.lifestylePrescription && (
+                        <div className="px-4 pb-4 space-y-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="rounded-lg bg-card/50 border border-border p-3">
+                              <p className="text-xs text-muted-foreground">Recommended Energy Deficit</p>
+                              <p className="text-lg font-bold text-blue-500">{cdsAssessment.lifestylePrescription.recommended_energy_deficit_kcal_per_day} kcal/day</p>
+                            </div>
+                            <div className="rounded-lg bg-card/50 border border-border p-3">
+                              <p className="text-xs text-muted-foreground">Target Energy Intake</p>
+                              <p className="text-lg font-bold text-blue-500">{cdsAssessment.lifestylePrescription.target_energy_intake_kcal_per_day} kcal/day</p>
+                            </div>
+                          </div>
+                          <div className="rounded-lg bg-card/50 border border-border p-3">
+                            <p className="text-xs text-muted-foreground mb-1">Sex-Specific Reference Range</p>
+                            <p className="text-sm font-medium">{cdsSex === "female" ? cdsAssessment.lifestylePrescription.sex_specific_reference_range.female_typical_range_kcal_per_day : cdsAssessment.lifestylePrescription.sex_specific_reference_range.male_typical_range_kcal_per_day} kcal/day</p>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="outline" className="text-xs">Min metabolic benefit: {cdsAssessment.lifestylePrescription.minimum_weight_loss_for_metabolic_benefit_percent}%</Badge>
+                            {cdsAssessment.lifestylePrescription.intensive_weight_loss_goals.map((goal) => (
+                              <Badge key={goal} variant="outline" className="text-xs">Intensive goal: ≥{goal}%</Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Micronutrient Risk */}
+                    <div className="rounded-lg border border-amber-500/30 bg-amber-500/5">
+                      <Button variant="ghost" className="w-full flex items-center justify-between p-4 h-auto" onClick={() => setCdsShowMicronutrient(!cdsShowMicronutrient)}>
+                        <span className="flex items-center gap-2 font-semibold"><FlaskConical className="h-4 w-4 text-amber-500" /> Micronutrient Risk Assessment</span>
+                        {cdsShowMicronutrient ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                      {cdsShowMicronutrient && (
+                        <div className="px-4 pb-4 space-y-3">
+                          <div className="flex flex-wrap gap-2">
+                            {cdsAssessment.micronutrientRisk.consider_multivitamin_mineral_supplement && <Badge variant="default" className="bg-amber-500 text-xs">Consider MVI Supplement</Badge>}
+                            {cdsAssessment.micronutrientRisk.micronutrient_screening_indicated && <Badge variant="default" className="bg-red-500 text-xs">Screening Indicated</Badge>}
+                            {cdsAssessment.micronutrientRisk.age_over_50 && <Badge variant="outline" className="text-xs">Age &gt;50</Badge>}
+                            {cdsAssessment.micronutrientRisk.underlying_malabsorption_condition && <Badge variant="outline" className="text-xs">Malabsorption</Badge>}
+                          </div>
+                          {cdsAssessment.micronutrientRisk.micronutrients_of_concern.length > 0 && (
+                            <div className="space-y-1">
+                              <p className="text-xs font-semibold text-muted-foreground">Micronutrients of Concern:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {cdsAssessment.micronutrientRisk.micronutrients_of_concern.map((nutrient) => (
+                                  <Badge key={nutrient} variant="secondary" className="text-xs">{MICRONUTRIENT_LABELS[nutrient]}</Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          <div className="rounded-lg bg-card/50 border border-border p-3">
+                            <p className="text-xs text-muted-foreground"><strong>Energy Intake:</strong> {cdsAssessment.micronutrientRisk.current_energy_intake_kcal_per_day} kcal/day{cdsAssessment.micronutrientRisk.current_energy_intake_kcal_per_day < 1200 && <span className="text-amber-500"> — Below 1200 kcal threshold</span>}</p>
+                            <p className="text-xs text-muted-foreground mt-1"><strong>Screening Note:</strong> {cdsAssessment.micronutrientRisk.screening_frequency_note}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Pharmacotherapy Eligibility */}
+                    <div className="rounded-lg border border-rose-500/30 bg-rose-500/5">
+                      <Button variant="ghost" className="w-full flex items-center justify-between p-4 h-auto" onClick={() => setCdsShowPharma(!cdsShowPharma)}>
+                        <span className="flex items-center gap-2 font-semibold"><Pill className="h-4 w-4 text-rose-500" /> Pharmacotherapy Eligibility</span>
+                        {cdsShowPharma ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                      {cdsShowPharma && cdsAssessment.pharmacotherapyEligibility && (
+                        <div className="px-4 pb-4 space-y-3">
+                          <div className={`rounded-lg p-4 text-center border ${cdsAssessment.pharmacotherapyEligibility.eligible_for_anti_obesity_pharmacotherapy ? "bg-rose-500/20 border-rose-500/50" : "bg-muted/30 border-border"}`}>
+                            <p className="text-xs text-muted-foreground">Eligibility Status</p>
+                            <p className={`text-lg font-bold ${cdsAssessment.pharmacotherapyEligibility.eligible_for_anti_obesity_pharmacotherapy ? "text-rose-500" : "text-muted-foreground"}`}>
+                              {cdsAssessment.pharmacotherapyEligibility.eligible_for_anti_obesity_pharmacotherapy ? "Eligible" : "Not Indicated"}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">Role: {cdsAssessment.pharmacotherapyEligibility.pharmacotherapy_role === "adjunct_to_lifestyle" ? "Adjunct to lifestyle intervention" : cdsAssessment.pharmacotherapyEligibility.pharmacotherapy_role}</p>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div className="rounded-lg bg-card/50 border border-border p-3">
+                              <p className="text-xs text-muted-foreground">Current BMI</p>
+                              <p className="text-lg font-bold">{cdsAssessment.pharmacotherapyEligibility.bmi_kg_per_m2}</p>
+                            </div>
+                            <div className="rounded-lg bg-card/50 border border-border p-3">
+                              <p className="text-xs text-muted-foreground">Comorbidities</p>
+                              <p className="text-lg font-bold">{cdsAssessment.pharmacotherapyEligibility.comorbidities_list.length}</p>
+                            </div>
+                          </div>
+                          {cdsAssessment.pharmacotherapyEligibility.comorbidities_list.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {cdsAssessment.pharmacotherapyEligibility.comorbidities_list.map((tag) => (
+                                <Badge key={tag} variant="secondary" className="text-xs">{COMORBIDITY_LABELS[tag]}</Badge>
+                              ))}
+                            </div>
+                          )}
+                          <Alert className={cdsAssessment.pharmacotherapyEligibility.eligible_for_anti_obesity_pharmacotherapy ? "border-rose-500/30 bg-rose-500/10" : "border-border bg-muted/30"}>
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription className="text-xs">
+                              {cdsAssessment.pharmacotherapyEligibility.eligible_for_anti_obesity_pharmacotherapy
+                                ? "BMI ≥30 OR BMI ≥27 with ≥1 obesity-associated comorbidity. Anti-obesity pharmacotherapy is indicated as an adjunct to reduced-calorie eating pattern and physical activity."
+                                : "Current BMI and comorbidity profile does not meet threshold for anti-obesity pharmacotherapy. Continue lifestyle intervention."}
+                            </AlertDescription>
+                          </Alert>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
