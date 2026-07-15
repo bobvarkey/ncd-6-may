@@ -8,6 +8,7 @@ import {
   Home as HomeIcon, Search, ArrowRight, FlaskConical, User, Scissors,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
+import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -728,6 +729,9 @@ export default function Home() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 pb-16 space-y-8">
+        {/* Image Upload + Analyzer — prominent at top */}
+        <ImageUploadAnalyzer />
+
         {/* Quick Actions — top of page */}
         <section>
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
