@@ -181,50 +181,79 @@ export default function BmiCalculator() {
 
     const treatment = getTreatmentGuidelines(roundedBmi, data.ethnicity);
 
-    // ADA adiposity risk modifiers (waist + WHR)
+    // Adiposity risk modifiers — cutoffs vary by ethnicity (Indian vs default AHA/WHO)
     let adiposity: AdiposityRisk | undefined;
     if (data.waist || data.hip) {
       const sex = data.sex;
+      const isIndian = data.ethnicity === "indian";
+      const cutoffSource = isIndian
+        ? "Indian cutoffs (ICMR/IOA): Waist M>90 / F>80 cm · WHtR ≥0.50 (Indian signal ≥0.52) · WHR M ≥0.90 (Indian signal ≥0.93) / F ≥0.85"
+        : "Default cutoffs: Waist M>102 / F>88 cm (AHA) · WHR M ≥0.90 (≥1.00 high) / F ≥0.85 (WHO)";
+
       let waistFlag: AdiposityRisk["waistFlag"];
       let whr: number | undefined;
       let whrFlag: AdiposityRisk["whrFlag"];
+      let whtr: number | undefined;
+      let whtrFlag: AdiposityRisk["whtrFlag"];
       let centralAdiposity = false;
 
+      // Waist circumference
       if (data.waist && sex && sex !== "unspecified") {
-        const cutoff = sex === "male" ? 102 : 88;
+        const cutoff = isIndian ? (sex === "male" ? 90 : 80) : (sex === "male" ? 102 : 88);
         if (data.waist > cutoff) {
-          waistFlag = { level: "increased", message: `Waist > ${cutoff} cm suggests increased central adiposity and cardiometabolic risk.` };
+          waistFlag = {
+            level: "increased",
+            message: `Waist > ${cutoff} cm ${isIndian ? "(Indian cutoff) " : ""}suggests increased abdominal obesity risk.`,
+          };
           centralAdiposity = true;
         } else {
-          waistFlag = { level: "normal", message: `Waist ≤ ${cutoff} cm — within normal range.` };
+          waistFlag = { level: "normal", message: `Waist ≤ ${cutoff} cm — within normal range${isIndian ? " (Indian cutoff)" : ""}.` };
         }
       } else if (data.waist) {
         waistFlag = { level: "normal", message: "Select sex to apply waist circumference cutoff." };
       }
 
-      if (data.waist && data.hip) {
-        whr = Math.round((data.waist / data.hip) * 100) / 100;
-        if (sex === "male") {
-          if (whr >= 1.0) whrFlag = { level: "high", message: "WHR ≥ 1.00 — high risk (male)." };
-          else if (whr >= 0.9) whrFlag = { level: "increased", message: "WHR ≥ 0.90 — increased risk (male)." };
-          else whrFlag = { level: "low", message: "WHR < 0.90 — low risk (male)." };
-          if (whr >= 0.9) centralAdiposity = true;
-        } else if (sex === "female") {
-          if (whr >= 0.85) { whrFlag = { level: "increased", message: "WHR ≥ 0.85 — increased risk (female)." }; centralAdiposity = true; }
-          else whrFlag = { level: "low", message: "WHR < 0.85 — low risk (female)." };
+      // Waist-to-Height Ratio (universal + Indian signal)
+      if (data.waist) {
+        whtr = Math.round((data.waist / data.height) * 100) / 100;
+        if (whtr >= 0.52 && isIndian) {
+          whtrFlag = { level: "high", message: `WHtR ${whtr} — above Indian study risk signal (≥ 0.52); markedly elevated cardiometabolic risk.` };
+          centralAdiposity = true;
+        } else if (whtr >= 0.5) {
+          whtrFlag = { level: "increased", message: `WHtR ${whtr} ≥ 0.50 — elevated central adiposity risk (keep waist < half your height).` };
+          centralAdiposity = true;
+        } else {
+          whtrFlag = { level: "low", message: `WHtR ${whtr} < 0.50 — lower risk.` };
         }
       }
 
+      // Waist-to-Hip Ratio
+      if (data.waist && data.hip) {
+        whr = Math.round((data.waist / data.hip) * 100) / 100;
+        if (sex === "male") {
+          if (isIndian && whr >= 0.93) { whrFlag = { level: "high", message: `WHR ${whr} — above Indian study range (≥ 0.93); markedly elevated risk.` }; centralAdiposity = true; }
+          else if (whr >= 1.0) { whrFlag = { level: "high", message: `WHR ${whr} ≥ 1.00 — high risk (male).` }; centralAdiposity = true; }
+          else if (whr >= 0.9) { whrFlag = { level: "increased", message: `WHR ${whr} ≥ 0.90 — increased risk (male).` }; centralAdiposity = true; }
+          else whrFlag = { level: "low", message: `WHR ${whr} < 0.90 — low risk (male).` };
+        } else if (sex === "female") {
+          if (whr >= 0.85) { whrFlag = { level: "increased", message: `WHR ${whr} ≥ 0.85 — increased risk (female).` }; centralAdiposity = true; }
+          else whrFlag = { level: "low", message: `WHR ${whr} < 0.85 — low risk (female).` };
+        }
+      }
+
+      const lowerBmiThreshold = isIndian ? 23 : 25;
       let overallNote = "Central adiposity not elevated based on entered measures.";
       if (centralAdiposity) {
-        if (roundedBmi >= 25 && roundedBmi < 35) {
-          overallNote = "Cardiometabolic risk upgraded: elevated central adiposity in the setting of BMI 25–34.9. Intensify lifestyle and consider earlier pharmacotherapy per ADA.";
+        if (roundedBmi >= lowerBmiThreshold && roundedBmi < 35) {
+          overallNote = isIndian
+            ? `Cardiometabolic risk upgraded: elevated central adiposity in the setting of BMI ${lowerBmiThreshold}–34.9 (Indian thresholds). Intensify lifestyle and consider earlier pharmacotherapy per ADA / ICMR.`
+            : `Cardiometabolic risk upgraded: elevated central adiposity in the setting of BMI 25–34.9. Intensify lifestyle and consider earlier pharmacotherapy per ADA.`;
         } else {
           overallNote = "Elevated central adiposity — visceral fat pattern suggests higher cardiometabolic risk independent of BMI.";
         }
       }
 
-      adiposity = { waistFlag, whr, whrFlag, centralAdiposity, overallNote };
+      adiposity = { waistFlag, whr, whrFlag, whtr, whtrFlag, centralAdiposity, overallNote, cutoffSource };
     }
 
     setResult({
