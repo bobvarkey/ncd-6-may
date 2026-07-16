@@ -13,7 +13,7 @@ const TREATMENT_RECS: Record<string, { title: string; drug: string; rationale: s
     drug: "Atorvastatin 40-80 mg OD or Rosuvastatin 20-40 mg OD + Ezetimibe 10 mg OD",
     rationale: "ASCVD alone or with minor risk features. Dual therapy achieves ~55-65% LDL reduction, targeting <50 mg/dL. Add PCSK9i if not at target after 6 weeks.",
     followUp: "Recheck lipids at 6 weeks. If LDL >50, consider PCSK9i. Recheck again at 12 weeks.",
-    alternative: "If statin-intolerant: Rosuvastatin 5-10 mg + Ezetimibe + Bempedoic acid 180 mg OD. Consider Red Yeast Rice with monitoring if unwilling to take statins.",
+    alternative: "If statin-intolerant: Rosuvastatin 5-10 mg + Ezetimibe + Bempedoic acid 180 mg OD. For patients declining or unable to use injectable PCSK9i: Enlicitide (Lipfendra) — oral PCSK9i, once daily (FDA approved Jul 2026). Consider Red Yeast Rice with monitoring if unwilling to take statins.",
     mechanism: "Statin: HMG-CoA reductase inhibition (liver). Ezetimibe: NPC1L1 inhibition (gut) — blocks intestinal cholesterol absorption. Synergistic ~20% additional LDL reduction on top of statin.",
     monitoring: "LFTs and CK at baseline, 4-12 weeks after initiation, then 6-12 monthly. Lipids at 6 weeks, then 3-6 months until stable.",
     targets: ["LDL-C < 50 mg/dL (< 1.3 mmol/L)", "Non-HDL-C < 80 mg/dL (< 2.1 mmol/L)", "ApoB < 65 mg/dL (< 0.65 g/L)", "lp(a): Test once — if ≥50, consider PCSK9i early"],
