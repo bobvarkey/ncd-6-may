@@ -161,7 +161,14 @@ export default function BmiCalculator() {
 
   const selectedEthnicity = watch("ethnicity") || "standard";
 
-  const onSubmit = (data: BmiFormData) => {
+  const onSubmit = (raw: BmiFormData) => {
+    const data: BmiFormData = {
+      ...raw,
+      height: toMetric(raw.height, "length") ?? raw.height,
+      weight: toMetric(raw.weight, "weight") ?? raw.weight,
+      waist: toMetric(raw.waist, "length"),
+      hip: toMetric(raw.hip, "length"),
+    };
     const heightM = data.height / 100;
     const bmi = data.weight / (heightM * heightM);
     const roundedBmi = Math.round(bmi * 10) / 10;
