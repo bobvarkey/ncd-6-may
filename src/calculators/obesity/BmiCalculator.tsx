@@ -971,6 +971,8 @@ export default function BmiCalculator() {
           </>
         )}
 
+        {activeTab === "icmr-indiab" && <IcmrIndiab />}
+
         {activeTab === "indian-classification" && (
           <>
             {/* ─── ICMR (Asian Indian) BMI Classification ─── */}
