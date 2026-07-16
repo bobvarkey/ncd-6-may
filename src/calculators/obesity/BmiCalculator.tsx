@@ -55,8 +55,8 @@ const bmiSchema = z.object({
   weight: z.coerce.number().min(30).max(300).describe("Weight in kg"),
   ethnicity: z.enum(["standard", "asian-pacific", "indian"] as const),
   sex: z.enum(["male", "female", "unspecified"] as const).optional(),
-  waist: z.coerce.number().min(30).max(250).optional().or(z.nan().transform(() => undefined)),
-  hip: z.coerce.number().min(30).max(250).optional().or(z.nan().transform(() => undefined)),
+  waist: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(30).max(250).optional()),
+  hip: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(30).max(250).optional()),
 });
 
 type BmiFormData = z.infer<typeof bmiSchema>;
