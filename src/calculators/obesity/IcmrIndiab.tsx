@@ -9,9 +9,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Calculator, Activity, Info, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getBmiCategory } from "./obesity-guidelines";
 
 type Sex = "male" | "female";
+type Mode = "exact" | "range";
 
 /** ICMR (Asian Indian) categories, per ICMR / IOA / Asia-Pacific consensus */
 function icmrCategory(bmi: number): { label: string; color: string; obesityClass?: string } {
@@ -32,33 +32,173 @@ function whoCategory(bmi: number): { label: string; color: string; obesityClass?
   return { label: "Severely Obese", color: "text-destructive", obesityClass: "Obesity Class III" };
 }
 
+/** Range option — value is a representative midpoint used for downstream logic */
+type RangeOpt = { label: string; value: string };
+
+const bmiRanges: RangeOpt[] = [
+  { label: "< 18.5 (Underweight)", value: "17" },
+  { label: "18.5 – 22.9 (Normal)", value: "21" },
+  { label: "23 – 24.9 (Overweight / At Risk)", value: "24" },
+  { label: "25 – 29.9 (Obese I)", value: "27" },
+  { label: "30 – 34.9 (Obese II)", value: "32" },
+  { label: "≥ 35 (Severely Obese)", value: "37" },
+];
+
+const waistRangesMale: RangeOpt[] = [
+  { label: "< 90 cm (Normal)", value: "85" },
+  { label: "90 – 99 cm (Elevated)", value: "94" },
+  { label: "≥ 100 cm (High)", value: "104" },
+];
+const waistRangesFemale: RangeOpt[] = [
+  { label: "< 80 cm (Normal)", value: "75" },
+  { label: "80 – 89 cm (Elevated)", value: "84" },
+  { label: "≥ 90 cm (High)", value: "94" },
+];
+
+const sbpRanges: RangeOpt[] = [
+  { label: "< 120 (Normal)", value: "115" },
+  { label: "120 – 129 (Elevated)", value: "125" },
+  { label: "130 – 139 (Stage 1 HTN)", value: "135" },
+  { label: "≥ 140 (Stage 2 HTN)", value: "145" },
+];
+const dbpRanges: RangeOpt[] = [
+  { label: "< 80 (Normal)", value: "75" },
+  { label: "80 – 84 (Elevated)", value: "82" },
+  { label: "85 – 89 (Stage 1)", value: "87" },
+  { label: "≥ 90 (Stage 2)", value: "95" },
+];
+
+const fbgRanges: RangeOpt[] = [
+  { label: "< 100 mg/dL (Normal)", value: "90" },
+  { label: "100 – 125 mg/dL (Prediabetes)", value: "110" },
+  { label: "≥ 126 mg/dL (Diabetes)", value: "140" },
+];
+
+const tgRanges: RangeOpt[] = [
+  { label: "< 150 mg/dL (Normal)", value: "120" },
+  { label: "150 – 199 mg/dL (Borderline high)", value: "170" },
+  { label: "200 – 499 mg/dL (High)", value: "300" },
+  { label: "≥ 500 mg/dL (Very high)", value: "550" },
+];
+
+const hdlRangesMale: RangeOpt[] = [
+  { label: "< 40 mg/dL (Low)", value: "35" },
+  { label: "40 – 59 mg/dL (Normal)", value: "50" },
+  { label: "≥ 60 mg/dL (Protective)", value: "65" },
+];
+const hdlRangesFemale: RangeOpt[] = [
+  { label: "< 50 mg/dL (Low)", value: "45" },
+  { label: "50 – 59 mg/dL (Normal)", value: "55" },
+  { label: "≥ 60 mg/dL (Protective)", value: "65" },
+];
+
+/** Field with exact / range toggle */
+function DualEntry({
+  label,
+  mode,
+  onModeChange,
+  ranges,
+  value,
+  onValueChange,
+  placeholder,
+  step = "0.1",
+}: {
+  label: React.ReactNode;
+  mode: Mode;
+  onModeChange: (m: Mode) => void;
+  ranges: RangeOpt[];
+  value: string;
+  onValueChange: (v: string) => void;
+  placeholder?: string;
+  step?: string;
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <Label>{label}</Label>
+        <div className="flex rounded-md border border-border overflow-hidden text-[10px]">
+          <button
+            type="button"
+            onClick={() => { onModeChange("exact"); onValueChange(""); }}
+            className={cn("px-2 py-0.5", mode === "exact" ? "bg-primary text-primary-foreground" : "bg-muted/40")}
+          >
+            Exact
+          </button>
+          <button
+            type="button"
+            onClick={() => { onModeChange("range"); onValueChange(""); }}
+            className={cn("px-2 py-0.5", mode === "range" ? "bg-primary text-primary-foreground" : "bg-muted/40")}
+          >
+            Range
+          </button>
+        </div>
+      </div>
+      {mode === "exact" ? (
+        <Input type="number" step={step} placeholder={placeholder}
+          value={value} onChange={(e) => onValueChange(e.target.value)} />
+      ) : (
+        <Select value={value} onValueChange={onValueChange}>
+          <SelectTrigger><SelectValue placeholder="Select range" /></SelectTrigger>
+          <SelectContent>
+            {ranges.map((r) => (
+              <SelectItem key={r.label} value={r.value}>{r.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+    </div>
+  );
+}
+
 export default function IcmrIndiab() {
   // ---------- ICMR BMI calculator ----------
+  const [bmiMode, setBmiMode] = useState<Mode>("exact");
   const [heightCm, setHeightCm] = useState("");
   const [weightKg, setWeightKg] = useState("");
+  const [bmiRangeValue, setBmiRangeValue] = useState("");
 
   const bmi = useMemo(() => {
+    if (bmiMode === "range") {
+      const b = parseFloat(bmiRangeValue);
+      return isNaN(b) ? null : b;
+    }
     const h = parseFloat(heightCm);
     const w = parseFloat(weightKg);
     if (!h || !w || h < 30) return null;
     const b = w / ((h / 100) ** 2);
     return Math.round(b * 10) / 10;
-  }, [heightCm, weightKg]);
+  }, [bmiMode, bmiRangeValue, heightCm, weightKg]);
 
   const icmr = bmi != null ? icmrCategory(bmi) : null;
   const who = bmi != null ? whoCategory(bmi) : null;
 
   // ---------- INDIAB phenotype tool ----------
   const [sex, setSex] = useState<Sex>("male");
+
+  const [phenBmiMode, setPhenBmiMode] = useState<Mode>("exact");
   const [phenBmi, setPhenBmi] = useState("");
+
+  const [waistMode, setWaistMode] = useState<Mode>("exact");
   const [waist, setWaist] = useState("");
+
+  const [sbpMode, setSbpMode] = useState<Mode>("exact");
   const [sbp, setSbp] = useState("");
+  const [dbpMode, setDbpMode] = useState<Mode>("exact");
   const [dbp, setDbp] = useState("");
   const [onAntiHtn, setOnAntiHtn] = useState(false);
+
+  const [fbgMode, setFbgMode] = useState<Mode>("exact");
   const [fbg, setFbg] = useState("");
   const [onDmRx, setOnDmRx] = useState(false);
+
+  const [tgMode, setTgMode] = useState<Mode>("exact");
   const [tg, setTg] = useState("");
+
+  const [hdlMode, setHdlMode] = useState<Mode>("exact");
   const [hdl, setHdl] = useState("");
+
+  const waistRanges = sex === "male" ? waistRangesMale : waistRangesFemale;
+  const hdlRanges = sex === "male" ? hdlRangesMale : hdlRangesFemale;
 
   const phenotype = useMemo(() => {
     const b = parseFloat(phenBmi);
@@ -66,7 +206,6 @@ export default function IcmrIndiab() {
 
     const abnormalities: { name: string; met: boolean; detail: string }[] = [];
 
-    // 1. Elevated waist (ICMR/IDF South Asian cutoffs)
     const w = parseFloat(waist);
     const wCut = sex === "male" ? 90 : 80;
     abnormalities.push({
@@ -75,7 +214,6 @@ export default function IcmrIndiab() {
       detail: `${sex === "male" ? "M" : "F"} ≥ ${wCut} cm${w ? ` (entered ${w})` : ""}`,
     });
 
-    // 2. Elevated BP
     const s = parseFloat(sbp);
     const d = parseFloat(dbp);
     const bpMet = onAntiHtn || (!!s && s >= 130) || (!!d && d >= 85);
@@ -85,7 +223,6 @@ export default function IcmrIndiab() {
       detail: `SBP ≥ 130 or DBP ≥ 85 or on antihypertensive${s || d ? ` (entered ${s || "—"}/${d || "—"})` : ""}`,
     });
 
-    // 3. Elevated fasting glucose
     const f = parseFloat(fbg);
     const fbgMet = onDmRx || (!!f && f >= 100);
     abnormalities.push({
@@ -94,7 +231,6 @@ export default function IcmrIndiab() {
       detail: `FBG ≥ 100 mg/dL or on diabetes therapy${f ? ` (entered ${f})` : ""}`,
     });
 
-    // 4. Elevated triglycerides
     const t = parseFloat(tg);
     abnormalities.push({
       name: "Elevated triglycerides",
@@ -102,7 +238,6 @@ export default function IcmrIndiab() {
       detail: `TG ≥ 150 mg/dL${t ? ` (entered ${t})` : ""}`,
     });
 
-    // 5. Low HDL
     const h = parseFloat(hdl);
     const hdlCut = sex === "male" ? 40 : 50;
     abnormalities.push({
@@ -113,7 +248,7 @@ export default function IcmrIndiab() {
 
     const abnCount = abnormalities.filter((a) => a.met).length;
     const metUnhealthy = abnCount >= 2;
-    const isObese = b >= 25; // ICMR / Asian Indian cutoff
+    const isObese = b >= 25;
 
     let code: "MHNO" | "MONO" | "MHO" | "MOO";
     let name: string;
@@ -145,9 +280,11 @@ export default function IcmrIndiab() {
     return { code, name, color, interpretation, abnormalities, abnCount, isObese, bmi: b };
   }, [phenBmi, waist, sex, sbp, dbp, onAntiHtn, fbg, onDmRx, tg, hdl]);
 
-  // Auto-copy BMI from ICMR calculator into phenotype tool
   const useBmiFromAbove = () => {
-    if (bmi != null) setPhenBmi(String(bmi));
+    if (bmi != null) {
+      setPhenBmiMode("exact");
+      setPhenBmi(String(bmi));
+    }
   };
 
   return (
@@ -160,29 +297,65 @@ export default function IcmrIndiab() {
             ICMR (Asian Indian) BMI Calculator
           </CardTitle>
           <p className="text-xs text-muted-foreground">
-            Classifies BMI using ICMR / Asia-Pacific cutoffs with side-by-side WHO comparison.
+            Enter height & weight, or pick a BMI range using ICMR cutoffs. Compared side-by-side with WHO.
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="icmr-h">Height (cm)</Label>
-              <Input id="icmr-h" type="number" step="0.1" placeholder="e.g., 165"
-                value={heightCm} onChange={(e) => setHeightCm(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="icmr-w">Weight (kg)</Label>
-              <Input id="icmr-w" type="number" step="0.1" placeholder="e.g., 68"
-                value={weightKg} onChange={(e) => setWeightKg(e.target.value)} />
+          <div className="flex justify-end">
+            <div className="flex rounded-md border border-border overflow-hidden text-[10px]">
+              <button
+                type="button"
+                onClick={() => { setBmiMode("exact"); setBmiRangeValue(""); }}
+                className={cn("px-2 py-1", bmiMode === "exact" ? "bg-primary text-primary-foreground" : "bg-muted/40")}
+              >
+                Exact (H/W)
+              </button>
+              <button
+                type="button"
+                onClick={() => { setBmiMode("range"); setHeightCm(""); setWeightKg(""); }}
+                className={cn("px-2 py-1", bmiMode === "range" ? "bg-primary text-primary-foreground" : "bg-muted/40")}
+              >
+                BMI Range
+              </button>
             </div>
           </div>
+
+          {bmiMode === "exact" ? (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="icmr-h">Height (cm)</Label>
+                <Input id="icmr-h" type="number" step="0.1" placeholder="e.g., 165"
+                  value={heightCm} onChange={(e) => setHeightCm(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="icmr-w">Weight (kg)</Label>
+                <Input id="icmr-w" type="number" step="0.1" placeholder="e.g., 68"
+                  value={weightKg} onChange={(e) => setWeightKg(e.target.value)} />
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label>BMI range (ICMR / Asian Indian)</Label>
+              <Select value={bmiRangeValue} onValueChange={setBmiRangeValue}>
+                <SelectTrigger><SelectValue placeholder="Select ICMR BMI range" /></SelectTrigger>
+                <SelectContent>
+                  {bmiRanges.map((r) => (
+                    <SelectItem key={r.label} value={r.value}>{r.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[10px] text-muted-foreground">
+                Ranges use ICMR cutoffs: 18.5 / 23 / 25 / 30 / 35. Midpoint is used to classify.
+              </p>
+            </div>
+          )}
 
           {bmi != null && icmr && who && (
             <div className="space-y-3">
               <div className="rounded-lg border border-border bg-card/50 p-4 text-center">
                 <p className="text-xs text-muted-foreground">Body Mass Index</p>
                 <p className="text-4xl font-bold text-primary">{bmi}</p>
-                <p className="text-xs text-muted-foreground">kg/m²</p>
+                <p className="text-xs text-muted-foreground">kg/m²{bmiMode === "range" && " (range midpoint)"}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -233,11 +406,10 @@ export default function IcmrIndiab() {
             ICMR-INDIAB Phenotype Classifier
           </CardTitle>
           <p className="text-xs text-muted-foreground">
-            Classifies MHNO / MONO / MHO / MOO by BMI (≥25 vs &lt;25) and count of metabolic abnormalities (≥2 = unhealthy).
+            Every field supports <strong>Exact</strong> value entry or a clinical <strong>Range</strong> picker. Classifies MHNO / MONO / MHO / MOO by BMI (≥25 vs &lt;25) and count of metabolic abnormalities (≥2 = unhealthy).
           </p>
         </CardHeader>
         <CardContent className="space-y-5">
-          {/* Sex + BMI */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="phen-sex">Sex</Label>
@@ -249,28 +421,53 @@ export default function IcmrIndiab() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="phen-bmi">BMI (kg/m²)</Label>
-              <Input id="phen-bmi" type="number" step="0.1" placeholder="e.g., 26.5"
-                value={phenBmi} onChange={(e) => setPhenBmi(e.target.value)} />
-            </div>
+            <DualEntry
+              label="BMI (kg/m²)"
+              mode={phenBmiMode}
+              onModeChange={setPhenBmiMode}
+              ranges={bmiRanges}
+              value={phenBmi}
+              onValueChange={setPhenBmi}
+              placeholder="e.g., 26.5"
+            />
           </div>
 
-          {/* Metabolic abnormalities */}
           <div className="rounded-lg border border-dashed border-border p-4 space-y-4 bg-muted/20">
             <p className="text-sm font-semibold">Metabolic abnormalities (INDIAB / IDF South Asian)</p>
 
-            <div className="space-y-2">
-              <Label>Waist circumference (cm) — cutoff {sex === "male" ? "≥ 90" : "≥ 80"}</Label>
-              <Input type="number" step="0.1" placeholder="optional"
-                value={waist} onChange={(e) => setWaist(e.target.value)} />
-            </div>
+            <DualEntry
+              label={<>Waist circumference (cm) — cutoff {sex === "male" ? "≥ 90" : "≥ 80"}</>}
+              mode={waistMode}
+              onModeChange={setWaistMode}
+              ranges={waistRanges}
+              value={waist}
+              onValueChange={setWaist}
+              placeholder="optional"
+            />
 
             <div className="space-y-2">
               <Label>Blood pressure (mmHg) — cutoff ≥ 130 / 85</Label>
               <div className="grid grid-cols-2 gap-3">
-                <Input type="number" placeholder="SBP" value={sbp} onChange={(e) => setSbp(e.target.value)} />
-                <Input type="number" placeholder="DBP" value={dbp} onChange={(e) => setDbp(e.target.value)} />
+                <DualEntry
+                  label={<span className="text-xs">SBP</span>}
+                  mode={sbpMode}
+                  onModeChange={setSbpMode}
+                  ranges={sbpRanges}
+                  value={sbp}
+                  onValueChange={setSbp}
+                  placeholder="SBP"
+                  step="1"
+                />
+                <DualEntry
+                  label={<span className="text-xs">DBP</span>}
+                  mode={dbpMode}
+                  onModeChange={setDbpMode}
+                  ranges={dbpRanges}
+                  value={dbp}
+                  onValueChange={setDbp}
+                  placeholder="DBP"
+                  step="1"
+                />
               </div>
               <label className="flex items-center gap-2 text-xs">
                 <Checkbox checked={onAntiHtn} onCheckedChange={(v) => setOnAntiHtn(!!v)} />
@@ -279,29 +476,42 @@ export default function IcmrIndiab() {
             </div>
 
             <div className="space-y-2">
-              <Label>Fasting glucose (mg/dL) — cutoff ≥ 100</Label>
-              <Input type="number" step="0.1" placeholder="optional"
-                value={fbg} onChange={(e) => setFbg(e.target.value)} />
+              <DualEntry
+                label="Fasting glucose (mg/dL) — cutoff ≥ 100"
+                mode={fbgMode}
+                onModeChange={setFbgMode}
+                ranges={fbgRanges}
+                value={fbg}
+                onValueChange={setFbg}
+                placeholder="optional"
+              />
               <label className="flex items-center gap-2 text-xs">
                 <Checkbox checked={onDmRx} onCheckedChange={(v) => setOnDmRx(!!v)} />
                 On diabetes therapy
               </label>
             </div>
 
-            <div className="space-y-2">
-              <Label>Triglycerides (mg/dL) — cutoff ≥ 150</Label>
-              <Input type="number" step="0.1" placeholder="optional"
-                value={tg} onChange={(e) => setTg(e.target.value)} />
-            </div>
+            <DualEntry
+              label="Triglycerides (mg/dL) — cutoff ≥ 150"
+              mode={tgMode}
+              onModeChange={setTgMode}
+              ranges={tgRanges}
+              value={tg}
+              onValueChange={setTg}
+              placeholder="optional"
+            />
 
-            <div className="space-y-2">
-              <Label>HDL cholesterol (mg/dL) — cutoff {sex === "male" ? "< 40" : "< 50"}</Label>
-              <Input type="number" step="0.1" placeholder="optional"
-                value={hdl} onChange={(e) => setHdl(e.target.value)} />
-            </div>
+            <DualEntry
+              label={<>HDL cholesterol (mg/dL) — cutoff {sex === "male" ? "< 40" : "< 50"}</>}
+              mode={hdlMode}
+              onModeChange={setHdlMode}
+              ranges={hdlRanges}
+              value={hdl}
+              onValueChange={setHdl}
+              placeholder="optional"
+            />
           </div>
 
-          {/* Phenotype output */}
           {phenotype && (
             <div className="space-y-3">
               <div className={cn("rounded-lg border-2 p-4", phenotype.color)}>
