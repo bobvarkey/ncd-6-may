@@ -161,11 +161,58 @@ export default function BmiCalculator() {
 
     const treatment = getTreatmentGuidelines(roundedBmi, data.ethnicity);
 
+    // ADA adiposity risk modifiers (waist + WHR)
+    let adiposity: AdiposityRisk | undefined;
+    if (data.waist || data.hip) {
+      const sex = data.sex;
+      let waistFlag: AdiposityRisk["waistFlag"];
+      let whr: number | undefined;
+      let whrFlag: AdiposityRisk["whrFlag"];
+      let centralAdiposity = false;
+
+      if (data.waist && sex && sex !== "unspecified") {
+        const cutoff = sex === "male" ? 102 : 88;
+        if (data.waist > cutoff) {
+          waistFlag = { level: "increased", message: `Waist > ${cutoff} cm suggests increased central adiposity and cardiometabolic risk.` };
+          centralAdiposity = true;
+        } else {
+          waistFlag = { level: "normal", message: `Waist ≤ ${cutoff} cm — within normal range.` };
+        }
+      } else if (data.waist) {
+        waistFlag = { level: "normal", message: "Select sex to apply waist circumference cutoff." };
+      }
+
+      if (data.waist && data.hip) {
+        whr = Math.round((data.waist / data.hip) * 100) / 100;
+        if (sex === "male") {
+          if (whr >= 1.0) whrFlag = { level: "high", message: "WHR ≥ 1.00 — high risk (male)." };
+          else if (whr >= 0.9) whrFlag = { level: "increased", message: "WHR ≥ 0.90 — increased risk (male)." };
+          else whrFlag = { level: "low", message: "WHR < 0.90 — low risk (male)." };
+          if (whr >= 0.9) centralAdiposity = true;
+        } else if (sex === "female") {
+          if (whr >= 0.85) { whrFlag = { level: "increased", message: "WHR ≥ 0.85 — increased risk (female)." }; centralAdiposity = true; }
+          else whrFlag = { level: "low", message: "WHR < 0.85 — low risk (female)." };
+        }
+      }
+
+      let overallNote = "Central adiposity not elevated based on entered measures.";
+      if (centralAdiposity) {
+        if (roundedBmi >= 25 && roundedBmi < 35) {
+          overallNote = "Cardiometabolic risk upgraded: elevated central adiposity in the setting of BMI 25–34.9. Intensify lifestyle and consider earlier pharmacotherapy per ADA.";
+        } else {
+          overallNote = "Elevated central adiposity — visceral fat pattern suggests higher cardiometabolic risk independent of BMI.";
+        }
+      }
+
+      adiposity = { waistFlag, whr, whrFlag, centralAdiposity, overallNote };
+    }
+
     setResult({
       bmi: roundedBmi,
       category: category.label,
       color: category.color,
       ethnicityName: guideline?.name || "Standard WHO",
+      adiposity,
     });
     setTreatmentData(treatment);
     setShowTreatment(false);
