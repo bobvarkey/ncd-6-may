@@ -392,45 +392,96 @@ export default function BmiCalculator() {
 
                   {/* Height Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="height">Height (cm)</Label>
+                    <Label htmlFor="height">Height ({units === "metric" ? "cm" : "in"})</Label>
                     <Input
                       id="height"
                       type="number"
-                      placeholder="e.g., 170"
+                      step="0.1"
+                      placeholder={units === "metric" ? "e.g., 170" : "e.g., 67"}
                       className="bg-card border-border"
                       {...register("height", { valueAsNumber: true })}
                     />
                     {errors.height && (
-                      <p className="text-xs text-red-500">Please enter a valid height (100-250 cm)</p>
+                      <p className="text-xs text-red-500">
+                        Please enter a valid height ({units === "metric" ? "100–250 cm" : "39–98 in"})
+                      </p>
                     )}
                   </div>
 
                   {/* Weight Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="weight">Weight (kg)</Label>
+                    <Label htmlFor="weight">Weight ({units === "metric" ? "kg" : "lb"})</Label>
                     <Input
                       id="weight"
                       type="number"
-                      placeholder="e.g., 70"
+                      step="0.1"
+                      placeholder={units === "metric" ? "e.g., 70" : "e.g., 154"}
                       className="bg-card border-border"
                       {...register("weight", { valueAsNumber: true })}
                     />
                     {errors.weight && (
-                      <p className="text-xs text-red-500">Please enter a valid weight (30-300 kg)</p>
+                      <p className="text-xs text-red-500">
+                        Please enter a valid weight ({units === "metric" ? "30–300 kg" : "66–660 lb"})
+                      </p>
                     )}
                   </div>
 
                   {/* Optional: Sex / Waist / Hip for ADA adiposity assessment */}
                   <div className="rounded-lg border border-dashed border-border p-4 space-y-4 bg-muted/20">
-                    <div className="flex items-start gap-2">
-                      <Info className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-                      <div>
-                        <p className="text-sm font-semibold">Optional: Central adiposity (ADA)</p>
-                        <p className="text-xs text-muted-foreground">
-                          Add sex + waist (and optionally hip) circumference to layer waist-circumference and waist-to-hip ratio risk flags on top of BMI.
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2">
+                        <Info className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                        <div>
+                          <p className="text-sm font-semibold">Optional: Central adiposity (ADA)</p>
+                          <p className="text-xs text-muted-foreground">
+                            Add sex + waist (and optionally hip) circumference to layer waist-circumference and waist-to-hip ratio risk flags on top of BMI.
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 shrink-0"
+                        onClick={() => setShowAdiposityInfo((v) => !v)}
+                        title="How cutoffs and flags are applied"
+                      >
+                        <InfoIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {showAdiposityInfo && (
+                      <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-xs space-y-2 leading-relaxed">
+                        <p className="font-semibold text-sm">How the cutoffs are applied</p>
+                        <div>
+                          <p className="font-semibold">Waist circumference (AHA)</p>
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            <li>Male: waist &gt; 102 cm (&gt; 40 in) → increased central adiposity risk.</li>
+                            <li>Female: waist &gt; 88 cm (&gt; 35 in) → increased central adiposity risk.</li>
+                            <li>Requires <em>Sex</em> to be set; otherwise no flag is applied.</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Waist-to-Hip Ratio (WHO)</p>
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            <li>Male: &lt; 0.90 low · ≥ 0.90 increased · ≥ 1.00 high risk.</li>
+                            <li>Female: &lt; 0.85 low · ≥ 0.85 increased risk.</li>
+                            <li>Computed only when both waist <em>and</em> hip are entered.</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Risk flags</p>
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            <li><span className="font-semibold">Normal</span> — measurement within reference range for sex.</li>
+                            <li><span className="font-semibold text-warning">Increased</span> — elevated visceral / central fat; cardiometabolic risk higher than BMI alone suggests.</li>
+                            <li><span className="font-semibold text-destructive">High</span> — strongly elevated central adiposity; consider aggressive lifestyle + earlier pharmacotherapy.</li>
+                          </ul>
+                        </div>
+                        <p className="text-muted-foreground">
+                          BMI category is <em>never</em> reclassified. Waist and WHR act only as risk modifiers per ADA guidance — a patient with BMI 25–34.9 plus elevated waist/WHR receives an upgraded cardiometabolic-risk note.
                         </p>
                       </div>
-                    </div>
+                    )}
 
                     <div className="space-y-2">
                       <Label htmlFor="sex">Sex</Label>
