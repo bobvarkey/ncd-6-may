@@ -130,6 +130,7 @@ export default function BmiCalculator() {
     resolver: zodResolver(bmiSchema),
     defaultValues: {
       ethnicity: "standard",
+      sex: "unspecified",
     },
   });
 
