@@ -331,6 +331,29 @@ export default function BmiCalculator() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Unit toggle */}
+                <div className="flex items-center justify-between rounded-lg border border-border bg-muted/20 p-2">
+                  <span className="text-xs font-semibold text-muted-foreground pl-2">Units</span>
+                  <div className="inline-flex rounded-md border border-border bg-card p-0.5">
+                    {(["metric", "imperial"] as const).map((u) => (
+                      <button
+                        key={u}
+                        type="button"
+                        onClick={() => {
+                          setUnits(u);
+                          try { localStorage.setItem("ncd_bmi_units", u); } catch { /* noop */ }
+                        }}
+                        className={cn(
+                          "px-3 py-1 text-xs font-semibold rounded transition-colors",
+                          units === u ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {u === "metric" ? "Metric (cm / kg)" : "Imperial (in / lb)"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   {/* Ethnicity Selector */}
                   <div className="space-y-2">
