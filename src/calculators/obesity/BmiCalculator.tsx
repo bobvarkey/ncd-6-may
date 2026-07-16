@@ -486,31 +486,40 @@ export default function BmiCalculator() {
                       <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-xs space-y-2 leading-relaxed">
                         <p className="font-semibold text-sm">How the cutoffs are applied</p>
                         <div>
-                          <p className="font-semibold">Waist circumference (AHA)</p>
+                          <p className="font-semibold">Waist circumference</p>
                           <ul className="list-disc pl-4 space-y-0.5">
-                            <li>Male: waist &gt; 102 cm (&gt; 40 in) → increased central adiposity risk.</li>
-                            <li>Female: waist &gt; 88 cm (&gt; 35 in) → increased central adiposity risk.</li>
+                            <li>Default (AHA) — Male &gt; 102 cm (40 in) · Female &gt; 88 cm (35 in) → increased risk.</li>
+                            <li>Indian (ICMR/IOA) — Male &gt; 90 cm · Female &gt; 80 cm → increased abdominal obesity risk.</li>
                             <li>Requires <em>Sex</em> to be set; otherwise no flag is applied.</li>
                           </ul>
                         </div>
                         <div>
-                          <p className="font-semibold">Waist-to-Hip Ratio (WHO)</p>
+                          <p className="font-semibold">Waist-to-Height Ratio (WHtR)</p>
                           <ul className="list-disc pl-4 space-y-0.5">
-                            <li>Male: &lt; 0.90 low · ≥ 0.90 increased · ≥ 1.00 high risk.</li>
-                            <li>Female: &lt; 0.85 low · ≥ 0.85 increased risk.</li>
+                            <li>Universal rule of thumb: keep waist &lt; ½ your height (WHtR &lt; 0.50).</li>
+                            <li>≥ 0.50 → elevated central adiposity risk.</li>
+                            <li>Indian populations: ≥ 0.52 flagged as higher Indian-study risk signal.</li>
+                            <li>Computed whenever waist is entered.</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Waist-to-Hip Ratio (WHR)</p>
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            <li>Default (WHO) — Male &lt; 0.90 low · ≥ 0.90 increased · ≥ 1.00 high. Female &lt; 0.85 low · ≥ 0.85 increased.</li>
+                            <li>Indian signal — Male ≥ 0.93 flagged as high; Female cutoff same at ≥ 0.85.</li>
                             <li>Computed only when both waist <em>and</em> hip are entered.</li>
                           </ul>
                         </div>
                         <div>
                           <p className="font-semibold">Risk flags</p>
                           <ul className="list-disc pl-4 space-y-0.5">
-                            <li><span className="font-semibold">Normal</span> — measurement within reference range for sex.</li>
+                            <li><span className="font-semibold">Normal / Low</span> — measurement within reference range.</li>
                             <li><span className="font-semibold text-warning">Increased</span> — elevated visceral / central fat; cardiometabolic risk higher than BMI alone suggests.</li>
                             <li><span className="font-semibold text-destructive">High</span> — strongly elevated central adiposity; consider aggressive lifestyle + earlier pharmacotherapy.</li>
                           </ul>
                         </div>
                         <p className="text-muted-foreground">
-                          BMI category is <em>never</em> reclassified. Waist and WHR act only as risk modifiers per ADA guidance — a patient with BMI 25–34.9 plus elevated waist/WHR receives an upgraded cardiometabolic-risk note.
+                          BMI category is <em>never</em> reclassified. Waist / WHtR / WHR act only as risk modifiers. When ethnicity is set to <em>Indian</em>, an upgraded cardiometabolic-risk note fires from BMI ≥ 23 (vs. ≥ 25 for default).
                         </p>
                       </div>
                     )}
