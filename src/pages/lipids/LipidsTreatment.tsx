@@ -23,7 +23,7 @@ const TREATMENT_RECS: Record<string, { title: string; drug: string; rationale: s
     drug: "Atorvastatin 80 mg OD + Ezetimibe 10 mg OD + PCSK9i (Evolocumab 140 mg SC q2w or Alirocumab 150 mg SC q2w)",
     rationale: "ASCVD + ≥1 high-risk feature or polyvascular disease. Triple therapy needed for target ≤30 mg/dL. The FOURIER and ODYSSEY trials demonstrated ~60% MACE reduction with this approach.",
     followUp: "LDL at 4 weeks. Adjust as needed. Consider quarterly follow-up given high intensity.",
-    alternative: "Rosuvastatin 40 mg + Ezetimibe + Inclisiran 284 mg SC (at 0, 3 months then biannually). Enlicitide (Lipfendra) oral PCSK9i once daily as an alternative to injectable PCSK9i (needle-averse or adherence issues). Bempedoic acid 180 mg OD if PCSK9i not tolerated.",
+    alternative: "Rosuvastatin 40 mg + Ezetimibe + Inclisiran 284 mg SC (at 0, 3 months then biannually). Enlicitide (Lipfendra) 20 mg PO once daily — oral PCSK9i alternative to injectable PCSK9i for needle-averse patients or adherence issues (FDA 2026; CORALreef Lipids, NEJM 2025 — see Lipfendra section for details). Bempedoic acid 180 mg OD if PCSK9i not tolerated.",
     mechanism: "Statin: Hepatic cholesterol synthesis ↓. Ezetimibe: Intestinal absorption ↓. PCSK9i: LDL receptor degradation ↓ → more receptors on hepatocyte surface → dramatic LDL clearance ↑.",
     monitoring: "LFTs, CK, renal function at baseline and follow-up. LDL monthly until stable. Watch for injection site reactions with PCSK9i.",
     targets: ["LDL-C ≤ 30 mg/dL (< 0.8 mmol/L) target", "Non-HDL-C ≤ 60 mg/dL (< 1.5 mmol/L)", "ApoB < 50 mg/dL (< 0.5 g/L)", "Consider Lp(a) apheresis if recurrent events despite targets"],
