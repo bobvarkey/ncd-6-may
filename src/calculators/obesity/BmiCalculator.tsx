@@ -54,15 +54,27 @@ const bmiSchema = z.object({
   height: z.coerce.number().min(100).max(250).describe("Height in cm"),
   weight: z.coerce.number().min(30).max(300).describe("Weight in kg"),
   ethnicity: z.enum(["standard", "asian-pacific", "indian"] as const),
+  sex: z.enum(["male", "female", "unspecified"] as const).optional(),
+  waist: z.coerce.number().min(30).max(250).optional().or(z.nan().transform(() => undefined)),
+  hip: z.coerce.number().min(30).max(250).optional().or(z.nan().transform(() => undefined)),
 });
 
 type BmiFormData = z.infer<typeof bmiSchema>;
+
+interface AdiposityRisk {
+  waistFlag?: { level: "normal" | "increased"; message: string };
+  whr?: number;
+  whrFlag?: { level: "low" | "increased" | "high"; message: string };
+  centralAdiposity: boolean;
+  overallNote: string;
+}
 
 interface BmiResult {
   bmi: number;
   category: string;
   color: string;
   ethnicityName: string;
+  adiposity?: AdiposityRisk;
 }
 
 const TABS = [
