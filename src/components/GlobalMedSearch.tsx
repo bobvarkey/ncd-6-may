@@ -168,6 +168,7 @@ const CLINICAL_TOPICS = [
   { id: "privacy", label: "Privacy Policy", path: "/privacy", keywords: ["privacy", "privacy policy", "data protection"] },
   { id: "terms", label: "Terms of Service", path: "/terms", keywords: ["terms", "terms of service", "legal"] },
   { id: "disclaimer", label: "Medical Disclaimer", path: "/disclaimer", keywords: ["disclaimer", "medical disclaimer", "legal"] },
+  { id: "delete-account", label: "Delete Account & Data", path: "/delete-account", keywords: ["delete", "account", "erase", "wipe", "remove data", "clear data", "reset app", "privacy"] },
 ];
 
 export function GlobalMedSearch() {
