@@ -13,7 +13,7 @@ const TREATMENT_RECS: Record<string, { title: string; drug: string; rationale: s
     drug: "Atorvastatin 40-80 mg OD or Rosuvastatin 20-40 mg OD + Ezetimibe 10 mg OD",
     rationale: "ASCVD alone or with minor risk features. Dual therapy achieves ~55-65% LDL reduction, targeting <50 mg/dL. Add PCSK9i if not at target after 6 weeks.",
     followUp: "Recheck lipids at 6 weeks. If LDL >50, consider PCSK9i. Recheck again at 12 weeks.",
-    alternative: "If statin-intolerant: Rosuvastatin 5-10 mg + Ezetimibe + Bempedoic acid 180 mg OD. Consider Red Yeast Rice with monitoring if unwilling to take statins.",
+    alternative: "If statin-intolerant: Rosuvastatin 5-10 mg + Ezetimibe + Bempedoic acid 180 mg OD. For patients declining or unable to use injectable PCSK9i: Enlicitide (Lipfendra) — oral PCSK9i, once daily (FDA approved Jul 2026). Consider Red Yeast Rice with monitoring if unwilling to take statins.",
     mechanism: "Statin: HMG-CoA reductase inhibition (liver). Ezetimibe: NPC1L1 inhibition (gut) — blocks intestinal cholesterol absorption. Synergistic ~20% additional LDL reduction on top of statin.",
     monitoring: "LFTs and CK at baseline, 4-12 weeks after initiation, then 6-12 monthly. Lipids at 6 weeks, then 3-6 months until stable.",
     targets: ["LDL-C < 50 mg/dL (< 1.3 mmol/L)", "Non-HDL-C < 80 mg/dL (< 2.1 mmol/L)", "ApoB < 65 mg/dL (< 0.65 g/L)", "lp(a): Test once — if ≥50, consider PCSK9i early"],
@@ -23,7 +23,7 @@ const TREATMENT_RECS: Record<string, { title: string; drug: string; rationale: s
     drug: "Atorvastatin 80 mg OD + Ezetimibe 10 mg OD + PCSK9i (Evolocumab 140 mg SC q2w or Alirocumab 150 mg SC q2w)",
     rationale: "ASCVD + ≥1 high-risk feature or polyvascular disease. Triple therapy needed for target ≤30 mg/dL. The FOURIER and ODYSSEY trials demonstrated ~60% MACE reduction with this approach.",
     followUp: "LDL at 4 weeks. Adjust as needed. Consider quarterly follow-up given high intensity.",
-    alternative: "Rosuvastatin 40 mg + Ezetimibe + Inclisiran 284 mg SC (at 0, 3 months then biannually). Bempedoic acid 180 mg OD if PCSK9i not tolerated.",
+    alternative: "Rosuvastatin 40 mg + Ezetimibe + Inclisiran 284 mg SC (at 0, 3 months then biannually). Enlicitide (Lipfendra) oral PCSK9i once daily as an alternative to injectable PCSK9i (needle-averse or adherence issues). Bempedoic acid 180 mg OD if PCSK9i not tolerated.",
     mechanism: "Statin: Hepatic cholesterol synthesis ↓. Ezetimibe: Intestinal absorption ↓. PCSK9i: LDL receptor degradation ↓ → more receptors on hepatocyte surface → dramatic LDL clearance ↑.",
     monitoring: "LFTs, CK, renal function at baseline and follow-up. LDL monthly until stable. Watch for injection site reactions with PCSK9i.",
     targets: ["LDL-C ≤ 30 mg/dL (< 0.8 mmol/L) target", "Non-HDL-C ≤ 60 mg/dL (< 1.5 mmol/L)", "ApoB < 50 mg/dL (< 0.5 g/L)", "Consider Lp(a) apheresis if recurrent events despite targets"],
@@ -112,7 +112,8 @@ const STATIN_TABLE = [
   { drug: "Rosuvastatin 40 mg", potency: "High", ldlReduction: "~55%" },
   { drug: "Pitavastatin 2-4 mg", potency: "Moderate", ldlReduction: "~35-40%" },
   { drug: "+ Ezetimibe 10 mg", potency: "Add-on", ldlReduction: "+15-20%" },
-  { drug: "+ PCSK9i", potency: "Add-on", ldlReduction: "+50-60%" },
+  { drug: "+ PCSK9i (evolocumab / alirocumab SC)", potency: "Add-on", ldlReduction: "+50-60%" },
+  { drug: "+ Enlicitide (Lipfendra) — oral PCSK9i", potency: "Add-on", ldlReduction: "+50-60% (oral, once daily)" },
   { drug: "+ Bempedoic acid", potency: "Add-on", ldlReduction: "+15-20%" },
   { drug: "+ Inclisiran", potency: "Add-on", ldlReduction: "+50% (biannual)" },
 ];
@@ -121,7 +122,8 @@ const STATIN_TABLE = [
 const SAFETY_NOTE = `
 • Statins: Monitor LFTs at baseline + 12 weeks. Myalgia in ~5-10% (true myositis rare ~0.1%). Avoid if active liver disease (ALT >3× ULN).
 • Ezetimibe: Generally well-tolerated. GI side effects ~2-3%.
-• PCSK9i: Injection site reactions ~5%. Virtually no hepatic/muscle toxicity.
+• PCSK9i (injectable — evolocumab / alirocumab): Injection site reactions ~5%. Virtually no hepatic/muscle toxicity.
+• Enlicitide (Lipfendra, oral PCSK9i — FDA approved Jul 2026): First oral macrocyclic peptide PCSK9 inhibitor. Once-daily tablet (enlicitide decanoate). LDL-C reduction ≈55-60%, comparable to injectable PCSK9i. Take on empty stomach. No known hepatic/muscle toxicity signal to date; monitor for GI upset.
 • Bempedoic acid: Gout risk ↑ (elevated uric acid). Avoid with eGFR <30.
 • Fibrates: Avoid gemfibrozil with statins (myopathy risk). Fenofibrate safer.
 • Colchicine: GI intolerance common. Drug interactions with CYP3A4.
