@@ -92,6 +92,16 @@ export default function BmiCalculator() {
   const [showGrades, setShowGrades] = useState(false);
   const [treatmentData, setTreatmentData] = useState<ReturnType<typeof getTreatmentGuidelines>>(null);
   const [activeTab, setActiveTab] = useState("calculator");
+  const [units, setUnits] = useState<"metric" | "imperial">(() => {
+    try { return (localStorage.getItem("ncd_bmi_units") as "metric" | "imperial") || "metric"; } catch { return "metric"; }
+  });
+  const [showAdiposityInfo, setShowAdiposityInfo] = useState(false);
+
+  const toMetric = (v: number | undefined, kind: "length" | "weight"): number | undefined => {
+    if (v === undefined || v === null || Number.isNaN(v)) return undefined;
+    if (units === "metric") return v;
+    return kind === "length" ? v * 2.54 : v * 0.45359237;
+  };
 
   // CDS Engine state
   const [cdsAssessment, setCdsAssessment] = useState<ObesityCDSAssessment | null>(null);
