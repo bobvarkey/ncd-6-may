@@ -566,7 +566,10 @@ export default function BmiCalculator() {
                       </div>
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      Cutoffs — Waist: M &gt; 102 cm (40 in), F &gt; 88 cm (35 in) [AHA]. WHR: M ≥ 0.90 increased / ≥ 1.00 high; F ≥ 0.85 increased [WHO]. Tap the info icon above for details.
+                      {selectedEthnicity === "indian"
+                        ? "Indian cutoffs — Waist: M > 90 cm, F > 80 cm. WHtR ≥ 0.50 elevated (≥ 0.52 Indian signal). WHR: M ≥ 0.90 (≥ 0.93 Indian signal); F ≥ 0.85."
+                        : "Default cutoffs — Waist: M > 102 cm (40 in), F > 88 cm (35 in) [AHA]. WHtR ≥ 0.50 elevated. WHR: M ≥ 0.90 / ≥ 1.00 high; F ≥ 0.85 [WHO]."}
+                      {" "}Tap the info icon above for details.
                     </p>
                   </div>
 
