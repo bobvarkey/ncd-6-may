@@ -51,12 +51,12 @@ import {
 } from "./obesity-cds-engine";
 
 const bmiSchema = z.object({
-  height: z.coerce.number().min(100).max(250).describe("Height in cm"),
-  weight: z.coerce.number().min(30).max(300).describe("Weight in kg"),
+  height: z.coerce.number().min(30).max(300).describe("Height"),
+  weight: z.coerce.number().min(10).max(700).describe("Weight"),
   ethnicity: z.enum(["standard", "asian-pacific", "indian"] as const),
   sex: z.enum(["male", "female", "unspecified"] as const).optional(),
-  waist: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(30).max(250).optional()),
-  hip: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(30).max(250).optional()),
+  waist: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(10).max(400).optional()),
+  hip: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(10).max(400).optional()),
 });
 
 type BmiFormData = z.infer<typeof bmiSchema>;
@@ -92,6 +92,16 @@ export default function BmiCalculator() {
   const [showGrades, setShowGrades] = useState(false);
   const [treatmentData, setTreatmentData] = useState<ReturnType<typeof getTreatmentGuidelines>>(null);
   const [activeTab, setActiveTab] = useState("calculator");
+  const [units, setUnits] = useState<"metric" | "imperial">(() => {
+    try { return (localStorage.getItem("ncd_bmi_units") as "metric" | "imperial") || "metric"; } catch { return "metric"; }
+  });
+  const [showAdiposityInfo, setShowAdiposityInfo] = useState(false);
+
+  const toMetric = (v: number | undefined, kind: "length" | "weight"): number | undefined => {
+    if (v === undefined || v === null || Number.isNaN(v)) return undefined;
+    if (units === "metric") return v;
+    return kind === "length" ? v * 2.54 : v * 0.45359237;
+  };
 
   // CDS Engine state
   const [cdsAssessment, setCdsAssessment] = useState<ObesityCDSAssessment | null>(null);
@@ -151,7 +161,14 @@ export default function BmiCalculator() {
 
   const selectedEthnicity = watch("ethnicity") || "standard";
 
-  const onSubmit = (data: BmiFormData) => {
+  const onSubmit = (raw: BmiFormData) => {
+    const data: BmiFormData = {
+      ...raw,
+      height: toMetric(raw.height, "length") ?? raw.height,
+      weight: toMetric(raw.weight, "weight") ?? raw.weight,
+      waist: toMetric(raw.waist, "length"),
+      hip: toMetric(raw.hip, "length"),
+    };
     const heightM = data.height / 100;
     const bmi = data.weight / (heightM * heightM);
     const roundedBmi = Math.round(bmi * 10) / 10;
@@ -314,6 +331,29 @@ export default function BmiCalculator() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Unit toggle */}
+                <div className="flex items-center justify-between rounded-lg border border-border bg-muted/20 p-2">
+                  <span className="text-xs font-semibold text-muted-foreground pl-2">Units</span>
+                  <div className="inline-flex rounded-md border border-border bg-card p-0.5">
+                    {(["metric", "imperial"] as const).map((u) => (
+                      <button
+                        key={u}
+                        type="button"
+                        onClick={() => {
+                          setUnits(u);
+                          try { localStorage.setItem("ncd_bmi_units", u); } catch { /* noop */ }
+                        }}
+                        className={cn(
+                          "px-3 py-1 text-xs font-semibold rounded transition-colors",
+                          units === u ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {u === "metric" ? "Metric (cm / kg)" : "Imperial (in / lb)"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   {/* Ethnicity Selector */}
                   <div className="space-y-2">
@@ -352,45 +392,96 @@ export default function BmiCalculator() {
 
                   {/* Height Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="height">Height (cm)</Label>
+                    <Label htmlFor="height">Height ({units === "metric" ? "cm" : "in"})</Label>
                     <Input
                       id="height"
                       type="number"
-                      placeholder="e.g., 170"
+                      step="0.1"
+                      placeholder={units === "metric" ? "e.g., 170" : "e.g., 67"}
                       className="bg-card border-border"
                       {...register("height", { valueAsNumber: true })}
                     />
                     {errors.height && (
-                      <p className="text-xs text-red-500">Please enter a valid height (100-250 cm)</p>
+                      <p className="text-xs text-red-500">
+                        Please enter a valid height ({units === "metric" ? "100–250 cm" : "39–98 in"})
+                      </p>
                     )}
                   </div>
 
                   {/* Weight Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="weight">Weight (kg)</Label>
+                    <Label htmlFor="weight">Weight ({units === "metric" ? "kg" : "lb"})</Label>
                     <Input
                       id="weight"
                       type="number"
-                      placeholder="e.g., 70"
+                      step="0.1"
+                      placeholder={units === "metric" ? "e.g., 70" : "e.g., 154"}
                       className="bg-card border-border"
                       {...register("weight", { valueAsNumber: true })}
                     />
                     {errors.weight && (
-                      <p className="text-xs text-red-500">Please enter a valid weight (30-300 kg)</p>
+                      <p className="text-xs text-red-500">
+                        Please enter a valid weight ({units === "metric" ? "30–300 kg" : "66–660 lb"})
+                      </p>
                     )}
                   </div>
 
                   {/* Optional: Sex / Waist / Hip for ADA adiposity assessment */}
                   <div className="rounded-lg border border-dashed border-border p-4 space-y-4 bg-muted/20">
-                    <div className="flex items-start gap-2">
-                      <Info className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-                      <div>
-                        <p className="text-sm font-semibold">Optional: Central adiposity (ADA)</p>
-                        <p className="text-xs text-muted-foreground">
-                          Add sex + waist (and optionally hip) circumference to layer waist-circumference and waist-to-hip ratio risk flags on top of BMI.
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2">
+                        <Info className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                        <div>
+                          <p className="text-sm font-semibold">Optional: Central adiposity (ADA)</p>
+                          <p className="text-xs text-muted-foreground">
+                            Add sex + waist (and optionally hip) circumference to layer waist-circumference and waist-to-hip ratio risk flags on top of BMI.
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 shrink-0"
+                        onClick={() => setShowAdiposityInfo((v) => !v)}
+                        title="How cutoffs and flags are applied"
+                      >
+                        <InfoIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {showAdiposityInfo && (
+                      <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-xs space-y-2 leading-relaxed">
+                        <p className="font-semibold text-sm">How the cutoffs are applied</p>
+                        <div>
+                          <p className="font-semibold">Waist circumference (AHA)</p>
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            <li>Male: waist &gt; 102 cm (&gt; 40 in) → increased central adiposity risk.</li>
+                            <li>Female: waist &gt; 88 cm (&gt; 35 in) → increased central adiposity risk.</li>
+                            <li>Requires <em>Sex</em> to be set; otherwise no flag is applied.</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Waist-to-Hip Ratio (WHO)</p>
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            <li>Male: &lt; 0.90 low · ≥ 0.90 increased · ≥ 1.00 high risk.</li>
+                            <li>Female: &lt; 0.85 low · ≥ 0.85 increased risk.</li>
+                            <li>Computed only when both waist <em>and</em> hip are entered.</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Risk flags</p>
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            <li><span className="font-semibold">Normal</span> — measurement within reference range for sex.</li>
+                            <li><span className="font-semibold text-warning">Increased</span> — elevated visceral / central fat; cardiometabolic risk higher than BMI alone suggests.</li>
+                            <li><span className="font-semibold text-destructive">High</span> — strongly elevated central adiposity; consider aggressive lifestyle + earlier pharmacotherapy.</li>
+                          </ul>
+                        </div>
+                        <p className="text-muted-foreground">
+                          BMI category is <em>never</em> reclassified. Waist and WHR act only as risk modifiers per ADA guidance — a patient with BMI 25–34.9 plus elevated waist/WHR receives an upgraded cardiometabolic-risk note.
                         </p>
                       </div>
-                    </div>
+                    )}
 
                     <div className="space-y-2">
                       <Label htmlFor="sex">Sex</Label>
@@ -411,7 +502,7 @@ export default function BmiCalculator() {
 
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-2">
-                        <Label htmlFor="waist">Waist (cm)</Label>
+                        <Label htmlFor="waist">Waist ({units === "metric" ? "cm" : "in"})</Label>
                         <Input
                           id="waist"
                           type="number"
@@ -422,7 +513,7 @@ export default function BmiCalculator() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="hip">Hip (cm)</Label>
+                        <Label htmlFor="hip">Hip ({units === "metric" ? "cm" : "in"})</Label>
                         <Input
                           id="hip"
                           type="number"
@@ -434,7 +525,7 @@ export default function BmiCalculator() {
                       </div>
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      Cutoffs — Waist: M &gt; 102 cm, F &gt; 88 cm (AHA). WHR: M ≥ 0.90 increased / ≥ 1.00 high; F ≥ 0.85 increased (WHO).
+                      Cutoffs — Waist: M &gt; 102 cm (40 in), F &gt; 88 cm (35 in) [AHA]. WHR: M ≥ 0.90 increased / ≥ 1.00 high; F ≥ 0.85 increased [WHO]. Tap the info icon above for details.
                     </p>
                   </div>
 
