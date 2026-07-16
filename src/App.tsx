@@ -147,6 +147,7 @@ const CKDGuideline = lazyWithModuleRetry(() => import("@/pages/CKDGuideline"));
 const PrivacyPolicy = lazyWithModuleRetry(() => import("@/pages/PrivacyPolicy"));
 const TermsOfService = lazyWithModuleRetry(() => import("@/pages/TermsOfService"));
 const DisclaimerPage = lazyWithModuleRetry(() => import("@/pages/Disclaimer"));
+const DeleteAccount = lazyWithModuleRetry(() => import("@/pages/DeleteAccount"));
 const ImageGallery = lazyWithModuleRetry(() => import("@/pages/ImageGallery"));
 const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
 const DailyManagementGuide = lazyWithModuleRetry(() => import("@/pages/DailyManagementGuide"));
