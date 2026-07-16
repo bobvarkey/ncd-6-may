@@ -605,6 +605,17 @@ export default function BmiCalculator() {
                             <p>{result.adiposity.waistFlag.message}</p>
                           </div>
                         )}
+                        {result.adiposity.whtr !== undefined && (
+                          <div className={cn(
+                            "rounded-md border p-3 text-xs",
+                            result.adiposity.whtrFlag?.level === "high" && "border-destructive/40 bg-destructive/10 text-destructive",
+                            result.adiposity.whtrFlag?.level === "increased" && "border-warning/40 bg-warning/10 text-warning",
+                            result.adiposity.whtrFlag?.level === "low" && "border-border bg-muted/30",
+                          )}>
+                            <p className="font-semibold mb-0.5">Waist-to-Height Ratio: {result.adiposity.whtr}</p>
+                            <p>{result.adiposity.whtrFlag?.message}</p>
+                          </div>
+                        )}
                         {result.adiposity.whr !== undefined && (
                           <div className={cn(
                             "rounded-md border p-3 text-xs",
@@ -626,7 +637,10 @@ export default function BmiCalculator() {
                           <p>{result.adiposity.overallNote}</p>
                         </div>
                         <p className="text-[11px] text-muted-foreground">
-                          BMI classification is unchanged; waist and WHR act as risk modifiers per ADA / WHO / AHA guidance.
+                          BMI classification is unchanged; waist, WHtR and WHR act as risk modifiers.
+                        </p>
+                        <p className="text-[11px] text-muted-foreground italic">
+                          {result.adiposity.cutoffSource}
                         </p>
                       </div>
                     )}
