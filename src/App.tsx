@@ -147,6 +147,7 @@ const CKDGuideline = lazyWithModuleRetry(() => import("@/pages/CKDGuideline"));
 const PrivacyPolicy = lazyWithModuleRetry(() => import("@/pages/PrivacyPolicy"));
 const TermsOfService = lazyWithModuleRetry(() => import("@/pages/TermsOfService"));
 const DisclaimerPage = lazyWithModuleRetry(() => import("@/pages/Disclaimer"));
+const DeleteAccount = lazyWithModuleRetry(() => import("@/pages/DeleteAccount"));
 const ImageGallery = lazyWithModuleRetry(() => import("@/pages/ImageGallery"));
 const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
 const DailyManagementGuide = lazyWithModuleRetry(() => import("@/pages/DailyManagementGuide"));
@@ -336,6 +337,8 @@ const App = () => (
           <Route path="/privacy" element={<><TabNavigation /><PrivacyPolicy /></>} />
           <Route path="/terms" element={<><TabNavigation /><TermsOfService /></>} />
           <Route path="/disclaimer" element={<><TabNavigation /><DisclaimerPage /></>} />
+          <Route path="/delete-account" element={<><TabNavigation /><DeleteAccount /></>} />
+          <Route path="/account/delete" element={<Navigate to="/delete-account" replace />} />
           <Route path="/images" element={<><TabNavigation /><ImageGallery /></>} />
 
           {/* 404 */}

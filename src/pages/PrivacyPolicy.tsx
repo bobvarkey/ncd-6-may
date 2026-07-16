@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Shield } from "lucide-react";
+import { Shield, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { SectionCard } from "@/components/ui/section-card";
 
 export default function PrivacyPolicy() {
@@ -149,6 +150,22 @@ export default function PrivacyPolicy() {
           </section>
         </div>
       </SectionCard>
+
+      <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+        <div className="flex items-start gap-3">
+          <Trash2 className="w-5 h-5 text-destructive mt-0.5" />
+          <div>
+            <p className="text-sm font-heading font-semibold">Delete my account & data</p>
+            <p className="text-xs text-muted-foreground">Permanently remove all locally-stored data from this device.</p>
+          </div>
+        </div>
+        <Link
+          to="/delete-account"
+          className="inline-flex items-center justify-center rounded-lg bg-destructive px-4 py-2 text-xs font-medium text-destructive-foreground hover:bg-destructive/90"
+        >
+          Delete my data
+        </Link>
+      </div>
     </div>
   );
 }
