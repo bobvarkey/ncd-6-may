@@ -969,6 +969,18 @@ export default function BmiCalculator() {
                 )}
               </CardContent>
             </Card>
+
+            {selectedEthnicity === "indian" && (
+              <div className="space-y-4">
+                <Alert className="border-primary/40 bg-primary/10">
+                  <Activity className="h-4 w-4 text-primary" />
+                  <AlertDescription className="text-xs">
+                    <strong>Indian phenotype selected</strong> — ICMR / INDIAB parameters have been added below for Asian Indian–specific classification and cardiometabolic phenotyping.
+                  </AlertDescription>
+                </Alert>
+                <IcmrIndiab />
+              </div>
+            )}
           </>
         )}
 
