@@ -82,6 +82,7 @@ interface BmiResult {
 
 const TABS = [
   { key: "calculator", label: "Calculator", icon: <Calculator className="h-4 w-4" /> },
+  { key: "icmr-indiab", label: "ICMR / INDIAB", icon: <Activity className="h-4 w-4" /> },
   { key: "indian-classification", label: "Indian Classification", icon: <Info className="h-4 w-4" /> },
   { key: "cds-engine", label: "CDS Engine", icon: <BrainCircuit className="h-4 w-4" /> },
   { key: "guidelines", label: "ADA 2025 Guidelines", icon: <BookOpen className="h-4 w-4" /> },
