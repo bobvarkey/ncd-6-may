@@ -54,15 +54,27 @@ const bmiSchema = z.object({
   height: z.coerce.number().min(100).max(250).describe("Height in cm"),
   weight: z.coerce.number().min(30).max(300).describe("Weight in kg"),
   ethnicity: z.enum(["standard", "asian-pacific", "indian"] as const),
+  sex: z.enum(["male", "female", "unspecified"] as const).optional(),
+  waist: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(30).max(250).optional()),
+  hip: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(30).max(250).optional()),
 });
 
 type BmiFormData = z.infer<typeof bmiSchema>;
+
+interface AdiposityRisk {
+  waistFlag?: { level: "normal" | "increased"; message: string };
+  whr?: number;
+  whrFlag?: { level: "low" | "increased" | "high"; message: string };
+  centralAdiposity: boolean;
+  overallNote: string;
+}
 
 interface BmiResult {
   bmi: number;
   category: string;
   color: string;
   ethnicityName: string;
+  adiposity?: AdiposityRisk;
 }
 
 const TABS = [
@@ -118,6 +130,7 @@ export default function BmiCalculator() {
     resolver: zodResolver(bmiSchema),
     defaultValues: {
       ethnicity: "standard",
+      sex: "unspecified",
     },
   });
 
@@ -148,11 +161,58 @@ export default function BmiCalculator() {
 
     const treatment = getTreatmentGuidelines(roundedBmi, data.ethnicity);
 
+    // ADA adiposity risk modifiers (waist + WHR)
+    let adiposity: AdiposityRisk | undefined;
+    if (data.waist || data.hip) {
+      const sex = data.sex;
+      let waistFlag: AdiposityRisk["waistFlag"];
+      let whr: number | undefined;
+      let whrFlag: AdiposityRisk["whrFlag"];
+      let centralAdiposity = false;
+
+      if (data.waist && sex && sex !== "unspecified") {
+        const cutoff = sex === "male" ? 102 : 88;
+        if (data.waist > cutoff) {
+          waistFlag = { level: "increased", message: `Waist > ${cutoff} cm suggests increased central adiposity and cardiometabolic risk.` };
+          centralAdiposity = true;
+        } else {
+          waistFlag = { level: "normal", message: `Waist ≤ ${cutoff} cm — within normal range.` };
+        }
+      } else if (data.waist) {
+        waistFlag = { level: "normal", message: "Select sex to apply waist circumference cutoff." };
+      }
+
+      if (data.waist && data.hip) {
+        whr = Math.round((data.waist / data.hip) * 100) / 100;
+        if (sex === "male") {
+          if (whr >= 1.0) whrFlag = { level: "high", message: "WHR ≥ 1.00 — high risk (male)." };
+          else if (whr >= 0.9) whrFlag = { level: "increased", message: "WHR ≥ 0.90 — increased risk (male)." };
+          else whrFlag = { level: "low", message: "WHR < 0.90 — low risk (male)." };
+          if (whr >= 0.9) centralAdiposity = true;
+        } else if (sex === "female") {
+          if (whr >= 0.85) { whrFlag = { level: "increased", message: "WHR ≥ 0.85 — increased risk (female)." }; centralAdiposity = true; }
+          else whrFlag = { level: "low", message: "WHR < 0.85 — low risk (female)." };
+        }
+      }
+
+      let overallNote = "Central adiposity not elevated based on entered measures.";
+      if (centralAdiposity) {
+        if (roundedBmi >= 25 && roundedBmi < 35) {
+          overallNote = "Cardiometabolic risk upgraded: elevated central adiposity in the setting of BMI 25–34.9. Intensify lifestyle and consider earlier pharmacotherapy per ADA.";
+        } else {
+          overallNote = "Elevated central adiposity — visceral fat pattern suggests higher cardiometabolic risk independent of BMI.";
+        }
+      }
+
+      adiposity = { waistFlag, whr, whrFlag, centralAdiposity, overallNote };
+    }
+
     setResult({
       bmi: roundedBmi,
       category: category.label,
       color: category.color,
       ethnicityName: guideline?.name || "Standard WHO",
+      adiposity,
     });
     setTreatmentData(treatment);
     setShowTreatment(false);
@@ -320,6 +380,64 @@ export default function BmiCalculator() {
                     )}
                   </div>
 
+                  {/* Optional: Sex / Waist / Hip for ADA adiposity assessment */}
+                  <div className="rounded-lg border border-dashed border-border p-4 space-y-4 bg-muted/20">
+                    <div className="flex items-start gap-2">
+                      <Info className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                      <div>
+                        <p className="text-sm font-semibold">Optional: Central adiposity (ADA)</p>
+                        <p className="text-xs text-muted-foreground">
+                          Add sex + waist (and optionally hip) circumference to layer waist-circumference and waist-to-hip ratio risk flags on top of BMI.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="sex">Sex</Label>
+                      <Select
+                        value={watch("sex") || "unspecified"}
+                        onValueChange={(value) => setValue("sex", value as "male" | "female" | "unspecified", { shouldValidate: true })}
+                      >
+                        <SelectTrigger id="sex" className="bg-card border-border">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border">
+                          <SelectItem value="unspecified">Not specified</SelectItem>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="waist">Waist (cm)</Label>
+                        <Input
+                          id="waist"
+                          type="number"
+                          step="0.1"
+                          placeholder="optional"
+                          className="bg-card border-border"
+                          {...register("waist")}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="hip">Hip (cm)</Label>
+                        <Input
+                          id="hip"
+                          type="number"
+                          step="0.1"
+                          placeholder="optional"
+                          className="bg-card border-border"
+                          {...register("hip")}
+                        />
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                      Cutoffs — Waist: M &gt; 102 cm, F &gt; 88 cm (AHA). WHR: M ≥ 0.90 increased / ≥ 1.00 high; F ≥ 0.85 increased (WHO).
+                    </p>
+                  </div>
+
                   {/* Submit Buttons */}
                   <div className="flex gap-3">
                     <Button type="submit" className="flex-1">
@@ -344,7 +462,52 @@ export default function BmiCalculator() {
                         <p className="mt-1 text-xs text-muted-foreground">
                           Using {result.ethnicityName} guidelines
                         </p>
+                    </div>
+
+                    {/* Adiposity Risk Panel */}
+                    {result.adiposity && (
+                      <div className="rounded-lg border border-border bg-card/50 p-4 space-y-3">
+                        <div className="flex items-center gap-2 font-semibold text-sm">
+                          <Activity className="h-4 w-4 text-primary" />
+                          Central Adiposity Assessment (ADA)
+                        </div>
+                        {result.adiposity.waistFlag && (
+                          <div className={cn(
+                            "rounded-md border p-3 text-xs",
+                            result.adiposity.waistFlag.level === "increased"
+                              ? "border-destructive/40 bg-destructive/10 text-destructive"
+                              : "border-border bg-muted/30"
+                          )}>
+                            <p className="font-semibold mb-0.5">Waist circumference</p>
+                            <p>{result.adiposity.waistFlag.message}</p>
+                          </div>
+                        )}
+                        {result.adiposity.whr !== undefined && (
+                          <div className={cn(
+                            "rounded-md border p-3 text-xs",
+                            result.adiposity.whrFlag?.level === "high" && "border-destructive/40 bg-destructive/10 text-destructive",
+                            result.adiposity.whrFlag?.level === "increased" && "border-warning/40 bg-warning/10 text-warning",
+                            result.adiposity.whrFlag?.level === "low" && "border-border bg-muted/30",
+                          )}>
+                            <p className="font-semibold mb-0.5">Waist-to-Hip Ratio: {result.adiposity.whr}</p>
+                            <p>{result.adiposity.whrFlag?.message}</p>
+                          </div>
+                        )}
+                        <div className={cn(
+                          "rounded-md border p-3 text-xs",
+                          result.adiposity.centralAdiposity
+                            ? "border-primary/40 bg-primary/10"
+                            : "border-border bg-muted/20"
+                        )}>
+                          <p className="font-semibold mb-0.5">Cardiometabolic risk note</p>
+                          <p>{result.adiposity.overallNote}</p>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">
+                          BMI classification is unchanged; waist and WHR act as risk modifiers per ADA / WHO / AHA guidance.
+                        </p>
                       </div>
+                    )}
+
                     </div>
 
                     {/* BMI Cut-offs Comparison */}
