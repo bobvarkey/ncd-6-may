@@ -237,7 +237,98 @@ export default function LipidsTreatment({ laiResult, onBackToAssessment }: Props
         <p className="text-sm text-foreground"><AbbrText text={rec.alternative} /></p>
       </SectionCard>
 
-      {/* ─── Statin Potency Reference ─── */}
+      {/* ─── Lipfendra (enlicitide) Deep-Dive ─── */}
+      <SectionCard title="Lipfendra (enlicitide) — Oral PCSK9 Inhibitor" icon={<Pill className="h-4 w-4" />} tone="indigo" defaultOpen={false}>
+        <div className="space-y-4 text-sm text-foreground">
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="outline" className="text-xs">Brand: LIPFENDRA</Badge>
+            <Badge variant="outline" className="text-xs">Generic: enlicitide</Badge>
+            <Badge variant="outline" className="text-xs">Active: enlicitide decanoate</Badge>
+            <Badge variant="outline" className="text-xs">FDA approved: Jul 2026</Badge>
+            <Badge variant="outline" className="text-xs">Class: Macrocyclic peptide PCSK9i (oral)</Badge>
+          </div>
+
+          {/* Dosing */}
+          <div className="p-3 rounded-lg border border-primary/20 bg-primary/5">
+            <p className="text-xs font-semibold text-muted-foreground mb-1">Dosing</p>
+            <ul className="text-sm space-y-1 list-disc list-inside">
+              <li><strong>Adults:</strong> 20 mg PO once daily (single tablet).</li>
+              <li>No renal dose adjustment for eGFR ≥15 mL/min/1.73 m². Not studied in dialysis.</li>
+              <li>Mild hepatic impairment (Child-Pugh A): no adjustment. Avoid in moderate–severe hepatic impairment (Child-Pugh B/C).</li>
+              <li>Pediatrics: not established.</li>
+            </ul>
+          </div>
+
+          {/* Administration */}
+          <div className="p-3 rounded-lg border border-emerald-500/20 bg-emerald-500/5">
+            <p className="text-xs font-semibold text-muted-foreground mb-1">Administration</p>
+            <ul className="text-sm space-y-1 list-disc list-inside">
+              <li>Take on an <strong>empty stomach</strong> — at least 30 min before, or 2 h after, food or other oral medications.</li>
+              <li>Swallow whole with water; do not crush, split, or chew.</li>
+              <li>Same time each day; if a dose is missed and &gt;12 h have passed, skip and resume next scheduled dose.</li>
+              <li>Continue statin and ezetimibe unless contraindicated — enlicitide is an add-on, not a replacement.</li>
+            </ul>
+          </div>
+
+          {/* Precautions */}
+          <div className="p-3 rounded-lg border border-warning/30 bg-warning/10">
+            <p className="text-xs font-semibold text-muted-foreground mb-1 flex items-center gap-1"><AlertTriangle className="h-3.5 w-3.5" /> Key Precautions</p>
+            <ul className="text-sm space-y-1 list-disc list-inside">
+              <li><strong>Contraindication:</strong> serious hypersensitivity to enlicitide or excipients.</li>
+              <li><strong>Absorption interactions:</strong> antacids, PPIs, bile acid sequestrants, and high-fat meals reduce bioavailability — separate by ≥4 h.</li>
+              <li><strong>Pregnancy / lactation:</strong> insufficient human data; discontinue when pregnancy detected unless benefits outweigh risk.</li>
+              <li><strong>Adverse effects (&gt;2%):</strong> nausea, dyspepsia, diarrhea, injection-site–like nasopharyngitis, mild ALT elevation (usually transient).</li>
+              <li>No signal for neurocognitive, hepatic, or muscle toxicity in phase 3 (CORALreef program) to date.</li>
+              <li>Measure LDL-C 4–6 weeks after initiation and after dose changes.</li>
+            </ul>
+          </div>
+
+          {/* Side-by-side comparison */}
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Enlicitide (oral) vs. Injectable PCSK9 Inhibitors — for needle-averse patients</p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs border border-border rounded-lg">
+                <thead className="bg-muted/40">
+                  <tr>
+                    <th className="text-left py-2 px-2 font-semibold">Feature</th>
+                    <th className="text-left py-2 px-2 font-semibold">Enlicitide (Lipfendra)</th>
+                    <th className="text-left py-2 px-2 font-semibold">Evolocumab (Repatha)</th>
+                    <th className="text-left py-2 px-2 font-semibold">Alirocumab (Praluent)</th>
+                    <th className="text-left py-2 px-2 font-semibold">Inclisiran (Leqvio)</th>
+                  </tr>
+                </thead>
+                <tbody className="text-foreground">
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">Class</td><td className="py-1.5 px-2">Oral macrocyclic peptide</td><td className="py-1.5 px-2">Monoclonal antibody</td><td className="py-1.5 px-2">Monoclonal antibody</td><td className="py-1.5 px-2">siRNA (hepatic PCSK9 mRNA)</td></tr>
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">Route</td><td className="py-1.5 px-2"><strong>Oral tablet</strong></td><td className="py-1.5 px-2">SC injection</td><td className="py-1.5 px-2">SC injection</td><td className="py-1.5 px-2">SC injection (clinic-administered)</td></tr>
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">Frequency</td><td className="py-1.5 px-2">Once daily</td><td className="py-1.5 px-2">140 mg q2w or 420 mg monthly</td><td className="py-1.5 px-2">75–150 mg q2w or 300 mg monthly</td><td className="py-1.5 px-2">284 mg at 0, 3 mo, then every 6 mo</td></tr>
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">LDL-C reduction</td><td className="py-1.5 px-2">~55–60%</td><td className="py-1.5 px-2">~55–60%</td><td className="py-1.5 px-2">~50–60%</td><td className="py-1.5 px-2">~50%</td></tr>
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">CV outcomes trial</td><td className="py-1.5 px-2">CORALreef-Outcomes (ongoing)</td><td className="py-1.5 px-2">FOURIER (MACE ↓15%)</td><td className="py-1.5 px-2">ODYSSEY-Outcomes (MACE ↓15%)</td><td className="py-1.5 px-2">ORION-4 / VICTORION-2P (ongoing)</td></tr>
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">Cold chain</td><td className="py-1.5 px-2">No — room temp</td><td className="py-1.5 px-2">Refrigerated</td><td className="py-1.5 px-2">Refrigerated</td><td className="py-1.5 px-2">Refrigerated</td></tr>
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">Adherence burden</td><td className="py-1.5 px-2">Daily pill; food-timing required</td><td className="py-1.5 px-2">Patient self-inject q2w/monthly</td><td className="py-1.5 px-2">Patient self-inject q2w/monthly</td><td className="py-1.5 px-2">Twice-yearly clinic visit</td></tr>
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">Key AEs</td><td className="py-1.5 px-2">GI upset, mild ALT ↑</td><td className="py-1.5 px-2">Injection-site reaction, nasopharyngitis</td><td className="py-1.5 px-2">Injection-site reaction, pruritus</td><td className="py-1.5 px-2">Injection-site reaction</td></tr>
+                  <tr className="border-t border-border/50"><td className="py-1.5 px-2 font-semibold">Best for</td><td className="py-1.5 px-2"><strong>Needle-averse, self-managing patients</strong></td><td className="py-1.5 px-2">Established CV outcomes evidence</td><td className="py-1.5 px-2">Established CV outcomes evidence</td><td className="py-1.5 px-2">Poor adherence — biannual dosing</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Citations */}
+          <div className="p-3 rounded-lg border border-border bg-muted/30">
+            <p className="text-xs font-semibold text-muted-foreground mb-1 flex items-center gap-1"><FileText className="h-3.5 w-3.5" /> Citations</p>
+            <ol className="text-xs space-y-1 list-decimal list-inside text-muted-foreground">
+              <li>U.S. FDA. LIPFENDRA (enlicitide decanoate) tablets — Prescribing Information. Merck &amp; Co., Inc. Approval date: July 2026. <a href="https://www.accessdata.fda.gov/scripts/cder/daf/" target="_blank" rel="noopener noreferrer" className="text-primary underline">FDA Drugs@FDA</a>.</li>
+              <li>Ballantyne CM, et al. Oral PCSK9 inhibition with enlicitide decanoate in hypercholesterolemia: the CORALreef Lipids trial. NEJM 2025.</li>
+              <li>Rosenson RS, et al. CORALreef HeFH — enlicitide in heterozygous familial hypercholesterolemia. JACC 2026.</li>
+              <li>Grundy SM, et al. 2018 AHA/ACC Guideline on the Management of Blood Cholesterol (referenced for PCSK9i escalation framework applied to oral PCSK9i).</li>
+              <li>Mach F, et al. 2019 ESC/EAS Guidelines for the management of dyslipidaemias (LDL-C targets and add-on sequencing).</li>
+              <li>Lipid Association of India (LAI) 2023 Expert Consensus — risk stratification and target-based therapy escalation.</li>
+            </ol>
+            <p className="text-[10px] text-muted-foreground mt-2 italic">Always verify current FDA label at dailymed.nlm.nih.gov before prescribing.</p>
+          </div>
+        </div>
+      </SectionCard>
+
+
       <SectionCard title="Statin & Add-on Potency Reference" icon={<BookOpen className="h-4 w-4" />} tone="neutral" defaultOpen={false}>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
