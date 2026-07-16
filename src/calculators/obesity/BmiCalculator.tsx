@@ -65,8 +65,11 @@ interface AdiposityRisk {
   waistFlag?: { level: "normal" | "increased"; message: string };
   whr?: number;
   whrFlag?: { level: "low" | "increased" | "high"; message: string };
+  whtr?: number;
+  whtrFlag?: { level: "low" | "increased" | "high"; message: string };
   centralAdiposity: boolean;
   overallNote: string;
+  cutoffSource: string;
 }
 
 interface BmiResult {
@@ -178,50 +181,79 @@ export default function BmiCalculator() {
 
     const treatment = getTreatmentGuidelines(roundedBmi, data.ethnicity);
 
-    // ADA adiposity risk modifiers (waist + WHR)
+    // Adiposity risk modifiers — cutoffs vary by ethnicity (Indian vs default AHA/WHO)
     let adiposity: AdiposityRisk | undefined;
     if (data.waist || data.hip) {
       const sex = data.sex;
+      const isIndian = data.ethnicity === "indian";
+      const cutoffSource = isIndian
+        ? "Indian cutoffs (ICMR/IOA): Waist M>90 / F>80 cm · WHtR ≥0.50 (Indian signal ≥0.52) · WHR M ≥0.90 (Indian signal ≥0.93) / F ≥0.85"
+        : "Default cutoffs: Waist M>102 / F>88 cm (AHA) · WHR M ≥0.90 (≥1.00 high) / F ≥0.85 (WHO)";
+
       let waistFlag: AdiposityRisk["waistFlag"];
       let whr: number | undefined;
       let whrFlag: AdiposityRisk["whrFlag"];
+      let whtr: number | undefined;
+      let whtrFlag: AdiposityRisk["whtrFlag"];
       let centralAdiposity = false;
 
+      // Waist circumference
       if (data.waist && sex && sex !== "unspecified") {
-        const cutoff = sex === "male" ? 102 : 88;
+        const cutoff = isIndian ? (sex === "male" ? 90 : 80) : (sex === "male" ? 102 : 88);
         if (data.waist > cutoff) {
-          waistFlag = { level: "increased", message: `Waist > ${cutoff} cm suggests increased central adiposity and cardiometabolic risk.` };
+          waistFlag = {
+            level: "increased",
+            message: `Waist > ${cutoff} cm ${isIndian ? "(Indian cutoff) " : ""}suggests increased abdominal obesity risk.`,
+          };
           centralAdiposity = true;
         } else {
-          waistFlag = { level: "normal", message: `Waist ≤ ${cutoff} cm — within normal range.` };
+          waistFlag = { level: "normal", message: `Waist ≤ ${cutoff} cm — within normal range${isIndian ? " (Indian cutoff)" : ""}.` };
         }
       } else if (data.waist) {
         waistFlag = { level: "normal", message: "Select sex to apply waist circumference cutoff." };
       }
 
-      if (data.waist && data.hip) {
-        whr = Math.round((data.waist / data.hip) * 100) / 100;
-        if (sex === "male") {
-          if (whr >= 1.0) whrFlag = { level: "high", message: "WHR ≥ 1.00 — high risk (male)." };
-          else if (whr >= 0.9) whrFlag = { level: "increased", message: "WHR ≥ 0.90 — increased risk (male)." };
-          else whrFlag = { level: "low", message: "WHR < 0.90 — low risk (male)." };
-          if (whr >= 0.9) centralAdiposity = true;
-        } else if (sex === "female") {
-          if (whr >= 0.85) { whrFlag = { level: "increased", message: "WHR ≥ 0.85 — increased risk (female)." }; centralAdiposity = true; }
-          else whrFlag = { level: "low", message: "WHR < 0.85 — low risk (female)." };
+      // Waist-to-Height Ratio (universal + Indian signal)
+      if (data.waist) {
+        whtr = Math.round((data.waist / data.height) * 100) / 100;
+        if (whtr >= 0.52 && isIndian) {
+          whtrFlag = { level: "high", message: `WHtR ${whtr} — above Indian study risk signal (≥ 0.52); markedly elevated cardiometabolic risk.` };
+          centralAdiposity = true;
+        } else if (whtr >= 0.5) {
+          whtrFlag = { level: "increased", message: `WHtR ${whtr} ≥ 0.50 — elevated central adiposity risk (keep waist < half your height).` };
+          centralAdiposity = true;
+        } else {
+          whtrFlag = { level: "low", message: `WHtR ${whtr} < 0.50 — lower risk.` };
         }
       }
 
+      // Waist-to-Hip Ratio
+      if (data.waist && data.hip) {
+        whr = Math.round((data.waist / data.hip) * 100) / 100;
+        if (sex === "male") {
+          if (isIndian && whr >= 0.93) { whrFlag = { level: "high", message: `WHR ${whr} — above Indian study range (≥ 0.93); markedly elevated risk.` }; centralAdiposity = true; }
+          else if (whr >= 1.0) { whrFlag = { level: "high", message: `WHR ${whr} ≥ 1.00 — high risk (male).` }; centralAdiposity = true; }
+          else if (whr >= 0.9) { whrFlag = { level: "increased", message: `WHR ${whr} ≥ 0.90 — increased risk (male).` }; centralAdiposity = true; }
+          else whrFlag = { level: "low", message: `WHR ${whr} < 0.90 — low risk (male).` };
+        } else if (sex === "female") {
+          if (whr >= 0.85) { whrFlag = { level: "increased", message: `WHR ${whr} ≥ 0.85 — increased risk (female).` }; centralAdiposity = true; }
+          else whrFlag = { level: "low", message: `WHR ${whr} < 0.85 — low risk (female).` };
+        }
+      }
+
+      const lowerBmiThreshold = isIndian ? 23 : 25;
       let overallNote = "Central adiposity not elevated based on entered measures.";
       if (centralAdiposity) {
-        if (roundedBmi >= 25 && roundedBmi < 35) {
-          overallNote = "Cardiometabolic risk upgraded: elevated central adiposity in the setting of BMI 25–34.9. Intensify lifestyle and consider earlier pharmacotherapy per ADA.";
+        if (roundedBmi >= lowerBmiThreshold && roundedBmi < 35) {
+          overallNote = isIndian
+            ? `Cardiometabolic risk upgraded: elevated central adiposity in the setting of BMI ${lowerBmiThreshold}–34.9 (Indian thresholds). Intensify lifestyle and consider earlier pharmacotherapy per ADA / ICMR.`
+            : `Cardiometabolic risk upgraded: elevated central adiposity in the setting of BMI 25–34.9. Intensify lifestyle and consider earlier pharmacotherapy per ADA.`;
         } else {
           overallNote = "Elevated central adiposity — visceral fat pattern suggests higher cardiometabolic risk independent of BMI.";
         }
       }
 
-      adiposity = { waistFlag, whr, whrFlag, centralAdiposity, overallNote };
+      adiposity = { waistFlag, whr, whrFlag, whtr, whtrFlag, centralAdiposity, overallNote, cutoffSource };
     }
 
     setResult({
@@ -454,31 +486,40 @@ export default function BmiCalculator() {
                       <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-xs space-y-2 leading-relaxed">
                         <p className="font-semibold text-sm">How the cutoffs are applied</p>
                         <div>
-                          <p className="font-semibold">Waist circumference (AHA)</p>
+                          <p className="font-semibold">Waist circumference</p>
                           <ul className="list-disc pl-4 space-y-0.5">
-                            <li>Male: waist &gt; 102 cm (&gt; 40 in) → increased central adiposity risk.</li>
-                            <li>Female: waist &gt; 88 cm (&gt; 35 in) → increased central adiposity risk.</li>
+                            <li>Default (AHA) — Male &gt; 102 cm (40 in) · Female &gt; 88 cm (35 in) → increased risk.</li>
+                            <li>Indian (ICMR/IOA) — Male &gt; 90 cm · Female &gt; 80 cm → increased abdominal obesity risk.</li>
                             <li>Requires <em>Sex</em> to be set; otherwise no flag is applied.</li>
                           </ul>
                         </div>
                         <div>
-                          <p className="font-semibold">Waist-to-Hip Ratio (WHO)</p>
+                          <p className="font-semibold">Waist-to-Height Ratio (WHtR)</p>
                           <ul className="list-disc pl-4 space-y-0.5">
-                            <li>Male: &lt; 0.90 low · ≥ 0.90 increased · ≥ 1.00 high risk.</li>
-                            <li>Female: &lt; 0.85 low · ≥ 0.85 increased risk.</li>
+                            <li>Universal rule of thumb: keep waist &lt; ½ your height (WHtR &lt; 0.50).</li>
+                            <li>≥ 0.50 → elevated central adiposity risk.</li>
+                            <li>Indian populations: ≥ 0.52 flagged as higher Indian-study risk signal.</li>
+                            <li>Computed whenever waist is entered.</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Waist-to-Hip Ratio (WHR)</p>
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            <li>Default (WHO) — Male &lt; 0.90 low · ≥ 0.90 increased · ≥ 1.00 high. Female &lt; 0.85 low · ≥ 0.85 increased.</li>
+                            <li>Indian signal — Male ≥ 0.93 flagged as high; Female cutoff same at ≥ 0.85.</li>
                             <li>Computed only when both waist <em>and</em> hip are entered.</li>
                           </ul>
                         </div>
                         <div>
                           <p className="font-semibold">Risk flags</p>
                           <ul className="list-disc pl-4 space-y-0.5">
-                            <li><span className="font-semibold">Normal</span> — measurement within reference range for sex.</li>
+                            <li><span className="font-semibold">Normal / Low</span> — measurement within reference range.</li>
                             <li><span className="font-semibold text-warning">Increased</span> — elevated visceral / central fat; cardiometabolic risk higher than BMI alone suggests.</li>
                             <li><span className="font-semibold text-destructive">High</span> — strongly elevated central adiposity; consider aggressive lifestyle + earlier pharmacotherapy.</li>
                           </ul>
                         </div>
                         <p className="text-muted-foreground">
-                          BMI category is <em>never</em> reclassified. Waist and WHR act only as risk modifiers per ADA guidance — a patient with BMI 25–34.9 plus elevated waist/WHR receives an upgraded cardiometabolic-risk note.
+                          BMI category is <em>never</em> reclassified. Waist / WHtR / WHR act only as risk modifiers. When ethnicity is set to <em>Indian</em>, an upgraded cardiometabolic-risk note fires from BMI ≥ 23 (vs. ≥ 25 for default).
                         </p>
                       </div>
                     )}
@@ -525,7 +566,10 @@ export default function BmiCalculator() {
                       </div>
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      Cutoffs — Waist: M &gt; 102 cm (40 in), F &gt; 88 cm (35 in) [AHA]. WHR: M ≥ 0.90 increased / ≥ 1.00 high; F ≥ 0.85 increased [WHO]. Tap the info icon above for details.
+                      {selectedEthnicity === "indian"
+                        ? "Indian cutoffs — Waist: M > 90 cm, F > 80 cm. WHtR ≥ 0.50 elevated (≥ 0.52 Indian signal). WHR: M ≥ 0.90 (≥ 0.93 Indian signal); F ≥ 0.85."
+                        : "Default cutoffs — Waist: M > 102 cm (40 in), F > 88 cm (35 in) [AHA]. WHtR ≥ 0.50 elevated. WHR: M ≥ 0.90 / ≥ 1.00 high; F ≥ 0.85 [WHO]."}
+                      {" "}Tap the info icon above for details.
                     </p>
                   </div>
 
@@ -573,6 +617,17 @@ export default function BmiCalculator() {
                             <p>{result.adiposity.waistFlag.message}</p>
                           </div>
                         )}
+                        {result.adiposity.whtr !== undefined && (
+                          <div className={cn(
+                            "rounded-md border p-3 text-xs",
+                            result.adiposity.whtrFlag?.level === "high" && "border-destructive/40 bg-destructive/10 text-destructive",
+                            result.adiposity.whtrFlag?.level === "increased" && "border-warning/40 bg-warning/10 text-warning",
+                            result.adiposity.whtrFlag?.level === "low" && "border-border bg-muted/30",
+                          )}>
+                            <p className="font-semibold mb-0.5">Waist-to-Height Ratio: {result.adiposity.whtr}</p>
+                            <p>{result.adiposity.whtrFlag?.message}</p>
+                          </div>
+                        )}
                         {result.adiposity.whr !== undefined && (
                           <div className={cn(
                             "rounded-md border p-3 text-xs",
@@ -594,7 +649,10 @@ export default function BmiCalculator() {
                           <p>{result.adiposity.overallNote}</p>
                         </div>
                         <p className="text-[11px] text-muted-foreground">
-                          BMI classification is unchanged; waist and WHR act as risk modifiers per ADA / WHO / AHA guidance.
+                          BMI classification is unchanged; waist, WHtR and WHR act as risk modifiers.
+                        </p>
+                        <p className="text-[11px] text-muted-foreground italic">
+                          {result.adiposity.cutoffSource}
                         </p>
                       </div>
                     )}
