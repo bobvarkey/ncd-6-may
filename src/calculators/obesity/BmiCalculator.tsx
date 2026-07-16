@@ -502,7 +502,7 @@ export default function BmiCalculator() {
 
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-2">
-                        <Label htmlFor="waist">Waist (cm)</Label>
+                        <Label htmlFor="waist">Waist ({units === "metric" ? "cm" : "in"})</Label>
                         <Input
                           id="waist"
                           type="number"
@@ -513,7 +513,7 @@ export default function BmiCalculator() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="hip">Hip (cm)</Label>
+                        <Label htmlFor="hip">Hip ({units === "metric" ? "cm" : "in"})</Label>
                         <Input
                           id="hip"
                           type="number"
@@ -525,7 +525,7 @@ export default function BmiCalculator() {
                       </div>
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      Cutoffs — Waist: M &gt; 102 cm, F &gt; 88 cm (AHA). WHR: M ≥ 0.90 increased / ≥ 1.00 high; F ≥ 0.85 increased (WHO).
+                      Cutoffs — Waist: M &gt; 102 cm (40 in), F &gt; 88 cm (35 in) [AHA]. WHR: M ≥ 0.90 increased / ≥ 1.00 high; F ≥ 0.85 increased [WHO]. Tap the info icon above for details.
                     </p>
                   </div>
 
