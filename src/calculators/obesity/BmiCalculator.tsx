@@ -380,6 +380,64 @@ export default function BmiCalculator() {
                     )}
                   </div>
 
+                  {/* Optional: Sex / Waist / Hip for ADA adiposity assessment */}
+                  <div className="rounded-lg border border-dashed border-border p-4 space-y-4 bg-muted/20">
+                    <div className="flex items-start gap-2">
+                      <Info className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                      <div>
+                        <p className="text-sm font-semibold">Optional: Central adiposity (ADA)</p>
+                        <p className="text-xs text-muted-foreground">
+                          Add sex + waist (and optionally hip) circumference to layer waist-circumference and waist-to-hip ratio risk flags on top of BMI.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="sex">Sex</Label>
+                      <Select
+                        value={watch("sex") || "unspecified"}
+                        onValueChange={(value) => setValue("sex", value as "male" | "female" | "unspecified", { shouldValidate: true })}
+                      >
+                        <SelectTrigger id="sex" className="bg-card border-border">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border">
+                          <SelectItem value="unspecified">Not specified</SelectItem>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="waist">Waist (cm)</Label>
+                        <Input
+                          id="waist"
+                          type="number"
+                          step="0.1"
+                          placeholder="optional"
+                          className="bg-card border-border"
+                          {...register("waist")}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="hip">Hip (cm)</Label>
+                        <Input
+                          id="hip"
+                          type="number"
+                          step="0.1"
+                          placeholder="optional"
+                          className="bg-card border-border"
+                          {...register("hip")}
+                        />
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                      Cutoffs — Waist: M &gt; 102 cm, F &gt; 88 cm (AHA). WHR: M ≥ 0.90 increased / ≥ 1.00 high; F ≥ 0.85 increased (WHO).
+                    </p>
+                  </div>
+
                   {/* Submit Buttons */}
                   <div className="flex gap-3">
                     <Button type="submit" className="flex-1">
