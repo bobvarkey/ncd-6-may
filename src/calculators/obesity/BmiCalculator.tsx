@@ -65,8 +65,11 @@ interface AdiposityRisk {
   waistFlag?: { level: "normal" | "increased"; message: string };
   whr?: number;
   whrFlag?: { level: "low" | "increased" | "high"; message: string };
+  whtr?: number;
+  whtrFlag?: { level: "low" | "increased" | "high"; message: string };
   centralAdiposity: boolean;
   overallNote: string;
+  cutoffSource: string;
 }
 
 interface BmiResult {
