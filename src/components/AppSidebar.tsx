@@ -37,6 +37,7 @@ const items = [
   { title: "Disclaimer", url: "/disclaimer", icon: WarningTriangle },
   { title: "Privacy Policy", url: "/privacy", icon: ShieldIcon },
   { title: "Terms of Service", url: "/terms", icon: Scale },
+  { title: "Delete My Data", url: "/delete-account", icon: Trash2 },
 ];
 
 export function AppSidebar() {
