@@ -462,7 +462,52 @@ export default function BmiCalculator() {
                         <p className="mt-1 text-xs text-muted-foreground">
                           Using {result.ethnicityName} guidelines
                         </p>
+                    </div>
+
+                    {/* Adiposity Risk Panel */}
+                    {result.adiposity && (
+                      <div className="rounded-lg border border-border bg-card/50 p-4 space-y-3">
+                        <div className="flex items-center gap-2 font-semibold text-sm">
+                          <Activity className="h-4 w-4 text-primary" />
+                          Central Adiposity Assessment (ADA)
+                        </div>
+                        {result.adiposity.waistFlag && (
+                          <div className={cn(
+                            "rounded-md border p-3 text-xs",
+                            result.adiposity.waistFlag.level === "increased"
+                              ? "border-destructive/40 bg-destructive/10 text-destructive"
+                              : "border-border bg-muted/30"
+                          )}>
+                            <p className="font-semibold mb-0.5">Waist circumference</p>
+                            <p>{result.adiposity.waistFlag.message}</p>
+                          </div>
+                        )}
+                        {result.adiposity.whr !== undefined && (
+                          <div className={cn(
+                            "rounded-md border p-3 text-xs",
+                            result.adiposity.whrFlag?.level === "high" && "border-destructive/40 bg-destructive/10 text-destructive",
+                            result.adiposity.whrFlag?.level === "increased" && "border-warning/40 bg-warning/10 text-warning",
+                            result.adiposity.whrFlag?.level === "low" && "border-border bg-muted/30",
+                          )}>
+                            <p className="font-semibold mb-0.5">Waist-to-Hip Ratio: {result.adiposity.whr}</p>
+                            <p>{result.adiposity.whrFlag?.message}</p>
+                          </div>
+                        )}
+                        <div className={cn(
+                          "rounded-md border p-3 text-xs",
+                          result.adiposity.centralAdiposity
+                            ? "border-primary/40 bg-primary/10"
+                            : "border-border bg-muted/20"
+                        )}>
+                          <p className="font-semibold mb-0.5">Cardiometabolic risk note</p>
+                          <p>{result.adiposity.overallNote}</p>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">
+                          BMI classification is unchanged; waist and WHR act as risk modifiers per ADA / WHO / AHA guidance.
+                        </p>
                       </div>
+                    )}
+
                     </div>
 
                     {/* BMI Cut-offs Comparison */}
