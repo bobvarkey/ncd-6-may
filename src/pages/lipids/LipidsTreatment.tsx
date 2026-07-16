@@ -122,7 +122,8 @@ const STATIN_TABLE = [
 const SAFETY_NOTE = `
 • Statins: Monitor LFTs at baseline + 12 weeks. Myalgia in ~5-10% (true myositis rare ~0.1%). Avoid if active liver disease (ALT >3× ULN).
 • Ezetimibe: Generally well-tolerated. GI side effects ~2-3%.
-• PCSK9i: Injection site reactions ~5%. Virtually no hepatic/muscle toxicity.
+• PCSK9i (injectable — evolocumab / alirocumab): Injection site reactions ~5%. Virtually no hepatic/muscle toxicity.
+• Enlicitide (Lipfendra, oral PCSK9i — FDA approved Jul 2026): First oral macrocyclic peptide PCSK9 inhibitor. Once-daily tablet (enlicitide decanoate). LDL-C reduction ≈55-60%, comparable to injectable PCSK9i. Take on empty stomach. No known hepatic/muscle toxicity signal to date; monitor for GI upset.
 • Bempedoic acid: Gout risk ↑ (elevated uric acid). Avoid with eGFR <30.
 • Fibrates: Avoid gemfibrozil with statins (myopathy risk). Fenofibrate safer.
 • Colchicine: GI intolerance common. Drug interactions with CYP3A4.
