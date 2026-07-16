@@ -51,12 +51,12 @@ import {
 } from "./obesity-cds-engine";
 
 const bmiSchema = z.object({
-  height: z.coerce.number().min(100).max(250).describe("Height in cm"),
-  weight: z.coerce.number().min(30).max(300).describe("Weight in kg"),
+  height: z.coerce.number().min(30).max(300).describe("Height"),
+  weight: z.coerce.number().min(10).max(700).describe("Weight"),
   ethnicity: z.enum(["standard", "asian-pacific", "indian"] as const),
   sex: z.enum(["male", "female", "unspecified"] as const).optional(),
-  waist: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(30).max(250).optional()),
-  hip: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(30).max(250).optional()),
+  waist: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(10).max(400).optional()),
+  hip: z.preprocess((v) => (v === "" || v === null || v === undefined || Number.isNaN(v) ? undefined : Number(v)), z.number().min(10).max(400).optional()),
 });
 
 type BmiFormData = z.infer<typeof bmiSchema>;
