@@ -49,6 +49,7 @@ import {
   type MicronutrientOfConcern,
   type ObesityCDSAssessment,
 } from "./obesity-cds-engine";
+import IcmrIndiab from "./IcmrIndiab";
 
 const bmiSchema = z.object({
   height: z.coerce.number().min(30).max(300).describe("Height"),
