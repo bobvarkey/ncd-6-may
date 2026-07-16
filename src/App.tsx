@@ -337,6 +337,8 @@ const App = () => (
           <Route path="/privacy" element={<><TabNavigation /><PrivacyPolicy /></>} />
           <Route path="/terms" element={<><TabNavigation /><TermsOfService /></>} />
           <Route path="/disclaimer" element={<><TabNavigation /><DisclaimerPage /></>} />
+          <Route path="/delete-account" element={<><TabNavigation /><DeleteAccount /></>} />
+          <Route path="/account/delete" element={<Navigate to="/delete-account" replace />} />
           <Route path="/images" element={<><TabNavigation /><ImageGallery /></>} />
 
           {/* 404 */}
