@@ -112,7 +112,8 @@ const STATIN_TABLE = [
   { drug: "Rosuvastatin 40 mg", potency: "High", ldlReduction: "~55%" },
   { drug: "Pitavastatin 2-4 mg", potency: "Moderate", ldlReduction: "~35-40%" },
   { drug: "+ Ezetimibe 10 mg", potency: "Add-on", ldlReduction: "+15-20%" },
-  { drug: "+ PCSK9i", potency: "Add-on", ldlReduction: "+50-60%" },
+  { drug: "+ PCSK9i (evolocumab / alirocumab SC)", potency: "Add-on", ldlReduction: "+50-60%" },
+  { drug: "+ Enlicitide (Lipfendra) — oral PCSK9i", potency: "Add-on", ldlReduction: "+50-60% (oral, once daily)" },
   { drug: "+ Bempedoic acid", potency: "Add-on", ldlReduction: "+15-20%" },
   { drug: "+ Inclisiran", potency: "Add-on", ldlReduction: "+50% (biannual)" },
 ];
