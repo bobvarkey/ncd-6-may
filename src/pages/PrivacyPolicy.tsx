@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Shield } from "lucide-react";
+import { Shield, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { SectionCard } from "@/components/ui/section-card";
 
 export default function PrivacyPolicy() {
