@@ -377,4 +377,7 @@
   aside, nav, .sidebar, button, [role="navigation"] { display: none !important; }
   main { margin: 0 !important; padding: 0 !important; }
   .card { border: 1px solid #ccc !important; box-shadow: none !important; }
+  .print-hidden { display: none !important; }
+  .print-force-open [data-state="closed"] > * { display: block !important; }
 }
+
