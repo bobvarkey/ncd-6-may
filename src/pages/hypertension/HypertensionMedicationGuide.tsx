@@ -261,6 +261,17 @@ export const drugDoseDetails: DrugDoseDetail[] = [
   { name: "Dihydralazine", brand: "Aprilife", drugClass: "Direct vasodilator", doseRange: "12.5–25 mg TID/QID", pearls: "Hydralazine derivative; used in pregnancy hypertension (esp. pre-eclampsia) where other agents have failed. Similar properties to hydralazine with possibly less reflex tachycardia.", caution: "Reflex tachycardia, drug-induced lupus (lower risk than hydralazine)" },
   { name: "Minoxidil", brand: "Loniten", drugClass: "Direct vasodilator", doseRange: "2.5–40 mg BID/TID", pearls: "Most potent oral agent. Requires loop diuretic + BB (reflex tachycardia + fluid retention).", caution: "Pericardial effusion, hirsutism" },
 
+  // ─── Direct Renin Inhibitor ───
+  { name: "Aliskiren", brand: "Tekturna, Rasilez", drugClass: "DRI", doseRange: "150–300 mg OD", pearls: "Only oral DRI. Modest BP reduction. Long T½ (~24 h). Take on empty stomach — high-fat meals ↓ absorption ~70%.", caution: "AVOID with ACEi/ARB in diabetes (ALTITUDE — ↑ AKI, stroke, hyperkalemia). Contraindicated in pregnancy." },
+
+  // ─── ARNI ───
+  { name: "Sacubitril/Valsartan", brand: "Entresto", drugClass: "ARNI", doseRange: "49/51 mg BID → titrate to 97/103 mg BID", pearls: "PARADIGM-HF: 20% ↓ CV death/HF hospitalisation vs enalapril in HFrEF. Also PARAGON-HF (HFpEF, borderline). Start low if hypotensive or elderly.", caution: "Requires 36-h washout from ACEi (angioedema risk). Avoid with ACEi. Monitor BP, K+, Cr." },
+
+  // ─── SGLT2 inhibitors (BP-lowering + cardiorenal) ───
+  { name: "Empagliflozin", brand: "Jardiance", drugClass: "SGLT2i", doseRange: "10–25 mg OD", pearls: "EMPA-REG, EMPEROR-Reduced/Preserved: CV & renal benefit. Modest BP ↓ (~4/2 mmHg) via osmotic diuresis.", caution: "Genital mycotic infections, euglycemic DKA, volume depletion" },
+  { name: "Dapagliflozin", brand: "Farxiga, Forxiga", drugClass: "SGLT2i", doseRange: "10 mg OD", pearls: "DAPA-HF, DAPA-CKD: mortality and CKD progression benefit even in non-diabetics. Adjunct in resistant HTN.", caution: "Same SGLT2i class effects; hold before major surgery" },
+
+
   // ─── IV Agents ───
   { name: "Sodium Nitroprusside", brand: "Nipride", drugClass: "IV vasodilator", doseRange: "0.25–10 µg/kg/min IV", pearls: "Gold standard for hypertensive crisis. Rapid onset/offset. Light-sensitive.", caution: "Cyanide/thiocyanate toxicity >72h or CKD" },
   { name: "Labetalol IV", brand: "—", drugClass: "IV α/β blocker", doseRange: "10–80 mg IV push, 0.5–2 mg/min infusion", pearls: "IV: 10 mg over 2 min for emergencies. β:α blockade ~7:1 IV. Preferred in eclampsia + aortic dissection.", caution: "Avoid in asthma" },
