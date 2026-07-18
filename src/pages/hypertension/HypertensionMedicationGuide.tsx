@@ -497,6 +497,23 @@ export default function HypertensionMedicationGuide() {
                           })()}
                         </div>
 
+                        {(medClass as any).showMraCard && (
+                          <div>
+                            <span className="text-xs font-medium text-muted-foreground">
+                              MRA pocket card — steroidal vs nonsteroidal:
+                            </span>
+                            <div className="mt-2 rounded-md overflow-hidden border border-border/60">
+                              <ZoomableImage
+                                src={mraPocketCard}
+                                alt="MRA pocket card — Spironolactone vs Eplerenone vs Finerenone"
+                                className="w-full h-auto"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+
+
 
                         <div>
                           <span className="text-xs font-medium text-muted-foreground">Mechanism:</span>
