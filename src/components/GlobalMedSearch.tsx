@@ -5,12 +5,24 @@ import { RENAL_DATA } from "@/calculators/diabetes/RenalDosing";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import { ANTICOAGULANTS_DATA } from "@/calculators/diabetes/anticoagulants-data";
 import { ADDITIONAL_MEDS_DATA } from "@/calculators/diabetes/additional-meds-data";
+import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMedicationGuide";
+
+// Normalize HTN meds into the same shape used by the search (drug/drugClass/normalDose).
+const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
+  drug: m.name,
+  drugClass: m.drugClass,
+  normalDose: m.doseRange,
+  hepatic: m.pearls,
+  brand: m.brand,
+  _target: "htn" as const,
+}));
 
 const ALL_MEDS = [
   ...RENAL_DATA,
   ...ANTIBIOTICS_DATA,
   ...ANTICOAGULANTS_DATA,
   ...ADDITIONAL_MEDS_DATA,
+  ...HTN_MEDS_NORMALIZED,
 ];
 
 // Every page and topic in the app — searchable by label or keyword
@@ -186,9 +198,10 @@ export function GlobalMedSearch() {
       .filter(
         (m) =>
           m.drug.toLowerCase().includes(term) ||
-          m.drugClass.toLowerCase().includes(term)
+          m.drugClass.toLowerCase().includes(term) ||
+          ("brand" in m && typeof m.brand === "string" && m.brand.toLowerCase().includes(term))
       )
-      .slice(0, 5)
+      .slice(0, 8)
       .map(m => ({ type: 'medication' as const, ...m }));
 
     const topicResults = CLINICAL_TOPICS
@@ -224,10 +237,14 @@ export function GlobalMedSearch() {
     };
   }, []);
 
-  function goToDrug(drug: string) {
+  function goToDrug(drug: string, target?: "htn") {
     setOpen(false);
     setQ("");
-    navigate(`/renal-dosing?q=${encodeURIComponent(drug)}`);
+    if (target === "htn") {
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drug)}`);
+    } else {
+      navigate(`/renal-dosing?q=${encodeURIComponent(drug)}`);
+    }
   }
 
   return (
@@ -269,10 +286,10 @@ export function GlobalMedSearch() {
 
       {open && q.trim() && <>
         <div
-          className="fixed inset-0 z-0 backdrop-blur-sm bg-background/30"
+          className="fixed inset-0 z-0 backdrop-blur-lg bg-background/50"
           onClick={() => { setOpen(false); setQ(""); }}
         />
-        <div className="absolute top-full left-0 right-0 mt-0 max-h-[60vh] overflow-y-auto border-b border-border bg-card/98 backdrop-blur-md shadow-xl">
+        <div className="absolute top-full left-0 right-0 mt-0 max-h-[60vh] overflow-y-auto border-b border-border bg-card/95 backdrop-blur-xl shadow-xl">
           {results.length === 0 ? (
             <div className="p-4 text-sm text-muted-foreground">
               No medications or topics found for "{q}".
@@ -284,7 +301,7 @@ export function GlobalMedSearch() {
                   {item.type === 'medication' ? (
                     <button
                       type="button"
-                      onClick={() => goToDrug(item.drug)}
+                      onClick={() => goToDrug(item.drug, (item as { _target?: "htn" })._target)}
                       className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-muted/60 transition-colors"
                     >
                       <Pill className="mt-0.5 h-4 w-4 text-primary shrink-0" />
