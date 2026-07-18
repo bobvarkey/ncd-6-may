@@ -5,6 +5,8 @@ import { Separator } from "@/components/ui/separator";
 import { AlertCircle, CheckCircle2, Heart, Activity, Droplet, AlertTriangle, ChevronDown, ChevronRight, Stethoscope } from "lucide-react";
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
+import ZoomableImage from "@/components/ZoomableImage";
+import mraPocketCard from "@/assets/mra-pocket-card.jpg";
 
 /** Extract frequency tag from a dose range string like "8–16 mg OD" -> "OD" */
 function extractCardFreq(dose: string): string {
@@ -94,16 +96,53 @@ const medicationClasses = [
     color: "bg-muted border-border",
   },
   {
-    class: "Mineralocorticoid Receptor Antagonists",
-    suffix: "-none/-actone",
-    classMatch: ["K-sparing / MRA"],
-    mechanism: "Block aldosterone receptor → Na+ excretion, K+ retention, antifibrotic",
-    indications: ["Resistant HTN", "HFrEF", "Primary aldosteronism"],
-    contraindications: ["Hyperkalemia", "Severe CKD", "Addison's disease"],
-    sideEffects: ["Hyperkalemia", "Gynecomastia (spironolactone)", "Renal dysfunction"],
-    monitoring: ["K+ and creatinine at 1 week, 1 month, then 3-6 monthly", "BP response"],
+    class: "Mineralocorticoid Receptor Antagonists (MRAs)",
+    suffix: "steroidal & nonsteroidal",
+    classMatch: ["K-sparing / MRA", "Nonsteroidal MRA"],
+    mechanism: "Block aldosterone receptor → Na+ excretion, K+ retention, antifibrotic. Steroidal (spironolactone, eplerenone) vs nonsteroidal (finerenone — bulky, non-hormonal, more selective for MR, cardiorenal antifibrotic in diabetic CKD).",
+    indications: ["Resistant HTN", "HFrEF (spironolactone, eplerenone)", "Primary aldosteronism", "Diabetic CKD with albuminuria (finerenone — FIDELIO/FIGARO)"],
+    contraindications: ["Hyperkalemia (K+ >5.0)", "Severe CKD (eGFR <25 for finerenone; <30 for steroidal)", "Addison's disease", "Strong CYP3A4 inhibitors with finerenone"],
+    sideEffects: ["Hyperkalemia (all)", "Gynecomastia / breast tenderness (spironolactone)", "Renal dysfunction", "Gynecomastia rare with eplerenone & finerenone"],
+    monitoring: ["K+ and creatinine at 1 week, 1 month, then 3–6 monthly", "BP response", "Hold if K+ >5.5"],
     firstLine: false,
     color: "bg-accent/10 border-accent/30",
+    showMraCard: true,
+  },
+  {
+    class: "Direct Renin Inhibitors (DRI)",
+    suffix: "aliskiren",
+    classMatch: ["DRI"],
+    mechanism: "Bind renin's active site → block conversion of angiotensinogen to angiotensin I → suppress entire RAAS cascade",
+    indications: ["Alternative for HTN when ACEi/ARB not tolerated (rarely first-line)"],
+    contraindications: ["Pregnancy", "Diabetes on ACEi/ARB (ALTITUDE — ↑ AKI, stroke, hyperkalemia)", "eGFR <60 combined with ACEi/ARB"],
+    sideEffects: ["Diarrhea (dose-dependent)", "Hyperkalemia", "Angioedema (rare)", "Cough (uncommon)"],
+    monitoring: ["K+, creatinine, BP", "Do not combine with ACEi/ARB in diabetes"],
+    firstLine: false,
+    color: "bg-muted border-border",
+  },
+  {
+    class: "ARNI (Angiotensin Receptor–Neprilysin Inhibitor)",
+    suffix: "sacubitril/valsartan",
+    classMatch: ["ARNI"],
+    mechanism: "Sacubitril inhibits neprilysin (↑ natriuretic peptides, bradykinin) + valsartan blocks AT1 receptor → vasodilation, natriuresis, antifibrotic",
+    indications: ["HFrEF (PARADIGM-HF: ↓ mortality vs enalapril)", "HFpEF (selected)", "Resistant HTN (off-label add-on)"],
+    contraindications: ["Pregnancy", "History of ACEi/ARB angioedema", "Concomitant ACEi (wait 36 h washout)", "Severe hepatic impairment"],
+    sideEffects: ["Hypotension", "Hyperkalemia", "Renal impairment", "Angioedema"],
+    monitoring: ["BP, K+, creatinine at 1–2 weeks then periodically", "36-hour ACEi washout before starting"],
+    firstLine: false,
+    color: "bg-muted border-border",
+  },
+  {
+    class: "SGLT2 Inhibitors (BP-lowering effect)",
+    suffix: "-flozin",
+    classMatch: ["SGLT2i"],
+    mechanism: "Block SGLT2 in proximal tubule → glucosuria + osmotic/natriuretic diuresis → modest BP ↓ (3–5 mmHg systolic), cardiorenal protection",
+    indications: ["HFrEF & HFpEF", "Diabetic & non-diabetic CKD with albuminuria", "T2DM with ASCVD risk", "Adjunct in resistant HTN"],
+    contraindications: ["Type 1 DM (DKA risk)", "eGFR <20", "Recurrent genitourinary infections", "Active foot ulcer/gangrene"],
+    sideEffects: ["Genital mycotic infections", "Volume depletion / hypotension", "Euglycemic DKA (rare)", "Fournier's gangrene (very rare)"],
+    monitoring: ["Volume status, eGFR, glucose (if diabetic)", "Foot exam"],
+    firstLine: false,
+    color: "bg-muted border-border",
   },
   {
     class: "Alpha Blockers",
@@ -199,7 +238,8 @@ export const drugDoseDetails: DrugDoseDetail[] = [
 
   // ─── Potassium-Sparing ───
   { name: "Spironolactone", brand: "Aldactone", drugClass: "K-sparing / MRA", doseRange: "25–50 mg OD", pearls: "RALES: ↓ mortality 30% in HFrEF. Also for resistant HTN (PATHWAY-2) and primary aldosteronism.", caution: "Gynecomastia, hyperkalemia" },
-  { name: "Eplerenone", brand: "Inspra", drugClass: "K-sparing / MRA", doseRange: "50–100 mg OD", pearls: "Selective aldosterone antagonist. Less gynecomastia vs spironolactone. EMPHASIS-HF trial.", caution: "Hyperkalemia risk if GFR <50" },
+  { name: "Eplerenone", brand: "Inspra", drugClass: "K-sparing / MRA", doseRange: "25–50 mg OD (up to 50 mg BID)", pearls: "Selective steroidal aldosterone antagonist. Less gynecomastia vs spironolactone. EMPHASIS-HF, EPHESUS trials.", caution: "Hyperkalemia risk if eGFR <50; avoid strong CYP3A4 inhibitors" },
+  { name: "Finerenone", brand: "Kerendia", drugClass: "Nonsteroidal MRA", doseRange: "10 mg OD (eGFR 25–<60); 20 mg OD (eGFR ≥60)", pearls: "Nonsteroidal, selective MRA. FIDELIO-DKD & FIGARO-DKD: ↓ CKD progression and CV events in T2DM + albuminuric CKD. Add on top of maximally tolerated ACEi/ARB. Titrate up if K+ ≤4.8 after 4 weeks.", caution: "Hyperkalemia — hold if K+ >5.5; avoid strong CYP3A4 inhibitors (e.g., ketoconazole); do not combine with steroidal MRAs or K-sparing diuretics" },
 
   // ─── Beta-Blockers ───
   { name: "Metoprolol Succinate", brand: "Toprol XL", drugClass: "β₁-selective BB", doseRange: "25–200 mg OD", pearls: "MERIT-HF: ↓ mortality in HFrEF. Use ER formulation only in HF.", caution: "Bradycardia, fatigue, mask hypoglycemia" },
@@ -222,6 +262,17 @@ export const drugDoseDetails: DrugDoseDetail[] = [
   { name: "Hydralazine", brand: "Apresoline", drugClass: "Direct vasodilator", doseRange: "10–50 mg QID", pearls: "Use with BB + diuretic (pseudo-tolerance). A-HeFT: ↓ mortality in African-Americans with HF.", caution: "Reflex tachycardia, drug-induced lupus" },
   { name: "Dihydralazine", brand: "Aprilife", drugClass: "Direct vasodilator", doseRange: "12.5–25 mg TID/QID", pearls: "Hydralazine derivative; used in pregnancy hypertension (esp. pre-eclampsia) where other agents have failed. Similar properties to hydralazine with possibly less reflex tachycardia.", caution: "Reflex tachycardia, drug-induced lupus (lower risk than hydralazine)" },
   { name: "Minoxidil", brand: "Loniten", drugClass: "Direct vasodilator", doseRange: "2.5–40 mg BID/TID", pearls: "Most potent oral agent. Requires loop diuretic + BB (reflex tachycardia + fluid retention).", caution: "Pericardial effusion, hirsutism" },
+
+  // ─── Direct Renin Inhibitor ───
+  { name: "Aliskiren", brand: "Tekturna, Rasilez", drugClass: "DRI", doseRange: "150–300 mg OD", pearls: "Only oral DRI. Modest BP reduction. Long T½ (~24 h). Take on empty stomach — high-fat meals ↓ absorption ~70%.", caution: "AVOID with ACEi/ARB in diabetes (ALTITUDE — ↑ AKI, stroke, hyperkalemia). Contraindicated in pregnancy." },
+
+  // ─── ARNI ───
+  { name: "Sacubitril/Valsartan", brand: "Entresto", drugClass: "ARNI", doseRange: "49/51 mg BID → titrate to 97/103 mg BID", pearls: "PARADIGM-HF: 20% ↓ CV death/HF hospitalisation vs enalapril in HFrEF. Also PARAGON-HF (HFpEF, borderline). Start low if hypotensive or elderly.", caution: "Requires 36-h washout from ACEi (angioedema risk). Avoid with ACEi. Monitor BP, K+, Cr." },
+
+  // ─── SGLT2 inhibitors (BP-lowering + cardiorenal) ───
+  { name: "Empagliflozin", brand: "Jardiance", drugClass: "SGLT2i", doseRange: "10–25 mg OD", pearls: "EMPA-REG, EMPEROR-Reduced/Preserved: CV & renal benefit. Modest BP ↓ (~4/2 mmHg) via osmotic diuresis.", caution: "Genital mycotic infections, euglycemic DKA, volume depletion" },
+  { name: "Dapagliflozin", brand: "Farxiga, Forxiga", drugClass: "SGLT2i", doseRange: "10 mg OD", pearls: "DAPA-HF, DAPA-CKD: mortality and CKD progression benefit even in non-diabetics. Adjunct in resistant HTN.", caution: "Same SGLT2i class effects; hold before major surgery" },
+
 
   // ─── IV Agents ───
   { name: "Sodium Nitroprusside", brand: "Nipride", drugClass: "IV vasodilator", doseRange: "0.25–10 µg/kg/min IV", pearls: "Gold standard for hypertensive crisis. Rapid onset/offset. Light-sensitive.", caution: "Cyanide/thiocyanate toxicity >72h or CKD" },
@@ -445,6 +496,23 @@ export default function HypertensionMedicationGuide() {
                             );
                           })()}
                         </div>
+
+                        {(medClass as any).showMraCard && (
+                          <div>
+                            <span className="text-xs font-medium text-muted-foreground">
+                              MRA pocket card — steroidal vs nonsteroidal:
+                            </span>
+                            <div className="mt-2 rounded-md overflow-hidden border border-border/60">
+                              <ZoomableImage
+                                src={mraPocketCard}
+                                alt="MRA pocket card — Spironolactone vs Eplerenone vs Finerenone"
+                                className="w-full h-auto"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+
 
 
                         <div>
