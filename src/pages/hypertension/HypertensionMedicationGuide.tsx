@@ -5,6 +5,8 @@ import { Separator } from "@/components/ui/separator";
 import { AlertCircle, CheckCircle2, Heart, Activity, Droplet, AlertTriangle, ChevronDown, ChevronRight, Stethoscope } from "lucide-react";
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
+import ZoomableImage from "@/components/ZoomableImage";
+import mraPocketCard from "@/assets/mra-pocket-card.jpg";
 
 /** Extract frequency tag from a dose range string like "8–16 mg OD" -> "OD" */
 function extractCardFreq(dose: string): string {
