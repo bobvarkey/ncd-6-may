@@ -5,6 +5,7 @@ import { CommandPalette } from "@/components/CommandPalette";
 import { GlobalMedSearch } from "@/components/GlobalMedSearch";
 import { LabProvider } from "@/components/SmartLabelUpload/GlobalLabContext";
 import BackToHome from "@/components/BackToHome";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
