@@ -198,9 +198,10 @@ export function GlobalMedSearch() {
       .filter(
         (m) =>
           m.drug.toLowerCase().includes(term) ||
-          m.drugClass.toLowerCase().includes(term)
+          m.drugClass.toLowerCase().includes(term) ||
+          ("brand" in m && typeof m.brand === "string" && m.brand.toLowerCase().includes(term))
       )
-      .slice(0, 5)
+      .slice(0, 8)
       .map(m => ({ type: 'medication' as const, ...m }));
 
     const topicResults = CLINICAL_TOPICS
