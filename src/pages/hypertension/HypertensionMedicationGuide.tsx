@@ -435,7 +435,7 @@ export default function HypertensionMedicationGuide() {
                                         </td>
                                         <td className="px-2 py-1.5">{d.doseRange}</td>
                                         <td className="px-2 py-1.5 whitespace-nowrap">
-                                          <FrequencyBadge freq={extractCardFreq(d.doseRange)} />
+                                          <FrequencyBadge frequency={extractCardFreq(d.doseRange)} />
                                         </td>
                                       </tr>
                                     ))}
