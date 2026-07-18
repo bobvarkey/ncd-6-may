@@ -104,7 +104,7 @@ interface DrugDoseDetail {
   caution?: string;
 }
 
-const drugDoseDetails: DrugDoseDetail[] = [
+export const drugDoseDetails: DrugDoseDetail[] = [
   // ─── ACE Inhibitors ───
   { name: "Lisinopril", brand: "Prinivil, Zestril", drugClass: "ACEi", doseRange: "10–40 mg OD", pearls: "Monitor K+ and Cr. Dry cough common (10-20%). Contraindicated in pregnancy.", caution: "Angioedema (rare but serious)" },
   { name: "Enalapril", brand: "Vasotec", drugClass: "ACEi", doseRange: "2.5–40 mg/day OD/BID", pearls: "Can be dosed BID for smoother BP control. HOPE trial benefit in high CV risk.", caution: "Monitor K+ and Cr" },
