@@ -5,12 +5,24 @@ import { RENAL_DATA } from "@/calculators/diabetes/RenalDosing";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import { ANTICOAGULANTS_DATA } from "@/calculators/diabetes/anticoagulants-data";
 import { ADDITIONAL_MEDS_DATA } from "@/calculators/diabetes/additional-meds-data";
+import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMedicationGuide";
+
+// Normalize HTN meds into the same shape used by the search (drug/drugClass/normalDose).
+const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
+  drug: m.name,
+  drugClass: m.drugClass,
+  normalDose: m.doseRange,
+  hepatic: m.pearls,
+  brand: m.brand,
+  _target: "htn" as const,
+}));
 
 const ALL_MEDS = [
   ...RENAL_DATA,
   ...ANTIBIOTICS_DATA,
   ...ANTICOAGULANTS_DATA,
   ...ADDITIONAL_MEDS_DATA,
+  ...HTN_MEDS_NORMALIZED,
 ];
 
 // Every page and topic in the app — searchable by label or keyword
