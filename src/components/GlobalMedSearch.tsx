@@ -237,10 +237,14 @@ export function GlobalMedSearch() {
     };
   }, []);
 
-  function goToDrug(drug: string) {
+  function goToDrug(drug: string, target?: "htn") {
     setOpen(false);
     setQ("");
-    navigate(`/renal-dosing?q=${encodeURIComponent(drug)}`);
+    if (target === "htn") {
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drug)}`);
+    } else {
+      navigate(`/renal-dosing?q=${encodeURIComponent(drug)}`);
+    }
   }
 
   return (
