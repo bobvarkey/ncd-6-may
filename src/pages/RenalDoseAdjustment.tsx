@@ -1009,10 +1009,7 @@ const RenalDoseAdjustment = () => {
         <p className="text-sm text-muted-foreground">eGFR-based dose modifications for diabetes medications (ADA 2026 + KDIGO)</p>
       </div>
 
-      {/* eGFR Calculator (standalone, above KDIGO) */}
-      <EgfrCalculator />
-
-      {/* Full KDIGO Staging with heatmap */}
+      {/* Full KDIGO Staging with heatmap (eGFR + UACR) */}
       <KDIGOStagingCalculator />
 
       {/* Formula Reference */}
