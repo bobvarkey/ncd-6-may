@@ -6,7 +6,7 @@ import { AlertCircle, CheckCircle2, Heart, Activity, Droplet, AlertTriangle, Che
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
 import ZoomableImage from "@/components/ZoomableImage";
-import mraPocketCard from "@/assets/mra-pocket-card.jpg";
+import mraPocketCard from "@/assets/mra-pocket-card.jpg.asset.json";
 
 /** Extract frequency tag from a dose range string like "8–16 mg OD" -> "OD" */
 function extractCardFreq(dose: string): string {
@@ -504,7 +504,7 @@ export default function HypertensionMedicationGuide() {
                             </span>
                             <div className="mt-2 rounded-md overflow-hidden border border-border/60">
                               <ZoomableImage
-                                src={mraPocketCard}
+                                src={mraPocketCard.url}
                                 alt="MRA pocket card — Spironolactone vs Eplerenone vs Finerenone"
                                 className="w-full h-auto"
                               />
