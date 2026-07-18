@@ -402,15 +402,50 @@ export default function HypertensionMedicationGuide() {
                     {expandedClass === medClass.class && (
                       <div className="px-4 pb-4 space-y-3 border-t border-inherit pt-3">
                         <div>
-                          <span className="text-xs font-medium text-muted-foreground">Examples:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {medClass.examples.map((ex, i) => (
-                              <Badge key={i} variant="outline" className="text-xs">
-                                {ex}
-                              </Badge>
-                            ))}
-                          </div>
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Drugs, doses & dosing intervals:
+                          </span>
+                          {(() => {
+                            const drugs = drugDoseDetails.filter((d) =>
+                              medClass.classMatch.includes(d.drugClass)
+                            );
+                            if (drugs.length === 0) {
+                              return (
+                                <p className="text-xs text-muted-foreground mt-1 italic">
+                                  No individual drug entries listed.
+                                </p>
+                              );
+                            }
+                            return (
+                              <div className="mt-1 overflow-x-auto rounded-md border border-border/60">
+                                <table className="w-full text-xs">
+                                  <thead className="bg-muted/60 text-muted-foreground">
+                                    <tr>
+                                      <th className="text-left font-medium px-2 py-1.5">Drug (brand)</th>
+                                      <th className="text-left font-medium px-2 py-1.5">Dose range</th>
+                                      <th className="text-left font-medium px-2 py-1.5 whitespace-nowrap">Interval</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-border/60">
+                                    {drugs.map((d) => (
+                                      <tr key={d.name} className="align-top">
+                                        <td className="px-2 py-1.5">
+                                          <div className="font-semibold text-foreground">{d.name}</div>
+                                          <div className="text-[11px] text-muted-foreground">{d.brand}</div>
+                                        </td>
+                                        <td className="px-2 py-1.5">{d.doseRange}</td>
+                                        <td className="px-2 py-1.5 whitespace-nowrap">
+                                          <FrequencyBadge freq={extractCardFreq(d.doseRange)} />
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            );
+                          })()}
                         </div>
+
 
                         <div>
                           <span className="text-xs font-medium text-muted-foreground">Mechanism:</span>
