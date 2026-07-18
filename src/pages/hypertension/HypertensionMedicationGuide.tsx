@@ -236,7 +236,8 @@ export const drugDoseDetails: DrugDoseDetail[] = [
 
   // ─── Potassium-Sparing ───
   { name: "Spironolactone", brand: "Aldactone", drugClass: "K-sparing / MRA", doseRange: "25–50 mg OD", pearls: "RALES: ↓ mortality 30% in HFrEF. Also for resistant HTN (PATHWAY-2) and primary aldosteronism.", caution: "Gynecomastia, hyperkalemia" },
-  { name: "Eplerenone", brand: "Inspra", drugClass: "K-sparing / MRA", doseRange: "50–100 mg OD", pearls: "Selective aldosterone antagonist. Less gynecomastia vs spironolactone. EMPHASIS-HF trial.", caution: "Hyperkalemia risk if GFR <50" },
+  { name: "Eplerenone", brand: "Inspra", drugClass: "K-sparing / MRA", doseRange: "25–50 mg OD (up to 50 mg BID)", pearls: "Selective steroidal aldosterone antagonist. Less gynecomastia vs spironolactone. EMPHASIS-HF, EPHESUS trials.", caution: "Hyperkalemia risk if eGFR <50; avoid strong CYP3A4 inhibitors" },
+  { name: "Finerenone", brand: "Kerendia", drugClass: "Nonsteroidal MRA", doseRange: "10 mg OD (eGFR 25–<60); 20 mg OD (eGFR ≥60)", pearls: "Nonsteroidal, selective MRA. FIDELIO-DKD & FIGARO-DKD: ↓ CKD progression and CV events in T2DM + albuminuric CKD. Add on top of maximally tolerated ACEi/ARB. Titrate up if K+ ≤4.8 after 4 weeks.", caution: "Hyperkalemia — hold if K+ >5.5; avoid strong CYP3A4 inhibitors (e.g., ketoconazole); do not combine with steroidal MRAs or K-sparing diuretics" },
 
   // ─── Beta-Blockers ───
   { name: "Metoprolol Succinate", brand: "Toprol XL", drugClass: "β₁-selective BB", doseRange: "25–200 mg OD", pearls: "MERIT-HF: ↓ mortality in HFrEF. Use ER formulation only in HF.", caution: "Bradycardia, fatigue, mask hypoglycemia" },
