@@ -254,7 +254,7 @@ export const drugDoseDetails: DrugDoseDetail[] = [
   { name: "Terazosin", brand: "Hytrin", drugClass: "α₁-blocker", doseRange: "1–10 mg OD", pearls: "Also for BPH. Start 1 mg at bedtime.", caution: "Same α-blocker class effects" },
 
   // ─── Centrally Acting ───
-  { name: "Clonidine", brand: "Catapres", drugClass: "Central α₂-agonist", doseRange: "0.1–0.8 mg BID", pearls: "Also available as transdermal patch (0.1-0.3 mg/day × 7 days). Rebound HTN on abrupt stop.", caution: "Sedation, dry mouth. REBOUND HTN" },
+  { name: "Clonidine", brand: "Catapres", drugClass: "Central α₂-agonist", doseRange: "0.1–0.8 mg BID (TID if needed)", pearls: "Oral tablets given in divided doses — typically start BID (morning + bedtime); some patients need TID for smoother BP control. Also available as transdermal patch (0.1–0.3 mg/day × 7 days). Rebound HTN on abrupt stop.", caution: "Sedation, dry mouth. REBOUND HTN" },
   { name: "Methyldopa", brand: "Aldomet", drugClass: "Central α₂-agonist", doseRange: "250–1000 mg BID", pearls: "Gold standard in pregnancy (decades of safety data). Positive Coombs test — doesn't cause hemolysis.", caution: "Sedation, positive Coombs" },
   { name: "Guanfacine", brand: "Tenex", drugClass: "Central α₂-agonist", doseRange: "0.5–2 mg OD", pearls: "Less sedation vs clonidine. Also used for ADHD.", caution: "Same class effects, less rebound" },
 
