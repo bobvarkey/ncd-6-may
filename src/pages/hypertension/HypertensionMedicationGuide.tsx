@@ -504,7 +504,7 @@ export default function HypertensionMedicationGuide() {
                             </span>
                             <div className="mt-2 rounded-md overflow-hidden border border-border/60">
                               <ZoomableImage
-                                src={mraPocketCard}
+                                src={mraPocketCard.url}
                                 alt="MRA pocket card — Spironolactone vs Eplerenone vs Finerenone"
                                 className="w-full h-auto"
                               />
