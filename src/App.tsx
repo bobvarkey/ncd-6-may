@@ -241,6 +241,7 @@ const App = () => (
       <BrowserRouter>
         <CommandPalette />
         <GlobalMedSearch />
+        <BreadcrumbJsonLd />
         <RouteErrorBoundary>
         <Suspense fallback={<RouteLoading fullScreen />}>
         <Routes>
