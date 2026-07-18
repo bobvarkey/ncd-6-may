@@ -286,10 +286,10 @@ export function GlobalMedSearch() {
 
       {open && q.trim() && <>
         <div
-          className="fixed inset-0 z-0 backdrop-blur-sm bg-background/30"
+          className="fixed inset-0 z-0 backdrop-blur-lg bg-background/50"
           onClick={() => { setOpen(false); setQ(""); }}
         />
-        <div className="absolute top-full left-0 right-0 mt-0 max-h-[60vh] overflow-y-auto border-b border-border bg-card/98 backdrop-blur-md shadow-xl">
+        <div className="absolute top-full left-0 right-0 mt-0 max-h-[60vh] overflow-y-auto border-b border-border bg-card/95 backdrop-blur-xl shadow-xl">
           {results.length === 0 ? (
             <div className="p-4 text-sm text-muted-foreground">
               No medications or topics found for "{q}".
