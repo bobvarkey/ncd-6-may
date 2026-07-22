@@ -6,6 +6,7 @@ import { GlobalMedSearch } from "@/components/GlobalMedSearch";
 import { LabProvider } from "@/components/SmartLabelUpload/GlobalLabContext";
 import BackToHome from "@/components/BackToHome";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -199,6 +200,9 @@ const DiabetesBuddyLayout = () => (
         <span className="ml-3 text-sm font-heading font-semibold text-muted-foreground">
           Diabetes Med Optimizer
         </span>
+        <div className="ml-auto mr-2">
+          <ThemeToggle />
+        </div>
       </header>
       <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-4xl">
         <Suspense fallback={<RouteLoading />}>
