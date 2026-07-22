@@ -228,6 +228,13 @@
   [class*="text-popover-foreground"]    { color: hsl(var(--popover-foreground)) !important; }
   [class*="text-white"][class][class]   { color: #fff !important; }
 
+  /* Preserve white text on gradient/solid-color hero regions: descendants
+     of any text-white* ancestor inherit white instead of the aggressive
+     foreground override above. */
+  [class*="text-white"] *:not([class*="text-"]) {
+    color: inherit !important;
+  }
+
   /* Form inputs — light text on darker bg-background-ish fields */
   input, textarea, select {
     color: hsl(var(--foreground));
