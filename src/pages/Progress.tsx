@@ -14,11 +14,8 @@ interface ProgressEntry {
   rbs: number;
 }
 
-const progressChartConfig: ChartConfig = {
-  weight: { label: "Weight (kg)", color: "hsl(var(--primary))" },
-  fbs: { label: "Fasting BG", color: "hsl(var(--secondary))" },
-  rbs: { label: "Random BG", color: "hsl(var(--warning))" },
-} satisfies ChartConfig;
+
+
 
 const Progress = () => {
   const [patient, setPatient] = useState<PatientData>(EXAMPLE_PATIENT);
