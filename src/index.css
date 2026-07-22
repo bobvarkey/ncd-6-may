@@ -250,8 +250,34 @@
 
   /* Animated gradient accent bar */
   .accent-bar {
-    @apply absolute top-0 left-0 right-0 h-1 rounded-t-xl opacity-80;
+    @apply absolute top-0 left-0 right-0 h-1 rounded-t-xl opacity-90;
+    background: var(--gradient-sunset);
   }
+
+  /* Sunset Blaze utilities */
+  .bg-sunset { background: var(--gradient-sunset); }
+  .bg-sunset-soft { background: var(--gradient-sunset-soft); }
+  .text-sunset {
+    background: var(--gradient-sunset);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .border-sunset {
+    border-image: var(--gradient-sunset) 1;
+  }
+  .ring-sunset {
+    box-shadow: 0 0 0 2px hsl(var(--sunset-magenta) / 0.35);
+  }
+
+  /* Sidebar active pill — Sunset Blaze */
+  .sunset-active {
+    background: var(--gradient-sunset) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 6px 20px -6px hsl(var(--sunset-magenta) / 0.6);
+  }
+  .sunset-active * { color: #fff !important; }
 
   /* Smooth card entrance */
   .card-enter {
