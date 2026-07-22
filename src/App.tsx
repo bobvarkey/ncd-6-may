@@ -151,6 +151,7 @@ const TermsOfService = lazyWithModuleRetry(() => import("@/pages/TermsOfService"
 const DisclaimerPage = lazyWithModuleRetry(() => import("@/pages/Disclaimer"));
 const DeleteAccount = lazyWithModuleRetry(() => import("@/pages/DeleteAccount"));
 const ImageGallery = lazyWithModuleRetry(() => import("@/pages/ImageGallery"));
+const MMEGuide = lazyWithModuleRetry(() => import("@/pages/guides/MMEGuide"));
 const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
 const DailyManagementGuide = lazyWithModuleRetry(() => import("@/pages/DailyManagementGuide"));
 const Type1DMManagement = lazyWithModuleRetry(() => import("@/pages/Type1DMManagement"));
@@ -347,6 +348,8 @@ const App = () => (
           <Route path="/delete-account" element={<><TabNavigation /><DeleteAccount /></>} />
           <Route path="/account/delete" element={<Navigate to="/delete-account" replace />} />
           <Route path="/images" element={<><TabNavigation /><ImageGallery /></>} />
+          <Route path="/image-gallery" element={<Navigate to="/images" replace />} />
+          <Route path="/guides/mme-cdc" element={<><TabNavigation /><MMEGuide /></>} />
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
