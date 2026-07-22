@@ -234,12 +234,15 @@ export default function ZoomableImage({
             <div className="flex-1" />
             <button
               type="button"
+              ref={closeBtnRef}
               onClick={() => { setOpen(false); reset(); }}
-              className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors text-lg leading-none"
+              className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white text-white transition-colors text-lg leading-none"
               title="Close (Esc)"
+              aria-label="Close image viewer"
             >
               ✕
             </button>
+
           </div>
 
           {/* Image area */}
