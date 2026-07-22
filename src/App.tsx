@@ -199,6 +199,9 @@ const DiabetesBuddyLayout = () => (
         <span className="ml-3 text-sm font-heading font-semibold text-muted-foreground">
           Diabetes Med Optimizer
         </span>
+        <div className="ml-auto mr-2">
+          <ThemeToggle />
+        </div>
       </header>
       <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-4xl">
         <Suspense fallback={<RouteLoading />}>
