@@ -232,7 +232,7 @@ export function TabNavigation() {
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",
                     isActive
-                      ? item.active
+                      ? "sunset-active"
                       : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   aria-current={isActive ? "page" : undefined}
@@ -259,7 +259,7 @@ export function TabNavigation() {
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",
                     isActive
-                      ? item.active
+                      ? "sunset-active"
                       : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   aria-current={isActive ? "page" : undefined}
@@ -283,7 +283,7 @@ export function TabNavigation() {
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",
                     isActive
-                      ? item.active
+                      ? "sunset-active"
                       : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   aria-current={isActive ? "page" : undefined}
@@ -300,7 +300,7 @@ export function TabNavigation() {
       {/* Floating back-to-home button */}
       <Link
         to="/home"
-        className="fixed bottom-6 right-6 z-[60] flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
+        className="fixed bottom-6 right-6 z-[60] flex items-center justify-center h-12 w-12 rounded-full bg-sunset text-white shadow-lg hover:opacity-90 transition-all hover:scale-105 active:scale-95"
         aria-label="Back to Home"
         title="Back to Home"
       >
