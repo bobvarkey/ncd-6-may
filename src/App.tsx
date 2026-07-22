@@ -195,9 +195,10 @@ const DiabetesBuddyLayout = () => (
   <div className="min-h-screen flex w-full">
     <AppSidebar />
     <div className="flex-1 flex flex-col min-w-0">
-      <header className="h-12 flex items-center border-b bg-card px-2">
+      <header className="relative h-12 flex items-center border-b bg-card px-2 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-0.5 bg-sunset" aria-hidden />
         <SidebarTrigger className="ml-2 h-10 w-10 hover:bg-sidebar-accent" aria-label="Toggle sidebar navigation" />
-        <span className="ml-3 text-sm font-heading font-semibold text-muted-foreground">
+        <span className="ml-3 text-sm font-heading font-semibold text-sunset">
           Diabetes Med Optimizer
         </span>
         <div className="ml-auto mr-2">
