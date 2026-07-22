@@ -788,7 +788,7 @@ export default function Home() {
                     <Filter className="h-4 w-4" /> Renal Dosing
                   </Link>
                   <Link
-                    to="/image-gallery"
+                    to="/images"
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
                   >
                     <Scan className="h-4 w-4" /> Image Gallery
