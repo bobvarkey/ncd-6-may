@@ -46,5 +46,36 @@ export default defineConfig(({ mode }) => {
     "import.meta.env.VITE_GIT_BRANCH": JSON.stringify(git.branch),
     "import.meta.env.VITE_BUILD_TIME": JSON.stringify(new Date().toISOString()),
   },
+  esbuild: {
+    drop: mode === "production" ? ["console", "debugger"] : [],
+    legalComments: "none",
+  },
+  build: {
+    target: "es2020",
+    cssCodeSplit: true,
+    sourcemap: false,
+    reportCompressedSize: false,
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          "radix-vendor": [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-popover",
+            "@radix-ui/react-select",
+            "@radix-ui/react-tabs",
+            "@radix-ui/react-tooltip",
+            "@radix-ui/react-accordion",
+          ],
+          "charts-vendor": ["recharts"],
+          "query-vendor": ["@tanstack/react-query"],
+          "form-vendor": ["react-hook-form", "@hookform/resolvers", "zod"],
+          "date-vendor": ["date-fns", "react-day-picker"],
+        },
+      },
+    },
+  },
   };
 });
