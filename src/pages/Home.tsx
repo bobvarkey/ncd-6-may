@@ -863,6 +863,9 @@ export default function Home() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 pb-16 space-y-8">
+        {/* Quick Access — one-click jumps to core sections */}
+        <QuickAccessPanel />
+
         {/* Image Upload + Analyzer — prominent at top */}
         <ImageUploadAnalyzer />
 
