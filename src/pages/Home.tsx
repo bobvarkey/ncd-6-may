@@ -731,7 +731,7 @@ export default function Home() {
                   <Sparkles className="h-3 w-3" /> Clinical Decision Support
                 </span>
                 <h1 className="mt-5 text-4xl md:text-5xl font-heading font-bold tracking-tight leading-[1.05]">
-                  NCD Clinical Toolkit
+                  Clinical tools
                 </h1>
                 <p className="mt-4 text-white/90 text-base md:text-lg max-w-md leading-relaxed">
                   Evidence-based assessment, treatment algorithms, and prescription guidance for chronic disease — at the point of care.
