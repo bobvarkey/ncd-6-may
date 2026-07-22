@@ -109,55 +109,22 @@ const Progress = () => {
             <TrendingDown className="w-4 h-4 text-primary" />
             <h3 className="section-title">BG & Weight Trend</h3>
           </div>
-          <ChartContainer config={progressChartConfig} className="h-[200px] w-full">
-            <LineChart data={chartData} margin={{ top: 5, right: 10, left: -16, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-                tickFormatter={(d) => d.slice(5)}
-              />
-              <YAxis
-                yAxisId="bg"
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-              />
-              <YAxis
-                yAxisId="wt"
-                orientation="right"
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-              />
-              <ReferenceLine yAxisId="bg" y={130} stroke="hsl(var(--warning))" strokeDasharray="4 2" strokeWidth={1} />
-              <ReferenceLine yAxisId="bg" y={180} stroke="hsl(var(--destructive))" strokeDasharray="4 2" strokeWidth={1} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Line
-                yAxisId="bg"
-                type="monotone"
-                dataKey="fbs"
-                stroke="var(--color-fbs)"
-                strokeWidth={2}
-                dot={{ r: 3 }}
-                connectNulls
-              />
-              <Line
-                yAxisId="bg"
-                type="monotone"
-                dataKey="rbs"
-                stroke="var(--color-rbs)"
-                strokeWidth={2}
-                dot={{ r: 3 }}
-                connectNulls
-              />
-              <Line
-                yAxisId="wt"
-                type="monotone"
-                dataKey="weight"
-                stroke="var(--color-weight)"
-                strokeWidth={2}
-                dot={{ r: 3 }}
-                connectNulls
-              />
-            </LineChart>
-          </ChartContainer>
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 5, right: 10, left: -16, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="date" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(d) => d.slice(5)} />
+                <YAxis yAxisId="bg" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                <YAxis yAxisId="wt" orientation="right" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                <ReferenceLine yAxisId="bg" y={130} stroke="hsl(var(--warning))" strokeDasharray="4 2" strokeWidth={1} />
+                <ReferenceLine yAxisId="bg" y={180} stroke="hsl(var(--destructive))" strokeDasharray="4 2" strokeWidth={1} />
+                <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                <Line yAxisId="bg" type="monotone" dataKey="fbs" name="Fasting BG" stroke="hsl(var(--secondary))" strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                <Line yAxisId="bg" type="monotone" dataKey="rbs" name="Random BG" stroke="hsl(var(--warning))" strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                <Line yAxisId="wt" type="monotone" dataKey="weight" name="Weight (kg)" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} connectNulls />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
           <p className="text-xs text-muted-foreground mt-2">
             Dashed lines: 130 mg/dL target (warning) / 180 mg/dL threshold (danger)
           </p>
