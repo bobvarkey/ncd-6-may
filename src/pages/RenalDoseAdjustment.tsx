@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import { useState, useEffect } from "react";
 import { Pill, FlaskConical, Search, AlertTriangle, ChevronDown, Calculator, RotateCcw, ArrowLeftRight, Info } from "lucide-react";
