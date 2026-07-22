@@ -1,3 +1,4 @@
+import haalandMnemonic from "@/assets/haaland-mnemonic.png.asset.json";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Image, Home, ChevronDown, ChevronUp, ExternalLink, Search } from "lucide-react";
@@ -29,7 +30,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
   { id: "htn-algorithm-steps", src: "/images/htn-algorithm-steps.jpg", label: "HTN Algorithm Steps", category: "Hypertension", description: "Hypertension treatment algorithm steps", sourcePages: [{ label: "HTN Algorithm Flowchart", path: "/hypertension/assessment" }] },
   { id: "htn-comorbidity-matrix", src: "/images/htn-comorbidity-matrix.jpg", label: "HTN Comorbidity Matrix", category: "Hypertension", description: "Hypertension comorbidity treatment matrix", sourcePages: [{ label: "HTN Algorithm Flowchart", path: "/hypertension/assessment" }] },
   { id: "htn-rx", src: "/images/htn-rx.png", label: "HTN Medication Guide", category: "Hypertension", description: "Hypertension medication reference", sourcePages: [{ label: "HTN Medication Guide", path: "/hypertension/medication-guide" }] },
-  { id: "haaland-mnemonic", src: "/images/haaland-mnemonic.jpg", label: "HAALAND Mnemonic — Secondary HTN", category: "Hypertension", description: "HAALAND mnemonic for secondary hypertension causes (Hyperaldosteronism, Aortic coarctation, Apnea/OSA, Liddle syndrome, Adrenal, Nephropathy, Drugs)", sourcePages: [{ label: "Secondary HTN Evaluation", path: "/hypertension/assessment" }] },
+  { id: "haaland-mnemonic", src: haalandMnemonic.url, label: "HAALAND Mnemonic — Secondary HTN", category: "Hypertension", description: "HAALAND mnemonic for secondary hypertension causes (Hyperaldosteronism, Aortic coarctation, Apnea/OSA, Liddle syndrome, Adrenal, Nephropathy, Drugs)", sourcePages: [{ label: "Secondary HTN Evaluation", path: "/hypertension/assessment" }] },
   { id: "mra-pocket-card", src: "/__l5e/assets-v1/0da12e7b-777a-4554-ba13-192499cd8e22/mra-pocket-card.jpg", label: "MRA Pocket Card", category: "Hypertension", description: "Spironolactone vs Eplerenone vs Finerenone — steroidal & nonsteroidal MRAs: uses, dosing, key cautions", sourcePages: [{ label: "HTN Medication Guide", path: "/hypertension/medication-guide" }] },
 
   // ─── Lipids ───
