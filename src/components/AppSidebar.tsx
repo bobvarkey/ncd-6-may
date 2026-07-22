@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown,
+  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images,
   type LucideIcon,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
@@ -26,6 +26,7 @@ const SECTIONS: Section[] = [
       { title: "Patient", url: "/patient", icon: User },
       { title: "Summary", url: "/summary", icon: FileText },
       { title: "Progress", url: "/progress", icon: TrendingDown },
+      { title: "Image Gallery", url: "/images", icon: Images, keywords: "figures diagrams algorithms" },
     ],
   },
   {
