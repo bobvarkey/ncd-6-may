@@ -33,6 +33,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import UnifiedPrescriptionMiniApp from "@/components/UnifiedPrescriptionMiniApp";
+import heroDoctorPatient from "@/assets/hero-doctor-patient.jpg";
 
 interface PrescriptionState {
   content: React.ReactNode;
