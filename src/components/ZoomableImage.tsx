@@ -143,18 +143,26 @@ export default function ZoomableImage({
     setDragging(false);
   }, []);
 
-  // Keyboard zoom
+  // Keyboard: zoom, rotate, close. Radix Dialog already handles focus trap + Esc,
+  // but we add explicit shortcuts and cycle through toolbar buttons with arrows.
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!open) return;
+    // Move focus into the dialog toolbar for immediate keyboard control.
+    const t = window.setTimeout(() => closeBtnRef.current?.focus(), 50);
     const handler = (e: KeyboardEvent) => {
       if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomIn(); }
-      if (e.key === "-") { e.preventDefault(); zoomOut(); }
-      if (e.key === "r" || e.key === "R") { setRotation((prev) => (prev + 90) % 360); }
-      if (e.key === "Escape") { setOpen(false); }
+      else if (e.key === "-" || e.key === "_") { e.preventDefault(); zoomOut(); }
+      else if (e.key === "r" || e.key === "R") { setRotation((prev) => (prev + 90) % 360); }
+      else if (e.key === "0") { reset(); }
+      else if (e.key === "Escape") { setOpen(false); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); zoomIn(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); zoomOut(); }
     };
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [open, zoomIn, zoomOut]);
+    return () => { window.clearTimeout(t); window.removeEventListener("keydown", handler); };
+  }, [open, zoomIn, zoomOut, reset]);
+
 
   return (
     <>
