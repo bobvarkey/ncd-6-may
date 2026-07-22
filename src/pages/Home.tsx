@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/collapsible";
 import UnifiedPrescriptionMiniApp from "@/components/UnifiedPrescriptionMiniApp";
 import heroDoctorPatient from "@/assets/hero-doctor-patient.jpg";
+import Seo from "@/components/Seo";
 
 interface PrescriptionState {
   content: React.ReactNode;
