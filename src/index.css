@@ -31,16 +31,16 @@
     --popover: 0 0% 3%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 185 60% 50%;            /* teal accent — keep for visual pop */
+    --primary: 330 78% 58%;             /* Sunset Blaze magenta */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 8%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 6%;
-    --muted-foreground: 0 0% 70%;      /* light gray for less emphasis */
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 185 45% 45%;
+    --accent: 249 73% 63%;              /* Sunset Blaze violet */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
@@ -48,11 +48,19 @@
 
     --border: 0 0% 15%;
     --input: 0 0% 12%;
-    --ring: 185 60% 50%;
+    --ring: 14 100% 60%;                /* Sunset Blaze coral */
 
     --radius: 0.625rem;
 
-    /* Clinical result tokens — vivid on black */
+    /* Sunset Blaze palette anchors */
+    --sunset-coral: 14 100% 60%;        /* #ff6b35 */
+    --sunset-amber: 31 93% 54%;         /* #f7931e */
+    --sunset-magenta: 330 78% 58%;      /* #e84393 */
+    --sunset-violet: 249 73% 63%;       /* #6c5ce7 */
+    --gradient-sunset: linear-gradient(120deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%);
+    --gradient-sunset-soft: linear-gradient(120deg, rgba(255,107,53,0.12) 0%, rgba(247,147,30,0.10) 35%, rgba(232,67,147,0.12) 70%, rgba(108,92,231,0.14) 100%);
+
+    /* Clinical result tokens */
     --success: 152 55% 42%;
     --success-foreground: 0 0% 100%;
     --warning: 38 85% 50%;
@@ -60,20 +68,19 @@
     --info: 200 65% 50%;
     --info-foreground: 0 0% 100%;
 
-    /* Mode accent colors */
     --mode-simple: 142 50% 45%;
     --mode-moderate: 32 85% 50%;
     --mode-complex: 265 60% 55%;
 
-    /* Sidebar tokens */
+    /* Sidebar tokens — Sunset Blaze */
     --sidebar-background: 0 0% 2%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 185 60% 50%;
+    --sidebar-primary: 330 78% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 8%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 0 0% 12%;
-    --sidebar-ring: 185 60% 50%;
+    --sidebar-ring: 14 100% 60%;
   }
 
   * {
