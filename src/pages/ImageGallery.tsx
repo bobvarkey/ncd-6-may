@@ -99,6 +99,11 @@ export default function ImageGallery() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Image Gallery — Clinical Algorithms & Pocket Cards"
+        description="Zoomable clinical algorithms, mnemonics and pocket cards across diabetes, hypertension, lipids, renal, infections and geriatrics."
+        path="/images"
+      />
       {/* Sticky Header */}
       <div className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto max-w-4xl px-4">
