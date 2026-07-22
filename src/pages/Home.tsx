@@ -573,24 +573,34 @@ interface DiseaseCardProps {
   badge?: string;
 }
 
-function DiseaseCard({ title, description, icon, to, accent, badge }: DiseaseCardProps) {
+function DiseaseCard({ title, description, icon, to, badge }: DiseaseCardProps) {
   return (
     <Link to={to} className="group block">
-      <div className="relative h-full p-4 rounded-xl border border-border/50 bg-card hover:border-border hover:shadow-md hover:shadow-primary/5 transition-all duration-200 cursor-pointer overflow-hidden">
-        {/* Accent bar on top */}
-        <div className={`absolute top-0 left-0 right-0 h-0.5 ${accent} opacity-60`} />
-        <div className="flex items-start gap-3">
-          <div className={`w-10 h-10 rounded-lg ${accent}/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-            {icon}
+      <div className="relative h-full p-4 rounded-xl border border-border/50 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer overflow-hidden">
+        {/* Sunset Blaze accent bar */}
+        <div
+          className="absolute top-0 left-0 right-0 h-1 opacity-90"
+          style={{ background: "linear-gradient(90deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%)" }}
+        />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          style={{ background: "linear-gradient(120deg, rgba(255,107,53,0.06) 0%, rgba(232,67,147,0.06) 55%, rgba(108,92,231,0.08) 100%)" }}
+        />
+        <div className="relative flex items-start gap-3">
+          <div
+            className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform text-white shadow-sm"
+            style={{ background: "linear-gradient(135deg, #ff6b35 0%, #e84393 60%, #6c5ce7 100%)" }}
+          >
+            <span className="[&_svg]:text-white">{icon}</span>
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{title}</h3>
-              {badge && <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-border/50 text-muted-foreground">{badge}</Badge>}
+              <h3 className="text-sm font-semibold text-foreground group-hover:text-[#e84393] transition-colors">{title}</h3>
+              {badge && <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-[#e84393]/40 text-[#e84393]">{badge}</Badge>}
             </div>
             <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{description}</p>
           </div>
-          <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0 mt-2" />
+          <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-[#e84393] group-hover:translate-x-0.5 transition-all shrink-0 mt-2" />
         </div>
       </div>
     </Link>
@@ -632,13 +642,20 @@ interface QuickActionProps {
 function QuickAction({ title, description, icon, to }: QuickActionProps) {
   return (
     <Link to={to}>
-      <div className="p-5 rounded-xl border border-border/30 bg-gradient-to-br from-background via-muted/10 to-muted/20 hover:from-primary/5 hover:via-primary/5 hover:to-primary/10 hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 transition-all duration-200 cursor-pointer group">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-200">
-            {icon}
+      <div className="relative overflow-hidden p-5 rounded-xl border border-border/40 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer group">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          style={{ background: "linear-gradient(120deg, rgba(255,107,53,0.08) 0%, rgba(247,147,30,0.06) 30%, rgba(232,67,147,0.08) 65%, rgba(108,92,231,0.10) 100%)" }}
+        />
+        <div className="relative flex items-start gap-4">
+          <div
+            className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform text-white shadow-sm"
+            style={{ background: "linear-gradient(135deg, #ff6b35 0%, #f7931e 30%, #e84393 65%, #6c5ce7 100%)" }}
+          >
+            <span className="[&_svg]:text-white">{icon}</span>
           </div>
           <div className="min-w-0">
-            <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">{title}</p>
+            <p className="text-base font-semibold text-foreground group-hover:text-[#e84393] transition-colors">{title}</p>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{description}</p>
           </div>
         </div>
@@ -742,6 +759,40 @@ export default function Home() {
                       {g}
                     </span>
                   ))}
+                </div>
+
+                {/* Primary CTAs */}
+                <div className="mt-7 flex flex-wrap gap-2.5">
+                  <Link
+                    to="/diabetes"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white text-[#c2185b] font-semibold text-sm shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                  >
+                    <Droplets className="h-4 w-4" /> Diabetes
+                  </Link>
+                  <Link
+                    to="/hypertension"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
+                  >
+                    <Heart className="h-4 w-4" /> Hypertension
+                  </Link>
+                  <Link
+                    to="/lipids"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
+                  >
+                    <Droplet className="h-4 w-4" /> Lipids
+                  </Link>
+                  <Link
+                    to="/renal-dosing"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
+                  >
+                    <Filter className="h-4 w-4" /> Renal Dosing
+                  </Link>
+                  <Link
+                    to="/image-gallery"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
+                  >
+                    <Scan className="h-4 w-4" /> Image Gallery
+                  </Link>
                 </div>
               </div>
 
