@@ -20,7 +20,7 @@ const SECTIONS: Section[] = [
   {
     id: "overview",
     label: "Overview",
-    color: "text-sky-500",
+    color: "text-[#ff6b35]",
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Patient", url: "/patient", icon: User },
@@ -32,7 +32,7 @@ const SECTIONS: Section[] = [
   {
     id: "diet",
     label: "Diet & Lifestyle",
-    color: "text-emerald-500",
+    color: "text-[#f7931e]",
     items: [
       { title: "Foods", url: "/foods", icon: UtensilsCrossed },
       { title: "Plate Method", url: "/plate", icon: Pizza },
@@ -42,7 +42,7 @@ const SECTIONS: Section[] = [
   {
     id: "medications",
     label: "Medications & Insulin",
-    color: "text-violet-500",
+    color: "text-[#e84393]",
     items: [
       { title: "Medications", url: "/medications", icon: Pill },
       { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, keywords: "basal bolus" },
@@ -54,7 +54,7 @@ const SECTIONS: Section[] = [
   {
     id: "risk",
     label: "Risk & Renal",
-    color: "text-amber-500",
+    color: "text-[#6c5ce7]",
     items: [
       { title: "Prediabetes", url: "/prediabetes", icon: HeartPulse },
       { title: "Hypo Risk Score", url: "/hypo-risk", icon: ShieldAlert },
@@ -65,7 +65,7 @@ const SECTIONS: Section[] = [
   {
     id: "algorithms",
     label: "Algorithms & Guides",
-    color: "text-rose-500",
+    color: "text-[#ff6b35]",
     items: [
       { title: "Daily Management", url: "/daily-management", icon: BookOpen },
       { title: "Type 1 DM", url: "/type1-management", icon: Activity },
@@ -79,7 +79,7 @@ const SECTIONS: Section[] = [
   {
     id: "legal",
     label: "Legal & Support",
-    color: "text-slate-500",
+    color: "text-[#e84393]",
     items: [
       { title: "Feedback & Tips", url: "/feedback", icon: MessageSquare },
       { title: "Disclaimer", url: "/disclaimer", icon: WarningTriangle },
