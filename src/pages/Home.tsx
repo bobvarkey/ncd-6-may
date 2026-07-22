@@ -642,13 +642,20 @@ interface QuickActionProps {
 function QuickAction({ title, description, icon, to }: QuickActionProps) {
   return (
     <Link to={to}>
-      <div className="p-5 rounded-xl border border-border/30 bg-gradient-to-br from-background via-muted/10 to-muted/20 hover:from-primary/5 hover:via-primary/5 hover:to-primary/10 hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 transition-all duration-200 cursor-pointer group">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-200">
-            {icon}
+      <div className="relative overflow-hidden p-5 rounded-xl border border-border/40 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer group">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          style={{ background: "linear-gradient(120deg, rgba(255,107,53,0.08) 0%, rgba(247,147,30,0.06) 30%, rgba(232,67,147,0.08) 65%, rgba(108,92,231,0.10) 100%)" }}
+        />
+        <div className="relative flex items-start gap-4">
+          <div
+            className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform text-white shadow-sm"
+            style={{ background: "linear-gradient(135deg, #ff6b35 0%, #f7931e 30%, #e84393 65%, #6c5ce7 100%)" }}
+          >
+            <span className="[&_svg]:text-white">{icon}</span>
           </div>
           <div className="min-w-0">
-            <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">{title}</p>
+            <p className="text-base font-semibold text-foreground group-hover:text-[#e84393] transition-colors">{title}</p>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{description}</p>
           </div>
         </div>
