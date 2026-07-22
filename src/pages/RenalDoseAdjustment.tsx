@@ -1001,6 +1001,11 @@ const RenalDoseAdjustment = () => {
 
   return (
     <div className="space-y-5 animate-slide-in">
+      <Seo
+        title="Renal Dose Adjustment — eGFR-Based Prescribing"
+        description="eGFR-based dose adjustments across diabetes, cardiovascular and antibiotic classes, aligned with ADA 2026 and KDIGO."
+        path="/renal-dosing"
+      />
       <div>
         <h1 className="text-xl font-heading font-bold flex items-center gap-2">
           <FlaskConical className="w-5 h-5 text-primary" />
