@@ -766,6 +766,19 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Clinical Tools — Evidence-Based Decision Support"
+        description="Fast, evidence-based calculators and algorithms for diabetes, hypertension, lipids, renal dosing, infections, and more — designed for the point of care."
+        path="/home"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "MedicalWebPage",
+          name: "Clinical Tools",
+          url: "https://ncdapp.store/home",
+          audience: { "@type": "MedicalAudience", audienceType: "Physician" },
+          about: { "@type": "MedicalCondition", name: "Non-communicable diseases" },
+        }}
+      />
       {/* Grain Overlay */}
       <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
