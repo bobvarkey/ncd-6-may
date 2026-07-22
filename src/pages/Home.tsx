@@ -796,19 +796,19 @@ export default function Home() {
           >
             <div className="grid md:grid-cols-2 gap-0 items-stretch">
               {/* Copy */}
-              <div className="relative z-10 p-8 md:p-12 text-white">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur border border-white/25 text-xs font-medium tracking-wide">
+              <div className="relative z-10 p-8 md:p-12">
+                <span className="hero-badge hero-eyebrow inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium">
                   <Sparkles className="h-3 w-3" /> Clinical Decision Support
                 </span>
-                <h1 className="mt-5 text-4xl md:text-5xl font-heading font-bold tracking-tight leading-[1.05]">
+                <h1 className="hero-title mt-5 text-4xl md:text-5xl font-bold tracking-tight leading-[1.05]">
                   Clinical tools
                 </h1>
-                <p className="mt-4 text-white/90 text-base md:text-lg max-w-md leading-relaxed">
+                <p className="hero-subtitle mt-4 text-base md:text-lg max-w-md leading-relaxed">
                   Evidence-based assessment, treatment algorithms, and prescription guidance for chronic disease — at the point of care.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2 text-[11px] font-medium">
-                  {["ADA 2026", "ESC/ESH 2024", "LAI 2023", "KDIGO", "GINA/GOLD"].map((g) => (
-                    <span key={g} className="px-2.5 py-1 rounded-full bg-white/15 border border-white/25 backdrop-blur">
+                  {HERO_GUIDELINES.map((g) => (
+                    <span key={g} className="hero-badge px-2.5 py-1 rounded-full">
                       {g}
                     </span>
                   ))}
@@ -816,36 +816,19 @@ export default function Home() {
 
                 {/* Primary CTAs */}
                 <div className="mt-7 flex flex-wrap gap-2.5">
-                  <Link
-                    to="/diabetes"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white text-[#c2185b] font-semibold text-sm shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 transition-all"
-                  >
-                    <Droplets className="h-4 w-4" /> Diabetes
-                  </Link>
-                  <Link
-                    to="/hypertension"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    <Heart className="h-4 w-4" /> Hypertension
-                  </Link>
-                  <Link
-                    to="/lipids"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    <Droplet className="h-4 w-4" /> Lipids
-                  </Link>
-                  <Link
-                    to="/renal-dosing"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    <Filter className="h-4 w-4" /> Renal Dosing
-                  </Link>
-                  <Link
-                    to="/images"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    <Scan className="h-4 w-4" /> Image Gallery
-                  </Link>
+                  {HERO_CTAS.map(({ to, label, Icon, primary }) => (
+                    <Link
+                      key={to}
+                      to={to}
+                      className={
+                        primary
+                          ? "hero-link-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-semibold text-sm shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                          : "hero-link inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
+                      }
+                    >
+                      <Icon className="h-4 w-4" /> {label}
+                    </Link>
+                  ))}
                 </div>
               </div>
 
@@ -856,6 +839,9 @@ export default function Home() {
                   alt="Doctor consulting with a patient in a modern clinic"
                   width={1600}
                   height={900}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 {/* Blend into gradient on the left edge */}
