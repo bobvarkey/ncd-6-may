@@ -574,7 +574,7 @@ interface DiseaseCardProps {
   badge?: string;
 }
 
-function DiseaseCard({ title, description, icon, to, badge }: DiseaseCardProps) {
+const DiseaseCard = React.memo(function DiseaseCard({ title, description, icon, to, badge }: DiseaseCardProps) {
   return (
     <Link to={to} className="group block">
       <div className="relative h-full p-4 rounded-xl border border-border/50 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer overflow-hidden">
@@ -606,7 +606,7 @@ function DiseaseCard({ title, description, icon, to, badge }: DiseaseCardProps) 
       </div>
     </Link>
   );
-}
+});
 
 // ── Section Group ──
 interface DiseaseGroupProps {
@@ -640,7 +640,7 @@ interface QuickActionProps {
   to: string;
 }
 
-function QuickAction({ title, description, icon, to }: QuickActionProps) {
+const QuickAction = React.memo(function QuickAction({ title, description, icon, to }: QuickActionProps) {
   return (
     <Link to={to}>
       <div className="relative overflow-hidden p-5 rounded-xl border border-border/40 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer group">
@@ -663,7 +663,7 @@ function QuickAction({ title, description, icon, to }: QuickActionProps) {
       </div>
     </Link>
   );
-}
+});
 
 const QUICK_ACCESS = [
   { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets },
