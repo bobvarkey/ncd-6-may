@@ -13,7 +13,9 @@
     "deadcode": "knip",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "predev": "bunx tsx scripts/generate-sitemap.ts",
+    "prebuild": "bunx tsx scripts/generate-sitemap.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -95,5 +97,5 @@
     "vite": "^8.0.16",
     "vitest": "^4.1.8"
   },
-  "description": "Comprehensive NCD management app — combining Big Four NCD tools + Diabetes Buddy"
+  "description": "Comprehensive NCD management app \u2014 combining Big Four NCD tools + Diabetes Buddy"
 }
