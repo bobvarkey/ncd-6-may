@@ -748,7 +748,7 @@ export default function Home() {
               {/* Hero image */}
               <div className="relative min-h-[240px] md:min-h-[360px]">
                 <img
-                  src="/src/assets/hero-doctor-patient.jpg"
+                  src={heroDoctorPatient}
                   alt="Doctor consulting with a patient in a modern clinic"
                   width={1600}
                   height={900}
