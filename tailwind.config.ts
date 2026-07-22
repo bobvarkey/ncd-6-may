@@ -12,7 +12,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["DM Sans", "system-ui", "sans-serif"],
+        sans: ["Source Sans 3", "system-ui", "sans-serif"],
         heading: ["Space Grotesk", "system-ui", "sans-serif"],
       },
       colors: {
