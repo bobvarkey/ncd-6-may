@@ -714,16 +714,59 @@ export default function Home() {
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
       }} />
 
-      {/* Header Section */}
-      <header className="max-w-6xl mx-auto px-6 pt-8 pb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <h1 className="text-3xl font-serif font-semibold tracking-tight">
-              NCD Clinical Toolkit
-            </h1>
-            <p className="text-muted-foreground mt-2 max-w-xl">
-              Comprehensive non-communicable disease management tools — assessment, treatment algorithms, and clinical guidelines at your fingertips.
-            </p>
+      {/* Hero Section — Sunset Blaze */}
+      <header className="relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6 pt-8 pb-10">
+          <div
+            className="relative rounded-3xl overflow-hidden shadow-2xl"
+            style={{
+              background: "linear-gradient(120deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%)",
+            }}
+          >
+            <div className="grid md:grid-cols-2 gap-0 items-stretch">
+              {/* Copy */}
+              <div className="relative z-10 p-8 md:p-12 text-white">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur border border-white/25 text-xs font-medium tracking-wide">
+                  <Sparkles className="h-3 w-3" /> Clinical Decision Support
+                </span>
+                <h1 className="mt-5 text-4xl md:text-5xl font-heading font-bold tracking-tight leading-[1.05]">
+                  NCD Clinical Toolkit
+                </h1>
+                <p className="mt-4 text-white/90 text-base md:text-lg max-w-md leading-relaxed">
+                  Evidence-based assessment, treatment algorithms, and prescription guidance for chronic disease — at the point of care.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-2 text-[11px] font-medium">
+                  {["ADA 2026", "ESC/ESH 2024", "LAI 2023", "KDIGO", "GINA/GOLD"].map((g) => (
+                    <span key={g} className="px-2.5 py-1 rounded-full bg-white/15 border border-white/25 backdrop-blur">
+                      {g}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Hero image */}
+              <div className="relative min-h-[240px] md:min-h-[360px]">
+                <img
+                  src="/src/assets/hero-doctor-patient.jpg"
+                  alt="Doctor consulting with a patient in a modern clinic"
+                  width={1600}
+                  height={900}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {/* Blend into gradient on the left edge */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, rgba(255,107,53,0.55) 0%, rgba(255,107,53,0) 35%, rgba(108,92,231,0.25) 100%)",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Soft glow accents */}
+            <div className="pointer-events-none absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/20 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 right-10 w-72 h-72 rounded-full bg-[#6c5ce7]/40 blur-3xl" />
           </div>
         </div>
       </header>
