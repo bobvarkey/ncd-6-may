@@ -150,6 +150,14 @@ export function AppSidebar() {
     saveState(open);
   }, [open]);
 
+  // Blur main content while sidebar search is active (desktop + mobile).
+  useEffect(() => {
+    const active = query.trim().length > 0;
+    document.body.classList.toggle("sidebar-search-active", active);
+    return () => document.body.classList.remove("sidebar-search-active");
+  }, [query]);
+
+
   const filtered = useMemo(() => {
     if (!query) return SECTIONS;
     return SECTIONS.map((s) => ({

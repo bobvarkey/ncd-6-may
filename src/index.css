@@ -389,3 +389,13 @@
   .print-force-open [data-state="closed"] > * { display: block !important; }
 }
 
+
+/* Blur main content while sidebar search is active (desktop + mobile). */
+body.sidebar-search-active main {
+  filter: blur(4px);
+  transition: filter 0.2s ease-out;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.sidebar-search-active main { transition: none; }
+}
