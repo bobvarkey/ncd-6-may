@@ -46,5 +46,31 @@ export default defineConfig(({ mode }) => {
     "import.meta.env.VITE_GIT_BRANCH": JSON.stringify(git.branch),
     "import.meta.env.VITE_BUILD_TIME": JSON.stringify(new Date().toISOString()),
   },
+  esbuild: {
+    drop: mode === "production" ? ["console", "debugger"] : [],
+    legalComments: "none",
+  },
+  build: {
+    target: "es2020",
+    cssCodeSplit: true,
+    sourcemap: false,
+    reportCompressedSize: false,
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("react-router")) return "react-vendor";
+          if (id.match(/node_modules\/(react|react-dom|scheduler)\//)) return "react-vendor";
+          if (id.includes("@radix-ui")) return "radix-vendor";
+          if (id.includes("recharts") || id.includes("d3-")) return "charts-vendor";
+          if (id.includes("@tanstack")) return "query-vendor";
+          if (id.includes("react-hook-form") || id.includes("@hookform") || id.includes("zod")) return "form-vendor";
+          if (id.includes("date-fns") || id.includes("react-day-picker")) return "date-vendor";
+          if (id.includes("lucide-react")) return "icons-vendor";
+        },
+      },
+    },
+  },
   };
 });
