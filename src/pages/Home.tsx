@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import {
   Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, ChevronRight, Info,
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
@@ -574,7 +575,7 @@ interface DiseaseCardProps {
   badge?: string;
 }
 
-function DiseaseCard({ title, description, icon, to, badge }: DiseaseCardProps) {
+const DiseaseCard = React.memo(function DiseaseCard({ title, description, icon, to, badge }: DiseaseCardProps) {
   return (
     <Link to={to} className="group block">
       <div className="relative h-full p-4 rounded-xl border border-border/50 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer overflow-hidden">
@@ -606,7 +607,7 @@ function DiseaseCard({ title, description, icon, to, badge }: DiseaseCardProps) 
       </div>
     </Link>
   );
-}
+});
 
 // ── Section Group ──
 interface DiseaseGroupProps {
@@ -640,7 +641,7 @@ interface QuickActionProps {
   to: string;
 }
 
-function QuickAction({ title, description, icon, to }: QuickActionProps) {
+const QuickAction = React.memo(function QuickAction({ title, description, icon, to }: QuickActionProps) {
   return (
     <Link to={to}>
       <div className="relative overflow-hidden p-5 rounded-xl border border-border/40 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer group">
@@ -663,7 +664,7 @@ function QuickAction({ title, description, icon, to }: QuickActionProps) {
       </div>
     </Link>
   );
-}
+});
 
 const QUICK_ACCESS = [
   { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets },
@@ -671,6 +672,17 @@ const QUICK_ACCESS = [
   { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet },
   { to: "/renal-dosing", label: "Renal Dosing", desc: "Dose adjustment by eGFR",     Icon: Filter },
   { to: "/images",       label: "Image Gallery",desc: "Algorithms & pocket cards",   Icon: Scan },
+] as const;
+
+// Static hero data — module-level so it never recreates per render.
+const HERO_GUIDELINES = ["ADA 2026", "ESC/ESH 2024", "LAI 2023", "KDIGO", "GINA/GOLD"] as const;
+
+const HERO_CTAS = [
+  { to: "/diabetes",     label: "Diabetes",      Icon: Droplets, primary: true  },
+  { to: "/hypertension", label: "Hypertension",  Icon: Heart,    primary: false },
+  { to: "/lipids",       label: "Lipids",        Icon: Droplet,  primary: false },
+  { to: "/renal-dosing", label: "Renal Dosing",  Icon: Filter,   primary: false },
+  { to: "/images",       label: "Image Gallery", Icon: Scan,     primary: false },
 ] as const;
 
 function QuickAccessPanel() {
@@ -780,6 +792,10 @@ export default function Home() {
           about: { "@type": "MedicalCondition", name: "Non-communicable diseases" },
         }}
       />
+      {/* LCP preload — hero doctor image */}
+      <Helmet>
+        <link rel="preload" as="image" href={heroDoctorPatient} fetchPriority="high" />
+      </Helmet>
       {/* Grain Overlay */}
       <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -796,19 +812,19 @@ export default function Home() {
           >
             <div className="grid md:grid-cols-2 gap-0 items-stretch">
               {/* Copy */}
-              <div className="relative z-10 p-8 md:p-12 text-white">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur border border-white/25 text-xs font-medium tracking-wide">
+              <div className="relative z-10 p-8 md:p-12">
+                <span className="hero-badge hero-eyebrow inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium">
                   <Sparkles className="h-3 w-3" /> Clinical Decision Support
                 </span>
-                <h1 className="mt-5 text-4xl md:text-5xl font-heading font-bold tracking-tight leading-[1.05]">
+                <h1 className="hero-title mt-5 text-4xl md:text-5xl font-bold tracking-tight leading-[1.05]">
                   Clinical tools
                 </h1>
-                <p className="mt-4 text-white/90 text-base md:text-lg max-w-md leading-relaxed">
+                <p className="hero-subtitle mt-4 text-base md:text-lg max-w-md leading-relaxed">
                   Evidence-based assessment, treatment algorithms, and prescription guidance for chronic disease — at the point of care.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2 text-[11px] font-medium">
-                  {["ADA 2026", "ESC/ESH 2024", "LAI 2023", "KDIGO", "GINA/GOLD"].map((g) => (
-                    <span key={g} className="px-2.5 py-1 rounded-full bg-white/15 border border-white/25 backdrop-blur">
+                  {HERO_GUIDELINES.map((g) => (
+                    <span key={g} className="hero-badge px-2.5 py-1 rounded-full">
                       {g}
                     </span>
                   ))}
@@ -816,36 +832,19 @@ export default function Home() {
 
                 {/* Primary CTAs */}
                 <div className="mt-7 flex flex-wrap gap-2.5">
-                  <Link
-                    to="/diabetes"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white text-[#c2185b] font-semibold text-sm shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 transition-all"
-                  >
-                    <Droplets className="h-4 w-4" /> Diabetes
-                  </Link>
-                  <Link
-                    to="/hypertension"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    <Heart className="h-4 w-4" /> Hypertension
-                  </Link>
-                  <Link
-                    to="/lipids"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    <Droplet className="h-4 w-4" /> Lipids
-                  </Link>
-                  <Link
-                    to="/renal-dosing"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    <Filter className="h-4 w-4" /> Renal Dosing
-                  </Link>
-                  <Link
-                    to="/images"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 text-white font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    <Scan className="h-4 w-4" /> Image Gallery
-                  </Link>
+                  {HERO_CTAS.map(({ to, label, Icon, primary }) => (
+                    <Link
+                      key={to}
+                      to={to}
+                      className={
+                        primary
+                          ? "hero-link-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-semibold text-sm shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                          : "hero-link inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
+                      }
+                    >
+                      <Icon className="h-4 w-4" /> {label}
+                    </Link>
+                  ))}
                 </div>
               </div>
 
@@ -856,6 +855,9 @@ export default function Home() {
                   alt="Doctor consulting with a patient in a modern clinic"
                   width={1600}
                   height={900}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 {/* Blend into gradient on the left edge */}

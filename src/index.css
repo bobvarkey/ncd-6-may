@@ -235,6 +235,49 @@
     color: inherit !important;
   }
 
+  /* ============================================================
+     Home hero typography — always renders on the fixed Sunset
+     Blaze gradient. Colors are theme-independent (light + dark)
+     and use max specificity to defeat the global !important
+     foreground overrides.
+     ============================================================ */
+  .hero-eyebrow[class][class],
+  .hero-eyebrow[class][class] * {
+    color: #ffffff !important;
+    letter-spacing: 0.04em;
+  }
+  h1.hero-title[class][class],
+  .hero-title[class][class] {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  p.hero-subtitle[class][class],
+  .hero-subtitle[class][class] {
+    color: rgba(255, 255, 255, 0.92) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+  }
+  .hero-badge[class][class],
+  .hero-badge[class][class] * {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  a.hero-link[class][class],
+  .hero-link[class][class],
+  .hero-link[class][class] * {
+    color: #ffffff !important;
+  }
+  a.hero-link-primary[class][class],
+  .hero-link-primary[class][class],
+  .hero-link-primary[class][class] * {
+    color: #c2185b !important;
+    background: #ffffff;
+  }
+
   /* Form inputs — light text on darker bg-background-ish fields */
   input, textarea, select {
     color: hsl(var(--foreground));
