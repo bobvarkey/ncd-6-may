@@ -673,6 +673,17 @@ const QUICK_ACCESS = [
   { to: "/images",       label: "Image Gallery",desc: "Algorithms & pocket cards",   Icon: Scan },
 ] as const;
 
+// Static hero data — module-level so it never recreates per render.
+const HERO_GUIDELINES = ["ADA 2026", "ESC/ESH 2024", "LAI 2023", "KDIGO", "GINA/GOLD"] as const;
+
+const HERO_CTAS = [
+  { to: "/diabetes",     label: "Diabetes",      Icon: Droplets, primary: true  },
+  { to: "/hypertension", label: "Hypertension",  Icon: Heart,    primary: false },
+  { to: "/lipids",       label: "Lipids",        Icon: Droplet,  primary: false },
+  { to: "/renal-dosing", label: "Renal Dosing",  Icon: Filter,   primary: false },
+  { to: "/images",       label: "Image Gallery", Icon: Scan,     primary: false },
+] as const;
+
 function QuickAccessPanel() {
   return (
     <section aria-labelledby="quick-access-heading" className="rounded-2xl border bg-card p-4 md:p-5">
