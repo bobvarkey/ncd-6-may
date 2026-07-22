@@ -26,7 +26,7 @@ function BloodSubNav() {
               className={cn(
                 "flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium transition-colors",
                 isActive
-                  ? "bg-sky-500/10 text-primary"
+                  ? "sunset-active"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
               aria-current={isActive ? "page" : undefined}
@@ -58,7 +58,7 @@ function HtnSubNav() {
               className={cn(
                 "flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium transition-colors",
                 isActive
-                  ? "bg-warning/100/10 text-warning"
+                  ? "sunset-active"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
               aria-current={isActive ? "page" : undefined}
@@ -108,7 +108,7 @@ function ElectrolyteSubNav() {
               className={cn(
                 "flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium transition-colors",
                 isActive
-                  ? "bg-cyan-500/10 text-cyan-400"
+                  ? "sunset-active"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
               aria-current={isActive ? "page" : undefined}
@@ -131,7 +131,7 @@ const navItems: NavItem[] = [
   { path: "/liver",                   label: "Liver",     icon: Dna, active: "bg-lime-500/10 text-lime-400 border-lime-500/30", emoji: "🫀" },
   { path: "/thyroid",                 label: "Thyroid",   icon: Microscope, active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", emoji: "🦋" },
   { path: "/obesity/bmi-calculator",  label: "Obesity",   icon: Weight, active: "bg-violet-500/10 text-violet-400 border-violet-500/30", emoji: "⚖️" },
-  { path: "/respiratory",             label: "Asthma and COPD", icon: AirVent, active: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30", emoji: "🫁" },
+  { path: "/respiratory",             label: "Asthma and COPD", icon: AirVent, active: "sunset-active border-cyan-500/30", emoji: "🫁" },
   { path: "/renal-dosing",            label: "Renal",     icon: Filter, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🫘" },
   { path: "/anemia",                  label: "Blood",     icon: Droplet, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "🩸" },
   { path: "/fatigue",                label: "Fatigue",   icon: Moon, active: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30", emoji: "😴" },
@@ -142,7 +142,7 @@ const navItems: NavItem[] = [
   { path: "/adult-vaccinations",    label: "Vaccines",  icon: Syringe, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "💉" },
   { path: "/vitamin-d",            label: "Vitamin D",  icon: Sun, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "☀️" },
   { path: "/geriatrics",           label: "Geriatrics", icon: User, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "👴" },
-  { path: "/electrolytes",          label: "Electrolytes", icon: Zap, active: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30", emoji: "⚡" },
+  { path: "/electrolytes",          label: "Electrolytes", icon: Zap, active: "sunset-active border-cyan-500/30", emoji: "⚡" },
   { path: "/images",                label: "Images",    icon: Image, active: "bg-purple-500/10 text-purple-400 border-purple-500/30", emoji: "🖼️" },
 ];
 
@@ -232,7 +232,7 @@ export function TabNavigation() {
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",
                     isActive
-                      ? item.active
+                      ? "sunset-active"
                       : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   aria-current={isActive ? "page" : undefined}
@@ -259,7 +259,7 @@ export function TabNavigation() {
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",
                     isActive
-                      ? item.active
+                      ? "sunset-active"
                       : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   aria-current={isActive ? "page" : undefined}
@@ -283,7 +283,7 @@ export function TabNavigation() {
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",
                     isActive
-                      ? item.active
+                      ? "sunset-active"
                       : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   aria-current={isActive ? "page" : undefined}
@@ -300,7 +300,7 @@ export function TabNavigation() {
       {/* Floating back-to-home button */}
       <Link
         to="/home"
-        className="fixed bottom-6 right-6 z-[60] flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
+        className="fixed bottom-6 right-6 z-[60] flex items-center justify-center h-12 w-12 rounded-full bg-sunset text-white shadow-lg hover:opacity-90 transition-all hover:scale-105 active:scale-95"
         aria-label="Back to Home"
         title="Back to Home"
       >
