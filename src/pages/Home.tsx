@@ -664,6 +664,45 @@ function QuickAction({ title, description, icon, to }: QuickActionProps) {
   );
 }
 
+const QUICK_ACCESS = [
+  { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets },
+  { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart },
+  { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet },
+  { to: "/renal-dosing", label: "Renal Dosing", desc: "Dose adjustment by eGFR",     Icon: Filter },
+  { to: "/images",       label: "Image Gallery",desc: "Algorithms & pocket cards",   Icon: Scan },
+] as const;
+
+function QuickAccessPanel() {
+  return (
+    <section aria-labelledby="quick-access-heading" className="rounded-2xl border bg-card p-4 md:p-5">
+      <div className="flex items-center justify-between mb-3">
+        <h2 id="quick-access-heading" className="text-base md:text-lg font-semibold flex items-center gap-2">
+          <Zap className="h-4 w-4 text-primary" /> Quick Access
+        </h2>
+        <span className="text-xs text-muted-foreground hidden sm:inline">One-click jumps</span>
+      </div>
+      <nav aria-label="Quick access shortcuts">
+        <ul className="grid grid-cols-2 md:grid-cols-5 gap-2.5">
+          {QUICK_ACCESS.map(({ to, label, desc, Icon }) => (
+            <li key={to}>
+              <Link
+                to={to}
+                className="group flex flex-col gap-1 rounded-xl border bg-background p-3 hover:border-primary/60 hover:shadow-sm transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+              >
+                <span className="flex items-center gap-2 font-semibold text-sm">
+                  <Icon className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+                  {label}
+                </span>
+                <span className="text-[11px] text-muted-foreground leading-snug">{desc}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </section>
+  );
+}
+
 export default function Home() {
   const navigate = useNavigate();
 
