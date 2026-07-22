@@ -83,6 +83,58 @@
     --sidebar-ring: 14 100% 60%;
   }
 
+  /* ============================================================
+     LIGHT THEME — Sunset Blaze on white surfaces.
+     Activated by <html class="light"> from ThemeProvider.
+     Accent hues (magenta / violet / coral / amber) are preserved
+     so gradients, active pills, and CTAs stay on-brand.
+     ============================================================ */
+  .light {
+    --background: 0 0% 100%;              /* white */
+    --foreground: 240 10% 10%;            /* near-black */
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+
+    --primary: 330 78% 48%;               /* magenta, deeper for contrast */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 30 40% 96%;              /* warm off-white */
+    --secondary-foreground: 240 10% 10%;
+
+    --muted: 30 30% 95%;
+    --muted-foreground: 240 6% 35%;
+
+    --accent: 249 73% 55%;                /* violet, deeper */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 6% 88%;
+    --input: 240 6% 92%;
+    --ring: 14 100% 50%;                  /* coral */
+
+    /* Sunset palette anchors — slightly deeper for AA on white */
+    --sunset-coral: 14 95% 52%;
+    --sunset-amber: 31 90% 48%;
+    --sunset-magenta: 330 78% 48%;
+    --sunset-violet: 249 73% 55%;
+
+    /* Sidebar — soft warm white with sunset accents */
+    --sidebar-background: 30 40% 98%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-primary: 330 78% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 30 40% 94%;
+    --sidebar-accent-foreground: 240 10% 10%;
+    --sidebar-border: 240 6% 88%;
+    --sidebar-ring: 14 95% 52%;
+  }
+
   * {
     @apply border-border;
   }
