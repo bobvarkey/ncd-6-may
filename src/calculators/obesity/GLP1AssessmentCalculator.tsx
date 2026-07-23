@@ -236,7 +236,7 @@ export default function GLP1AssessmentCalculator() {
         description="Eligibility, dose titration, and prescribing report for semaglutide, tirzepatide, and liraglutide with Global vs India-adjusted thresholds."
       />
       <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-4">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-2">
             <Syringe className="w-5 h-5 text-primary" />
             <h1 className="text-xl sm:text-2xl font-semibold">GLP-1 Assessment Calculator</h1>
@@ -245,6 +245,42 @@ export default function GLP1AssessmentCalculator() {
             <Home className="w-4 h-4 mr-1" /> Home
           </Button>
         </div>
+
+        {/* Prominent India / Global toggle */}
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="p-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">Patient population:</span>
+              <span className="text-xs text-muted-foreground">
+                {mode === "india"
+                  ? "India-adjusted cut-offs (BMI ≥23 overweight, ≥25 obesity; waist ≥90 cm M / ≥80 cm F)"
+                  : "Global / WHO cut-offs (BMI ≥25 overweight, ≥30 obesity)"}
+              </span>
+            </div>
+            <div className="inline-flex rounded-full border bg-background p-0.5">
+              <button
+                type="button"
+                onClick={() => setMode("global")}
+                className={cn(
+                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors",
+                  mode === "global" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Global
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("india")}
+                className={cn(
+                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors",
+                  mode === "india" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Indian patient
+              </button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* KPI dashboard */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
