@@ -320,7 +320,7 @@ const PerioperativeCalculators = () => {
           <TabsTrigger value="apgar" className="text-sm">Surgical Apgar</TabsTrigger>
           <TabsTrigger value="meds" className="text-sm">Med Management</TabsTrigger>
           <TabsTrigger value="labs" className="text-sm">Pre-op Labs</TabsTrigger>
-          <TabsTrigger value="woo" className="text-sm">Woo Risk</TabsTrigger>
+          <TabsTrigger value="woo" className="text-sm">Woo Perioperative Risk (Non-Cardiac Surgery)</TabsTrigger>
           <TabsTrigger value="sts" className="text-sm">STS Cardiac</TabsTrigger>
         </TabsList>
 
