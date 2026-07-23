@@ -250,13 +250,60 @@ export default function GLP1AssessmentCalculator() {
         {/* Prominent India / Global toggle */}
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-3 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-semibold">Patient population:</span>
               <span className="text-xs text-muted-foreground">
                 {mode === "india"
                   ? "India-adjusted cut-offs (BMI ≥23 overweight, ≥25 obesity; waist ≥90 cm M / ≥80 cm F)"
                   : "Global / WHO cut-offs (BMI ≥25 overweight, ≥30 obesity)"}
               </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="India-adjusted criteria details"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                  >
+                    <Info className="w-3.5 h-3.5" /> India criteria
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent side="bottom" align="start" className="w-80 text-xs space-y-2">
+                  <div className="font-semibold text-sm">India-adjusted GLP-1 eligibility</div>
+                  <p className="text-muted-foreground">
+                    Based on ObSI/IASO-APA 2022 & RSSDI/ICMR consensus — Asian Indians develop
+                    cardiometabolic risk at lower BMI and waist thresholds than Western populations.
+                  </p>
+                  <div className="rounded-md border overflow-hidden">
+                    <table className="w-full">
+                      <thead className="bg-muted/60">
+                        <tr>
+                          <th className="text-left px-2 py-1">Parameter</th>
+                          <th className="text-left px-2 py-1">India</th>
+                          <th className="text-left px-2 py-1">Global</th>
+                        </tr>
+                      </thead>
+                      <tbody className="[&_td]:px-2 [&_td]:py-1 [&_td]:border-t">
+                        <tr><td>Overweight (BMI)</td><td>≥ 23</td><td>≥ 25</td></tr>
+                        <tr><td>Obesity (BMI)</td><td>≥ 25</td><td>≥ 30</td></tr>
+                        <tr><td>Waist – Male</td><td>≥ 90 cm</td><td>≥ 102 cm</td></tr>
+                        <tr><td>Waist – Female</td><td>≥ 80 cm</td><td>≥ 88 cm</td></tr>
+                        <tr><td>WHtR (both sexes)</td><td>&gt; 0.5</td><td>&gt; 0.5</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="font-semibold">GLP-1 candidacy (India)</div>
+                    <ul className="list-disc pl-4 space-y-0.5 text-muted-foreground">
+                      <li>BMI ≥ 27 with a weight-related comorbidity, or</li>
+                      <li>BMI ≥ 30 (any), or</li>
+                      <li>BMI ≥ 25 with central obesity + T2D / prediabetes / MASLD / OSA</li>
+                    </ul>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Refs: ObSI 2022; RSSDI-ESI 2022; ICMR-INDIAB; Misra et al., JAPI 2009.
+                  </p>
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="inline-flex rounded-full border bg-background p-0.5">
               <button
