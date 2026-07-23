@@ -263,7 +263,7 @@ export default function GLP1AssessmentCalculator() {
     <div className="min-h-screen bg-background text-foreground">
       <Seo
         title="GLP-1 Assessment Calculator | Obesity"
-        description="Eligibility, dose titration, and prescribing report for semaglutide, tirzepatide, and liraglutide with Global vs India-adjusted thresholds."
+        description="Semaglutide, tirzepatide, liraglutide — eligibility and dose titration with Global / India cut-offs."
       />
       <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-4">
         <div className="flex items-start justify-between gap-2 flex-wrap">
@@ -271,11 +271,8 @@ export default function GLP1AssessmentCalculator() {
             <Syringe className="w-5 h-5 text-primary mt-1" />
             <div>
               <h1 className="text-xl sm:text-2xl font-semibold">GLP-1 Assessment Calculator</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mt-0.5">
-                Enter height, weight, waist, sex, EOSS stage, comorbidities and contraindications.
-                Get BMI, WHtR, central-obesity flag, an eligibility decision against Global or
-                India-adjusted cut-offs, dose titration for semaglutide / tirzepatide / liraglutide,
-                and a downloadable clinic report.
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                Eligibility, dose titration, and clinic report — Global or India cut-offs.
               </p>
             </div>
           </div>
@@ -291,8 +288,8 @@ export default function GLP1AssessmentCalculator() {
               <span className="text-sm font-semibold">Patient population:</span>
               <span className="text-xs text-muted-foreground">
                 {mode === "india"
-                  ? "India-adjusted cut-offs (BMI ≥23 overweight, ≥25 obesity; waist ≥90 cm M / ≥80 cm F)"
-                  : "Global / WHO cut-offs (BMI ≥25 overweight, ≥30 obesity)"}
+                  ? "India: BMI ≥23 OW / ≥25 obesity; waist ≥90 M / ≥80 F"
+                  : "Global: BMI ≥25 OW / ≥30 obesity"}
               </span>
               <Popover>
                 <PopoverTrigger asChild>
