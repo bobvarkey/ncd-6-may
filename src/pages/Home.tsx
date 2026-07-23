@@ -710,6 +710,18 @@ export default function Home() {
   // Quick Actions data
   const quickActions: QuickActionProps[] = [
     {
+      title: "Goldman Cardiac Index",
+      description: "Cardiac risk stratification for non-cardiac surgery",
+      icon: <Heart className="h-4 w-4 text-rose-500" />,
+      to: "/goldman-cardiac",
+    },
+    {
+      title: "Perioperative Calculators",
+      description: "RCRI, ASA, Mallampati, Caprini, STOP-Bang, Apgar, Med Management",
+      icon: <Scissors className="h-4 w-4 text-indigo-500" />,
+      to: "/perioperative",
+    },
+    {
       title: "Meal Planner",
       description: "7-day diet plans for Kerala, Indian, Asian, and international cuisines",
       icon: <UtensilsCrossed className="h-4 w-4 text-red-500" />,
@@ -751,19 +763,8 @@ export default function Home() {
       icon: <Stethoscope className="h-4 w-4 text-red-500" />,
       to: "/sliding-scale",
     },
-    {
-      title: "Goldman Cardiac Index",
-      description: "Cardiac risk stratification for non-cardiac surgery",
-      icon: <Heart className="h-4 w-4 text-rose-500" />,
-      to: "/goldman-cardiac",
-    },
-    {
-      title: "Perioperative Calculators",
-      description: "RCRI, ASA, Mallampati, Caprini, STOP-Bang, Apgar, Med Management",
-      icon: <Scissors className="h-4 w-4 text-indigo-500" />,
-      to: "/perioperative",
-    },
   ];
+
 
   return (
     <div className="min-h-screen bg-background">
