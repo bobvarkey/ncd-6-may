@@ -384,6 +384,16 @@ export default function GLP1AssessmentCalculator() {
           </CardContent>
         </Card>
 
+        {/* Screen-reader announcement for mode / cut-off / checklist changes */}
+        <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+          {`${mode === "india" ? "India-adjusted" : "Global"} cut-offs applied. `}
+          {`BMI ≥ ${result.cutoffs.bmiPharmaThr} independent, `}
+          {`BMI ≥ ${result.cutoffs.bmiWithComorbThr} with comorbidity, `}
+          {`waist threshold ${result.cutoffs.waistThr} cm for ${sex}. `}
+          {`${result.criteria.filter((c) => c.met).length} of ${result.criteria.length} eligibility criteria met. `}
+          {`Overall: ${result.eligible ? "screening-positive" : "not currently meeting pharmacotherapy criteria"}.`}
+        </div>
+
         {/* KPI dashboard */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Card><CardContent className="p-3">
