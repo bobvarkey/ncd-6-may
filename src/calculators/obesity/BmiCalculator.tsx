@@ -320,6 +320,9 @@ export default function BmiCalculator() {
               </p>
             </div>
             <div className="flex items-center gap-2 no-print shrink-0">
+              <Button variant="outline" size="sm" onClick={() => navigate("/obesity/glp1-assessment")} title="GLP-1 Assessment Calculator" className="hidden sm:inline-flex">
+                GLP-1 Assessment
+              </Button>
               <Button variant="ghost" size="sm" onClick={() => navigate("/")} title="Back to Home">
                 <Home className="h-4 w-4" />
               </Button>

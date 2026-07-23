@@ -117,6 +117,7 @@ const CLINICAL_TOPICS = [
   { id: "bmi-calculator", label: "BMI Calculator", path: "/obesity/bmi-calculator", keywords: ["bmi", "body mass index", "weight"] },
   { id: "waist-height-ratio", label: "Waist-to-Height Ratio", path: "/obesity/waist-height-ratio", keywords: ["waist", "waist height", "waist ratio", "central obesity"] },
   { id: "glp1-agonists", label: "GLP-1 Agonists (Obesity)", path: "/obesity/glp1-algorithm", keywords: ["glp1", "semaglutide", "tirzepatide", "wegovy", "ozempic", "weight loss"] },
+  { id: "glp1-assessment", label: "GLP-1 Assessment Calculator", path: "/obesity/glp1-assessment", keywords: ["glp1", "assessment", "eligibility", "titration", "semaglutide", "tirzepatide", "liraglutide", "india"] },
 
   // ── Renal ──
   { id: "gfr-calculator", label: "GFR Calculator (CKD-EPI)", path: "/gfr-calculator", keywords: ["gfr", "egfr", "ckd-epi", "creatinine", "kidney function"] },

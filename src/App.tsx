@@ -129,6 +129,7 @@ const AntihypertensivePotencyTableCalc = lazyWithModuleRetry(() => import("@/cal
 const BmiCalculatorCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/BmiCalculator"));
 const WaistHeightRatioCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/WaistHeightRatio"));
 const GLP1ObesityAlgorithmCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1ObesityAlgorithm"));
+const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1AssessmentCalculator"));
 const IronReplacementCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/IronReplacementCalculator"));
 const ThyroidCalculator = lazyWithModuleRetry(() => import("@/calculators/thyroid/ThyroidCalculator"));
 const Dashboard = lazyWithModuleRetry(() => import("@/pages/Dashboard"));
@@ -311,6 +312,7 @@ const App = () => (
           <Route path="/obesity/bmi-calculator" element={<><TabNavigation /><BmiCalculatorCalc /></>} />
           <Route path="/obesity/waist-height-ratio" element={<><TabNavigation /><WaistHeightRatioCalc /></>} />
           <Route path="/obesity/glp1-algorithm" element={<><TabNavigation /><GLP1ObesityAlgorithmCalc /></>} />
+          <Route path="/obesity/glp1-assessment" element={<><TabNavigation /><GLP1AssessmentCalc /></>} />
           <Route path="/diet-plan" element={<><TabNavigation /><DietPlanPage /></>} />
           <Route path="/iron-calculator" element={<><TabNavigation /><IronReplacementCalculator /></>} />
           <Route path="/thyroid" element={<><TabNavigation /><ThyroidCalculator /></>} />
