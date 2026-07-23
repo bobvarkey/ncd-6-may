@@ -429,7 +429,32 @@ export default function GLP1AssessmentCalculator() {
               <div><Label>Weight (kg)</Label><Input type="number" step="0.1" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} placeholder="86" /></div>
               <div><Label>Waist (cm)</Label><Input type="number" step="0.1" value={waistCm} onChange={(e) => setWaistCm(e.target.value)} placeholder="98" /></div>
               <div>
-                <Label>EOSS stage</Label>
+                <Label className="flex items-center gap-1">
+                  EOSS stage
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="What does EOSS stand for?"
+                        className="inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      >
+                        <Info className="w-3.5 h-3.5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 text-xs space-y-2" side="top">
+                      <p className="font-semibold text-sm">EOSS — Edmonton Obesity Staging System</p>
+                      <p className="text-muted-foreground">
+                        A 5-level (0–4) clinical staging of obesity based on medical, mental, and
+                        functional impact — used alongside BMI to guide treatment intensity.
+                      </p>
+                      <ul className="space-y-1">
+                        {[0,1,2,3,4].map((s) => (
+                          <li key={s}><span className="font-medium">Stage {s}:</span> {EOSS[s]}</li>
+                        ))}
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+                </Label>
                 <Select value={eoss} onValueChange={setEoss}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
