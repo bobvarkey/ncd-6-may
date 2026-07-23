@@ -1400,10 +1400,27 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-xs text-muted-foreground mb-4">
-            Predicts 30-day postoperative stroke, major cardiac events (MI/cardiac arrest), and mortality after non-cardiac surgery.
-            Based on Woo SH et al., JAHA 2021 (PMID: 33522252). Trained on 1.16M patients from ACS-NSQIP.
-          </p>
+          <div className="mb-4 p-3 rounded-lg bg-purple-500/5 border border-purple-500/20 space-y-2">
+            <p className="text-xs">
+              <strong className="text-purple-600 dark:text-purple-400">About:</strong> A machine-learning–derived
+              risk model developed from over 1.16 million adults undergoing non-cardiac surgery in the ACS-NSQIP
+              database (Woo SH et al., <em>JAHA</em> 2021; PMID: 33522252). It uses routinely available
+              preoperative variables to estimate individualized perioperative risk.
+            </p>
+            <p className="text-xs">
+              <strong className="text-purple-600 dark:text-purple-400">Predicts (30-day postoperative):</strong>
+            </p>
+            <ul className="text-xs list-disc pl-5 space-y-0.5 text-muted-foreground">
+              <li><strong className="text-foreground">Stroke</strong> — ischemic or hemorrhagic cerebrovascular event</li>
+              <li><strong className="text-foreground">Major adverse cardiac events</strong> — myocardial infarction or cardiac arrest</li>
+              <li><strong className="text-foreground">All-cause mortality</strong></li>
+            </ul>
+            <p className="text-[11px] text-muted-foreground pt-1 border-t border-purple-500/10">
+              Use for shared decision-making, preoperative optimization, and identifying patients who may benefit
+              from medical consultation, closer monitoring, or deferral of elective surgery.
+            </p>
+          </div>
+
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             <div className="space-y-1.5">
