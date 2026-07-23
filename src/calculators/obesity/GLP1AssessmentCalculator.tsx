@@ -147,19 +147,36 @@ export default function GLP1AssessmentCalculator() {
     const e = parseInt(eoss || "0", 10);
     const bmi = Number.isFinite(h) && Number.isFinite(w) && h > 0 ? w / (h / 100) ** 2 : NaN;
     const whtr = Number.isFinite(h) && Number.isFinite(wa) && h > 0 ? wa / h : NaN;
-    const waistThr = sex === "male" ? 90 : 80;
-    const central =
-      (Number.isFinite(wa) && wa >= waistThr) || (Number.isFinite(whtr) && whtr > 0.5);
+    const waistThr = mode === "india"
+      ? (sex === "male" ? 90 : 80)
+      : (sex === "male" ? 102 : 88);
+    const bmiObesityThr = mode === "india" ? 25 : 30;
+    const bmiPharmaThr = mode === "india" ? 27.5 : 30;
+    const bmiWithComorbThr = mode === "india" ? 25 : 27;
+    const waistHigh = Number.isFinite(wa) && wa >= waistThr;
+    const whtrHigh = Number.isFinite(whtr) && whtr > 0.5;
+    const central = waistHigh || whtrHigh;
 
-    let eligible = false;
-    let rule = "";
-    if (mode === "global") {
-      eligible = bmi >= 30 || (bmi >= 27 && comorb.length > 0);
-      rule = "BMI ≥30, or BMI ≥27 with at least 1 comorbidity.";
-    } else {
-      eligible = bmi >= 27.5 || (bmi >= 25 && (comorb.length > 0 || central));
-      rule = "BMI ≥27.5, or BMI ≥25 with ≥1 comorbidity and/or central obesity.";
-    }
+    const meetsBmiHigh = Number.isFinite(bmi) && bmi >= bmiPharmaThr;
+    const meetsBmiWithComorb = Number.isFinite(bmi) && bmi >= bmiWithComorbThr && comorb.length > 0;
+    const meetsBmiWithCentral = mode === "india" && Number.isFinite(bmi) && bmi >= 23 && central;
+    const noContra = contra.length === 0;
+    const eligible = (meetsBmiHigh || meetsBmiWithComorb || meetsBmiWithCentral);
+
+    const rule = mode === "india"
+      ? `BMI ≥${bmiPharmaThr}, or BMI ≥${bmiWithComorbThr} with ≥1 comorbidity, or BMI ≥23 with central obesity.`
+      : `BMI ≥${bmiPharmaThr}, or BMI ≥${bmiWithComorbThr} with ≥1 comorbidity.`;
+
+    const criteria = [
+      { label: `BMI ≥ ${bmiPharmaThr} kg/m² (independent)`, met: meetsBmiHigh },
+      { label: `BMI ≥ ${bmiWithComorbThr} kg/m² with ≥1 weight-related comorbidity`, met: meetsBmiWithComorb },
+      ...(mode === "india"
+        ? [{ label: "BMI ≥ 23 kg/m² with central obesity (India only)", met: meetsBmiWithCentral }]
+        : []),
+      { label: `Waist ${sex === "male" ? "≥ " + waistThr : "≥ " + waistThr} cm (${sex})`, met: waistHigh },
+      { label: "WHtR > 0.5", met: whtrHigh },
+      { label: "No absolute contraindication selected", met: noContra },
+    ];
 
     const interp: string[] = [
       `EOSS stage ${e}: ${EOSS[e]}`,
@@ -170,7 +187,7 @@ export default function GLP1AssessmentCalculator() {
         ? "One or more contraindication/caution items require clinician review before prescribing."
         : "No contraindication items selected.",
     ];
-    if (eligible && contra.length === 0) {
+    if (eligible && noContra) {
       interp.push(
         e >= 3
           ? "High clinical complexity; specialist obesity/endocrine review advisable."
@@ -178,13 +195,16 @@ export default function GLP1AssessmentCalculator() {
           ? "Eligible for pharmacotherapy consideration within comprehensive obesity care."
           : "Screening-positive; confirm goals, risks, and patient preference before prescribing."
       );
-    } else if (eligible && contra.length > 0) {
+    } else if (eligible && !noContra) {
       interp.push("Screening-positive but treatment suitability remains conditional pending caution review.");
     } else {
       interp.push("Consider lifestyle, cardiometabolic risk assessment, and re-evaluation over time.");
     }
 
-    return { h, w, wa, e, bmi, whtr, central, eligible, rule, interp };
+    return {
+      h, w, wa, e, bmi, whtr, central, eligible, rule, interp, criteria,
+      cutoffs: { waistThr, bmiPharmaThr, bmiWithComorbThr, bmiObesityThr },
+    };
   }, [heightCm, weightKg, waistCm, eoss, sex, mode, comorb, contra]);
 
   const schedule = SCHEDULES[med][goal];
@@ -211,6 +231,15 @@ export default function GLP1AssessmentCalculator() {
       `Contraindications/cautions (${contra.length}): ${contra.length ? contra.join(", ") : "None"}`,
       `Eligibility: ${result.eligible ? "Meets screening criteria" : "Does not meet screening criteria"}`,
       `Rule applied: ${result.rule}`,
+      "",
+      `Cut-offs applied (${mode === "india" ? "India-adjusted" : "Global"}):`,
+      `  • BMI for pharmacotherapy (any): ≥ ${result.cutoffs.bmiPharmaThr} kg/m²`,
+      `  • BMI with comorbidity: ≥ ${result.cutoffs.bmiWithComorbThr} kg/m²`,
+      `  • Waist threshold (${sex}): ≥ ${result.cutoffs.waistThr} cm`,
+      `  • WHtR: > 0.5`,
+      "",
+      "Criteria checklist:",
+      ...result.criteria.map((c) => `  [${c.met ? "x" : " "}] ${c.label}`),
       "",
       "Clinical interpretation:",
       ...result.interp.map((x, i) => `${i + 1}. ${x}`),
@@ -261,42 +290,55 @@ export default function GLP1AssessmentCalculator() {
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    aria-label="India-adjusted criteria details"
-                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                    aria-label="Show India-adjusted GLP-1 eligibility criteria"
+                    aria-haspopup="dialog"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                   >
-                    <Info className="w-3.5 h-3.5" /> India criteria
+                    <Info className="w-3.5 h-3.5" aria-hidden="true" /> India criteria
                   </button>
                 </PopoverTrigger>
-                <PopoverContent side="bottom" align="start" className="w-80 text-xs space-y-2">
-                  <div className="font-semibold text-sm">India-adjusted GLP-1 eligibility</div>
-                  <p className="text-muted-foreground">
-                    Based on ObSI/IASO-APA 2022 & RSSDI/ICMR consensus — Asian Indians develop
+                <PopoverContent
+                  side="bottom"
+                  align="start"
+                  role="dialog"
+                  aria-labelledby="india-criteria-title"
+                  aria-describedby="india-criteria-desc"
+                  className="w-80 text-xs space-y-2"
+                >
+                  <h2 id="india-criteria-title" className="font-semibold text-sm">
+                    India-adjusted GLP-1 eligibility
+                  </h2>
+                  <p id="india-criteria-desc" className="text-muted-foreground">
+                    Based on ObSI/IASO-APA 2022 &amp; RSSDI/ICMR consensus — Asian Indians develop
                     cardiometabolic risk at lower BMI and waist thresholds than Western populations.
                   </p>
                   <div className="rounded-md border overflow-hidden">
-                    <table className="w-full">
+                    <table className="w-full" aria-label="India versus global cut-offs">
+                      <caption className="sr-only">
+                        India-adjusted versus global BMI, waist, and WHtR cut-offs
+                      </caption>
                       <thead className="bg-muted/60">
                         <tr>
-                          <th className="text-left px-2 py-1">Parameter</th>
-                          <th className="text-left px-2 py-1">India</th>
-                          <th className="text-left px-2 py-1">Global</th>
+                          <th scope="col" className="text-left px-2 py-1">Parameter</th>
+                          <th scope="col" className="text-left px-2 py-1">India</th>
+                          <th scope="col" className="text-left px-2 py-1">Global</th>
                         </tr>
                       </thead>
                       <tbody className="[&_td]:px-2 [&_td]:py-1 [&_td]:border-t">
-                        <tr><td>Overweight (BMI)</td><td>≥ 23</td><td>≥ 25</td></tr>
-                        <tr><td>Obesity (BMI)</td><td>≥ 25</td><td>≥ 30</td></tr>
-                        <tr><td>Waist – Male</td><td>≥ 90 cm</td><td>≥ 102 cm</td></tr>
-                        <tr><td>Waist – Female</td><td>≥ 80 cm</td><td>≥ 88 cm</td></tr>
-                        <tr><td>WHtR (both sexes)</td><td>&gt; 0.5</td><td>&gt; 0.5</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">Overweight (BMI)</th><td>≥ 23</td><td>≥ 25</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">Obesity (BMI)</th><td>≥ 25</td><td>≥ 30</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">Waist – Male</th><td>≥ 90 cm</td><td>≥ 102 cm</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">Waist – Female</th><td>≥ 80 cm</td><td>≥ 88 cm</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">WHtR (both sexes)</th><td>&gt; 0.5</td><td>&gt; 0.5</td></tr>
                       </tbody>
                     </table>
                   </div>
                   <div className="space-y-1">
                     <div className="font-semibold">GLP-1 candidacy (India)</div>
                     <ul className="list-disc pl-4 space-y-0.5 text-muted-foreground">
-                      <li>BMI ≥ 27 with a weight-related comorbidity, or</li>
-                      <li>BMI ≥ 30 (any), or</li>
-                      <li>BMI ≥ 25 with central obesity + T2D / prediabetes / MASLD / OSA</li>
+                      <li>BMI ≥ 27.5, or</li>
+                      <li>BMI ≥ 25 with a weight-related comorbidity, or</li>
+                      <li>BMI ≥ 23 with central obesity + T2D / prediabetes / MASLD / OSA</li>
                     </ul>
                   </div>
                   <p className="text-[11px] text-muted-foreground">
@@ -305,12 +347,14 @@ export default function GLP1AssessmentCalculator() {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="inline-flex rounded-full border bg-background p-0.5">
+            <div role="radiogroup" aria-label="Patient population" className="inline-flex rounded-full border bg-background p-0.5">
               <button
                 type="button"
+                role="radio"
+                aria-checked={mode === "global"}
                 onClick={() => setMode("global")}
                 className={cn(
-                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors",
+                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                   mode === "global" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -318,9 +362,11 @@ export default function GLP1AssessmentCalculator() {
               </button>
               <button
                 type="button"
+                role="radio"
+                aria-checked={mode === "india"}
                 onClick={() => setMode("india")}
                 className={cn(
-                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors",
+                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                   mode === "india" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -489,6 +535,33 @@ export default function GLP1AssessmentCalculator() {
                   {contra.map((c) => <Badge key={c} variant="destructive" className="text-[10px]">{c}</Badge>)}
                 </div>
               )}
+            </div>
+
+            {/* On-screen criteria checklist with cut-offs used */}
+            <div className="rounded-lg border p-3" aria-live="polite">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-xs font-semibold">
+                  Eligibility criteria — {mode === "india" ? "India-adjusted" : "Global"} cut-offs
+                </div>
+                <Badge variant="outline" className="text-[10px]">
+                  BMI ≥{result.cutoffs.bmiPharmaThr} · comorb ≥{result.cutoffs.bmiWithComorbThr} · waist ≥{result.cutoffs.waistThr}cm
+                </Badge>
+              </div>
+              <ul className="text-xs space-y-1">
+                {result.criteria.map((c) => (
+                  <li key={c.label} className="flex items-start gap-2">
+                    {c.met ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-emerald-600 shrink-0" aria-hidden="true" />
+                    ) : (
+                      <AlertTriangle className="w-3.5 h-3.5 mt-0.5 text-muted-foreground shrink-0" aria-hidden="true" />
+                    )}
+                    <span className={c.met ? "font-medium" : "text-muted-foreground"}>
+                      <span className="sr-only">{c.met ? "Met: " : "Not met: "}</span>
+                      {c.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
             <div className="rounded-lg border p-3 bg-muted/30">
               <div className="text-xs font-semibold mb-1">Interpretation</div>
