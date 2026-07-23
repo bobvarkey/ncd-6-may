@@ -304,25 +304,26 @@ const PerioperativeCalculators = () => {
   return (
     <div className="space-y-5 animate-slide-in">
       <div>
-        <h1 className="text-xl font-heading font-bold">Perioperative Calculators</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-3xl font-heading font-bold">Perioperative Calculators</h1>
+        <p className="text-base text-muted-foreground">
           Pre-operative risk assessment, intra-operative scoring, and medication management tools
         </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="flex-wrap h-auto gap-1 p-1">
-          <TabsTrigger value="rcri" className="text-xs">RCRI</TabsTrigger>
-          <TabsTrigger value="asa" className="text-xs">ASA Class</TabsTrigger>
-          <TabsTrigger value="mallampati" className="text-xs">Mallampati</TabsTrigger>
-          <TabsTrigger value="stopbang" className="text-xs">STOP-Bang</TabsTrigger>
-          <TabsTrigger value="caprini" className="text-xs">Caprini VTE</TabsTrigger>
-          <TabsTrigger value="apgar" className="text-xs">Surgical Apgar</TabsTrigger>
-          <TabsTrigger value="meds" className="text-xs">Med Management</TabsTrigger>
-          <TabsTrigger value="labs" className="text-xs">Pre-op Labs</TabsTrigger>
-          <TabsTrigger value="woo" className="text-xs">Woo Risk</TabsTrigger>
-          <TabsTrigger value="sts" className="text-xs">STS Cardiac</TabsTrigger>
+          <TabsTrigger value="rcri" className="text-sm">RCRI</TabsTrigger>
+          <TabsTrigger value="asa" className="text-sm">ASA Class</TabsTrigger>
+          <TabsTrigger value="mallampati" className="text-sm">Mallampati</TabsTrigger>
+          <TabsTrigger value="stopbang" className="text-sm">STOP-Bang</TabsTrigger>
+          <TabsTrigger value="caprini" className="text-sm">Caprini VTE</TabsTrigger>
+          <TabsTrigger value="apgar" className="text-sm">Surgical Apgar</TabsTrigger>
+          <TabsTrigger value="meds" className="text-sm">Med Management</TabsTrigger>
+          <TabsTrigger value="labs" className="text-sm">Pre-op Labs</TabsTrigger>
+          <TabsTrigger value="woo" className="text-sm">Woo Risk</TabsTrigger>
+          <TabsTrigger value="sts" className="text-sm">STS Cardiac</TabsTrigger>
         </TabsList>
+
 
         {/* ─── RCRI ─── */}
         <TabsContent value="rcri" className="mt-4 space-y-4">
@@ -392,15 +393,16 @@ const RCRICalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Heart className="w-4 h-4 text-rose-500" />
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Heart className="w-5 h-5 text-rose-500" />
             Revised Cardiac Risk Index (RCRI)
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-xs text-muted-foreground mb-4">
+          <p className="text-sm text-muted-foreground mb-4">
             Lee et al., Circulation 1999. Predicts major cardiac complications (MI, pulmonary edema, VF, cardiac arrest, complete heart block) in non-cardiac surgery.
           </p>
+
 
           {/* Result */}
           <div className={`clinical-card border-l-4 mb-4 ${
