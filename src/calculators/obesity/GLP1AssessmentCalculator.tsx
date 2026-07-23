@@ -140,6 +140,14 @@ export default function GLP1AssessmentCalculator() {
   const [goal, setGoal] = useState<Goal>("weight");
   const [doseStep, setDoseStep] = useState(0);
   const [compact, setCompact] = useState(true);
+  const [fontScale, setFontScale] = useState<number>(() => {
+    if (typeof window === "undefined") return 100;
+    const v = Number(localStorage.getItem("glp1-font-scale"));
+    return v >= 80 && v <= 160 ? v : 100;
+  });
+  useEffect(() => {
+    try { localStorage.setItem("glp1-font-scale", String(fontScale)); } catch { /* ignore */ }
+  }, [fontScale]);
 
   const result = useMemo(() => {
     const h = parseFloat(heightCm);
