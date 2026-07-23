@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { Scale, Calculator, Info, ChevronDown, ChevronUp, Pill, Target, Activity, AlertCircle, BookOpen, RotateCcw, Home, InfoIcon, Heart, AlertTriangle, BrainCircuit, UtensilsCrossed, FlaskConical, Stethoscope } from "lucide-react";
+import { Scale, Calculator, Info, ChevronDown, ChevronUp, Pill, Target, Activity, AlertCircle, BookOpen, RotateCcw, Home, InfoIcon, Heart, AlertTriangle, BrainCircuit, UtensilsCrossed, FlaskConical, Stethoscope, Syringe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -320,8 +320,22 @@ export default function BmiCalculator() {
               </p>
             </div>
             <div className="flex items-center gap-2 no-print shrink-0">
-              <Button variant="outline" size="sm" onClick={() => navigate("/obesity/glp1-assessment")} title="GLP-1 Assessment Calculator" className="hidden sm:inline-flex">
+              <Button
+                size="lg"
+                onClick={() => navigate("/obesity/glp1-assessment")}
+                title="GLP-1 Assessment Calculator"
+                className="hidden sm:inline-flex text-base font-extrabold tracking-tight shadow-md bg-gradient-to-r from-pink-500 via-rose-500 to-orange-600 hover:from-pink-600 hover:via-rose-600 hover:to-orange-700 text-white border-0"
+              >
+                <Syringe className="h-5 w-5 mr-2" />
                 GLP-1 Assessment
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => navigate("/obesity/glp1-assessment")}
+                title="GLP-1 Assessment Calculator"
+                className="sm:hidden font-bold bg-gradient-to-r from-pink-500 to-orange-600 text-white border-0"
+              >
+                <Syringe className="h-4 w-4 mr-1" /> GLP-1
               </Button>
               <Button variant="ghost" size="sm" onClick={() => navigate("/")} title="Back to Home">
                 <Home className="h-4 w-4" />
