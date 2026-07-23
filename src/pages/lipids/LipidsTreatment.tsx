@@ -3,7 +3,7 @@ import { AbbreviationHover, AbbrText } from "@/components/AbbreviationHover";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SectionCard } from "@/components/ui/section-card";
-import { Pill, ArrowLeft, Target, BookOpen, Stethoscope, ClipboardCopy, Syringe, AlertTriangle, Activity, Heart, FileText } from "lucide-react";
+import { Pill, ArrowLeft, Target, BookOpen, Stethoscope, ClipboardCopy, AlertTriangle, Activity, FileText } from "lucide-react";
 import { toast } from "sonner";
 import type { LAIResult } from "./LipidsTab";
 

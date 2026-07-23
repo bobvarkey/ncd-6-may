@@ -2,32 +2,20 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Activity,
   AlertTriangle,
   Brain,
-  Eye,
-  Ear,
   Heart,
   User,
   Users,
   Pill,
   Bone,
-  Weight,
   Stethoscope,
-  Syringe,
-  FlaskConical,
   Info,
   RotateCcw,
-  ChevronDown,
-  ChevronRight,
-  Scale,
   Footprints,
-  UtensilsCrossed,
-  Home,
   Shield,
   Search,
   ClipboardList,

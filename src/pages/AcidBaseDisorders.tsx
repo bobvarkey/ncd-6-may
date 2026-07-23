@@ -12,9 +12,6 @@ import {
   Info,
   RotateCcw,
   Syringe,
-  Heart,
-  Brain,
-  Bone,
   Activity,
   Wind,
 } from "lucide-react";

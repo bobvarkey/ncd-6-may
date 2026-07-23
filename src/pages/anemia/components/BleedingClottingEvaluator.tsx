@@ -3,9 +3,6 @@ import { THROMBOSIS_ALGORITHM, type AlgorithmNode } from "./thrombosisAlgorithm"
 import { BLEEDING_ALGORITHM } from "./bleedingAlgorithm";
 import type {
   BleedingAlgorithmNode,
-  DicScoringSection,
-  DicTreatmentPrinciples,
-  DiscriminatingSection,
 } from "./bleedingAlgorithm";
 import {
   Activity,

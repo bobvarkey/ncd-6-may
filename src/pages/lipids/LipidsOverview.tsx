@@ -1,7 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { AbbreviationHover, AbbrText } from "@/components/AbbreviationHover";
 import ImageLink from "@/components/ImageLink";
-import lipidPanelDecodedImg from "@/assets/lipid-panel-decoded.jpg";
 import {
   Heart,
   TrendingUp,

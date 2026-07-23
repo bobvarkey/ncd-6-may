@@ -1,16 +1,9 @@
 import { useState } from "react";
-import { AbbreviationHover } from "@/components/AbbreviationHover";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
+
 import {
   Table,
   TableBody,
@@ -24,7 +17,6 @@ import {
   AlertTriangle,
   AlertCircle,
   Brain,
-  Baby,
   Heart,
   Gauge,
   Info,

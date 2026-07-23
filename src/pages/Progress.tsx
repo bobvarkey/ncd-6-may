@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PatientData, EXAMPLE_PATIENT, loadPatient, savePatient } from "@/lib/patient-data";
+import { PatientData, EXAMPLE_PATIENT, loadPatient } from "@/lib/patient-data";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

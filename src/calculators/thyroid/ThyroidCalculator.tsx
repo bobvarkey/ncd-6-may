@@ -5,22 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Activity,
   Pill,
   AlertTriangle,
-  CheckCircle2,
   FlaskConical,
-  Weight,
-  Heart,
   Home,
   RotateCcw,
   Calculator,
   BookOpen,
   Info,
-  Syringe,
-  Baby,
   Shield,
   Copy,
   Printer,
@@ -29,7 +23,7 @@ import {
 } from "lucide-react";
 import { copyToClipboard, formatClinicalNote, downloadTextFile } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
-import { AbbreviationHover, AbbrText } from "@/components/AbbreviationHover";
+import { AbbreviationHover } from "@/components/AbbreviationHover";
 import ImageLink from "@/components/ImageLink";
 
 type TabKey = "calculator" | "reference" | "about";

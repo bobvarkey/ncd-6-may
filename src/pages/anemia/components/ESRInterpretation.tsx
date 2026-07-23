@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Timer, TrendingUp, TrendingDown, Activity, Info, ChevronDown, ChevronUp, AlertTriangle, FlaskConical, ClipboardList, Stethoscope, ArrowRight } from 'lucide-react';
+import { Timer, TrendingUp, TrendingDown, Activity, Info, ChevronDown, ChevronUp, AlertTriangle, FlaskConical, ClipboardList, ArrowRight } from 'lucide-react';
 
 interface ESRRange {
   group: string;

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sun, ZoomIn } from "lucide-react";
+import { Sun } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 

@@ -1,6 +1,6 @@
 import { AlgorithmPathway } from "@/lib/med-logic";
 import { PatientData } from "@/lib/patient-data";
-import { Check, ArrowRight, ArrowDown } from "lucide-react";
+import { Check, ArrowDown } from "lucide-react";
 
 interface FlowNode {
   id: string;

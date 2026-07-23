@@ -1,13 +1,12 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   HeartPulse, Activity, Pill, AlertTriangle, Copy, Download,
-  ChevronRight, ChevronDown, FlaskConical, Stethoscope,
+  ChevronRight, ChevronDown, Stethoscope,
   Brain, ShieldAlert, Info, FileText, Zap,
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";

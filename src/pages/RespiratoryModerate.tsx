@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, ArrowRight, Info, Pill } from "lucide-react";
+import { CheckCircle, Info, Pill } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 // COPD/Asthma Moderate - adds risk and meds

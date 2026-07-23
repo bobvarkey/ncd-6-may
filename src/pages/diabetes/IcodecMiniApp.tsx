@@ -2,12 +2,10 @@ import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, Syringe, Activity, Shield, TrendingUp, TrendingDown, Minus, AlertCircle, Info, CheckCircle2, Clock, Droplets, Brain, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, Syringe, Activity, Shield, TrendingUp, TrendingDown, Minus, AlertCircle, Info, Clock, Droplets, Brain, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 

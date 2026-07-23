@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  AlertTriangle, Syringe, Shield, Clock, Baby, FlaskConical,
-  Printer, Copy, Download, Activity, HeartPulse, Brain, Pill,
+  AlertTriangle, Shield, Clock, Baby, FlaskConical,
+  Printer, Copy, Download, Activity, HeartPulse, Pill,
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";

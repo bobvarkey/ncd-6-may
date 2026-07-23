@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  AlertTriangle, Droplets, Stethoscope, FlaskConical, Heart,
-  HeartPulse, Brain, Pill, Syringe, Activity, Info, Copy,
-  Download, Clock, ShieldAlert, ChevronRight, ChevronDown,
+  AlertTriangle, Droplets, FlaskConical,
+  HeartPulse, Pill, Syringe, Activity, Copy,
+  Download, Clock, ChevronRight, ChevronDown,
   Calculator, Zap, Bone,
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";

@@ -32,21 +32,14 @@ import {
   ADA_2025_CITATION,
 } from "./obesity-guidelines";
 import {
-  evaluateWeightLossEffects,
-  deriveLifestylePrescription,
-  assessMicronutrientRisk,
-  checkPharmacotherapyEligibility,
   assessAll,
   BENEFIT_LABELS,
   COMORBIDITY_LABELS,
   DIET_PATTERN_LABELS,
   MICRONUTRIENT_LABELS,
-  WEIGHT_LOSS_BENEFIT_MAP,
   type Sex,
   type ComorbidityTag,
   type DietPatternTag,
-  type WeightLossBenefitTag,
-  type MicronutrientOfConcern,
   type ObesityCDSAssessment,
 } from "./obesity-cds-engine";
 import IcmrIndiab from "./IcmrIndiab";

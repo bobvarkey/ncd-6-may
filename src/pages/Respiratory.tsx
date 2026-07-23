@@ -1,20 +1,14 @@
 import { useState } from "react";
 import { 
-  Wind, AlertTriangle, CheckCircle, XCircle, Activity, 
-  Thermometer, Pill, Info, ArrowRight,
-  FileText, Scale
+  Wind, AlertTriangle, CheckCircle, XCircle, Activity, Pill, Info,
+  FileText
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Collapsible, 
-  CollapsibleContent, 
-  CollapsibleTrigger, 
-} from "@/components/ui/collapsible";
+
+
 import { SectionCard } from "@/components/ui/section-card";
-import { AbbreviationHover, AbbrText } from "@/components/AbbreviationHover";
+import { AbbrText } from "@/components/AbbreviationHover";
 
 // ─── GOLD 2025 Global Strategy ───
 const COPD_SEVERITY = [

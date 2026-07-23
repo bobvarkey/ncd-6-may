@@ -1,16 +1,11 @@
 import { useState, useMemo } from "react";
 import {
-  Heart, Activity, AlertTriangle, CheckCircle, Info, ChevronDown, ChevronUp,
-  Stethoscope, Shield, Wind, Syringe, Bone, Brain, Eye, Weight, Timer,
-  User, Bed, Droplets, Thermometer, Pill, Scissors, FileText, Zap,
-  ArrowRight, Search, Calculator, Scale, Clock, Gauge,
+  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,

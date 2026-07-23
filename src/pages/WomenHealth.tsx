@@ -2,11 +2,8 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Sun, Stethoscope, FlaskConical, Activity, Scan, ClipboardList,
-  BookOpen, AlertTriangle, GitBranch, Users, FileText, Heart,
-  Droplets, ArrowRight, RotateCcw, CheckCircle2, ChevronDown, ChevronUp,
-  Pill, Syringe, Timer, ShieldAlert, Info, Sparkles
+import { Stethoscope, FlaskConical, Activity, Scan, ClipboardList,
+  BookOpen, GitBranch, FileText, Heart, ArrowRight, RotateCcw, CheckCircle2, ChevronDown, ChevronUp, Info, Sparkles
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 

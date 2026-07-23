@@ -1,5 +1,5 @@
 import { PatientData } from "./patient-data";
-import { FoodItem, CuisineType, ALL_FOODS, getSoftFoods, getLowSodiumFoods, getFoodsByCuisine } from "./food-data";
+import { FoodItem, CuisineType, ALL_FOODS } from "./food-data";
 
 export interface Meal {
   name: string;

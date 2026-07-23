@@ -13,7 +13,6 @@ import {
   RotateCcw,
   Activity,
   Heart,
-  Brain,
   Droplets,
   Info,
   Gauge,

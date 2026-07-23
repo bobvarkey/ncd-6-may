@@ -1,8 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import {
   Upload, X, Sparkles, Scan, CheckCircle2, AlertTriangle, FileText,
-  Activity, Droplet, Heart, Weight, Filter, Zap, Microscope, Dna,
-  ArrowUpDown, ChevronDown, ChevronUp, Info, Pill, Thermometer,
+  Activity, Droplet, Heart, Weight, Filter, Zap, Microscope, Dna, ChevronDown,
   Divide, TrendingUp,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

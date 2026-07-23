@@ -16,9 +16,8 @@ import {
   ImageIcon,
   ToggleLeft,
   Info,
-  CheckCircle,
   XCircle,
-  ArrowRight, Heart, Activity, Droplets, Weight,
+  ArrowRight, Heart, Activity,
 } from 'lucide-react';
 import {
   Dialog,

@@ -2,29 +2,18 @@ import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
-  Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, ChevronRight, Info,
+  Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, Info,
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
-  Zap, Sun, Bone, Thermometer, Flame, Gem, Smile, Bandage, Timer, Microscope, Pill,
-  Home as HomeIcon, Search, ArrowRight, FlaskConical, User, Scissors,
+  Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { GitHubSyncPanel } from "@/components/GitHubSyncPanel";
-import { useGlobalLabFillAll } from "@/hooks/useGlobalLabFill";
+
+
 import { useLabContext } from "@/components/SmartLabelUpload/GlobalLabContext";
 import { DIABETES_FIELDS, HTN_FIELDS, LIPID_FIELDS, OBESITY_FIELDS, THYROID_FIELDS, CBC_FIELDS, RENAL_FIELDS } from "@/components/SmartLabelUpload";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -33,7 +22,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import UnifiedPrescriptionMiniApp from "@/components/UnifiedPrescriptionMiniApp";
 import heroDoctorPatient from "@/assets/hero-doctor-patient.jpg";
 import Seo from "@/components/Seo";
 

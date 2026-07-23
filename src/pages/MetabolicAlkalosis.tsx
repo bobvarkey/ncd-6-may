@@ -10,9 +10,6 @@ import {
   Info,
   RotateCcw,
   Syringe,
-  Heart,
-  Brain,
-  Bone,
 } from "lucide-react";
 
 type UrineChloride = "low" | "high" | null;

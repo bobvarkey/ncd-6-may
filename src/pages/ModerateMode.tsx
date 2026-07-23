@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
 import { useNavigate } from "react-router-dom";
-import { Syringe, Heart, Dna, Scale, Activity, ArrowLeft, Calculator, AlertTriangle, Info, TestTube } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Syringe, Heart, Dna, Scale, ArrowLeft, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { SectionCard } from "@/components/ui/section-card";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,

@@ -22,7 +22,6 @@ import {
   getWaistThreshold,
   WhtrCategory,
 } from "./obesity-guidelines";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const whtrSchema = z.object({
   waist: z.coerce.number().min(50).max(200).describe("Waist circumference in cm"),

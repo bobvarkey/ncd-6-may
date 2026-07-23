@@ -2,20 +2,15 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Heart,
-  Activity,
-  ClipboardList,
   Pill,
   BookOpen,
-  ChevronRight,
   ChevronDown,
   ChevronUp,
   Stethoscope,
   Search,
-  AlertTriangle,
   Crosshair,
   FlaskConical,
 } from "lucide-react";

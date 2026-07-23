@@ -1,12 +1,11 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { BookOpen, Calculator, Pill, Shield, ArrowLeft, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { BookOpen, Calculator, Pill, ArrowLeft, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { AbbreviationHover, AbbrText } from "@/components/AbbreviationHover";
 import LipidsOverview from "./LipidsOverview";
 import LipidsAssessment from "./LipidsAssessment";
 import LipidsTreatment from "./LipidsTreatment";

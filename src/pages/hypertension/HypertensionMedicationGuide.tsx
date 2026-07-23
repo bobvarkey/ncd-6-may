@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { AlertCircle, CheckCircle2, Heart, Activity, Droplet, AlertTriangle, ChevronDown, ChevronRight, Stethoscope } from "lucide-react";
+import { Heart, AlertTriangle, ChevronDown, ChevronRight, Stethoscope } from "lucide-react";
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
 import ZoomableImage from "@/components/ZoomableImage";

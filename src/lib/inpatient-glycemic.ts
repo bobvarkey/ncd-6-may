@@ -1,4 +1,3 @@
-import { PatientData } from "./patient-data";
 
 // ============================================================
 // INPATIENT GLYCEMIC MANAGEMENT CDS

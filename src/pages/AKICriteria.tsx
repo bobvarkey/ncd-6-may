@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Calculator, RotateCcw, ArrowLeftRight, AlertTriangle, Info,
-  Activity, Droplets, Gauge, Stethoscope, Heart, TrendingUp,
-  ChevronDown, ChevronUp, ArrowRight, FlaskConical, ExternalLink
+  Activity, Droplets, Gauge, Stethoscope, Heart, TrendingUp, FlaskConical
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 

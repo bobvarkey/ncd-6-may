@@ -3,17 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Heart, Wine, Pill, Activity, Zap, Moon, TestTube, Stethoscope, FlaskConical,
-  Droplets, Syringe, Tablets, Info, AlertTriangle, Ban, Clock, Crosshair,
+  Droplets, Syringe, Info, AlertTriangle, Ban,
   GitBranch, ChevronRight, ChevronDown, RotateCcw, Gauge, CheckCircle, Brain, Baby,
 } from "lucide-react";
 import HtnAlgorithmFlowchart from "@/components/hypertension/HtnAlgorithmFlowchart";
 import ImageLink from "@/components/ImageLink";
-import tampDcmiImg from "@/assets/tamp-dcmi-resistant-htn.png.asset.json";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
 const AbbrText = ({ text }: { text: string }) => <AbbreviationHover term={text}>{text}</AbbreviationHover>;
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
