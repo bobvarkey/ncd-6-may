@@ -19,6 +19,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import ZoomableImage from "@/components/ZoomableImage";
+import mallampatiAsset from "@/assets/mallampati-score.png.asset.json";
 
 // ─── RCRI (Revised Cardiac Risk Index) ───
 interface RCRIFactor {
