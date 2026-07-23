@@ -318,12 +318,14 @@ export default function GLP1AssessmentCalculator() {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="inline-flex rounded-full border bg-background p-0.5">
+            <div role="radiogroup" aria-label="Patient population" className="inline-flex rounded-full border bg-background p-0.5">
               <button
                 type="button"
+                role="radio"
+                aria-checked={mode === "global"}
                 onClick={() => setMode("global")}
                 className={cn(
-                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors",
+                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                   mode === "global" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -331,9 +333,11 @@ export default function GLP1AssessmentCalculator() {
               </button>
               <button
                 type="button"
+                role="radio"
+                aria-checked={mode === "india"}
                 onClick={() => setMode("india")}
                 className={cn(
-                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors",
+                  "px-3 py-1 text-xs font-semibold rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                   mode === "india" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 )}
               >
