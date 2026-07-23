@@ -139,6 +139,7 @@ export default function GLP1AssessmentCalculator() {
   const [med, setMed] = useState<Med>("semaglutide");
   const [goal, setGoal] = useState<Goal>("weight");
   const [doseStep, setDoseStep] = useState(0);
+  const [compact, setCompact] = useState(true);
 
   const result = useMemo(() => {
     const h = parseFloat(heightCm);
@@ -168,14 +169,14 @@ export default function GLP1AssessmentCalculator() {
       : `BMI ≥${bmiPharmaThr}, or BMI ≥${bmiWithComorbThr} with ≥1 comorbidity.`;
 
     const criteria = [
-      { label: `BMI ≥ ${bmiPharmaThr} kg/m² (independent)`, met: meetsBmiHigh },
-      { label: `BMI ≥ ${bmiWithComorbThr} kg/m² with ≥1 weight-related comorbidity`, met: meetsBmiWithComorb },
+      { short: `BMI ≥${bmiPharmaThr}`, label: `BMI ≥ ${bmiPharmaThr} kg/m² (independent)`, met: meetsBmiHigh },
+      { short: `BMI ≥${bmiWithComorbThr} + comorb`, label: `BMI ≥ ${bmiWithComorbThr} kg/m² with ≥1 weight-related comorbidity`, met: meetsBmiWithComorb },
       ...(mode === "india"
-        ? [{ label: "BMI ≥ 23 kg/m² with central obesity (India only)", met: meetsBmiWithCentral }]
+        ? [{ short: "BMI ≥23 + central", label: "BMI ≥ 23 kg/m² with central obesity (India only)", met: meetsBmiWithCentral }]
         : []),
-      { label: `Waist ${sex === "male" ? "≥ " + waistThr : "≥ " + waistThr} cm (${sex})`, met: waistHigh },
-      { label: "WHtR > 0.5", met: whtrHigh },
-      { label: "No absolute contraindication selected", met: noContra },
+      { short: `Waist ≥${waistThr}cm`, label: `Waist ${sex === "male" ? "≥ " + waistThr : "≥ " + waistThr} cm (${sex})`, met: waistHigh },
+      { short: "WHtR >0.5", label: "WHtR > 0.5", met: whtrHigh },
+      { short: "No contraindication", label: "No absolute contraindication selected", met: noContra },
     ];
 
     const interp: string[] = [
@@ -575,51 +576,91 @@ export default function GLP1AssessmentCalculator() {
 
             {/* On-screen criteria checklist with cut-offs used */}
             <div className="rounded-lg border p-3" aria-live="polite">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
                 <div className="text-xs font-semibold">
                   Eligibility criteria — {mode === "india" ? "India-adjusted" : "Global"} cut-offs
                 </div>
-                <Badge variant="outline" className="text-[10px]">
-                  BMI ≥{result.cutoffs.bmiPharmaThr} · comorb ≥{result.cutoffs.bmiWithComorbThr} · waist ≥{result.cutoffs.waistThr}cm
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-[10px]">
+                    BMI ≥{result.cutoffs.bmiPharmaThr} · comorb ≥{result.cutoffs.bmiWithComorbThr} · waist ≥{result.cutoffs.waistThr}cm
+                  </Badge>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 px-2 text-[11px]"
+                    aria-expanded={!compact}
+                    onClick={() => setCompact((v) => !v)}
+                  >
+                    {compact ? "Show details" : "Hide details"}
+                  </Button>
+                </div>
               </div>
-              <ul className="text-xs space-y-1">
-                {result.criteria.map((c) => (
-                  <li key={c.label} className="flex items-start gap-2">
-                    {c.met ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-emerald-600 shrink-0" aria-hidden="true" />
-                    ) : (
-                      <AlertTriangle className="w-3.5 h-3.5 mt-0.5 text-muted-foreground shrink-0" aria-hidden="true" />
-                    )}
-                    <span className={c.met ? "font-medium" : "text-muted-foreground"}>
+              {compact ? (
+                <ul className="flex flex-wrap gap-1.5">
+                  {result.criteria.map((c) => (
+                    <li
+                      key={c.label}
+                      className={cn(
+                        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px]",
+                        c.met
+                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                          : "bg-muted/40 text-muted-foreground"
+                      )}
+                      title={c.label}
+                    >
+                      {c.met ? (
+                        <CheckCircle2 className="w-3 h-3" aria-hidden="true" />
+                      ) : (
+                        <AlertTriangle className="w-3 h-3" aria-hidden="true" />
+                      )}
                       <span className="sr-only">{c.met ? "Met: " : "Not met: "}</span>
-                      {c.label}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+                      {c.short}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <ul className="text-xs space-y-1">
+                  {result.criteria.map((c) => (
+                    <li key={c.label} className="flex items-start gap-2">
+                      {c.met ? (
+                        <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-emerald-600 shrink-0" aria-hidden="true" />
+                      ) : (
+                        <AlertTriangle className="w-3.5 h-3.5 mt-0.5 text-muted-foreground shrink-0" aria-hidden="true" />
+                      )}
+                      <span className={c.met ? "font-medium" : "text-muted-foreground"}>
+                        <span className="sr-only">{c.met ? "Met: " : "Not met: "}</span>
+                        {c.label}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            <div className="rounded-lg border p-3 bg-muted/30">
-              <div className="text-xs font-semibold mb-1">Interpretation</div>
-              <ul className="text-xs space-y-0.5 list-disc ml-4">
-                {result.interp.map((x, i) => <li key={i}>{x}</li>)}
-              </ul>
-            </div>
-            <div>
-              <Label className="text-xs">Printable report</Label>
-              <Textarea value={report} readOnly rows={12} className="font-mono text-[11px] mt-1" />
-              <div className="flex flex-wrap gap-2 mt-2">
-                <Button size="sm" variant="outline" onClick={() => window.print()}>
-                  <Printer className="w-4 h-4 mr-1" /> Print / PDF
-                </Button>
-                <Button size="sm" variant="outline" onClick={copyReport}>
-                  <Copy className="w-4 h-4 mr-1" /> Copy
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => downloadTextFile("glp1-assessment.txt", report)}>
-                  Download .txt
-                </Button>
-              </div>
-            </div>
+            {!compact && (
+              <>
+                <div className="rounded-lg border p-3 bg-muted/30">
+                  <div className="text-xs font-semibold mb-1">Interpretation</div>
+                  <ul className="text-xs space-y-0.5 list-disc ml-4">
+                    {result.interp.map((x, i) => <li key={i}>{x}</li>)}
+                  </ul>
+                </div>
+                <div>
+                  <Label className="text-xs">Printable report</Label>
+                  <Textarea value={report} readOnly rows={12} className="font-mono text-[11px] mt-1" />
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <Button size="sm" variant="outline" onClick={() => window.print()}>
+                      <Printer className="w-4 h-4 mr-1" /> Print / PDF
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={copyReport}>
+                      <Copy className="w-4 h-4 mr-1" /> Copy
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => downloadTextFile("glp1-assessment.txt", report)}>
+                      Download .txt
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
             <p className="text-[11px] text-muted-foreground">
               Decision support only. Verify against local product labels, renal/hepatic status, and current guidelines before prescribing.
             </p>
