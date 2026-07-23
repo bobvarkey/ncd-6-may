@@ -1557,6 +1557,38 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
                 </div>
               </div>
 
+              {/* Overall risk category + interpretation */}
+              {(() => {
+                const composite = Math.max(result.stroke / 2, result.cardiac / 2, result.mortality / 5);
+                let cat: "Low" | "Moderate" | "High" | "Very High" = "Low";
+                if (composite >= 3) cat = "Very High";
+                else if (composite >= 1) cat = "High";
+                else if (composite >= 0.25) cat = "Moderate";
+                const catStyle = {
+                  Low: "bg-success/10 border-success/30 text-success",
+                  Moderate: "bg-warning/10 border-warning/30 text-warning",
+                  High: "bg-destructive/10 border-destructive/30 text-destructive",
+                  "Very High": "bg-destructive/15 border-destructive/40 text-destructive",
+                }[cat];
+                const interp = {
+                  Low: "Proceed with standard perioperative care. Routine monitoring; no additional cardiac workup indicated based on this score alone.",
+                  Moderate: "Optimize modifiable factors (anemia, electrolytes, volume status). Consider medical co-management and perioperative beta-blocker/statin continuation. Discuss risk with patient and surgical team.",
+                  High: "Multidisciplinary review recommended. Consider deferring elective surgery for optimization, cardiology/anesthesia consultation, ICU-level postoperative monitoring, and explicit shared decision-making regarding risk–benefit.",
+                  "Very High": "Strongly reconsider elective surgery. If proceeding, mandate cardiology + anesthesia consult, ICU postoperative care, and documented informed consent covering elevated stroke, MACE, and mortality risks.",
+                }[cat];
+                return (
+                  <div className={`p-4 rounded-lg border-2 ${catStyle}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-xs uppercase tracking-wide opacity-80">Predicted Risk Category</div>
+                      <div className="text-lg font-heading font-bold">{cat}</div>
+                    </div>
+                    <p className="text-xs leading-relaxed text-foreground/90">
+                      <strong>Clinical interpretation:</strong> {interp}
+                    </p>
+                  </div>
+                );
+              })()}
+
               <div className="p-3 rounded-lg bg-warning/5 border border-warning/20">
                 <h4 className="text-xs font-medium text-warning mb-1">⚠️ Placeholder Coefficients</h4>
                 <p className="text-xs">
