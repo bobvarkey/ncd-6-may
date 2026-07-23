@@ -393,15 +393,16 @@ const RCRICalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Heart className="w-4 h-4 text-rose-500" />
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Heart className="w-5 h-5 text-rose-500" />
             Revised Cardiac Risk Index (RCRI)
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-xs text-muted-foreground mb-4">
+          <p className="text-sm text-muted-foreground mb-4">
             Lee et al., Circulation 1999. Predicts major cardiac complications (MI, pulmonary edema, VF, cardiac arrest, complete heart block) in non-cardiac surgery.
           </p>
+
 
           {/* Result */}
           <div className={`clinical-card border-l-4 mb-4 ${
