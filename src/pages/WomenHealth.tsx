@@ -226,54 +226,31 @@ function PmosTab() {
         </CardContent>
       </Card>
 
-      {/* 2023 Guideline */}
+      {/* 2023 Guideline + PMOS Terminology */}
       <Card className="border-border/60">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <BookOpen className="h-5 w-5 text-rose-400" />
-            2023 International Evidence-based PCOS/PMOS Guideline
+            2023 PCOS/PMOS Guideline
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            The 2023 International Evidence-based PCOS Guideline (endorsed by ESHRE, ASRM, and 37+ societies) remains the current standard for diagnosis and management. The new PMOS terminology was proposed in 2025–2026 but has not yet changed diagnostic criteria.
+            The 2023 ESHRE/ASRM guideline is still the diagnostic standard. PMOS (proposed 2025–26) is a rename only — no new cut-offs. Surface as <strong>"PMOS (previously PCOS)"</strong>.
           </p>
           <div className="p-3 rounded-lg bg-rose-500/5 border border-rose-500/20">
-            <p className="text-xs font-semibold text-rose-400 mb-1">Key Updates in 2023 Guideline</p>
+            <p className="text-xs font-semibold text-rose-400 mb-1">Key points</p>
             <ul className="list-disc list-inside space-y-0.5 text-xs text-muted-foreground">
-              <li>Anti-Müllerian hormone (AMH) is now accepted as an alternative to ultrasound for diagnosing polycystic ovarian morphology in adults</li>
-              <li>Adolescent diagnosis requires both oligo-/anovulation AND hyperandrogenism (not just 2/3)</li>
-              <li>Lifestyle intervention remains first-line for management</li>
-              <li>Metformin recommended for metabolic comorbidities regardless of BMI</li>
-              <li>Combined oral contraceptive pill for hyperandrogenism and cycle regulation</li>
-              <li>Letrozole is first-line for ovulation induction (not clomiphene)</li>
+              <li>AMH accepted as alternative to ultrasound for PCOM (adults)</li>
+              <li>Adolescents: require oligo/anovulation <strong>AND</strong> hyperandrogenism</li>
+              <li>Lifestyle first-line; metformin for metabolic comorbidities regardless of BMI</li>
+              <li>COCP for hyperandrogenism / cycle regulation</li>
+              <li>Letrozole first-line for ovulation induction</li>
             </ul>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* PMOS Terminology */}
-      <Card className="border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <FileText className="h-5 w-5 text-rose-400" />
-            PMOS Terminology and Upcoming Guidance
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            In 2025, the Endocrine Society and international experts proposed renaming PCOS to <strong>Polyendocrine Metabolic Ovarian Syndrome (PMOS)</strong> to better reflect the multisystem nature of the condition. NICE now has a PMOS guideline in development (scope published, draft due July–Aug 2026, final Dec 2026), but no new diagnostic cut‑offs yet.
+          <p className="text-xs text-muted-foreground">
+            NICE PMOS guideline in development (final Dec 2026). Suggested output: <em>"Meets criteria for PMOS/PCOS (Rotterdam 2/3)"</em> or <em>"Adolescent at risk — re-evaluate."</em>
           </p>
-          <p className="text-sm text-muted-foreground">
-            For the next couple of years, tools should follow the 2023 PCOS guideline structure and just surface the PMOS terminology as <strong>"PMOS (previously PCOS)"</strong> in the UI and outputs.
-          </p>
-          <div className="p-3 rounded-lg bg-rose-500/5 border border-rose-500/20">
-            <p className="text-xs font-semibold text-rose-400 mb-1">Suggested Output Language</p>
-            <ul className="list-disc list-inside space-y-0.5 text-xs text-muted-foreground">
-              <li>"Meets criteria for PMOS/PCOS (Rotterdam 2/3) – adult criteria."</li>
-              <li>"Adolescent at risk for PMOS/PCOS – full criteria not met; guideline recommends follow‑up and re‑evaluation."</li>
-            </ul>
-          </div>
         </CardContent>
       </Card>
 
