@@ -806,10 +806,10 @@ export default function Home() {
                   <Sparkles className="h-3 w-3" /> Clinical Decision Support
                 </span>
                 <h1 className="hero-title mt-5 text-4xl md:text-5xl font-bold tracking-tight leading-[1.05]">
-                  Clinical tools
+                  Better decisions, <br className="hidden md:block" />bedside to desktop.
                 </h1>
                 <p className="hero-subtitle mt-4 text-base md:text-lg max-w-md leading-relaxed">
-                  Evidence-based assessment, treatment algorithms, and prescription guidance for chronic disease — at the point of care.
+                  Evidence-based scores, treatment algorithms, and prescribing guidance for chronic disease — right where you see the patient.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2 text-[11px] font-medium">
                   {HERO_GUIDELINES.map((g) => (
@@ -819,19 +819,32 @@ export default function Home() {
                   ))}
                 </div>
 
-                {/* Primary CTAs */}
-                <div className="mt-7 flex flex-wrap gap-2.5">
-                  {HERO_CTAS.map(({ to, label, Icon, primary }) => (
+                {/* Primary CTA */}
+                <div className="mt-7 flex flex-wrap items-center gap-3">
+                  <Link
+                    to="/diabetes"
+                    className="hero-link-primary inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-base shadow-xl shadow-black/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all"
+                  >
+                    <Stethoscope className="h-5 w-5" /> Start clinical assessment
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    to="/images"
+                    className="hero-link inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/15 border border-white/40 font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
+                  >
+                    Browse image gallery
+                  </Link>
+                </div>
+
+                {/* Secondary quick links */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {HERO_CTAS.filter(c => !c.primary).map(({ to, label, Icon }) => (
                     <Link
                       key={to}
                       to={to}
-                      className={
-                        primary
-                          ? "hero-link-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-semibold text-sm shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 transition-all"
-                          : "hero-link inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 border border-white/40 font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                      }
+                      className="hero-link inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/30 font-medium text-xs backdrop-blur hover:bg-white/20 transition-all"
                     >
-                      <Icon className="h-4 w-4" /> {label}
+                      <Icon className="h-3.5 w-3.5" /> {label}
                     </Link>
                   ))}
                 </div>
