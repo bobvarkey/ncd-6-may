@@ -274,7 +274,10 @@ export default function GLP1AssessmentCalculator() {
         title="GLP-1 Assessment Calculator | Obesity"
         description="Semaglutide, tirzepatide, liraglutide — eligibility and dose titration with Global / India cut-offs."
       />
-      <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-4">
+      <div
+        className="max-w-5xl mx-auto p-4 sm:p-6 space-y-4"
+        style={{ fontSize: `${fontScale}%` }}
+      >
         <div className="flex items-start justify-between gap-2 flex-wrap">
           <div className="flex items-start gap-2">
             <Syringe className="w-5 h-5 text-primary mt-1" />
@@ -285,10 +288,50 @@ export default function GLP1AssessmentCalculator() {
               </p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-            <Home className="w-4 h-4 mr-1" /> Home
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <div
+              className="flex items-center gap-2 rounded-md border bg-card px-2 py-1"
+              role="group"
+              aria-label="Text size"
+            >
+              <span className="text-xs text-muted-foreground hidden sm:inline">Text</span>
+              <button
+                type="button"
+                onClick={() => setFontScale((s) => Math.max(80, s - 10))}
+                className="text-sm font-semibold w-6 h-6 rounded hover:bg-muted"
+                aria-label="Decrease text size"
+              >A−</button>
+              <input
+                type="range"
+                min={80}
+                max={160}
+                step={5}
+                value={fontScale}
+                onChange={(e) => setFontScale(Number(e.target.value))}
+                aria-label="Text size slider"
+                aria-valuetext={`${fontScale} percent`}
+                className="w-24 accent-primary"
+              />
+              <button
+                type="button"
+                onClick={() => setFontScale((s) => Math.min(160, s + 10))}
+                className="text-sm font-semibold w-6 h-6 rounded hover:bg-muted"
+                aria-label="Increase text size"
+              >A+</button>
+              <button
+                type="button"
+                onClick={() => setFontScale(100)}
+                className="text-[11px] px-1.5 py-0.5 rounded hover:bg-muted text-muted-foreground"
+                aria-label="Reset text size"
+                title="Reset"
+              >{fontScale}%</button>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
+              <Home className="w-4 h-4 mr-1" /> Home
+            </Button>
+          </div>
         </div>
+
 
         {/* Prominent India / Global toggle */}
         <Card className="border-primary/30 bg-primary/5">
