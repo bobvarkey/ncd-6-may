@@ -13,7 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Home, Printer, Copy, Syringe, Scale, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Home, Printer, Copy, Syringe, Scale, AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import Seo from "@/components/Seo";
 import { downloadTextFile } from "@/lib/clinical-utils";
