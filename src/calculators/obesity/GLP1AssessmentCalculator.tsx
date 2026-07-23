@@ -169,14 +169,14 @@ export default function GLP1AssessmentCalculator() {
       : `BMI ≥${bmiPharmaThr}, or BMI ≥${bmiWithComorbThr} with ≥1 comorbidity.`;
 
     const criteria = [
-      { label: `BMI ≥ ${bmiPharmaThr} kg/m² (independent)`, met: meetsBmiHigh },
-      { label: `BMI ≥ ${bmiWithComorbThr} kg/m² with ≥1 weight-related comorbidity`, met: meetsBmiWithComorb },
+      { short: `BMI ≥${bmiPharmaThr}`, label: `BMI ≥ ${bmiPharmaThr} kg/m² (independent)`, met: meetsBmiHigh },
+      { short: `BMI ≥${bmiWithComorbThr} + comorb`, label: `BMI ≥ ${bmiWithComorbThr} kg/m² with ≥1 weight-related comorbidity`, met: meetsBmiWithComorb },
       ...(mode === "india"
-        ? [{ label: "BMI ≥ 23 kg/m² with central obesity (India only)", met: meetsBmiWithCentral }]
+        ? [{ short: "BMI ≥23 + central", label: "BMI ≥ 23 kg/m² with central obesity (India only)", met: meetsBmiWithCentral }]
         : []),
-      { label: `Waist ${sex === "male" ? "≥ " + waistThr : "≥ " + waistThr} cm (${sex})`, met: waistHigh },
-      { label: "WHtR > 0.5", met: whtrHigh },
-      { label: "No absolute contraindication selected", met: noContra },
+      { short: `Waist ≥${waistThr}cm`, label: `Waist ${sex === "male" ? "≥ " + waistThr : "≥ " + waistThr} cm (${sex})`, met: waistHigh },
+      { short: "WHtR >0.5", label: "WHtR > 0.5", met: whtrHigh },
+      { short: "No contraindication", label: "No absolute contraindication selected", met: noContra },
     ];
 
     const interp: string[] = [
