@@ -129,6 +129,7 @@ const AntihypertensivePotencyTableCalc = lazyWithModuleRetry(() => import("@/cal
 const BmiCalculatorCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/BmiCalculator"));
 const WaistHeightRatioCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/WaistHeightRatio"));
 const GLP1ObesityAlgorithmCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1ObesityAlgorithm"));
+const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1AssessmentCalculator"));
 const IronReplacementCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/IronReplacementCalculator"));
 const ThyroidCalculator = lazyWithModuleRetry(() => import("@/calculators/thyroid/ThyroidCalculator"));
 const Dashboard = lazyWithModuleRetry(() => import("@/pages/Dashboard"));
