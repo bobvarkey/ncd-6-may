@@ -266,10 +266,18 @@ export default function GLP1AssessmentCalculator() {
         description="Eligibility, dose titration, and prescribing report for semaglutide, tirzepatide, and liraglutide with Global vs India-adjusted thresholds."
       />
       <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-4">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <div className="flex items-center gap-2">
-            <Syringe className="w-5 h-5 text-primary" />
-            <h1 className="text-xl sm:text-2xl font-semibold">GLP-1 Assessment Calculator</h1>
+        <div className="flex items-start justify-between gap-2 flex-wrap">
+          <div className="flex items-start gap-2">
+            <Syringe className="w-5 h-5 text-primary mt-1" />
+            <div>
+              <h1 className="text-xl sm:text-2xl font-semibold">GLP-1 Assessment Calculator</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mt-0.5">
+                Enter height, weight, waist, sex, EOSS stage, comorbidities and contraindications.
+                Get BMI, WHtR, central-obesity flag, an eligibility decision against Global or
+                India-adjusted cut-offs, dose titration for semaglutide / tirzepatide / liraglutide,
+                and a downloadable clinic report.
+              </p>
+            </div>
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
             <Home className="w-4 h-4 mr-1" /> Home
@@ -421,7 +429,32 @@ export default function GLP1AssessmentCalculator() {
               <div><Label>Weight (kg)</Label><Input type="number" step="0.1" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} placeholder="86" /></div>
               <div><Label>Waist (cm)</Label><Input type="number" step="0.1" value={waistCm} onChange={(e) => setWaistCm(e.target.value)} placeholder="98" /></div>
               <div>
-                <Label>EOSS stage</Label>
+                <Label className="flex items-center gap-1">
+                  EOSS stage
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="What does EOSS stand for?"
+                        className="inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      >
+                        <Info className="w-3.5 h-3.5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 text-xs space-y-2" side="top">
+                      <p className="font-semibold text-sm">EOSS — Edmonton Obesity Staging System</p>
+                      <p className="text-muted-foreground">
+                        A 5-level (0–4) clinical staging of obesity based on medical, mental, and
+                        functional impact — used alongside BMI to guide treatment intensity.
+                      </p>
+                      <ul className="space-y-1">
+                        {[0,1,2,3,4].map((s) => (
+                          <li key={s}><span className="font-medium">Stage {s}:</span> {EOSS[s]}</li>
+                        ))}
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+                </Label>
                 <Select value={eoss} onValueChange={setEoss}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
