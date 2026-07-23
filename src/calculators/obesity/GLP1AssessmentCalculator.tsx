@@ -314,8 +314,7 @@ export default function GLP1AssessmentCalculator() {
                     India-adjusted GLP-1 eligibility
                   </h2>
                   <p id="india-criteria-desc" className="text-muted-foreground">
-                    Based on ObSI/IASO-APA 2022 &amp; RSSDI/ICMR consensus — Asian Indians develop
-                    cardiometabolic risk at lower BMI and waist thresholds than Western populations.
+                    Asian Indians hit cardiometabolic risk at lower BMI / waist. Refs: ObSI 2022, RSSDI-ESI, ICMR-INDIAB.
                   </p>
                   <div className="rounded-md border overflow-hidden">
                     <table className="w-full" aria-label="India versus global cut-offs">
