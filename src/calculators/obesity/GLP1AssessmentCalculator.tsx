@@ -261,42 +261,55 @@ export default function GLP1AssessmentCalculator() {
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    aria-label="India-adjusted criteria details"
-                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                    aria-label="Show India-adjusted GLP-1 eligibility criteria"
+                    aria-haspopup="dialog"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                   >
-                    <Info className="w-3.5 h-3.5" /> India criteria
+                    <Info className="w-3.5 h-3.5" aria-hidden="true" /> India criteria
                   </button>
                 </PopoverTrigger>
-                <PopoverContent side="bottom" align="start" className="w-80 text-xs space-y-2">
-                  <div className="font-semibold text-sm">India-adjusted GLP-1 eligibility</div>
-                  <p className="text-muted-foreground">
-                    Based on ObSI/IASO-APA 2022 & RSSDI/ICMR consensus — Asian Indians develop
+                <PopoverContent
+                  side="bottom"
+                  align="start"
+                  role="dialog"
+                  aria-labelledby="india-criteria-title"
+                  aria-describedby="india-criteria-desc"
+                  className="w-80 text-xs space-y-2"
+                >
+                  <h2 id="india-criteria-title" className="font-semibold text-sm">
+                    India-adjusted GLP-1 eligibility
+                  </h2>
+                  <p id="india-criteria-desc" className="text-muted-foreground">
+                    Based on ObSI/IASO-APA 2022 &amp; RSSDI/ICMR consensus — Asian Indians develop
                     cardiometabolic risk at lower BMI and waist thresholds than Western populations.
                   </p>
                   <div className="rounded-md border overflow-hidden">
-                    <table className="w-full">
+                    <table className="w-full" aria-label="India versus global cut-offs">
+                      <caption className="sr-only">
+                        India-adjusted versus global BMI, waist, and WHtR cut-offs
+                      </caption>
                       <thead className="bg-muted/60">
                         <tr>
-                          <th className="text-left px-2 py-1">Parameter</th>
-                          <th className="text-left px-2 py-1">India</th>
-                          <th className="text-left px-2 py-1">Global</th>
+                          <th scope="col" className="text-left px-2 py-1">Parameter</th>
+                          <th scope="col" className="text-left px-2 py-1">India</th>
+                          <th scope="col" className="text-left px-2 py-1">Global</th>
                         </tr>
                       </thead>
                       <tbody className="[&_td]:px-2 [&_td]:py-1 [&_td]:border-t">
-                        <tr><td>Overweight (BMI)</td><td>≥ 23</td><td>≥ 25</td></tr>
-                        <tr><td>Obesity (BMI)</td><td>≥ 25</td><td>≥ 30</td></tr>
-                        <tr><td>Waist – Male</td><td>≥ 90 cm</td><td>≥ 102 cm</td></tr>
-                        <tr><td>Waist – Female</td><td>≥ 80 cm</td><td>≥ 88 cm</td></tr>
-                        <tr><td>WHtR (both sexes)</td><td>&gt; 0.5</td><td>&gt; 0.5</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">Overweight (BMI)</th><td>≥ 23</td><td>≥ 25</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">Obesity (BMI)</th><td>≥ 25</td><td>≥ 30</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">Waist – Male</th><td>≥ 90 cm</td><td>≥ 102 cm</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">Waist – Female</th><td>≥ 80 cm</td><td>≥ 88 cm</td></tr>
+                        <tr><th scope="row" className="text-left font-normal">WHtR (both sexes)</th><td>&gt; 0.5</td><td>&gt; 0.5</td></tr>
                       </tbody>
                     </table>
                   </div>
                   <div className="space-y-1">
                     <div className="font-semibold">GLP-1 candidacy (India)</div>
                     <ul className="list-disc pl-4 space-y-0.5 text-muted-foreground">
-                      <li>BMI ≥ 27 with a weight-related comorbidity, or</li>
-                      <li>BMI ≥ 30 (any), or</li>
-                      <li>BMI ≥ 25 with central obesity + T2D / prediabetes / MASLD / OSA</li>
+                      <li>BMI ≥ 27.5, or</li>
+                      <li>BMI ≥ 25 with a weight-related comorbidity, or</li>
+                      <li>BMI ≥ 23 with central obesity + T2D / prediabetes / MASLD / OSA</li>
                     </ul>
                   </div>
                   <p className="text-[11px] text-muted-foreground">
