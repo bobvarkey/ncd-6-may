@@ -345,9 +345,6 @@ export default function GLP1AssessmentCalculator() {
                       <li>BMI ≥ 23 with central obesity + T2D / prediabetes / MASLD / OSA</li>
                     </ul>
                   </div>
-                  <p className="text-[11px] text-muted-foreground">
-                    Refs: ObSI 2022; RSSDI-ESI 2022; ICMR-INDIAB; Misra et al., JAPI 2009.
-                  </p>
                 </PopoverContent>
               </Popover>
             </div>
