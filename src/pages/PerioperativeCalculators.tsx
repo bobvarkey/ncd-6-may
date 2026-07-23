@@ -586,6 +586,17 @@ const MallampatiCalculator = () => {
             Modified Mallampati classification predicts difficulty of endotracheal intubation. Assessed with patient sitting, mouth open, tongue protruded, without phonation.
           </p>
 
+          {/* Visual reference — click to enlarge */}
+          <div className="mb-4">
+            <ZoomableImage
+              src={mallampatiAsset.url}
+              alt="Mallampati Score classification diagram showing Class I through IV airway visualization"
+              className="w-full max-w-2xl mx-auto rounded-lg border border-border/40"
+            />
+            <p className="text-[10px] text-muted-foreground text-center mt-1">Tap image to enlarge</p>
+          </div>
+
+
           {/* Visual guide */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             {MALLAMPATI_CLASSES.map(m => (
