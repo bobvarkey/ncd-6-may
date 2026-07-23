@@ -1,8 +1,7 @@
 import { useState, useMemo } from "react";
 import { loadPatient, PatientData } from "@/lib/patient-data";
-import { ChevronDown, ChevronUp, AlertTriangle, Check, ArrowDown, Heart, Shield, Pill, Activity, Info, Syringe, FlaskConical, HeartPulse } from "lucide-react";
+import { ChevronDown, ChevronUp, AlertTriangle, Check, ArrowDown, Heart, Shield, Pill, Activity, Info } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
-import niceAlgorithmImg from "@/assets/nice-ckd-algorithm.png";
 import KDIGOStagingCalculator from "@/calculators/renal/KDIGOStagingCalculator";
 
 type CKDStage = "none" | "micro" | "macro" | "t2d-ckd" | "cvd" | "advanced";

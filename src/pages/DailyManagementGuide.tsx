@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp, Heart, Apple, Activity, Brain, Droplet, Pill, TrendingUp } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
 interface EducationSection {
   id: string;

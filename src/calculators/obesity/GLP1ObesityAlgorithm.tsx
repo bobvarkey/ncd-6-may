@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ChevronDown,
   ChevronUp,
@@ -27,17 +26,8 @@ import {
   Home,
   RotateCcw,
   Target,
-  BookOpen,
   Swords,
-  Trophy,
-  Stethoscope,
   Brain,
-  Bone,
-  Weight,
-  Droplets,
-  Thermometer,
-  Wind,
-  HeartPulse,
 } from "lucide-react";
 
 interface GLP1Drug {

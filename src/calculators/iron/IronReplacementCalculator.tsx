@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Droplets,
   Syringe,
@@ -21,13 +20,11 @@ import {
   AlertTriangle,
   CheckCircle2,
   FlaskConical,
-  Weight,
   Heart,
   Home,
   RotateCcw,
   Calculator,
   ChevronDown,
-  ChevronUp,
   BookOpen,
   Info,
   Copy,

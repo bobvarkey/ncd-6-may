@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Syringe, Shield, Clock, Baby, FlaskConical,
-  Printer, Copy, Download, AlertTriangle, Info,
+  Syringe, Shield, Clock, Copy, Download, AlertTriangle, Info,
   CheckCircle2, XCircle, AlertCircle, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";

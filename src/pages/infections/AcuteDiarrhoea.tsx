@@ -17,7 +17,6 @@ import {
   Heart,
   User,
   Clock,
-  FileText,
   Download,
   Printer,
   Copy,
@@ -25,8 +24,6 @@ import {
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import ImageLink from "@/components/ImageLink";
-import acuteDiarrhoeaImg from "@/assets/acute-diarrhoea-poster.jpg";
-import foodPoisoningImg from "@/assets/food-poisoning-algorithm.jpg";
 import { toast } from "sonner";
 
 /* ── Hand-drawn style helpers ──────────────────────────────────── */

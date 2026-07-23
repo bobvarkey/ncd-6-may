@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { loadPatient } from "@/lib/patient-data";
-import { Syringe, Plus, Trash2, TrendingDown, AlertTriangle, CheckCircle, Info, UserX } from "lucide-react";
+import { Syringe, Plus, Trash2, TrendingDown, AlertTriangle, CheckCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";

@@ -1,10 +1,10 @@
 import React from "react";
-import { AlertCircle, Activity, Heart, Brain, Flame, Shield, Target, ArrowRight, Dna, Info, AlertTriangle, Stethoscope, Pill, UtensilsCrossed, Baby, Users, Bone, Microscope } from "lucide-react";
+import { AlertCircle, Activity, Heart, Brain, Flame, Shield, Target, ArrowRight, Dna, Info, AlertTriangle, Stethoscope, UtensilsCrossed, Users, Microscope } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { AbbreviationHover, AbbrText } from "@/components/AbbreviationHover";
+import { AbbrText } from "@/components/AbbreviationHover";
 
 // DM Types Classification Section
 const DMTypeCard = ({ type, title, subtitle, icon, description, features, badge, badgeColor }: {

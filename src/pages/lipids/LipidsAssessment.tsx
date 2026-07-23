@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, type ReactNode } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -14,9 +13,8 @@ import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  ChevronDown, ClipboardCopy, TrendingUp, User, Heart, TestTube,
-  AlertTriangle, Target, Dna, Scale, Stethoscope, ArrowRight, Info,
-  Pill, BookOpen, ZoomIn, Calculator,
+  ChevronDown, ClipboardCopy, TrendingUp, User, Heart,
+  AlertTriangle, Target, Dna, Scale, Stethoscope, ArrowRight, BookOpen, Calculator,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/section-card";

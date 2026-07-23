@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { RefreshCw, GitBranch, GitCommit, GitPullRequest, CheckCircle2, AlertCircle, Loader2, ExternalLink, Globe } from "lucide-react";
+import { RefreshCw, GitBranch, CheckCircle2, AlertCircle, Loader2, ExternalLink, Globe } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

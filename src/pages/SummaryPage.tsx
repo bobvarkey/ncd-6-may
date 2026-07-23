@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { PatientData, EXAMPLE_PATIENT, loadPatient, getBMICategory, getCKDStage } from "@/lib/patient-data";
 import { generateMedRecommendations, getHypoProtocol, getLipidTargets, getCategoryLabel, getDrugClassLabel, AlgorithmPriority } from "@/lib/med-logic";
 import { generate7DayPlan, DayPlan } from "@/lib/diet-generator";
-import { Pill, AlertTriangle, Heart, Shield, ChevronDown, ChevronUp, Scale, Activity, TrendingDown, Brain, User, UtensilsCrossed, FileText } from "lucide-react";
+import { Pill, AlertTriangle, Heart, Shield, ChevronDown, ChevronUp, User, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 

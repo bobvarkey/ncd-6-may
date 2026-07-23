@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   Loader2,
-  X,
   Clipboard,
   Sparkles,
   FlaskConical,

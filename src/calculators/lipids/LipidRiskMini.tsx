@@ -27,12 +27,8 @@ import {
   Info,
   Dna,
   Sparkles,
-  Bone,
-  Stethoscope,
-  Shield,
   FileText,
   ClipboardCopy,
-  TrendingUp,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";

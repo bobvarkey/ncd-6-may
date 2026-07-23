@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Wind, ArrowRight, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 // COPD/Asthma Simple Calculator

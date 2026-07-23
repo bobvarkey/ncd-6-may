@@ -18,7 +18,6 @@ import {
   Syringe,
   Heart,
   Brain,
-  Shield,
   AlertTriangle,
   ChevronDown,
   ChevronRight,
@@ -28,7 +27,6 @@ import {
   Pill,
   Thermometer,
   Monitor,
-  BookOpen,
   FileText,
 } from "lucide-react";
 import { AbbrText } from "@/components/AbbreviationHover";

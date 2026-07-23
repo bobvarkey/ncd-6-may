@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bone, ChevronDown, ChevronUp, AlertTriangle, Info, Droplets, Syringe, FlaskConical, Stethoscope, Activity, Heart, Brain, Zap, Pill, ShieldAlert } from "lucide-react";
+import { Bone, ChevronDown, ChevronUp, AlertTriangle, Info, Syringe, Stethoscope, ShieldAlert } from "lucide-react";
 
 type Severity = "none" | "mild" | "moderate" | "severe" | "life_threatening";
 

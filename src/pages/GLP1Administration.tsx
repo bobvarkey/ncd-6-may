@@ -1,9 +1,8 @@
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Syringe, ShieldAlert, CheckCircle2, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { Syringe } from "lucide-react";
 
 const GLP1Administration = () => {
   const [expandedMed, setExpandedMed] = useState<string | null>("tirzepatide");

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Stethoscope,
   ClipboardList,
   Beaker,
   Syringe,
@@ -12,21 +11,16 @@ import {
   Pill,
   User,
   FlaskConical,
-  Heart,
   Image as ImageIcon,
   FileText,
-  Download,
   Printer,
   Copy,
   BrainCircuit,
   ChevronDown,
   ChevronRight,
-  Info,
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import ImageLink from "@/components/ImageLink";
-import foodPoisoningImg from "@/assets/food-poisoning-poster.jpg";
-import foodPoisoningImg2 from "@/assets/food-poisoning-poster-2.jpg";
 import { toast } from "sonner";
 
 /* ── Hand-drawn style helpers ──────────────────────────────────── */

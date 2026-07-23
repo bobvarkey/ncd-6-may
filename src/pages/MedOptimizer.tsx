@@ -1,10 +1,10 @@
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import { PatientData, EXAMPLE_PATIENT, loadPatient } from "@/lib/patient-data";
+import { PatientData, loadPatient } from "@/lib/patient-data";
 import {
   generateMedRecommendations, getHypoProtocol, getLipidTargets,
   MedRecommendation, AlgorithmPriority, getCategoryLabel, getDrugClassLabel,
-  getAlgorithmPathway, getPathwayLabel, AlgorithmPathway, getNextBestMedication,
+  getAlgorithmPathway, getPathwayLabel, getNextBestMedication,
   downloadRecommendationsJSON, downloadRecommendationsText,
 } from "@/lib/med-logic";
 import { Pill, AlertTriangle, Heart, Shield, ChevronDown, ChevronUp, TrendingDown, Scale, Activity, UserX, Download, Loader2, FileJson, Printer, Copy } from "lucide-react";

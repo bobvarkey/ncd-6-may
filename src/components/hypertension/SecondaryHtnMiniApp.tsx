@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Heart, Wine, Pill, Activity, Zap, Moon, TestTube, Stethoscope, FlaskConical,
-  Droplets, Syringe, Info, AlertTriangle
+  Droplets, Syringe
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 

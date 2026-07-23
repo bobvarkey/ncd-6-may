@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FOOD_CATEGORIES, KERALA_FOODS, FoodCategory, FoodItem } from "@/lib/food-data";
+import { FOOD_CATEGORIES, KERALA_FOODS, FoodCategory } from "@/lib/food-data";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
