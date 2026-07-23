@@ -147,19 +147,36 @@ export default function GLP1AssessmentCalculator() {
     const e = parseInt(eoss || "0", 10);
     const bmi = Number.isFinite(h) && Number.isFinite(w) && h > 0 ? w / (h / 100) ** 2 : NaN;
     const whtr = Number.isFinite(h) && Number.isFinite(wa) && h > 0 ? wa / h : NaN;
-    const waistThr = sex === "male" ? 90 : 80;
-    const central =
-      (Number.isFinite(wa) && wa >= waistThr) || (Number.isFinite(whtr) && whtr > 0.5);
+    const waistThr = mode === "india"
+      ? (sex === "male" ? 90 : 80)
+      : (sex === "male" ? 102 : 88);
+    const bmiObesityThr = mode === "india" ? 25 : 30;
+    const bmiPharmaThr = mode === "india" ? 27.5 : 30;
+    const bmiWithComorbThr = mode === "india" ? 25 : 27;
+    const waistHigh = Number.isFinite(wa) && wa >= waistThr;
+    const whtrHigh = Number.isFinite(whtr) && whtr > 0.5;
+    const central = waistHigh || whtrHigh;
 
-    let eligible = false;
-    let rule = "";
-    if (mode === "global") {
-      eligible = bmi >= 30 || (bmi >= 27 && comorb.length > 0);
-      rule = "BMI ≥30, or BMI ≥27 with at least 1 comorbidity.";
-    } else {
-      eligible = bmi >= 27.5 || (bmi >= 25 && (comorb.length > 0 || central));
-      rule = "BMI ≥27.5, or BMI ≥25 with ≥1 comorbidity and/or central obesity.";
-    }
+    const meetsBmiHigh = Number.isFinite(bmi) && bmi >= bmiPharmaThr;
+    const meetsBmiWithComorb = Number.isFinite(bmi) && bmi >= bmiWithComorbThr && comorb.length > 0;
+    const meetsBmiWithCentral = mode === "india" && Number.isFinite(bmi) && bmi >= 23 && central;
+    const noContra = contra.length === 0;
+    const eligible = (meetsBmiHigh || meetsBmiWithComorb || meetsBmiWithCentral);
+
+    const rule = mode === "india"
+      ? `BMI ≥${bmiPharmaThr}, or BMI ≥${bmiWithComorbThr} with ≥1 comorbidity, or BMI ≥23 with central obesity.`
+      : `BMI ≥${bmiPharmaThr}, or BMI ≥${bmiWithComorbThr} with ≥1 comorbidity.`;
+
+    const criteria = [
+      { label: `BMI ≥ ${bmiPharmaThr} kg/m² (independent)`, met: meetsBmiHigh },
+      { label: `BMI ≥ ${bmiWithComorbThr} kg/m² with ≥1 weight-related comorbidity`, met: meetsBmiWithComorb },
+      ...(mode === "india"
+        ? [{ label: "BMI ≥ 23 kg/m² with central obesity (India only)", met: meetsBmiWithCentral }]
+        : []),
+      { label: `Waist ${sex === "male" ? "≥ " + waistThr : "≥ " + waistThr} cm (${sex})`, met: waistHigh },
+      { label: "WHtR > 0.5", met: whtrHigh },
+      { label: "No absolute contraindication selected", met: noContra },
+    ];
 
     const interp: string[] = [
       `EOSS stage ${e}: ${EOSS[e]}`,
@@ -170,7 +187,7 @@ export default function GLP1AssessmentCalculator() {
         ? "One or more contraindication/caution items require clinician review before prescribing."
         : "No contraindication items selected.",
     ];
-    if (eligible && contra.length === 0) {
+    if (eligible && noContra) {
       interp.push(
         e >= 3
           ? "High clinical complexity; specialist obesity/endocrine review advisable."
@@ -178,13 +195,16 @@ export default function GLP1AssessmentCalculator() {
           ? "Eligible for pharmacotherapy consideration within comprehensive obesity care."
           : "Screening-positive; confirm goals, risks, and patient preference before prescribing."
       );
-    } else if (eligible && contra.length > 0) {
+    } else if (eligible && !noContra) {
       interp.push("Screening-positive but treatment suitability remains conditional pending caution review.");
     } else {
       interp.push("Consider lifestyle, cardiometabolic risk assessment, and re-evaluation over time.");
     }
 
-    return { h, w, wa, e, bmi, whtr, central, eligible, rule, interp };
+    return {
+      h, w, wa, e, bmi, whtr, central, eligible, rule, interp, criteria,
+      cutoffs: { waistThr, bmiPharmaThr, bmiWithComorbThr, bmiObesityThr },
+    };
   }, [heightCm, weightKg, waistCm, eoss, sex, mode, comorb, contra]);
 
   const schedule = SCHEDULES[med][goal];
