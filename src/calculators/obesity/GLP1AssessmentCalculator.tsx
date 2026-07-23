@@ -139,6 +139,7 @@ export default function GLP1AssessmentCalculator() {
   const [med, setMed] = useState<Med>("semaglutide");
   const [goal, setGoal] = useState<Goal>("weight");
   const [doseStep, setDoseStep] = useState(0);
+  const [compact, setCompact] = useState(true);
 
   const result = useMemo(() => {
     const h = parseFloat(heightCm);
