@@ -536,6 +536,33 @@ export default function GLP1AssessmentCalculator() {
                 </div>
               )}
             </div>
+
+            {/* On-screen criteria checklist with cut-offs used */}
+            <div className="rounded-lg border p-3" aria-live="polite">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-xs font-semibold">
+                  Eligibility criteria — {mode === "india" ? "India-adjusted" : "Global"} cut-offs
+                </div>
+                <Badge variant="outline" className="text-[10px]">
+                  BMI ≥{result.cutoffs.bmiPharmaThr} · comorb ≥{result.cutoffs.bmiWithComorbThr} · waist ≥{result.cutoffs.waistThr}cm
+                </Badge>
+              </div>
+              <ul className="text-xs space-y-1">
+                {result.criteria.map((c) => (
+                  <li key={c.label} className="flex items-start gap-2">
+                    {c.met ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-emerald-600 shrink-0" aria-hidden="true" />
+                    ) : (
+                      <AlertTriangle className="w-3.5 h-3.5 mt-0.5 text-muted-foreground shrink-0" aria-hidden="true" />
+                    )}
+                    <span className={c.met ? "font-medium" : "text-muted-foreground"}>
+                      <span className="sr-only">{c.met ? "Met: " : "Not met: "}</span>
+                      {c.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <div className="rounded-lg border p-3 bg-muted/30">
               <div className="text-xs font-semibold mb-1">Interpretation</div>
               <ul className="text-xs space-y-0.5 list-disc ml-4">
