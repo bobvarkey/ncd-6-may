@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/collapsible";
 import {
   ChevronDown, ClipboardCopy, TrendingUp, User, Heart,
-  AlertTriangle, Target, Dna, Scale, Stethoscope, ArrowRight, BookOpen, Calculator,
+  AlertTriangle, Target, Dna, Scale, Stethoscope, ArrowRight, BookOpen, Calculator, Download,
 } from "lucide-react";
+import { downloadTextFile } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/section-card";
 import { toast } from "sonner";
@@ -678,9 +679,20 @@ export default function LipidsAssessment({ onClassificationChange, onNavigateToT
       {/* ─── EMR Note ─── */}
       <SectionCard title="EMR Note" icon={<ClipboardCopy className="h-4 w-4" />} tone="neutral">
         <textarea readOnly value={generateNote()} className="w-full h-32 rounded-lg border border-input bg-muted/30 p-3 text-sm font-mono resize-none" />
-        <Button variant="outline" className="w-full mt-3" onClick={() => { navigator.clipboard.writeText(generateNote()); toast.success("Copied"); }}>
-          <ClipboardCopy className="h-4 w-4 mr-1.5" /> Copy to EMR
-        </Button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+          <Button variant="outline" onClick={() => { navigator.clipboard.writeText(generateNote()); toast.success("Copied"); }}>
+            <ClipboardCopy className="h-4 w-4 mr-1.5" /> Copy to EMR
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              const fname = `LAI-Lipid-Assessment_${(name || "patient").replace(/\s+/g, "_")}_${new Date().toISOString().slice(0, 10)}.txt`;
+              downloadTextFile(fname, generateNote());
+            }}
+          >
+            <Download className="h-4 w-4 mr-1.5" /> Download .txt
+          </Button>
+        </div>
       </SectionCard>
     </div>
   );
