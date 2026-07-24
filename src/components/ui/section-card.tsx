@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useRef, useState } from "react";
+import { ChevronDown, Download } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { downloadTextFile } from "@/lib/clinical-utils";
 
 type SectionTone =
   | "primary"
