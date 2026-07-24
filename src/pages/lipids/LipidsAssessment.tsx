@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/collapsible";
 import {
   ChevronDown, ClipboardCopy, TrendingUp, User, Heart,
-  AlertTriangle, Target, Dna, Scale, Stethoscope, ArrowRight, BookOpen, Calculator,
+  AlertTriangle, Target, Dna, Scale, Stethoscope, ArrowRight, BookOpen, Calculator, Download,
 } from "lucide-react";
+import { downloadTextFile } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/section-card";
 import { toast } from "sonner";
