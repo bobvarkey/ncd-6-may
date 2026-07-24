@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useRef, useState } from "react";
+import { ChevronDown, Download } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { downloadTextFile } from "@/lib/clinical-utils";
 
 type SectionTone =
   | "primary"
@@ -93,6 +94,7 @@ export function SectionCard({
   badge,
   tone = "neutral",
   collapsible = true,
+  exportable = true,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -101,9 +103,34 @@ export function SectionCard({
   badge?: React.ReactNode;
   tone?: SectionTone;
   collapsible?: boolean;
+  exportable?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const t = TONE_STYLES[tone];
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const el = contentRef.current;
+    const bodyText = el ? (el.innerText || el.textContent || "").trim() : "";
+    const stamp = new Date().toLocaleString();
+    const text = `${title}\n${"=".repeat(title.length)}\nExported: ${stamp}\n\n${bodyText}\n`;
+    const safe = title.replace(/[^a-z0-9-_ ]/gi, "_").slice(0, 60);
+    downloadTextFile(`${safe}.txt`, text);
+  };
+
+  const DownloadBtn = exportable ? (
+    <button
+      type="button"
+      onClick={handleDownload}
+      aria-label={`Download ${title} as text file`}
+      title="Download .txt"
+      className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
+    >
+      <Download className="h-3.5 w-3.5" />
+      <span className="hidden sm:inline">.txt</span>
+    </button>
+  ) : null;
 
   const Header = (
     <div className={`flex w-full items-center justify-between px-5 py-3.5 transition-colors ${t.header}`}>
@@ -114,9 +141,12 @@ export function SectionCard({
         <h2 className={`font-display text-sm font-bold ${t.title}`}>{title}</h2>
         {badge}
       </div>
-      {collapsible && (
-        <ChevronDown className={`h-4 w-4 ${t.title} transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
-      )}
+      <div className="flex items-center gap-2">
+        {DownloadBtn}
+        {collapsible && (
+          <ChevronDown className={`h-4 w-4 ${t.title} transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        )}
+      </div>
     </div>
   );
 
@@ -124,7 +154,7 @@ export function SectionCard({
     return (
       <Card className={`overflow-hidden shadow-sm ${t.card}`}>
         {Header}
-        <div className="px-5 pb-5 pt-3 bg-card">{children}</div>
+        <div ref={contentRef} className="px-5 pb-5 pt-3 bg-card">{children}</div>
       </Card>
     );
   }
@@ -132,9 +162,11 @@ export function SectionCard({
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <Card className={`overflow-hidden shadow-sm ${t.card}`}>
-        <CollapsibleTrigger className="w-full text-left">{Header}</CollapsibleTrigger>
+        <CollapsibleTrigger asChild>
+          <div role="button" tabIndex={0} className="w-full text-left cursor-pointer">{Header}</div>
+        </CollapsibleTrigger>
         <CollapsibleContent className="animate-in slide-in-from-top-2 fade-in duration-200">
-          <div className="px-5 pb-5 pt-3">{children}</div>
+          <div ref={contentRef} className="px-5 pb-5 pt-3">{children}</div>
         </CollapsibleContent>
       </Card>
     </Collapsible>
