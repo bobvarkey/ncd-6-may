@@ -170,6 +170,7 @@ const FoodPoisoningPage = lazyWithModuleRetry(() => import("@/pages/FoodPoisonin
 const PEP = lazyWithModuleRetry(() => import("@/pages/PEP"));
 const AdultVaccinations = lazyWithModuleRetry(() => import("@/pages/AdultVaccinations"));
 const AKICriteria = lazyWithModuleRetry(() => import("@/pages/AKICriteria"));
+const AKIAKDMiniApp = lazyWithModuleRetry(() => import("@/pages/AKIAKDMiniApp"));
 const AcidBaseDisorders = lazyWithModuleRetry(() => import("@/pages/AcidBaseDisorders"));
 const MetabolicAlkalosis = lazyWithModuleRetry(() => import("@/pages/MetabolicAlkalosis"));
 const Geriatrics = lazyWithModuleRetry(() => import("@/pages/Geriatrics"));
