@@ -174,7 +174,7 @@ const SECONDARY_WORKUP: WorkupCategory[] = [
       { name: "1 mg overnight DST (preferred screen)", tag: "screening", reference: "8 am cortisol ≤50 nmol/L (1.8 µg/dL) rules out Cushing's", detail: "1 mg dexamethasone at 23:00 → 08:00 serum cortisol next morning. Best initial screen." },
       { name: "Late-night salivary cortisol", tag: "screening", reference: ">0.13 µg/dL (loss of diurnal variation)", detail: "Alternative screen; two separate late-night samples." },
       { name: "24-hour urine free cortisol", tag: "screening", reference: ">3× upper limit suggests Cushing's", detail: "Two collections; confirms endogenous hypercortisolism." },
-      { name: "Random morning cortisol", tag: "not recommended", reference: "Too nonspecific — do NOT use to screen", detail: "Diurnal variability and stress make a single AM cortisol unreliable for screening Cushing's syndrome." },
+      { name: "Random morning cortisol (NOT recommended)", tag: "screening", reference: "Too nonspecific — do NOT use to screen for Cushing's", detail: "Diurnal variability and stress make a single AM cortisol unreliable for screening Cushing's syndrome." },
     ],
   },
   {
