@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import BackToHome from "@/components/BackToHome";
 import Seo from "@/components/Seo";
-import { AlertTriangle, Activity, Download, Copy } from "lucide-react";
+import { AlertTriangle, Activity, Download, Copy, Image } from "lucide-react";
 import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
 
 type BaselineSource = "known" | "estimated" | "provisional" | "unknown";
@@ -278,14 +278,23 @@ export default function AKIAKDMiniApp() {
       />
       <BackToHome />
       <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
-            <Activity className="h-6 w-6 text-amber-500" />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
+              <Activity className="h-6 w-6 text-amber-500" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-heading font-semibold">AKI / AKD Mini App</h1>
+              <p className="text-sm text-muted-foreground">Baseline-aware detection & staging — KDIGO 2026</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-heading font-semibold">AKI / AKD Mini App</h1>
-            <p className="text-sm text-muted-foreground">Baseline-aware detection & staging — KDIGO 2026</p>
-          </div>
+          <a
+            href="/images?search=KDIGO%202026%20AKI%20%26%20AKD"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-primary hover:bg-muted transition-colors"
+          >
+            <Image className="h-4 w-4" />
+            View KDIGO 2026 guideline
+          </a>
         </div>
 
         {/* Baseline */}
