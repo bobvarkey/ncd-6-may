@@ -170,6 +170,7 @@ const FoodPoisoningPage = lazyWithModuleRetry(() => import("@/pages/FoodPoisonin
 const PEP = lazyWithModuleRetry(() => import("@/pages/PEP"));
 const AdultVaccinations = lazyWithModuleRetry(() => import("@/pages/AdultVaccinations"));
 const AKICriteria = lazyWithModuleRetry(() => import("@/pages/AKICriteria"));
+const AKIAKDMiniApp = lazyWithModuleRetry(() => import("@/pages/AKIAKDMiniApp"));
 const AcidBaseDisorders = lazyWithModuleRetry(() => import("@/pages/AcidBaseDisorders"));
 const MetabolicAlkalosis = lazyWithModuleRetry(() => import("@/pages/MetabolicAlkalosis"));
 const Geriatrics = lazyWithModuleRetry(() => import("@/pages/Geriatrics"));
@@ -295,6 +296,7 @@ const App = () => (
           <Route path="/hypo-risk" element={<><TabNavigation /><HypoRiskCalculatorCalc /></>} />
           <Route path="/renal-dosing" element={<><TabNavigation /><RenalDosePage /></>} />
           <Route path="/aki-criteria" element={<><TabNavigation /><AKICriteria /></>} />
+          <Route path="/aki-akd" element={<><TabNavigation /><AKIAKDMiniApp /></>} />
           <Route path="/acid-base" element={<><TabNavigation /><AcidBaseDisorders /></>} />
           <Route path="/metabolic-alkalosis" element={<Navigate to="/acid-base?tab=metabolic-alkalosis" replace />} />
           <Route path="/geriatrics" element={<><TabNavigation /><Geriatrics /></>} />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Home, Droplets, Heart, Droplet, Dna, Microscope, Weight, AirVent, Moon, Bug, UtensilsCrossed, Shield, Syringe, Zap, Bandage, Timer, Thermometer, Flame, Bone, Gem, Sun, Stethoscope, Filter, Search, User, Image, Pill } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home, Droplets, Heart, Droplet, Dna, Microscope, Weight, AirVent, Moon, Bug, UtensilsCrossed, Shield, Syringe, Zap, Bandage, Timer, Thermometer, Flame, Bone, Gem, Sun, Stethoscope, Filter, Search, User, Image, Pill, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const bloodSubItems: { tab: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
@@ -133,6 +133,7 @@ const navItems: NavItem[] = [
   { path: "/obesity/bmi-calculator",  label: "Obesity",   icon: Weight, active: "bg-violet-500/10 text-violet-400 border-violet-500/30", emoji: "⚖️" },
   { path: "/respiratory",             label: "Asthma and COPD", icon: AirVent, active: "sunset-active border-cyan-500/30", emoji: "🫁" },
   { path: "/renal-dosing",            label: "Renal",     icon: Filter, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🫘" },
+  { path: "/aki-akd",                 label: "AKI / AKD", icon: Activity, active: "bg-amber-500/10 text-amber-500 border-amber-500/30", emoji: "⚠️" },
   { path: "/anemia",                  label: "Blood",     icon: Droplet, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "🩸" },
   { path: "/fatigue",                label: "Fatigue",   icon: Moon, active: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30", emoji: "😴" },
   { path: "/infections",             label: "Infections", icon: Bug, active: "bg-rose-500/10 text-rose-400 border-rose-500/30", emoji: "🦠" },
