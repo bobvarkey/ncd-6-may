@@ -171,9 +171,10 @@ const SECONDARY_WORKUP: WorkupCategory[] = [
     category: "Cushing's Syndrome",
     group: "Endocrine",
     tests: [
-      { name: "24-hour urine cortisol", tag: "screening", reference: ">3x upper limit suggests Cushing's", detail: "Measures total cortisol excretion" },
-      { name: "Dexamethasone suppression test", tag: "confirmatory", reference: "Cortisol >1.8 µg/dL at 8am", detail: "Tests lack of suppression of cortisol" },
-      { name: "Late-night salivary cortisol", tag: "screening", reference: ">0.13 µg/dL (normal for late night)", detail: "Used to check circadian rhythm" },
+      { name: "1 mg overnight DST (preferred screen)", tag: "screening", reference: "8 am cortisol ≤50 nmol/L (1.8 µg/dL) rules out Cushing's", detail: "1 mg dexamethasone at 23:00 → 08:00 serum cortisol next morning. Best initial screen." },
+      { name: "Late-night salivary cortisol", tag: "screening", reference: ">0.13 µg/dL (loss of diurnal variation)", detail: "Alternative screen; two separate late-night samples." },
+      { name: "24-hour urine free cortisol", tag: "screening", reference: ">3× upper limit suggests Cushing's", detail: "Two collections; confirms endogenous hypercortisolism." },
+      { name: "Random morning cortisol (NOT recommended)", tag: "screening", reference: "Too nonspecific — do NOT use to screen for Cushing's", detail: "Diurnal variability and stress make a single AM cortisol unreliable for screening Cushing's syndrome." },
     ],
   },
   {

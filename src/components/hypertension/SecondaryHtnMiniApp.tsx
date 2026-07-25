@@ -89,7 +89,12 @@ const evaluationItems: EvaluationItem[] = [
   {
     id: 'cushings',
     condition: "Cushing's Syndrome",
-    tests: ['24h urine cortisol', 'Dexamethasone suppression test', 'Late-night salivary cortisol'],
+    tests: [
+      '1 mg overnight DST — preferred (1 mg dexamethasone 23:00 → 08:00 cortisol; ≤50 nmol/L / 1.8 µg/dL rules out)',
+      'Late-night salivary cortisol',
+      '24h urine free cortisol',
+      'Avoid random morning cortisol — too nonspecific for screening',
+    ],
     icon: <TestTube className="h-5 w-5" />,
     category: 'endocrine'
   },
