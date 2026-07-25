@@ -1015,6 +1015,22 @@ const RenalDoseAdjustment = () => {
         <p className="text-sm text-muted-foreground">eGFR-based dose modifications for diabetes medications (ADA 2026 + KDIGO)</p>
       </div>
 
+      {/* AKI / AKD entry point (KDIGO 2026) */}
+      <a
+        href="/aki-akd"
+        className="flex items-center justify-between gap-3 rounded-lg border-2 border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 px-4 py-3 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <span aria-hidden="true" className="text-lg">⚠️</span>
+          <div>
+            <div className="text-sm font-semibold text-foreground">AKI / AKD Mini App</div>
+            <div className="text-xs text-muted-foreground">KDIGO 2026 detection, staging & next steps</div>
+          </div>
+        </div>
+        <span className="text-xs font-medium text-amber-600">Open →</span>
+      </a>
+
+
       {/* Full KDIGO Staging with heatmap (eGFR + UACR) */}
       <KDIGOStagingCalculator />
 
