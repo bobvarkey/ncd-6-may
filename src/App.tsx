@@ -296,6 +296,7 @@ const App = () => (
           <Route path="/hypo-risk" element={<><TabNavigation /><HypoRiskCalculatorCalc /></>} />
           <Route path="/renal-dosing" element={<><TabNavigation /><RenalDosePage /></>} />
           <Route path="/aki-criteria" element={<><TabNavigation /><AKICriteria /></>} />
+          <Route path="/aki-akd" element={<><TabNavigation /><AKIAKDMiniApp /></>} />
           <Route path="/acid-base" element={<><TabNavigation /><AcidBaseDisorders /></>} />
           <Route path="/metabolic-alkalosis" element={<Navigate to="/acid-base?tab=metabolic-alkalosis" replace />} />
           <Route path="/geriatrics" element={<><TabNavigation /><Geriatrics /></>} />
