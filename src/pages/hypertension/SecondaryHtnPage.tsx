@@ -10,6 +10,7 @@ import {
   Heart, Wine, Pill, Activity, Zap, Moon, TestTube, Stethoscope, FlaskConical,
   Droplets, Syringe,
 } from "lucide-react";
+import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 
 // ── Reninoma Clinical Probability Evaluator ──
 function ReninomaEvaluator() {
