@@ -9,6 +9,7 @@ import {
   Droplets, Syringe
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
+import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 
 interface EvaluationItem {
   id: string;
