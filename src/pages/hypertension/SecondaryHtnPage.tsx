@@ -333,6 +333,9 @@ export default function SecondaryHtnPage() {
               </div>
             </div>
 
+            {/* Cushing's — 1 mg overnight DST interpretation */}
+            <DstInterpretationPanel />
+
             {/* Reninoma — Clinical Probability Evaluator */}
             <ReninomaEvaluator />
           </TabsContent>
