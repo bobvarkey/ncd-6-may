@@ -486,6 +486,9 @@ export default function HypertensionClinicalCards() {
               </Table>
             </CardContent>
           </Card>
+
+          {/* Cushing's — 1 mg overnight DST interpretation */}
+          <DstInterpretationPanel />
         </div>
       )}
 
