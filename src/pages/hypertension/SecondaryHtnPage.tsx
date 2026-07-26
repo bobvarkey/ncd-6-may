@@ -10,6 +10,7 @@ import {
   Heart, Wine, Pill, Activity, Zap, Moon, TestTube, Stethoscope, FlaskConical,
   Droplets, Syringe,
 } from "lucide-react";
+import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 
 // ── Reninoma Clinical Probability Evaluator ──
 function ReninomaEvaluator() {
@@ -332,6 +333,9 @@ export default function SecondaryHtnPage() {
                 </div>
               </div>
             </div>
+
+            {/* Cushing's — 1 mg overnight DST interpretation */}
+            <DstInterpretationPanel />
 
             {/* Reninoma — Clinical Probability Evaluator */}
             <ReninomaEvaluator />

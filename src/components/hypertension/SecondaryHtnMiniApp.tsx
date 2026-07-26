@@ -9,6 +9,7 @@ import {
   Droplets, Syringe
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
+import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 
 interface EvaluationItem {
   id: string;
@@ -227,6 +228,9 @@ export default function SecondaryHtnMiniApp() {
                 </div>
               </div>
             </div>
+
+            {/* Cushing's — 1 mg overnight DST interpretation */}
+            <DstInterpretationPanel />
           </TabsContent>
 
           <TabsContent value="causes" className="space-y-3 pt-4">
