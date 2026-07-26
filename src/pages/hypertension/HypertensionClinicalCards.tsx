@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 import {
   Activity,
   AlertTriangle,
