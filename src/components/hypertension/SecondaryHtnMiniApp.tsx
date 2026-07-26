@@ -226,6 +226,7 @@ export default function SecondaryHtnMiniApp() {
                   <span className="font-bold text-purple-500 shrink-0 w-5">f.</span>
                   <span><strong>Interpretation:</strong> e.g., right-to-left ratio 1.9 pre-enalaprilat + 2.0 post-enalaprilat → consistent with right renal reninoma (presumed = the imaged complex right renal cyst).</span>
                 </div>
+              </div>
             </div>
 
             {/* Cushing's — 1 mg overnight DST interpretation */}
