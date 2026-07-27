@@ -25,7 +25,7 @@ const LABEL_OVERRIDES: Record<string, string> = {
   "vitamin-d": "Vitamin D",
   "women-health": "Women's Health",
   "adult-vaccinations": "Adult Vaccinations",
-  pep: "PEP (Post exposure prophylaxis)",
+  pep: "Post exposure prophylaxis (PEP)",
   "acute-diarrhoea": "Acute Diarrhoea",
   "food-poisoning": "Food Poisoning",
   "aki-criteria": "AKI Criteria",
