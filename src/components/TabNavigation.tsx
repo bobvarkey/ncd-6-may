@@ -137,7 +137,7 @@ const navItems: NavItem[] = [
   { path: "/fatigue",                label: "Fatigue",   icon: Moon, active: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30", emoji: "😴" },
   { path: "/infections",             label: "Infections", icon: Bug, active: "bg-rose-500/10 text-rose-400 border-rose-500/30", emoji: "🦠" },
   { path: "/acute-diarrhoea",        label: "Diarrhoea", icon: UtensilsCrossed, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "💩" },
-  { path: "/food-poisoning",        label: "Food Poison", icon: UtensilsCrossed, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🤢" },
+  { path: "/food-poisoning",        label: "Food Poisoning", icon: UtensilsCrossed, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🤢" },
   { path: "/pep",                   label: "PEP",       icon: Shield, active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", emoji: "💉" },
   { path: "/adult-vaccinations",    label: "Vaccines",  icon: Syringe, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "💉" },
   { path: "/vitamin-d",            label: "Vitamin D",  icon: Sun, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "☀️" },
