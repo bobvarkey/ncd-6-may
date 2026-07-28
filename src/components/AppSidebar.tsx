@@ -183,7 +183,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent>
+      <SidebarContent className="pt-12">
         {!collapsed && (
           <div className="px-2 pt-2 pb-1 space-y-2">
             <div className="flex items-center gap-2">
