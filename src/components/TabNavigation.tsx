@@ -143,8 +143,9 @@ const navItems: NavItem[] = [
   { path: "/vitamin-d",            label: "Vitamin D",  icon: Sun, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "☀️" },
   { path: "/geriatrics",           label: "Geriatrics", icon: User, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "👴" },
   { path: "/electrolytes",          label: "Electrolytes", icon: Zap, active: "sunset-active border-cyan-500/30", emoji: "⚡" },
-  { path: "/images",                label: "Images",    icon: Image, active: "bg-purple-500/10 text-purple-400 border-purple-500/30", emoji: "🖼️" },
 ];
+
+const imageItem: NavItem = { path: "/images", label: "Images", icon: Image, active: "bg-purple-500/10 text-purple-400 border-purple-500/30", emoji: "🖼️" };
 
 // Section separator helper
 function SectionLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
