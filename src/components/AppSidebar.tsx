@@ -183,12 +183,12 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent>
+      <SidebarContent className="pt-12">
         {!collapsed && (
           <div className="px-2 pt-2 pb-1 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="w-6 h-6 rounded-lg bg-sidebar-primary flex items-center justify-center text-xs text-sidebar-primary-foreground font-bold">DM</span>
-              <span className="text-xs font-semibold text-sidebar-foreground">Diabetes Med Optimizer</span>
+              <span className="w-6 h-6 rounded-lg bg-sidebar-primary flex items-center justify-center text-xs text-sidebar-primary-foreground font-bold">CT</span>
+              <span className="text-xs font-semibold text-sidebar-foreground">Clinical Tools</span>
             </div>
             <div className="relative">
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
