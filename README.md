@@ -1,12 +1,12 @@
-# NCD Rx — Clinical Decision Support Toolkit
+# Rx — Clinical Decision Support Toolkit
 
-**Your complete clinical companion for Diabetes, Hypertension, Lipids, and Obesity management.**
+**Your complete clinical companion for Diabetes, Hypertension, Lipids, Obesity and Common Outpatient clinical problem management.**
 
 Built for clinicians who need quick, evidence-based decisions at the point of care.
 
 ---
 
-## Why NCD Rx?
+## Why Rx?
 
 Stop juggling multiple apps and calculators. NCD Rx brings everything you need into one unified toolkit — from basic risk assessment to complex treatment planning.
 
@@ -24,7 +24,7 @@ Stop juggling multiple apps and calculators. NCD Rx brings everything you need i
 - Endocrinologists & cardiologists
 - Hospitalists & emergency physicians
 - Medical students & residents
-- Any clinician managing NCDs
+- Any clinician managing Out patient decisions
 
 ---
 
@@ -34,9 +34,8 @@ Stop juggling multiple apps and calculators. NCD Rx brings everything you need i
 
 | Mode | What You Get |
 |------|-------------|
-| 🟢 **Easy** | Simple 4-NCD calculator. Few inputs, clear outputs. |
-| 🟠 **Moderate** | Guideline-integrated with risk stratification and comorbidity-based branching. |
-| 🔴 **Complex** | Full app: prescription generator, OCR upload, all calculators, LAI 2023 classification, PREVENT risk, treatment plans. |
+| | 🟠 **Moderate** | Guideline-integrated with risk stratification and comorbidity-based branching. |
+| 🔴 **Complex** | Full app: prescription generator, OCR upload, all calculators, LAI 2023 classification, ASCVD risk, treatment plans. |
 
 ### Comprehensive Calculators (16+)
 
