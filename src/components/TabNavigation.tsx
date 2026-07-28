@@ -271,6 +271,24 @@ export function TabNavigation() {
               </li>
             );
           })}
+          {/* Images placed below Women's Health */}
+          <li>
+            <Link
+              to={imageItem.path}
+              title={imageItem.label}
+              className={cn(
+                "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
+                collapsed && "justify-center",
+                currentPath === imageItem.path
+                  ? "sunset-active"
+                  : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+              aria-current={currentPath === imageItem.path ? "page" : undefined}
+            >
+              {imageItem.emoji && <span className="text-base">{imageItem.emoji}</span>}
+              {!collapsed && <span className="truncate">{imageItem.label}</span>}
+            </Link>
+          </li>
           {/* Miscellaneous section */}
           <SectionLabel label="Miscellaneous" collapsed={collapsed} />
           {miscItems.map((item) => {
