@@ -12,7 +12,7 @@ Stop juggling multiple apps and calculators. NCD Rx brings everything you need i
 
 ### What it does
 
-- **Risk Stratification** — Calculate 10-year ASCVD risk, PREVENT risk, hypertension classification instantly
+- **Risk Stratification** — Calculate 10-year ASCVD risk,hypertension classification instantly
 - **Medication Dosing** — Renal dose adjustments, insulin titration, GLP-1 selection with drug names for US & India
 - **Treatment Algorithms** — ADA, AHA/ACC, LAI 2023 guidelines integrated into clinical workflows
 - **Infection Protocols** — 30+ serious infections with empiric regimens, renal/liver adjustments, and stewardship guidance
