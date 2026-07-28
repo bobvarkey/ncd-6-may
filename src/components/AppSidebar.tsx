@@ -77,6 +77,14 @@ const SECTIONS: Section[] = [
     ],
   },
   {
+    id: "perioperative",
+    label: "Perioperative",
+    color: "text-[#00b894]",
+    items: [
+      { title: "Perioperative Calculators", url: "/perioperative-calculators", icon: Stethoscope },
+    ],
+  },
+  {
     id: "legal",
     label: "Legal & Support",
     color: "text-[#e84393]",
