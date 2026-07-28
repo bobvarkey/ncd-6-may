@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images,
+  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope,
   type LucideIcon,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
@@ -74,6 +74,14 @@ const SECTIONS: Section[] = [
       { title: "T1D Treatment Algorithm", url: "/type1-treatment-algorithm", icon: Brain },
       { title: "T2D Treatment Algorithm", url: "/type2-treatment-algorithm", icon: Brain },
       { title: "Hyperglycemic Emergency", url: "/hyperglycemic-emergency", icon: AlertTriangle, keywords: "dka hhs" },
+    ],
+  },
+  {
+    id: "perioperative",
+    label: "Perioperative",
+    color: "text-[#00b894]",
+    items: [
+      { title: "Perioperative Calculators", url: "/perioperative-calculators", icon: Stethoscope },
     ],
   },
   {
