@@ -202,7 +202,7 @@ const DiabetesBuddyLayout = () => (
         <div className="absolute inset-x-0 top-0 h-0.5 bg-sunset" aria-hidden />
         <SidebarTrigger className="ml-2 h-10 w-10 hover:bg-sidebar-accent" aria-label="Toggle sidebar navigation" />
         <span className="ml-3 text-sm font-heading font-semibold text-sunset">
-          Diabetes Med Optimizer
+          Clinical Tools
         </span>
         <div className="ml-auto mr-2">
           <ThemeToggle />
