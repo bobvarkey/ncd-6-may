@@ -26,7 +26,7 @@ const LABEL_OVERRIDES: Record<string, string> = {
   "women-health": "Women's Health",
   "adult-vaccinations": "Adult Vaccinations",
   pep: "Post exposure prophylaxis (PEP)",
-  "acute-diarrhoea": "Acute Diarrhoea",
+  "acute-diarrhoea": "Diarrhoea and Constipation",
   "food-poisoning": "Food Poisoning",
   "aki-criteria": "AKI Criteria",
   "acid-base": "Acid-Base Disorders",
