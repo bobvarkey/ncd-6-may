@@ -299,6 +299,26 @@ const PREOP_LABS: PreopLab[] = [
   { test: "Drug levels (digoxin, lithium, anticonvulsants)", indication: "Narrow therapeutic index drugs, toxicity concern", timing: "Within 24–48 hours", notes: "Therapeutic range: digoxin 0.5–1.0 ng/mL, lithium 0.6–1.2 mEq/L." },
 ];
 
+// ─── Calculator cards (overview) ───
+const CALCULATOR_CARDS: {
+  value: string;
+  title: string;
+  icon: typeof Heart;
+  inputs: string;
+  results: string;
+}[] = [
+  { value: "rcri", title: "RCRI", icon: Heart, inputs: "6 cardiac risk factors (IHD, HF, CVA, insulin-treated DM, CKD, high-risk surgery)", results: "0–6 points → Class I–IV with % major cardiac event risk" },
+  { value: "asa", title: "ASA Physical Status", icon: Shield, inputs: "Select the class that matches systemic disease burden", results: "ASA I–VI with description, examples and perioperative implications" },
+  { value: "mallampati", title: "Mallampati", icon: Eye, inputs: "Oropharyngeal view on mouth opening (Class I–IV)", results: "Airway difficulty grade and intubation risk" },
+  { value: "stopbang", title: "STOP-Bang", icon: Wind, inputs: "Snoring, tiredness, observed apnea, BP, BMI, age, neck size, sex", results: "0–8 score → low / intermediate / high OSA risk with airway plan" },
+  { value: "caprini", title: "Caprini VTE", icon: Droplets, inputs: "Weighted thrombosis risk factors (1, 2, 3 and 5-point items)", results: "Total score → VTE risk band and prophylaxis recommendation" },
+  { value: "apgar", title: "Surgical Apgar", icon: Timer, inputs: "Estimated blood loss, lowest MAP, lowest heart rate (intra-op)", results: "0–10 score → 30-day major complication / mortality risk" },
+  { value: "woo", title: "Woo Perioperative Risk", icon: Brain, inputs: "Age, ASA class, surgery type and comorbidities", results: "Predicted stroke / MACE category with clinical interpretation" },
+  { value: "sts", title: "STS Cardiac", icon: Heart, inputs: "Cardiac-surgery specific patient and procedure variables", results: "Estimated operative mortality and morbidity band" },
+  { value: "meds", title: "Med Management", icon: Pill, inputs: "Browse by drug class (anticoagulants, antiplatelets, diabetes, etc.)", results: "Hold / continue timing before surgery and restart guidance" },
+  { value: "labs", title: "Pre-op Labs", icon: FileText, inputs: "Patient factors and planned procedure risk", results: "Which pre-operative tests are indicated (and which are not)" },
+];
+
 // ─── Component ───
 const PerioperativeCalculators = () => {
   const [activeTab, setActiveTab] = useState("rcri");
@@ -312,7 +332,38 @@ const PerioperativeCalculators = () => {
         </p>
       </div>
 
+      {/* Calculator cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {CALCULATOR_CARDS.map(card => {
+          const Icon = card.icon;
+          const isActive = activeTab === card.value;
+          return (
+            <button
+              key={card.value}
+              type="button"
+              onClick={() => setActiveTab(card.value)}
+              aria-pressed={isActive}
+              className={`text-left rounded-xl border p-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                isActive ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-muted/40"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Icon className={`w-4 h-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                <h2 className="text-sm font-heading font-semibold">{card.title}</h2>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                <span className="font-medium text-foreground">Inputs: </span>{card.inputs}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                <span className="font-medium text-foreground">Results: </span>{card.results}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+
         <TabsList className="flex-wrap h-auto gap-1 p-1">
           <TabsTrigger value="rcri" className="text-sm">RCRI</TabsTrigger>
           <TabsTrigger value="asa" className="text-sm">ASA Class</TabsTrigger>
