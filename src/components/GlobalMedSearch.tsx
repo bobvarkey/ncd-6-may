@@ -150,7 +150,7 @@ const CLINICAL_TOPICS = [
   { id: "infections", label: "Infections Overview", path: "/infections", keywords: ["infections", "infection", "uti", "pneumonia", "cellulitis"] },
 
   // ── Acute Diarrhoea ──
-  { id: "acute-diarrhoea", label: "Acute Diarrhoea", path: "/acute-diarrhoea", keywords: ["acute diarrhoea", "diarrhea", "gastroenteritis", "stool", "dehydration"] },
+  { id: "acute-diarrhoea", label: "Diarrhoea and Constipation", path: "/acute-diarrhoea", keywords: ["acute diarrhoea", "diarrhea", "gastroenteritis", "stool", "dehydration", "constipation", "laxative", "lactulose", "psyllium", "bisacodyl", "senna", "PEG", "enema"] },
 
   // ── Food Poisoning ──
   { id: "food-poisoning", label: "Food Poisoning", path: "/food-poisoning", keywords: ["food poisoning", "foodborne", "salmonella", "e coli", "botulism"] },
