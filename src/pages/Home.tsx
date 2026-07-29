@@ -1009,7 +1009,7 @@ export default function Home() {
             accent="bg-rose-500"
           />
           <DiseaseCard
-            title="Acute Diarrhoea"
+            title="Diarrhoea & Constipation"
             description="Assessment, rehydration therapy, empiric antibiotics, when to refer, WHO guidelines"
             icon={<UtensilsCrossed className="h-5 w-5 text-amber-400" />}
             to="/acute-diarrhoea"
