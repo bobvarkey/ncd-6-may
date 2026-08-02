@@ -167,6 +167,7 @@ export default function LiverMiniApp() {
   const [showCutoffs, setShowCutoffs] = useState(false);
   const [showInfographic, setShowInfographic] = useState(false);
   const [showMashTable, setShowMashTable] = useState(false);
+  const [showMasldOverview, setShowMasldOverview] = useState(false);
   const cutoffs = preset === "custom" ? customCutoffs : PRESETS[preset].cutoffs;
   const setCutoff = (k: keyof Cutoffs, v: string) => {
     setPreset("custom");
