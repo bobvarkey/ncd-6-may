@@ -1,5 +1,6 @@
 import haalandMnemonic from "@/assets/haaland-mnemonic.png.asset.json";
 import kdigoAkiAkd from "@/assets/kdigo-2026-aki-akd-guideline.png.asset.json";
+import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Image, Home, ChevronDown, ChevronUp, ExternalLink, Search } from "lucide-react";
