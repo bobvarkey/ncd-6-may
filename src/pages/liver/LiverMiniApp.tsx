@@ -435,6 +435,10 @@ export default function LiverMiniApp() {
         </Card>
       </Collapsible>
 
+      {/* MASLD investigations, diagnosis, management */}
+      <MasldWorkup />
+
+
       {/* Liver infographic */}
       <Collapsible open={showInfographic} onOpenChange={setShowInfographic}>
         <Card>
