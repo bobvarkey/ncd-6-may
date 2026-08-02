@@ -407,6 +407,34 @@ export default function LiverMiniApp() {
         </Card>
       </Collapsible>
 
+      {/* MASLD overview infographic */}
+      <Collapsible open={showMasldOverview} onOpenChange={setShowMasldOverview}>
+        <Card>
+          <CollapsibleTrigger asChild>
+            <CardHeader className="py-3 cursor-pointer hover:bg-accent/30 transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ImageIcon className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-sm">MASLD: Assessment, Management & Treatment Overview</CardTitle>
+                </div>
+                <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showMasldOverview ? "rotate-180" : ""}`} />
+              </div>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent>
+              <ZoomableImage
+                src={masldOverviewAsset.url}
+                alt="MASLD assessment, management and treatment overview infographic"
+                className="w-full max-w-3xl mx-auto rounded-lg border object-contain"
+                wrapperClassName="max-w-3xl mx-auto"
+                loading="lazy"
+              />
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+
       {/* Liver infographic */}
       <Collapsible open={showInfographic} onOpenChange={setShowInfographic}>
         <Card>
