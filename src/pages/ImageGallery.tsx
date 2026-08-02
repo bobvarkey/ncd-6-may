@@ -1,5 +1,6 @@
 import haalandMnemonic from "@/assets/haaland-mnemonic.png.asset.json";
 import kdigoAkiAkd from "@/assets/kdigo-2026-aki-akd-guideline.png.asset.json";
+import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Image, Home, ChevronDown, ChevronUp, ExternalLink, Search } from "lucide-react";
@@ -69,6 +70,9 @@ const IMAGE_CATALOG: ImageEntry[] = [
   // ─── Renal / AKI ───
   { id: "kdigo-2026-aki-akd-guideline", src: kdigoAkiAkd.url, label: "KDIGO 2026 AKI & AKD Guideline", category: "Renal / AKI", description: "Definitions and diagnostic criteria for acute kidney injury and acute kidney disease", sourcePages: [{ label: "AKI / AKD Mini App", path: "/aki-akd" }] },
   { id: "fst-infographic", src: "/images/fst-infographic.png", label: "FST Infographic", category: "Renal / AKI", description: "Furosemide Stress Test — predicting AKI progression", sourcePages: [{ label: "AKI Criteria", path: "/aki-criteria" }] },
+
+  // ─── Infections ───
+  { id: "antibiotics-spectrum", src: antibioticsSpectrum.url, label: "Antibiotics by Spectrum", category: "Infections", description: "Complete classification of antibiotics by gram-positive, gram-negative, and broad/mixed spectrum coverage", sourcePages: [{ label: "Infections", path: "/infections" }] },
 
   // ─── Anemia / Hemolysis ───
   { id: "hemolytic-anemia-algorithm", src: "/images/hemolytic-anemia-algorithm.jpg", label: "Hemolytic Anemia Algorithm", category: "Anemia & Coagulation", description: "Diagnostic algorithm for hemolytic anemia — Coombs-negative workup", sourcePages: [{ label: "Anemia", path: "/anemia" }] },
