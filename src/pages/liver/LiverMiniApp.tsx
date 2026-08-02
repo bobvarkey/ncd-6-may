@@ -12,6 +12,8 @@ import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
 import ZoomableImage from "@/components/ZoomableImage";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
+import MasldWorkup from "@/pages/liver/MasldWorkup";
+
 
 // --- Range dropdown helper ---
 type Range = { label: string; value: number };
