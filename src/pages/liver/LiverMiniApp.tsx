@@ -10,6 +10,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Copy, Printer, Activity, Settings2, ChevronDown, Download, ImageIcon, Table2 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
+import ZoomableImage from "@/components/ZoomableImage";
+import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 
 // --- Range dropdown helper ---
 type Range = { label: string; value: number };
