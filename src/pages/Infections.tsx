@@ -725,6 +725,25 @@ export default function Infections() {
             </pre>
           </details>
         </section>
+
+        {/* Antibiotic spectrum reference */}
+        <section className="rounded-lg border border-border bg-card p-4 space-y-3 print:hidden">
+          <div className="flex items-center gap-2">
+            <ImageIcon className="h-5 w-5 text-primary" />
+            <h2 className="text-base font-heading font-semibold">Antibiotics by spectrum of activity</h2>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Reference chart: gram-positive, gram-negative, and broad/mixed spectrum coverage with common examples.
+          </p>
+          <div className="rounded-md border border-border bg-muted/30 p-2">
+            <ZoomableImage
+              src={antibioticsSpectrum.url}
+              alt="Antibiotics by spectrum of activity — complete classification and examples"
+              className="w-full rounded-md"
+              wrapperClassName="rounded-md"
+            />
+          </div>
+        </section>
         </>
         )}
       </div>
