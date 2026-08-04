@@ -9,6 +9,7 @@ import CausesPanel from './anemia/components/CausesPanel';
 import ReferenceRanges from './anemia/components/ReferenceRanges';
 import IronTherapy from './anemia/components/IronTherapy';
 import IronStudiesCombined from './anemia/components/IronStudiesCombined';
+import IronInterpretation from './anemia/components/IronInterpretation';
 import ThrombocytopeniaEvaluator from './anemia/components/ThrombocytopeniaEvaluator';
 import BleedingClottingEvaluator from './anemia/components/BleedingClottingEvaluator';
 import ESRInterpretation from './anemia/components/ESRInterpretation';
@@ -173,6 +174,7 @@ export default function Anemia() {
           </>
         ) : activeTab === 'iron' ? (
           <>
+            <IronInterpretation />
             <IronStudiesCombined />
             <IronTherapy />
           </>

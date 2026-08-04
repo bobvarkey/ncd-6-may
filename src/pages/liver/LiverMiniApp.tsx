@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import ZoomableImage from "@/components/ZoomableImage";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 import MasldWorkup from "@/pages/liver/MasldWorkup";
+import MasldRiskCalculator from "@/pages/liver/MasldRiskCalculator";
 
 
 // --- Range dropdown helper ---
@@ -436,6 +437,9 @@ export default function LiverMiniApp() {
           </CollapsibleContent>
         </Card>
       </Collapsible>
+
+      {/* MASLD fibrosis risk calculator */}
+      <MasldRiskCalculator />
 
       {/* MASLD investigations, diagnosis, management */}
       <MasldWorkup />
