@@ -88,28 +88,66 @@ const RANGES: Record<string, Range[]> = {
   ],
 };
 
+const SLIDER_BOUNDS: Record<string, { min: number; max: number; step: number }> = {
+  serumIron: { min: 0, max: 300, step: 1 },
+  tibc: { min: 100, max: 700, step: 5 },
+  ts: { min: 0, max: 100, step: 1 },
+  ferritin: { min: 0, max: 2000, step: 5 },
+  hemoglobin: { min: 3, max: 20, step: 0.1 },
+  weight: { min: 25, max: 180, step: 1 },
+  alt: { min: 0, max: 400, step: 1 },
+  ast: { min: 0, max: 400, step: 1 },
+};
+
 function RangeOrExact({
   id, label, unit, value, onChange, ranges,
 }: { id: string; label: string; unit?: string; value: string; onChange: (v: string) => void; ranges: Range[] }) {
-  const [mode, setMode] = useState<"range" | "exact">("range");
+  const [mode, setMode] = useState<"range" | "exact" | "slider">("slider");
+  const bounds = SLIDER_BOUNDS[id] ?? { min: 0, max: 100, step: 1 };
+  const nextMode = mode === "slider" ? "range" : mode === "range" ? "exact" : "slider";
+  const sliderValue = value === "" || isNaN(Number(value))
+    ? (bounds.min + bounds.max) / 2
+    : Math.min(bounds.max, Math.max(bounds.min, Number(value)));
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <Label htmlFor={id} className="text-xs">{label} {unit && <span className="text-muted-foreground">({unit})</span>}</Label>
-        <button type="button" onClick={() => setMode(m => m === "range" ? "exact" : "range")}
-          className="text-xs text-primary hover:underline">{mode === "range" ? "exact" : "range"}</button>
+        <button type="button" onClick={() => setMode(nextMode)}
+          className="text-xs text-primary hover:underline">{nextMode}</button>
       </div>
       {mode === "range" ? (
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger id={id} className="h-9"><SelectValue placeholder="Select range" /></SelectTrigger>
           <SelectContent>{ranges.map(r => <SelectItem key={r.label} value={String(r.value)}>{r.label}</SelectItem>)}</SelectContent>
         </Select>
-      ) : (
+      ) : mode === "exact" ? (
         <Input id={id} type="number" inputMode="decimal" className="h-9" value={value} onChange={e => onChange(e.target.value)} />
+      ) : (
+        <div className="flex items-center gap-3 h-9">
+          <Slider
+            id={id}
+            aria-label={`${label}${unit ? ` in ${unit}` : ""}`}
+            min={bounds.min}
+            max={bounds.max}
+            step={bounds.step}
+            value={[sliderValue]}
+            onValueChange={([v]) => onChange(String(v))}
+            className="flex-1"
+          />
+          <Input
+            type="number"
+            inputMode="decimal"
+            aria-label={`${label} value`}
+            className="h-9 w-20 shrink-0 text-center"
+            value={value}
+            onChange={e => onChange(e.target.value)}
+          />
+        </div>
       )}
     </div>
   );
 }
+
 
 // ── Differential Diagnosis Table ───────────────────────────────
 function DifferentialDiagnosisTable({ ferritin, tsVal, sex, inflammation, ckd, pregnancy }: {
