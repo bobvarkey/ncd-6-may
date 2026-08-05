@@ -154,6 +154,25 @@ export default function Anemia() {
                   </div>
                 )}
 
+                {/* Anemia Algorithm Reference Chart */}
+                <div className="bg-card rounded-2xl shadow-sm border border-border p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Microscope className="w-5 h-5 text-primary" />
+                    <h2 className="text-lg font-semibold text-foreground">Anemia Algorithm — MCV-Based Classification</h2>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Diagnostic algorithm for classifying anemia by MCV — microcytic, normocytic, and macrocytic. Click to view full size.
+                  </p>
+                  <a href="/images/anemia-algorithm.jpg" target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-border">
+                    <img
+                      src="/images/anemia-algorithm.jpg"
+                      alt="Anemia Algorithm — MCV-Based Classification"
+                      className="w-full h-auto object-contain"
+                      loading="lazy"
+                    />
+                  </a>
+                </div>
+
                 <DiscriminantTable
                   results={result.discriminantResults}
                   idaCount={result.idaCount}
