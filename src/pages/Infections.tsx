@@ -425,6 +425,13 @@ export default function Infections() {
           <p className="text-sm text-muted-foreground">
             Decision-support for primary-care and serious/nosocomial infections.
           </p>
+          <a
+            href="/images?search=antibiotic+spectrum"
+            className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+          >
+            <Image className="h-3.5 w-3.5" />
+            View Antibiotic Spectrum Map →
+          </a>
         </header>
 
         {/* Tabs */}

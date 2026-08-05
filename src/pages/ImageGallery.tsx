@@ -67,6 +67,9 @@ const IMAGE_CATALOG: ImageEntry[] = [
   { id: "anticoagulation-cheatsheet", src: "/anticoagulation-cheatsheet.jpg", label: "Anticoagulation Cheatsheet", category: "Other", description: "Anticoagulation quick reference", sourcePages: [{ label: "Liver Mini App", path: "/liver" }] },
   { id: "doctor-monitors", src: "/doctor-monitors.jpg", label: "Doctor Monitors", category: "Other", description: "Landing page hero image", sourcePages: [{ label: "Landing Page", path: "/" }] },
 
+  // ─── Infections ───
+  { id: "antibiotic-spectrum-map", src: "/images/antibiotic-spectrum-map.jpg", label: "Antibiotic Spectrum Map", category: "Infections", description: "Quick visual guide to antibiotic coverage — Gram-positive, Gram-negative, anaerobes, and atypicals", sourcePages: [{ label: "Infections", path: "/infections" }] },
+
   // ─── Renal / AKI ───
   { id: "kdigo-2026-aki-akd-guideline", src: kdigoAkiAkd.url, label: "KDIGO 2026 AKI & AKD Guideline", category: "Renal / AKI", description: "Definitions and diagnostic criteria for acute kidney injury and acute kidney disease", sourcePages: [{ label: "AKI / AKD Mini App", path: "/aki-akd" }] },
   { id: "fst-infographic", src: "/images/fst-infographic.png", label: "FST Infographic", category: "Renal / AKI", description: "Furosemide Stress Test — predicting AKI progression", sourcePages: [{ label: "AKI Criteria", path: "/aki-criteria" }] },
