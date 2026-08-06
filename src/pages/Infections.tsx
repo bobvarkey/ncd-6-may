@@ -429,7 +429,7 @@ export default function Infections() {
             href="/images?search=antibiotic+spectrum"
             className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
           >
-            <Image className="h-3.5 w-3.5" />
+            <ImageIcon className="h-3.5 w-3.5" />
             View Antibiotic Spectrum Map →
           </a>
         </header>
