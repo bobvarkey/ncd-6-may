@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import ImageLink from "@/components/ImageLink";
+import ZoomableImage from "@/components/ZoomableImage";
+
 import { toast } from "sonner";
 
 /* ── Hand-drawn style helpers ──────────────────────────────────── */
