@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
+import ZoomableImage from "@/components/ZoomableImage";
+import diarrhoeaClassImg from "@/assets/acute-diarrhoea-classification.jpg.asset.json";
 
 /* ── Hand-drawn style helpers ──────────────────────────────────── */
 
@@ -218,6 +220,19 @@ Disclaimer: Decision-support only. Does not replace clinical judgement.`;
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Diagnostic classification image */}
+      <div className="relative rounded-2xl border-2 border-amber-800/30 bg-gradient-to-br from-amber-50/90 to-orange-50/80 p-3">
+        <div className="mb-2 font-handwritten text-sm font-bold text-amber-900 flex items-center gap-2">
+          <FlaskConical className="h-4 w-4 text-amber-700" />
+          Diarrhoea Classification Framework
+        </div>
+        <ZoomableImage
+          src={diarrhoeaClassImg.url}
+          alt="Acute diarrhoea diagnostic classification — osmotic, secretory, inflammatory, malabsorptive, and motility-related causes"
+          className="w-full h-auto rounded-xl"
+        />
       </div>
 
       {/* Step 1: History */}
