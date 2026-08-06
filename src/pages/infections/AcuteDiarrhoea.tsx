@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import ImageLink from "@/components/ImageLink";
+import ZoomableImage from "@/components/ZoomableImage";
+
 import { toast } from "sonner";
 
 /* ── Hand-drawn style helpers ──────────────────────────────────── */
@@ -417,13 +419,24 @@ Disclaimer: Decision-support only. Does not replace clinical judgement.`;
 
       {/* Images */}
       <CollapsibleSection title="Images" icon={ImageIcon} defaultOpen={false}>
-        <div className="mx-auto max-w-lg">
-          <ImageLink imageId="acute-diarrhoea-poster" label="View Acute Diarrhoea Poster →" />
+        <div className="mx-auto max-w-lg space-y-4">
+          <ZoomableImage
+            src="/images/acute-diarrhoea-classification.jpg"
+            alt="Acute diarrhoea classification and initial management approach"
+            className="w-full rounded-xl border border-border"
+          />
+          <ZoomableImage
+            src="/images/acute-diarrhoea.jpg"
+            alt="Acute diarrhoea risk stratification and management overview poster"
+            className="w-full rounded-xl border border-border"
+          />
+          <ImageLink imageId="acute-diarrhoea-classification" label="Acute Diarrhoea Classification" />
           <p className="mt-2 text-center font-handwritten text-xs text-amber-700/60">
             Risk stratification and management overview
           </p>
         </div>
       </CollapsibleSection>
+
 
       {/* ── Food Poisoning Subsection ──────────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl border-2 border-amber-800/30 bg-gradient-to-br from-amber-50 via-orange-50/60 to-yellow-50/80 p-5">
