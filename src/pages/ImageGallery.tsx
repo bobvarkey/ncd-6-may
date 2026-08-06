@@ -1,6 +1,7 @@
 import haalandMnemonic from "@/assets/haaland-mnemonic.png.asset.json";
 import kdigoAkiAkd from "@/assets/kdigo-2026-aki-akd-guideline.png.asset.json";
 import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
+import acuteDiarrhoeaClassification from "@/assets/acute-diarrhoea-classification.jpg.asset.json";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Image, Home, ChevronDown, ChevronUp, ExternalLink, Search } from "lucide-react";
@@ -69,6 +70,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
 
   // ─── Infections ───
   { id: "antibiotic-spectrum-map", src: "/images/antibiotic-spectrum-map.jpg", label: "Antibiotic Spectrum Map", category: "Infections", description: "Quick visual guide to antibiotic coverage — Gram-positive, Gram-negative, anaerobes, and atypicals", sourcePages: [{ label: "Infections", path: "/infections" }] },
+  { id: "acute-diarrhoea-classification", src: acuteDiarrhoeaClassification.url, label: "Acute Diarrhoea Classification", category: "Infections", description: "Acute diarrhoea classification and initial management approach", sourcePages: [{ label: "Diarrhoea and Constipation", path: "/acute-diarrhoea" }] },
 
   // ─── Renal / AKI ───
   { id: "kdigo-2026-aki-akd-guideline", src: kdigoAkiAkd.url, label: "KDIGO 2026 AKI & AKD Guideline", category: "Renal / AKI", description: "Definitions and diagnostic criteria for acute kidney injury and acute kidney disease", sourcePages: [{ label: "AKI / AKD Mini App", path: "/aki-akd" }] },
