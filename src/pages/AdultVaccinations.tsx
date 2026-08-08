@@ -386,6 +386,169 @@ function formatAgeRange(age_min: number, age_max: number | null): string {
   return `${age_min}–${age_max} years`;
 }
 
+// ─── Co-Administration Schedule Component ───
+
+type SiteInjection = {
+  site: string;
+  icon: string;
+  injections: { name: string; note?: string }[];
+};
+
+type Visit = {
+  label: string;
+  timing: string;
+  sites: SiteInjection[];
+  note?: string;
+};
+
+const COADMIN_VISITS: Visit[] = [
+  {
+    label: "Visit 1",
+    timing: "Day 0 — Initial Doses",
+    note: "All six vaccines are non-live and can be given the same day. Separate injections in the same muscle by ≥2.5 cm (1 inch).",
+    sites: [
+      {
+        site: "Left Deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Influenza", note: "1 dose" },
+          { name: "PCV20", note: "1 dose" },
+        ],
+      },
+      {
+        site: "Right Deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Shingrix", note: "Dose 1 of 2" },
+          { name: "Tdap / DPT", note: "1 dose" },
+        ],
+      },
+      {
+        site: "Left Thigh (Vastus Lateralis)",
+        icon: "🦵",
+        injections: [{ name: "Hepatitis A", note: "Dose 1 of 2" }],
+      },
+      {
+        site: "Right Thigh (Vastus Lateralis)",
+        icon: "🦵",
+        injections: [{ name: "Hepatitis B", note: "Dose 1" }],
+      },
+    ],
+  },
+  {
+    label: "Visit 2",
+    timing: "Month 1 (4 weeks after Visit 1)",
+    note: "Accelerates protection before or during active mAb/steroid therapy. CDC permits shortening the Shingrix interval to 1–2 months for immunocompromised patients.",
+    sites: [
+      {
+        site: "Left Deltoid",
+        icon: "💪",
+        injections: [{ name: "Shingrix", note: "Dose 2 of 2" }],
+      },
+      {
+        site: "Right Deltoid",
+        icon: "💪",
+        injections: [{ name: "Hepatitis B", note: "Dose 2 — series complete if using 2-dose Heplisav-B" }],
+      },
+    ],
+  },
+  {
+    label: "Visit 3",
+    timing: "Month 6 (6 months after Visit 1)",
+    note: "Completes the long-term protection series.",
+    sites: [
+      {
+        site: "Left Deltoid",
+        icon: "💪",
+        injections: [{ name: "Hepatitis A", note: "Dose 2 of 2 — completes series" }],
+      },
+      {
+        site: "Right Deltoid",
+        icon: "💪",
+        injections: [{ name: "Hepatitis B", note: "Dose 3 — only if using 3-dose (Engerix-B / Recombivax HB)" }],
+      },
+    ],
+  },
+];
+
+function CoAdministrationSchedule() {
+  return (
+    <Card className="border-primary/40 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden">
+      <CardHeader className="pb-3">
+        <div className="flex items-center gap-2">
+          <Syringe className="h-5 w-5 text-primary" />
+          <CardTitle className="text-lg">
+            Co-Administration Schedule &amp; Sites <span className="text-muted-foreground font-normal">(Including Hepatitis A)</span>
+          </CardTitle>
+        </div>
+        <CardDescription>
+          All six vaccines — Influenza, PCV20, Tdap/DPT, Hepatitis A, Hepatitis B, and Shingrix — are{" "}
+          <strong>non-live</strong>. They can be safely administered on the same day using different injection sites.
+          This schedule distributes injections across both arms and both thighs on Day 0 to avoid overloading individual limbs.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Visit timeline */}
+        <div className="space-y-3">
+          {COADMIN_VISITS.map((visit, vi) => (
+            <div key={visit.label} className="rounded-xl border border-border/60 bg-background/60 overflow-hidden">
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 border-b border-border/40">
+                <Badge className="bg-primary text-primary-foreground">{visit.label}</Badge>
+                <span className="text-sm font-semibold">{visit.timing}</span>
+              </div>
+              <div className="p-3">
+                <div className="grid sm:grid-cols-2 gap-2">
+                  {visit.sites.map((site) => (
+                    <div key={site.site} className="p-2.5 rounded-lg bg-secondary/40 border border-border/40">
+                      <p className="text-xs font-semibold text-primary mb-1.5">
+                        <span className="mr-1">{site.icon}</span>
+                        {site.site}
+                      </p>
+                      <ul className="space-y-1">
+                        {site.injections.map((inj) => (
+                          <li key={inj.name} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                            <span className="text-primary mt-0.5">•</span>
+                            <span>
+                              <span className="font-medium text-foreground">{inj.name}</span>
+                              {inj.note && <span className="text-muted-foreground"> — {inj.note}</span>}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+                {visit.note && (
+                  <p className="text-xs text-muted-foreground mt-2.5 border-t border-border/40 pt-2">{visit.note}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Immunosuppression safety check */}
+        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+          <h4 className="text-sm font-semibold text-amber-400 mb-1.5 flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4" />
+            Immunosuppression Safety Check
+          </h4>
+          <ul className="space-y-1 text-xs text-muted-foreground list-disc pl-4">
+            <li>
+              <strong className="text-amber-300">Pre-Therapy Window:</strong> Try to administer Visit 1 at least{" "}
+              <strong>2–4 weeks</strong> before the first dose of monoclonal antibodies or high-dose systemic steroids.
+            </li>
+            <li>
+              <strong className="text-amber-300">Active Therapy:</strong> If the patient has already started treatment,
+              proceed with this schedule immediately, but consult their specialist regarding whether post-therapy
+              antibody titers should be drawn later.
+            </li>
+          </ul>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // ─── Main Component ───
 
 export default function AdultVaccinations() {
@@ -398,19 +561,44 @@ export default function AdultVaccinations() {
   const [selectedVaccines, setSelectedVaccines] = useState<Set<string>>(new Set());
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  // Filter vaccines
+  // Vaccines always kept (non-optional) — the co-administration schedule set
+  const KEPT_VACCINE_IDS = new Set([
+    "herpes_zoster_shingrix", // Shingrix
+    "hepatitis_a",            // Hepatitis A
+    "hepatitis_b",            // Hepatitis B
+    "influenza_inactivated",  // Influenza
+    "pneumococcal",           // PCV20
+    "tdap",                   // Tdap/DPT
+  ]);
+
+  // Kept vaccines always shown, at the top; optional vaccines only when selected
+  // (or when they match a non-empty search, so they can be discovered and selected)
   const filteredVaccines = useMemo(() => {
     return VACCINES.filter(v => {
       const matchesSearch = searchTerm === "" ||
         v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         v.id.toLowerCase().includes(searchTerm.toLowerCase());
+      const isKept = KEPT_VACCINE_IDS.has(v.id);
+      const isSelected = selectedVaccines.has(v.id);
+      const isSearched = searchTerm !== "" && matchesSearch;
+      // Kept vaccines always visible; optional vaccines only when selected or searched
+      if (!isKept && !isSelected && !isSearched) return false;
       const matchesType = filterType === "all" ||
         (filterType === "live" && v.type.includes("live")) ||
         (filterType === "inactivated" && !v.type.includes("live"));
       const matchesRecommendation = filterRecommendation === "all" || v.recommendation === filterRecommendation;
       return matchesSearch && matchesType && matchesRecommendation;
     });
-  }, [searchTerm, filterType, filterRecommendation]);
+  }, [searchTerm, filterType, filterRecommendation, selectedVaccines]);
+
+  // Sort: kept vaccines first, then optional (selected) vaccines
+  const sortedVaccines = useMemo(() => {
+    return [...filteredVaccines].sort((a, b) => {
+      const aKept = KEPT_VACCINE_IDS.has(a.id) ? 0 : 1;
+      const bKept = KEPT_VACCINE_IDS.has(b.id) ? 0 : 1;
+      return aKept - bKept;
+    });
+  }, [filteredVaccines]);
 
   // Get pre-immunosuppression vaccines
   const preImmunosuppressionVaccines = useMemo(() => {
@@ -484,6 +672,9 @@ export default function AdultVaccinations() {
           and travel vaccines — with contraindications and timing recommendations.
         </p>
       </div>
+
+      {/* Co-Administration Schedule — featured content */}
+      <CoAdministrationSchedule />
 
       {/* Live vs Inactivated Reference Chart */}
       <Card className="border-border/60 overflow-hidden">
@@ -691,7 +882,7 @@ export default function AdultVaccinations() {
               variant="ghost"
               size="sm"
               onClick={() => {
-                const allIds = new Set(filteredVaccines.map(v => v.id));
+                const allIds = new Set(sortedVaccines.map(v => v.id));
                 setSelectedVaccines(prev => {
                   const next = new Set(prev);
                   allIds.forEach(id => next.add(id));
@@ -705,7 +896,7 @@ export default function AdultVaccinations() {
               variant="ghost"
               size="sm"
               onClick={() => {
-                const filteredIds = new Set(filteredVaccines.map(v => v.id));
+                const filteredIds = new Set(sortedVaccines.map(v => v.id));
                 setSelectedVaccines(prev => {
                   const next = new Set(prev);
                   filteredIds.forEach(id => next.delete(id));
@@ -718,14 +909,14 @@ export default function AdultVaccinations() {
           </div>
         </div>
 
-        {filteredVaccines.length === 0 ? (
+        {sortedVaccines.length === 0 ? (
           <Card className="border-border/60">
             <CardContent className="py-8 text-center text-muted-foreground">
               No vaccines match your search criteria.
             </CardContent>
           </Card>
         ) : (
-          filteredVaccines.map((vaccine) => (
+          sortedVaccines.map((vaccine) => (
             <Card
               key={vaccine.id}
               className={`border-border/60 overflow-hidden transition-colors ${
@@ -757,6 +948,9 @@ export default function AdultVaccinations() {
                           className="mr-1"
                         />
                         <h3 className="font-semibold text-lg">{vaccine.name}</h3>
+                        {KEPT_VACCINE_IDS.has(vaccine.id) && (
+                          <Badge className="bg-primary text-primary-foreground">★ Kept</Badge>
+                        )}
                         {getRecommendationBadge(vaccine.recommendation)}
                         {getTypeBadge(vaccine.type)}
                       </div>
