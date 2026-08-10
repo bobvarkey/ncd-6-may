@@ -512,7 +512,7 @@ export default function HypertensionMedicationGuide() {
                           })()}
                         </div>
 
-                        {(medClass as any).showMraCard && (
+                        {medClass.showMraCard && (
                           <div>
                             <span className="text-xs font-medium text-muted-foreground">
                               MRA pocket card — steroidal vs nonsteroidal:
@@ -573,10 +573,11 @@ export default function HypertensionMedicationGuide() {
                             ))}
                           </ul>
                         </div>
-                        {(medClass as any).pearls && (
+
+                        {medClass.pearls && (
                           <div className="mt-2 p-2 rounded-md bg-primary/5 border border-primary/20">
                             <span className="text-xs font-bold text-primary block mb-1 uppercase tracking-wider">Clinical Pearls:</span>
-                            <p className="text-[11px] leading-relaxed italic">{(medClass as any).pearls}</p>
+                            <p className="text-[11px] leading-relaxed italic">{medClass.pearls}</p>
                           </div>
                         )}
                       </div>
