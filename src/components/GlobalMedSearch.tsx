@@ -284,6 +284,11 @@ export function GlobalMedSearch() {
           placeholder="Search any topic — reninoma, hypothyroidism, medications…"
           className="flex-1 bg-transparent py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none"
           aria-label="Search medications"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && q.trim()) {
+              goToDrug(q.trim());
+            }
+          }}
         />
         {q && (
           <button
