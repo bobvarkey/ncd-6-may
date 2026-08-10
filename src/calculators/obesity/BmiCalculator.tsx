@@ -614,13 +614,65 @@ export default function BmiCalculator() {
                     <div className="rounded-lg border border-border bg-card/50 p-6">
                       <div className="text-center">
                         <p className="text-sm text-muted-foreground">Body Mass Index</p>
-                        <p className="text-5xl font-bold text-primary">{result.bmi}</p>
+                        <p className="text-5xl font-bold text-primary">{result.exactBmi.toFixed(2)}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          (rounded: {result.bmi.toFixed(1)} kg/m²)
+                        </p>
                         <p className={`mt-2 text-lg font-medium ${result.color}`}>
                           {result.category}
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-foreground">
+                          Matched range: {result.rangeLabel}
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground">
                           Using {result.ethnicityName} guidelines
                         </p>
+                        {/* Classification confidence */}
+                        <div className={cn(
+                          "mt-3 mx-auto max-w-sm rounded-lg border p-3 text-left",
+                          result.confidence.level === "high"
+                            ? "border-emerald-500/40 bg-emerald-500/10"
+                            : result.confidence.level === "moderate"
+                            ? "border-amber-500/40 bg-amber-500/10"
+                            : "border-orange-500/40 bg-orange-500/10"
+                        )}>
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-sm font-semibold flex items-center gap-1.5">
+                              <Activity className={cn(
+                                "h-4 w-4",
+                                result.confidence.level === "high" ? "text-emerald-500"
+                                  : result.confidence.level === "moderate" ? "text-amber-500"
+                                  : "text-orange-500"
+                              )} />
+                              Classification confidence
+                            </p>
+                            <span className={cn(
+                              "text-xs font-bold rounded-full px-2 py-0.5",
+                              result.confidence.level === "high"
+                                ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                                : result.confidence.level === "moderate"
+                                ? "bg-amber-500/20 text-amber-600 dark:text-amber-400"
+                                : "bg-orange-500/20 text-orange-600 dark:text-orange-400"
+                            )}>
+                              {result.confidence.label} · {result.confidence.percent}%
+                            </span>
+                          </div>
+                          {/* Confidence bar */}
+                          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                            <div
+                              className={cn(
+                                "h-full rounded-full transition-all",
+                                result.confidence.level === "high" ? "bg-emerald-500"
+                                  : result.confidence.level === "moderate" ? "bg-amber-500"
+                                  : "bg-orange-500"
+                              )}
+                              style={{ width: `${result.confidence.percent}%` }}
+                            />
+                          </div>
+                          <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed">
+                            {result.confidence.note}
+                          </p>
+                        </div>
                         {(() => {
                           const grade = getUnderweightGrade(result.bmi);
                           if (!grade) return null;
