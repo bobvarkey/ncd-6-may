@@ -383,6 +383,18 @@ export default function HypertensionDrugSelection() {
         />
       </div>
 
+      {/* Why MRAs for Gout? */}
+      <Card className="border-accent/20 bg-accent/5">
+        <CardContent className="p-3">
+          <p className="text-xs font-semibold text-accent mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+            Why MRAs for Gout?
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            MRAs (like Spironolactone, Eplerenone, or Finerenone) are preferred in patients with <strong>Hyperuricemia or Gout</strong> because they have a neutral effect on serum uric acid levels. Unlike thiazide or loop diuretics, which can trigger flares by interfering with renal uric acid transporters, MRAs provide effective BP control without increasing metabolic risk.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* General First-Line Agents */}
       <Card className="border-emerald-500/20 bg-emerald-500/5">
         <CardContent className="p-3">

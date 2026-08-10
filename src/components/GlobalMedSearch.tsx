@@ -17,6 +17,26 @@ const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
   _target: "htn" as const,
 }));
 
+// Synonyms map to help the search find drugs by common alternatives
+const MED_SYNONYMS: Record<string, string[]> = {
+  "Eplerenone": ["Inspra"],
+  "Spironolactone": ["Aldactone"],
+  "Finerenone": ["Kerendia"],
+  "Cilnidipine": ["Cilacar"],
+  "Azelnidipine": ["Calblock"],
+  "Metformin": ["Glucophage"],
+  "Semaglutide": ["Ozempic", "Wegovy", "Rybelsus"],
+  "Tirzepatide": ["Mounjaro", "Zepbound"],
+  "Empagliflozin": ["Jardiance"],
+  "Dapagliflozin": ["Farxiga", "Forxiga"],
+  "Verapamil": ["Calan", "Isoptin"],
+  "Diltiazem": ["Cardizem"],
+  "Losartan": ["Cozaar"],
+  "Telmisartan": ["Micardis"],
+  "Amlodipine": ["Norvasc"],
+  "Lisinopril": ["Prinivil", "Zestril"],
+};
+
 const ALL_MEDS = [
   ...RENAL_DATA,
   ...ANTIBIOTICS_DATA,
