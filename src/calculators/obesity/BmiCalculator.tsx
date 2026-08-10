@@ -23,6 +23,7 @@ import {
   ETHNICITY_GUIDELINES,
   getBmiCategory,
   getTreatmentGuidelines,
+  getUnderweightGrade,
   EthnicityType,
   WEIGHT_LOSS_TARGETS,
   PREFERRED_PHARMACOTHERAPY,
