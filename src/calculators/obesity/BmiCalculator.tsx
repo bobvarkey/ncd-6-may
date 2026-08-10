@@ -175,10 +175,12 @@ export default function BmiCalculator() {
     };
     const heightM = data.height / 100;
     const bmi = data.weight / (heightM * heightM);
-    const roundedBmi = Math.round(bmi * 10) / 10;
+    const exactBmi = Math.round(bmi * 100) / 100; // 2 dp — "exact" value
+    const roundedBmi = Math.round(bmi * 10) / 10; // 1 dp — used for display ranges
 
-    const category = getBmiCategory(roundedBmi, data.ethnicity);
+    const category = getBmiCategory(exactBmi, data.ethnicity);
     const guideline = ETHNICITY_GUIDELINES.find((g) => g.id === data.ethnicity);
+    const detail = getBmiClassificationDetail(exactBmi, data.ethnicity);
 
     const treatment = getTreatmentGuidelines(roundedBmi, data.ethnicity);
 
