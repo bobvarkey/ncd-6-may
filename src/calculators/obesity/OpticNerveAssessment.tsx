@@ -309,7 +309,14 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
     // Retinopathy-specific reminder always shown
     steps.push("Separately screen for diabetic retinopathy: rapid HbA1c reduction with GLP-1RA can transiently worsen existing retinopathy.");
 
-    return { flags, cautions, gaps, steps, level, maxVertical, maxIop, vascular };
+    const bandLabel = scoreBand === "high" ? "High risk" : scoreBand === "moderate" ? "Moderate risk" : "Low risk";
+    const top = [...scoreItems].sort((a, b) => b.points - a.points).slice(0, 3).map((i) => i.label);
+    const summary =
+      scoreItems.length === 0
+        ? "No optic-nerve, OCT, visual-field or systemic risk contributors recorded — score 0/30 (low risk). Confirm the eye examination is current."
+        : `NAION / glaucoma risk score ${score}/${MAX_SCORE} — ${bandLabel} (${scoreBand === "high" ? "≥8 points or an absolute red flag" : scoreBand === "moderate" ? "3–7 points" : "0–2 points"}). Main contributors: ${top.join("; ")}.${missing.length ? ` Score provisional — ${missing.length} required field(s) outstanding.` : ""}${gaps.length ? ` ${gaps.length} data gap(s) may raise the score once completed.` : ""}`;
+
+    return { flags, cautions, gaps, steps, level, maxVertical, maxIop, vascular, score, maxScore: MAX_SCORE, scoreBand, scoreItems, bandLabel, summary };
   }, [cdrRV, cdrLV, iopR, iopL, discAtRisk, previousNaion, discOedema, glaucoma, oct, vf, factors, examTiming, discExamDate, missing]);
 
   const tone =
