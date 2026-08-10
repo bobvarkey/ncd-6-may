@@ -284,6 +284,7 @@ function PreScreen() {
   const [renal, setRenal] = useState<string[]>([]);
   const [psych, setPsych] = useState<YNU>("no");
   const [currentGlp1, setCurrentGlp1] = useState<YN>("no");
+  const [dpp4, setDpp4] = useState<YN>("no");
 
   const [eyeExamDate, setEyeExamDate] = useState("");
   const [retinopathy, setRetinopathy] = useState<string>("");
