@@ -622,9 +622,7 @@ export default function BmiCalculator() {
                               </p>
                               <p className="mt-1 text-xs text-muted-foreground">{grade.note}</p>
                               <p className="mt-1.5 text-[11px] text-muted-foreground italic">
-                                Underweight (BMI < 18.5 kg/m²) aligns with global standards. Indian and Asian-specific
-                                guidelines lower the thresholds for overweight (≥23) and obesity (≥25) due to higher
-                                metabolic risks, but the definition for underweight has not changed.
+                                {"Underweight (BMI < 18.5 kg/m²) aligns with global standards. Indian and Asian-specific guidelines lower the thresholds for overweight (≥23) and obesity (≥25) due to higher metabolic risks, but the definition for underweight has not changed."}
                               </p>
                             </div>
                           );
