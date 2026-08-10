@@ -250,7 +250,9 @@ export function GlobalMedSearch() {
     }
 
     const drug = ALL_MEDS.find((m) => m.drug.toLowerCase() === drugName.toLowerCase());
-    if (drug && drug._target === "htn") {
+    
+    // Type-safe check for _target
+    if (drug && '_target' in drug && drug._target === "htn") {
       navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
       return;
     }
