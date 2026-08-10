@@ -383,7 +383,29 @@ export default function HypertensionDrugSelection() {
         />
       </div>
 
-      {/* General First-Line Agents */}
+      {/* Why MRAs for Gout? Explanation Panel */}
+      <Card className="border-accent/20 bg-accent/5 overflow-hidden relative mb-4">
+        <div className="absolute top-0 left-0 w-1 h-full bg-accent/50" aria-hidden="true" />
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertTriangle className="h-4 w-4 text-accent" />
+            <h4 className="text-xs font-bold text-accent uppercase tracking-wider">
+              Clinical Pearl: Why MRAs for Gout?
+            </h4>
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Mineralocorticoid Receptor Antagonists (MRAs) like <strong>Spironolactone</strong>, <strong>Eplerenone</strong>, or <strong>Finerenone</strong> are preferred for hypertensive patients with <strong>Hyperuricemia or Gout</strong>.
+            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Unlike Thiazide or Loop diuretics, which compete with uric acid for excretion and frequently trigger painful flares, MRAs have a <strong>neutral effect</strong> on serum uric acid levels. This allows for effective blood pressure management without increasing the risk of metabolic complications.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+
+
       <Card className="border-emerald-500/20 bg-emerald-500/5">
         <CardContent className="p-3">
           <p className="text-xs font-medium text-emerald-400 mb-2 flex items-center gap-1.5">

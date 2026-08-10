@@ -17,6 +17,26 @@ const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
   _target: "htn" as const,
 }));
 
+// Synonyms map to help the search find drugs by common alternatives
+const MED_SYNONYMS: Record<string, string[]> = {
+  "Eplerenone": ["Inspra"],
+  "Spironolactone": ["Aldactone"],
+  "Finerenone": ["Kerendia"],
+  "Cilnidipine": ["Cilacar"],
+  "Azelnidipine": ["Calblock"],
+  "Metformin": ["Glucophage"],
+  "Semaglutide": ["Ozempic", "Wegovy", "Rybelsus"],
+  "Tirzepatide": ["Mounjaro", "Zepbound"],
+  "Empagliflozin": ["Jardiance"],
+  "Dapagliflozin": ["Farxiga", "Forxiga"],
+  "Verapamil": ["Calan", "Isoptin"],
+  "Diltiazem": ["Cardizem"],
+  "Losartan": ["Cozaar"],
+  "Telmisartan": ["Micardis"],
+  "Amlodipine": ["Norvasc"],
+  "Lisinopril": ["Prinivil", "Zestril"],
+};
+
 const ALL_MEDS = [
   ...RENAL_DATA,
   ...ANTIBIOTICS_DATA,
@@ -197,13 +217,19 @@ export function GlobalMedSearch() {
     const term = q.trim().toLowerCase();
     if (!term) return [];
 
+    // Check synonyms first
+    const synonymMatches = Object.entries(MED_SYNONYMS).filter(([mainDrug, synonyms]) => 
+      synonyms.some(s => s.toLowerCase().includes(term))
+    ).map(([mainDrug]) => mainDrug.toLowerCase());
+
     // Search both medications and clinical topics
     const medResults = ALL_MEDS
       .filter(
         (m) =>
           m.drug.toLowerCase().includes(term) ||
           m.drugClass.toLowerCase().includes(term) ||
-          ("brand" in m && typeof m.brand === "string" && m.brand.toLowerCase().includes(term))
+          ("brand" in m && typeof m.brand === "string" && m.brand.toLowerCase().includes(term)) ||
+          synonymMatches.includes(m.drug.toLowerCase())
       )
       .slice(0, 8)
       .map(m => ({ type: 'medication' as const, ...m }));
