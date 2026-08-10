@@ -334,7 +334,7 @@ export default function OpticNerveAssessment() {
       <Seo
         title="Optic Nerve, Glaucoma & NAION Risk Before GLP-1 Agonists"
         description="Ophthalmic safety mini-app for GLP-1 receptor agonists: cup-to-disc ratio, IOP, glaucoma status, OCT/RNFL, visual fields and NAION risk factors with next-step logic."
-        canonical="/obesity/optic-nerve-assessment"
+        path="/obesity/optic-nerve-assessment"
       />
       <div className="max-w-4xl mx-auto p-4 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
