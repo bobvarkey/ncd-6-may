@@ -358,6 +358,13 @@ function PreScreen() {
       add("pregnancy_planned", 3, "START_WITH_PRECAUTIONS", "Pregnancy planned: agree contraception, and stop the agent before conception per the product label washout period.");
     if (currentGlp1 === "yes")
       add("duplicate_incretin", 2, "DEFER_AND_REVIEW", "Already on another GLP-1RA or dual incretin agent — do not co-prescribe; switch rather than add.");
+    if (dpp4 === "yes" && ["semaglutide", "tirzepatide", "liraglutide", "dulaglutide"].includes(agent))
+      add(
+        "stop_dpp4_at_glp1_start",
+        2,
+        "START_WITH_PRECAUTIONS",
+        "Stop the DPP-4 inhibitor (gliptin) when initiating the GLP-1RA/dual incretin agent. No taper or washout is required. Review other glucose-lowering drugs, especially insulin and sulfonylureas, for hypoglycaemia-risk dose adjustment. Do not combine a DPP-4 inhibitor with a GLP-1 receptor agonist / dual GIP–GLP-1 agonist. Agents to stop: sitagliptin, linagliptin, saxagliptin, vildagliptin, alogliptin.",
+      );
     if (psych === "yes")
       add("eating_disorder", 3, "DEFER_AND_REVIEW", "Active eating disorder or major psychiatric risk — arrange specialist input before initiation.");
     if (renal.includes("eGFR below 30 mL/min/1.73m2") || renal.includes("Recent acute kidney injury"))
