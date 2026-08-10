@@ -477,7 +477,7 @@ function PreScreen() {
     L.push("");
     L.push("Clinician use only. Decision support — does not replace product-specific prescribing information, local policy, clinical judgement, or specialist referral.");
     return L.join("\n");
-  }, [agent, indication, heightCm, weightKg, bmi, comorbidities, weightIndicationMet, lifestyle, personalMtc, familyMtc, men2, hypersensitivity, pregnant, breastfeeding, pregnancyPlanned, diabetes, diabetesType, insulinSu, pancreatitis, biliary, gi, renal, psych, currentGlp1, eyeExamDate, retinopathy, retinopathyRx, visualFlags, otherEye, bp, hba1c, fpg, creatinine, egfr, alt, ast, bili, tsh, lipase, amylase, nutrition, evaluation, meta.label, clinician, nextReview]);
+  }, [agent, indication, heightCm, weightKg, bmi, comorbidities, weightIndicationMet, lifestyle, personalMtc, familyMtc, men2, hypersensitivity, pregnant, breastfeeding, pregnancyPlanned, diabetes, diabetesType, insulinSu, pancreatitis, biliary, gi, renal, psych, currentGlp1, dpp4, eyeExamDate, retinopathy, retinopathyRx, visualFlags, otherEye, bp, hba1c, fpg, creatinine, egfr, alt, ast, bili, tsh, lipase, amylase, nutrition, evaluation, meta.label, clinician, nextReview]);
 
   return (
     <div className="space-y-4">
