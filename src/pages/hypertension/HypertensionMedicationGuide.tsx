@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, AlertTriangle, ChevronDown, ChevronRight, Stethoscope } from "lucide-react";
+import { Heart, AlertTriangle, ChevronDown, ChevronRight, Stethoscope, Search, X } from "lucide-react";
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
 import ZoomableImage from "@/components/ZoomableImage";
