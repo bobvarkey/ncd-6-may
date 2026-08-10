@@ -99,7 +99,7 @@ const medicationClasses = [
     suffix: "steroidal & nonsteroidal",
     classMatch: ["K-sparing / MRA", "Nonsteroidal MRA"],
     mechanism: "Block aldosterone receptor → Na+ excretion, K+ retention, antifibrotic. Steroidal (spironolactone, eplerenone) vs nonsteroidal (finerenone — bulky, non-hormonal, more selective for MR, cardiorenal antifibrotic in diabetic CKD).",
-    indications: ["Resistant HTN", "HFrEF (spironolactone, eplerenone)", "Primary aldosteronism", "Diabetic CKD with albuminuria (finerenone — FIDELIO/FIGARO)"],
+    indications: ["Resistant HTN", "HFrEF (spironolactone, eplerenone)", "Primary aldosteronism", "Diabetic CKD with albuminuria (finerenone — FIDELIO/FIGARO)", "Patients with Hyperuricemia / Gout"],
     contraindications: ["Hyperkalemia (K+ >5.0)", "Severe CKD (eGFR <25 for finerenone; <30 for steroidal)", "Addison's disease", "Strong CYP3A4 inhibitors with finerenone"],
     sideEffects: ["Hyperkalemia (all)", "Gynecomastia / breast tenderness (spironolactone)", "Renal dysfunction", "Gynecomastia rare with eplerenone & finerenone"],
     pearls: "Generally neutral/minimal effect on serum uric acid levels. Unlike thiazide or loop diuretics, MRAs do not strongly interfere with renal uric acid transporters, making them preferred in patients with hyperuricemia or gout flares. [1, 2, 3, 4, 5]",
@@ -558,6 +558,12 @@ export default function HypertensionMedicationGuide() {
                             ))}
                           </ul>
                         </div>
+                        {(medClass as any).pearls && (
+                          <div className="mt-2 p-2 rounded-md bg-primary/5 border border-primary/20">
+                            <span className="text-xs font-bold text-primary block mb-1 uppercase tracking-wider">Clinical Pearls:</span>
+                            <p className="text-[11px] leading-relaxed italic">{(medClass as any).pearls}</p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
