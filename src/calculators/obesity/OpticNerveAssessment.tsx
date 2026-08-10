@@ -539,6 +539,48 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
               </div>
             </div>
 
+            {/* NAION / glaucoma risk category score */}
+            <div className="rounded-lg border border-border p-3 bg-muted/20">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="text-xs font-semibold">NAION / glaucoma risk category score</div>
+                <Badge
+                  className={`text-[11px] ${
+                    result.scoreBand === "high"
+                      ? "bg-destructive/15 text-destructive border-destructive/40"
+                      : result.scoreBand === "moderate"
+                        ? "bg-amber-500/15 text-amber-600 border-amber-500/40"
+                        : "bg-emerald-500/15 text-emerald-600 border-emerald-500/40"
+                  }`}
+                  variant="outline"
+                >
+                  {result.score}/{result.maxScore} · {result.bandLabel}
+                </Badge>
+              </div>
+              <div className="mt-2 h-2 w-full rounded-full bg-muted overflow-hidden" role="img" aria-label={`Risk score ${result.score} of ${result.maxScore}`}>
+                <div
+                  className={`h-full rounded-full ${
+                    result.scoreBand === "high" ? "bg-destructive" : result.scoreBand === "moderate" ? "bg-amber-500" : "bg-emerald-500"
+                  }`}
+                  style={{ width: `${Math.min(100, (result.score / result.maxScore) * 100)}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-2">{result.summary}</p>
+              <div className="text-[11px] text-muted-foreground mt-1">
+                Bands: 0–2 low · 3–7 moderate · ≥8 or any absolute red flag high.
+              </div>
+              {result.scoreItems.length > 0 && (
+                <ul className="mt-2 space-y-0.5 text-xs">
+                  {[...result.scoreItems].sort((a, b) => b.points - a.points).map((i) => (
+                    <li key={i.label} className="flex items-start justify-between gap-2">
+                      <span>{i.label}</span>
+                      <span className="font-medium tabular-nums">+{i.points}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+
             {missing.length > 0 && (
               <div className="rounded-lg border border-border p-3 bg-muted/30">
                 <div className="text-xs font-semibold mb-1">Required fields outstanding</div>
