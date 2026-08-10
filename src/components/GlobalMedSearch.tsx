@@ -23,7 +23,9 @@ const ALL_MEDS = [
   ...ANTICOAGULANTS_DATA,
   ...ADDITIONAL_MEDS_DATA,
   ...HTN_MEDS_NORMALIZED,
-];
+].filter((m, index, self) => 
+  index === self.findIndex((t) => t.drug.toLowerCase() === m.drug.toLowerCase())
+);
 
 // Every page and topic in the app — searchable by label or keyword
 const CLINICAL_TOPICS = [
