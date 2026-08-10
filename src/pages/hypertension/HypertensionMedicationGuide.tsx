@@ -386,7 +386,20 @@ const drugInteractions = [
 export default function HypertensionMedicationGuide() {
   const [expandedClass, setExpandedClass] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"classes" | "dosing" | "algorithm" | "interactions">("classes");
-  const [drugSearch, setDrugSearch] = useState("");
+  const [drugSearch, setDrugSearch] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("q") || "";
+    }
+    return "";
+  });
+
+  // Effect to sync search from URL if it changes while component is mounted
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q) setDrugSearch(q);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -424,6 +437,25 @@ export default function HypertensionMedicationGuide() {
 
       {activeTab === "classes" && (
         <div className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Filter drugs (e.g. Eplerenone, Cilnidipine)..."
+              value={drugSearch}
+              onChange={(e) => setDrugSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+            {drugSearch && (
+              <button 
+                onClick={() => setDrugSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
           <Card className="clinical-card">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
@@ -435,7 +467,18 @@ export default function HypertensionMedicationGuide() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {medicationClasses.map((medClass: MedicationClass) => (
+                {medicationClasses
+                  .filter(medClass => {
+                    if (!drugSearch) return true;
+                    const search = drugSearch.toLowerCase();
+                    const hasDrugMatch = drugDoseDetails.some(d => 
+                      medClass.classMatch.includes(d.drugClass) && 
+                      (d.name.toLowerCase().includes(search) || d.brand.toLowerCase().includes(search))
+                    );
+                    return medClass.class.toLowerCase().includes(search) || hasDrugMatch;
+                  })
+                  .map((medClass: MedicationClass) => (
+
                   <div
                     key={medClass.class}
                     className={`border-2 rounded-lg overflow-hidden ${medClass.color} ${
@@ -465,7 +508,11 @@ export default function HypertensionMedicationGuide() {
                       )}
                     </button>
 
-                    {expandedClass === medClass.class && (
+                    {(expandedClass === medClass.class || (drugSearch && drugDoseDetails.some(d => 
+                      medClass.classMatch.includes(d.drugClass) && 
+                      (d.name.toLowerCase().includes(drugSearch.toLowerCase()) || d.brand.toLowerCase().includes(drugSearch.toLowerCase()))
+                    ))) && (
+
                       <div className="px-4 pb-4 space-y-3 border-t border-inherit pt-3">
                         <div>
                           <span className="text-xs font-medium text-muted-foreground">
