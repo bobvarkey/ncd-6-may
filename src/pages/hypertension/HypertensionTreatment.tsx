@@ -364,10 +364,17 @@ interface ChecklistItem {
   condition: string;
   tests: string[];
   icon: React.ReactNode;
-  category: 'endocrine' | 'renal' | 'lifestyle' | 'vascular' | 'other';
+  category: 'endocrine' | 'renal' | 'lifestyle' | 'vascular' | 'gout' | 'other';
 }
 
 const checklistItems: ChecklistItem[] = [
+  {
+    id: 'hyperuricemia-gout',
+    condition: 'Hyperuricemia / Gout',
+    tests: ['Serum uric acid level', 'Synovial fluid analysis (if flare)', 'Renal function (eGFR)'],
+    icon: <AlertTriangle className="h-5 w-5" />,
+    category: 'gout'
+  },
   {
     id: 'primary-aldosteronism',
     condition: 'Primary Aldosteronism',
