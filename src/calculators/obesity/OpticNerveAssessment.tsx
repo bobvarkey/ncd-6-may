@@ -155,7 +155,8 @@ const num = (s: string) => {
   return Number.isFinite(n) ? n : null;
 };
 
-export default function OpticNerveAssessment() {
+export default function OpticNerveAssessment({ embedded = false }: { embedded?: boolean }) {
+
   const navigate = useNavigate();
 
   const [examTiming, setExamTiming] = useState<string>("");
