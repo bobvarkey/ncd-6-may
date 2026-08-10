@@ -21,7 +21,22 @@ function extractCardFreq(dose: string): string {
 
 // Antihypertensive Classes — `classMatch` maps a class card to entries in
 // drugDoseDetails so we can render the full name/dose/interval table per class.
-const medicationClasses = [
+interface MedicationClass {
+  class: string;
+  suffix: string;
+  classMatch: string[];
+  mechanism: string;
+  indications: string[];
+  contraindications: string[];
+  sideEffects: string[];
+  monitoring: string[];
+  firstLine: boolean;
+  color: string;
+  showMraCard?: boolean;
+  pearls?: string;
+}
+
+const medicationClasses: MedicationClass[] = [
   {
     class: "ACE Inhibitors",
     suffix: "-pril",
@@ -99,9 +114,10 @@ const medicationClasses = [
     suffix: "steroidal & nonsteroidal",
     classMatch: ["K-sparing / MRA", "Nonsteroidal MRA"],
     mechanism: "Block aldosterone receptor → Na+ excretion, K+ retention, antifibrotic. Steroidal (spironolactone, eplerenone) vs nonsteroidal (finerenone — bulky, non-hormonal, more selective for MR, cardiorenal antifibrotic in diabetic CKD).",
-    indications: ["Resistant HTN", "HFrEF (spironolactone, eplerenone)", "Primary aldosteronism", "Diabetic CKD with albuminuria (finerenone — FIDELIO/FIGARO)"],
+    indications: ["Resistant HTN", "HFrEF (spironolactone, eplerenone)", "Primary aldosteronism", "Diabetic CKD with albuminuria (finerenone — FIDELIO/FIGARO)", "Patients with Hyperuricemia / Gout"],
     contraindications: ["Hyperkalemia (K+ >5.0)", "Severe CKD (eGFR <25 for finerenone; <30 for steroidal)", "Addison's disease", "Strong CYP3A4 inhibitors with finerenone"],
     sideEffects: ["Hyperkalemia (all)", "Gynecomastia / breast tenderness (spironolactone)", "Renal dysfunction", "Gynecomastia rare with eplerenone & finerenone"],
+    pearls: "Generally neutral/minimal effect on serum uric acid levels. Unlike thiazide or loop diuretics, MRAs do not strongly interfere with renal uric acid transporters, making them preferred in patients with hyperuricemia or gout flares. [1, 2, 3, 4, 5]",
     monitoring: ["K+ and creatinine at 1 week, 1 month, then 3–6 monthly", "BP response", "Hold if K+ >5.5"],
     firstLine: false,
     color: "bg-accent/10 border-accent/30",
@@ -419,7 +435,7 @@ export default function HypertensionMedicationGuide() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {medicationClasses.map((medClass) => (
+                {medicationClasses.map((medClass: MedicationClass) => (
                   <div
                     key={medClass.class}
                     className={`border-2 rounded-lg overflow-hidden ${medClass.color} ${
@@ -496,7 +512,7 @@ export default function HypertensionMedicationGuide() {
                           })()}
                         </div>
 
-                        {(medClass as any).showMraCard && (
+                        {medClass.showMraCard && (
                           <div>
                             <span className="text-xs font-medium text-muted-foreground">
                               MRA pocket card — steroidal vs nonsteroidal:
@@ -557,6 +573,13 @@ export default function HypertensionMedicationGuide() {
                             ))}
                           </ul>
                         </div>
+
+                        {medClass.pearls && (
+                          <div className="mt-2 p-2 rounded-md bg-primary/5 border border-primary/20">
+                            <span className="text-xs font-bold text-primary block mb-1 uppercase tracking-wider">Clinical Pearls:</span>
+                            <p className="text-[11px] leading-relaxed italic">{medClass.pearls}</p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
