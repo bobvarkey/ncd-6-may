@@ -155,7 +155,8 @@ const num = (s: string) => {
   return Number.isFinite(n) ? n : null;
 };
 
-export default function OpticNerveAssessment() {
+export default function OpticNerveAssessment({ embedded = false }: { embedded?: boolean }) {
+
   const navigate = useNavigate();
 
   const [examTiming, setExamTiming] = useState<string>("");
@@ -330,33 +331,38 @@ export default function OpticNerveAssessment() {
   }, [examTiming, discExamDate, cdrRV, cdrLV, cdrRH, cdrLH, discAtRisk, previousNaion, discOedema, iopR, iopL, glaucoma, oct, vf, factors, result, tone.label, missing]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Seo
-        title="Optic Nerve, Glaucoma & NAION Risk Before GLP-1 Agonists"
-        description="Ophthalmic safety mini-app for GLP-1 receptor agonists: cup-to-disc ratio, IOP, glaucoma status, OCT/RNFL, visual fields and NAION risk factors with next-step logic."
-        path="/obesity/optic-nerve-assessment"
-      />
-      <div className="max-w-4xl mx-auto p-4 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-              <Eye className="w-5 h-5 text-primary" />
-              Optic nerve / glaucoma / NAION risk assessment
-            </h1>
-            <p className="text-xs text-muted-foreground mt-1">
-              Ophthalmic safety check before starting or escalating a GLP-1 receptor agonist. Complete by an ophthalmologist or
-              optometrist — CDR values are supportive screening data, not stand-alone diagnoses.
-            </p>
+    <div className={embedded ? "" : "min-h-screen bg-background"}>
+      {!embedded && (
+        <Seo
+          title="Optic Nerve, Glaucoma & NAION Risk Before GLP-1 Agonists"
+          description="Ophthalmic safety mini-app for GLP-1 receptor agonists: cup-to-disc ratio, IOP, glaucoma status, OCT/RNFL, visual fields and NAION risk factors with next-step logic."
+          path="/obesity/optic-nerve-assessment"
+        />
+      )}
+      <div className={embedded ? "space-y-4" : "max-w-4xl mx-auto p-4 space-y-4"}>
+        {!embedded && (
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                <Eye className="w-5 h-5 text-primary" />
+                Optic nerve / glaucoma / NAION risk assessment
+              </h1>
+              <p className="text-xs text-muted-foreground mt-1">
+                Ophthalmic safety check before starting or escalating a GLP-1 receptor agonist. Complete by an ophthalmologist or
+                optometrist — CDR values are supportive screening data, not stand-alone diagnoses.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={() => navigate("/obesity/glp1-assessment")}>
+                <Syringe className="w-4 h-4 mr-1" /> GLP-1 assessment
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => navigate("/home")}>
+                <Home className="w-4 h-4 mr-1" /> Home
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => navigate("/obesity/glp1-assessment")}>
-              <Syringe className="w-4 h-4 mr-1" /> GLP-1 assessment
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => navigate("/home")}>
-              <Home className="w-4 h-4 mr-1" /> Home
-            </Button>
-          </div>
-        </div>
+        )}
+
 
         <Card>
           <CardHeader className="pb-3">
