@@ -610,6 +610,25 @@ export default function BmiCalculator() {
                         <p className="mt-1 text-xs text-muted-foreground">
                           Using {result.ethnicityName} guidelines
                         </p>
+                        {(() => {
+                          const grade = getUnderweightGrade(result.bmi);
+                          if (!grade) return null;
+                          return (
+                            <div className="mt-3 mx-auto max-w-sm rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-3 text-left">
+                              <p className="text-sm font-semibold text-yellow-600 dark:text-yellow-400 flex items-center gap-1.5">
+                                <AlertCircle className="h-4 w-4" />
+                                {grade.label}
+                                <span className="text-xs font-normal text-muted-foreground">· {grade.range}</span>
+                              </p>
+                              <p className="mt-1 text-xs text-muted-foreground">{grade.note}</p>
+                              <p className="mt-1.5 text-[11px] text-muted-foreground italic">
+                                Underweight (BMI < 18.5 kg/m²) aligns with global standards. Indian and Asian-specific
+                                guidelines lower the thresholds for overweight (≥23) and obesity (≥25) due to higher
+                                metabolic risks, but the definition for underweight has not changed.
+                              </p>
+                            </div>
+                          );
+                        })()}
                     </div>
 
                     {/* Adiposity Risk Panel */}
