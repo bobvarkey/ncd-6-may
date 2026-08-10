@@ -927,7 +927,7 @@ export default function Home() {
             badge="LAI"
           />
           <DiseaseCard
-            title="Obesity"
+            title="Body weight issues"
             description="BMI calculator (Indian cutoffs), GLP-1 algorithm, waist-height ratio, weight management guidelines"
             icon={<Weight className="h-5 w-5 text-violet-400" />}
             to="/obesity/bmi-calculator"
