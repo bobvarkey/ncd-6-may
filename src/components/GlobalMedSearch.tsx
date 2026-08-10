@@ -252,7 +252,12 @@ export function GlobalMedSearch() {
       return;
     }
 
-    const drug = ALL_MEDS.find((m) => m.drug.toLowerCase() === drugName.toLowerCase());
+    // Use term-based search to find the drug entry
+    const term = drugName.toLowerCase();
+    const drug = ALL_MEDS.find((m) => 
+      m.drug.toLowerCase() === term || 
+      (m.brand && m.brand.toLowerCase().includes(term))
+    );
     
     // Type-safe check for _target
     if (drug && '_target' in drug && drug._target === "htn") {
