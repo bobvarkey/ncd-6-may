@@ -102,6 +102,7 @@ const medicationClasses = [
     indications: ["Resistant HTN", "HFrEF (spironolactone, eplerenone)", "Primary aldosteronism", "Diabetic CKD with albuminuria (finerenone — FIDELIO/FIGARO)"],
     contraindications: ["Hyperkalemia (K+ >5.0)", "Severe CKD (eGFR <25 for finerenone; <30 for steroidal)", "Addison's disease", "Strong CYP3A4 inhibitors with finerenone"],
     sideEffects: ["Hyperkalemia (all)", "Gynecomastia / breast tenderness (spironolactone)", "Renal dysfunction", "Gynecomastia rare with eplerenone & finerenone"],
+    pearls: "Generally neutral/minimal effect on serum uric acid levels. Unlike thiazide or loop diuretics, MRAs do not strongly interfere with renal uric acid transporters, making them preferred in patients with hyperuricemia or gout flares. [1, 2, 3, 4, 5]",
     monitoring: ["K+ and creatinine at 1 week, 1 month, then 3–6 monthly", "BP response", "Hold if K+ >5.5"],
     firstLine: false,
     color: "bg-accent/10 border-accent/30",
