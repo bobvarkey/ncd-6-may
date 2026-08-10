@@ -256,7 +256,7 @@ export function GlobalMedSearch() {
     const term = drugName.toLowerCase();
     const drug = ALL_MEDS.find((m) => 
       m.drug.toLowerCase() === term || 
-      (m.brand && m.brand.toLowerCase().includes(term))
+      ('brand' in m && typeof m.brand === 'string' && m.brand.toLowerCase().includes(term))
     );
     
     // Type-safe check for _target
