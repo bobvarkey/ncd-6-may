@@ -69,7 +69,7 @@ const CLINICAL_TOPICS = [
   { id: "htn-overview", label: "Hypertension Overview (Detailed)", path: "/hypertension/overview", keywords: ["hypertension overview", "bp overview"] },
   { id: "htn-tab", label: "Hypertension Tab View", path: "/hypertension/tab", keywords: ["hypertension tab", "htn sections"] },
   { id: "htn-treatment", label: "Hypertension Treatment", path: "/hypertension/treatment", keywords: ["hypertension treatment", "antihypertensive", "bp medication"] },
-  { id: "htn-medication-guide", label: "Hypertension Medication Guide", path: "/hypertension/medication-guide", keywords: ["htn medication", "antihypertensive guide", "bp drugs", "cilnidipine", "cilacar", "ccb", "calcium channel blocker"] },
+  { id: "htn-medication-guide", label: "Hypertension Medication Guide", path: "/hypertension/medication-guide", keywords: ["htn medication", "antihypertensive guide", "bp drugs", "cilnidipine", "cilacar", "ccb", "calcium channel blocker", "eplerenone", "inspra", "spironolactone", "aldactone", "mra", "finerenone", "kerendia"] },
   { id: "htn-clinical-cards", label: "Hypertension Clinical Cards", path: "/hypertension/clinical-cards", keywords: ["htn clinical cards", "hypertension cards", "clinical pearls"] },
   { id: "htn-treatment-algorithm", label: "Antihypertensive Treatment Algorithm", path: "/htn/treatment-algorithm", keywords: ["antihypertensive algorithm", "htn algorithm", "step therapy"] },
   { id: "htn-potency-table", label: "Antihypertensive Potency Table", path: "/htn/potency-table", keywords: ["potency table", "antihypertensive potency", "bp drug comparison"] },
