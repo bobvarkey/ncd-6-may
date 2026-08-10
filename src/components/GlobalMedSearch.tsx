@@ -330,7 +330,7 @@ export function GlobalMedSearch() {
                   {item.type === 'medication' ? (
                     <button
                       type="button"
-                      onClick={() => goToDrug(item.drug, item._target)}
+                      onClick={() => goToDrug(item.drug, '_target' in item ? (item as any)._target : undefined)}
                       className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-muted/60 transition-colors"
                     >
                       <Pill className="mt-0.5 h-4 w-4 text-primary shrink-0" />
