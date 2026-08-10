@@ -239,13 +239,48 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
     const examStale = examTiming === "Completed more than 12 months ago" || examTiming === "Not yet scheduled";
     if (examStale) gaps.push("Comprehensive dilated eye examination is not current — arrange before or at initiation (mandatory for diabetes).");
 
+    // ---- Weighted NAION / glaucoma risk score ----
+    const scoreItems: { label: string; points: number }[] = [];
+    const sc = (label: string, points: number) => scoreItems.push({ label, points });
+
+    if (previousNaion === "yes") sc("Previous NAION in either eye", 6);
+    else if (previousNaion === "unknown") sc("NAION history unknown", 1);
+    if (discOedema === "yes") sc("Current optic-disc oedema / unexplained optic neuropathy", 6);
+    else if (discOedema === "unknown") sc("Disc-oedema status unknown", 1);
+    if (vf === "Optic-neuropathy pattern") sc("Visual field: optic-neuropathy pattern", 5);
+    else if (vf === "Glaucomatous defect") sc("Visual field: glaucomatous defect", 3);
+    else if (vf === "Non-specific defect") sc("Visual field: non-specific defect", 1);
+    else if (vf === "Not performed") sc("No baseline visual field", 1);
+    if (glaucoma === "Established glaucoma - unstable or untreated") sc("Unstable / untreated glaucoma", 5);
+    else if (glaucoma === "Established glaucoma - stable") sc("Established stable glaucoma", 2);
+    else if (glaucoma === "Glaucoma suspect") sc("Glaucoma suspect", 2);
+    else if (glaucoma === "Unknown / not assessed") sc("Glaucoma status not assessed", 1);
+    if (discAtRisk === "Yes - confirmed by eye-care clinician") sc("Confirmed crowded disc / disc-at-risk anatomy", 3);
+    else if (discAtRisk === "Indeterminate / needs specialist assessment") sc("Disc-at-risk anatomy indeterminate", 1);
+    if (oct === "Definite RNFL or ganglion-cell-complex thinning") sc("Definite RNFL / GCC thinning on OCT", 3);
+    else if (oct === "Borderline RNFL or ganglion-cell-complex thinning") sc("Borderline RNFL / GCC thinning on OCT", 1);
+    else if (oct === "Not performed" || oct === "Indeterminate") sc("No usable baseline OCT / RNFL", 1);
+    if (maxVertical >= 0.7) sc(`Vertical CDR ${maxVertical.toFixed(2)} (≥0.70)`, 2);
+    else if (maxVertical >= 0.6) sc(`Vertical CDR ${maxVertical.toFixed(2)} (0.60–0.69)`, 1);
+    else if (maxVertical >= 0 && maxVertical < 0.3) sc(`Small crowded cup (vertical CDR ${maxVertical.toFixed(2)})`, 1);
+    if (vR !== null && vL !== null && Math.abs(vR - vL) >= 0.2) sc(`CDR asymmetry ${Math.abs(vR - vL).toFixed(2)} (≥0.20)`, 2);
+    if (maxIop > 21) sc(`IOP ${maxIop.toFixed(0)} mmHg (>21)`, 2);
+    if (vascular.length >= 2) sc(`${vascular.length} NAION-associated systemic risk factors`, 2);
+    else if (vascular.length === 1) sc(`Systemic risk factor: ${vascular[0]}`, 1);
+    if (examStale) sc("Dilated eye examination not current", 1);
+
+    const score = scoreItems.reduce((t, i) => t + i.points, 0);
+    const MAX_SCORE = 30;
+    const scoreBand: "high" | "moderate" | "low" =
+      flags.length > 0 || score >= 8 ? "high" : score >= 3 ? "moderate" : "low";
+
     // Level
     const level: "high" | "moderate" | "low" | "incomplete" =
-      flags.length > 0
+      flags.length > 0 || scoreBand === "high"
         ? "high"
         : missing.length > 0
           ? "incomplete"
-          : cautions.length > 0
+          : scoreBand === "moderate" || cautions.length > 0
             ? "moderate"
             : gaps.length > 2
               ? "incomplete"
@@ -274,7 +309,14 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
     // Retinopathy-specific reminder always shown
     steps.push("Separately screen for diabetic retinopathy: rapid HbA1c reduction with GLP-1RA can transiently worsen existing retinopathy.");
 
-    return { flags, cautions, gaps, steps, level, maxVertical, maxIop, vascular };
+    const bandLabel = scoreBand === "high" ? "High risk" : scoreBand === "moderate" ? "Moderate risk" : "Low risk";
+    const top = [...scoreItems].sort((a, b) => b.points - a.points).slice(0, 3).map((i) => i.label);
+    const summary =
+      scoreItems.length === 0
+        ? "No optic-nerve, OCT, visual-field or systemic risk contributors recorded — score 0/30 (low risk). Confirm the eye examination is current."
+        : `NAION / glaucoma risk score ${score}/${MAX_SCORE} — ${bandLabel} (${scoreBand === "high" ? "≥8 points or an absolute red flag" : scoreBand === "moderate" ? "3–7 points" : "0–2 points"}). Main contributors: ${top.join("; ")}.${missing.length ? ` Score provisional — ${missing.length} required field(s) outstanding.` : ""}${gaps.length ? ` ${gaps.length} data gap(s) may raise the score once completed.` : ""}`;
+
+    return { flags, cautions, gaps, steps, level, maxVertical, maxIop, vascular, score, maxScore: MAX_SCORE, scoreBand, scoreItems, bandLabel, summary };
   }, [cdrRV, cdrLV, iopR, iopL, discAtRisk, previousNaion, discOedema, glaucoma, oct, vf, factors, examTiming, discExamDate, missing]);
 
   const tone =
@@ -306,6 +348,12 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
     L.push(`NAION systemic risk factors: ${factors.length ? factors.join(", ") : "not recorded"}`);
     L.push("");
     L.push(`--- RESULT: ${tone.label.toUpperCase()} ---`);
+    L.push(`NAION / glaucoma risk score: ${result.score}/${result.maxScore} — ${result.bandLabel}`);
+    L.push(`Summary: ${result.summary}`);
+    if (result.scoreItems.length) {
+      L.push("Score contributors:");
+      [...result.scoreItems].sort((a, b) => b.points - a.points).forEach((i) => L.push(`  +${i.points}  ${i.label}`));
+    }
     if (missing.length) {
       L.push("Required fields outstanding:");
       missing.forEach((m) => L.push(`  ! ${m}`));
@@ -496,6 +544,48 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
                 )}
               </div>
             </div>
+
+            {/* NAION / glaucoma risk category score */}
+            <div className="rounded-lg border border-border p-3 bg-muted/20">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="text-xs font-semibold">NAION / glaucoma risk category score</div>
+                <Badge
+                  className={`text-[11px] ${
+                    result.scoreBand === "high"
+                      ? "bg-destructive/15 text-destructive border-destructive/40"
+                      : result.scoreBand === "moderate"
+                        ? "bg-amber-500/15 text-amber-600 border-amber-500/40"
+                        : "bg-emerald-500/15 text-emerald-600 border-emerald-500/40"
+                  }`}
+                  variant="outline"
+                >
+                  {result.score}/{result.maxScore} · {result.bandLabel}
+                </Badge>
+              </div>
+              <div className="mt-2 h-2 w-full rounded-full bg-muted overflow-hidden" role="img" aria-label={`Risk score ${result.score} of ${result.maxScore}`}>
+                <div
+                  className={`h-full rounded-full ${
+                    result.scoreBand === "high" ? "bg-destructive" : result.scoreBand === "moderate" ? "bg-amber-500" : "bg-emerald-500"
+                  }`}
+                  style={{ width: `${Math.min(100, (result.score / result.maxScore) * 100)}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-2">{result.summary}</p>
+              <div className="text-[11px] text-muted-foreground mt-1">
+                Bands: 0–2 low · 3–7 moderate · ≥8 or any absolute red flag high.
+              </div>
+              {result.scoreItems.length > 0 && (
+                <ul className="mt-2 space-y-0.5 text-xs">
+                  {[...result.scoreItems].sort((a, b) => b.points - a.points).map((i) => (
+                    <li key={i.label} className="flex items-start justify-between gap-2">
+                      <span>{i.label}</span>
+                      <span className="font-medium tabular-nums">+{i.points}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
 
             {missing.length > 0 && (
               <div className="rounded-lg border border-border p-3 bg-muted/30">

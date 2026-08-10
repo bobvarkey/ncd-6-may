@@ -284,6 +284,7 @@ function PreScreen() {
   const [renal, setRenal] = useState<string[]>([]);
   const [psych, setPsych] = useState<YNU>("no");
   const [currentGlp1, setCurrentGlp1] = useState<YN>("no");
+  const [dpp4, setDpp4] = useState<YN>("no");
 
   const [eyeExamDate, setEyeExamDate] = useState("");
   const [retinopathy, setRetinopathy] = useState<string>("");
@@ -357,6 +358,13 @@ function PreScreen() {
       add("pregnancy_planned", 3, "START_WITH_PRECAUTIONS", "Pregnancy planned: agree contraception, and stop the agent before conception per the product label washout period.");
     if (currentGlp1 === "yes")
       add("duplicate_incretin", 2, "DEFER_AND_REVIEW", "Already on another GLP-1RA or dual incretin agent — do not co-prescribe; switch rather than add.");
+    if (dpp4 === "yes" && ["semaglutide", "tirzepatide", "liraglutide", "dulaglutide"].includes(agent))
+      add(
+        "stop_dpp4_at_glp1_start",
+        2,
+        "START_WITH_PRECAUTIONS",
+        "Stop the DPP-4 inhibitor (gliptin) when initiating the GLP-1RA/dual incretin agent. No taper or washout is required. Review other glucose-lowering drugs, especially insulin and sulfonylureas, for hypoglycaemia-risk dose adjustment. Do not combine a DPP-4 inhibitor with a GLP-1 receptor agonist / dual GIP–GLP-1 agonist. Agents to stop: sitagliptin, linagliptin, saxagliptin, vildagliptin, alogliptin.",
+      );
     if (psych === "yes")
       add("eating_disorder", 3, "DEFER_AND_REVIEW", "Active eating disorder or major psychiatric risk — arrange specialist input before initiation.");
     if (renal.includes("eGFR below 30 mL/min/1.73m2") || renal.includes("Recent acute kidney injury"))
@@ -398,7 +406,7 @@ function PreScreen() {
             : { tier: "Routine", note: "Standard annual dilated eye examination; report new visual symptoms promptly." };
 
     return { fired: sorted.filter((f) => f.id !== "default_eligible" || sorted.length === 1), primary, missing, pending, ophthTier };
-  }, [agent, indication, h, w, bmi, weightIndicationMet, comorbidities, lifestyle, personalMtc, familyMtc, men2, hypersensitivity, pregnant, breastfeeding, pregnancyPlanned, diabetes, diabetesType, insulinSu, pancreatitis, biliary, gi, renal, psych, currentGlp1, retinopathy, retinopathyRx, visualFlags, otherEye, rapidA1cFallRisk, a1c, creatinine, egfr, alt, bp, eyeExamDate]);
+  }, [agent, indication, h, w, bmi, weightIndicationMet, comorbidities, lifestyle, personalMtc, familyMtc, men2, hypersensitivity, pregnant, breastfeeding, pregnancyPlanned, diabetes, diabetesType, insulinSu, pancreatitis, biliary, gi, renal, psych, currentGlp1, dpp4, retinopathy, retinopathyRx, visualFlags, otherEye, rapidA1cFallRisk, a1c, creatinine, egfr, alt, bp, eyeExamDate]);
 
   const meta = OUTCOME_META[evaluation.primary.outcome];
 
@@ -428,6 +436,7 @@ function PreScreen() {
     L.push(`Renal / volume risk: ${renal.join(", ") || "not recorded"}`);
     L.push(`Eating disorder / psychiatric risk: ${YNU_LABEL[psych]}`);
     L.push(`Currently on another incretin agent: ${currentGlp1 === "yes" ? "Yes" : "No"}`);
+    L.push(`Current DPP-4 inhibitor (gliptin): ${dpp4 === "yes" ? "Yes — STOP at GLP-1RA initiation, no taper/washout needed" : "No"}`);
     L.push("");
     L.push("--- OPHTHALMIC RISK TIER AND FOLLOW-UP ---");
     L.push(`Tier: ${evaluation.ophthTier.tier} — ${evaluation.ophthTier.note}`);
@@ -468,7 +477,7 @@ function PreScreen() {
     L.push("");
     L.push("Clinician use only. Decision support — does not replace product-specific prescribing information, local policy, clinical judgement, or specialist referral.");
     return L.join("\n");
-  }, [agent, indication, heightCm, weightKg, bmi, comorbidities, weightIndicationMet, lifestyle, personalMtc, familyMtc, men2, hypersensitivity, pregnant, breastfeeding, pregnancyPlanned, diabetes, diabetesType, insulinSu, pancreatitis, biliary, gi, renal, psych, currentGlp1, eyeExamDate, retinopathy, retinopathyRx, visualFlags, otherEye, bp, hba1c, fpg, creatinine, egfr, alt, ast, bili, tsh, lipase, amylase, nutrition, evaluation, meta.label, clinician, nextReview]);
+  }, [agent, indication, heightCm, weightKg, bmi, comorbidities, weightIndicationMet, lifestyle, personalMtc, familyMtc, men2, hypersensitivity, pregnant, breastfeeding, pregnancyPlanned, diabetes, diabetesType, insulinSu, pancreatitis, biliary, gi, renal, psych, currentGlp1, dpp4, eyeExamDate, retinopathy, retinopathyRx, visualFlags, otherEye, bp, hba1c, fpg, creatinine, egfr, alt, ast, bili, tsh, lipase, amylase, nutrition, evaluation, meta.label, clinician, nextReview]);
 
   return (
     <div className="space-y-4">
@@ -545,7 +554,26 @@ function PreScreen() {
             <Toggle label="Active biliary colic, cholecystitis, choledocholithiasis or cholestatic symptoms" value={biliary} onChange={(v) => setBiliary(v as YNU)} options={YNU_OPTS} />
             <Toggle label="Active eating disorder or major psychiatric risk" value={psych} onChange={(v) => setPsych(v as YNU)} options={YNU_OPTS} />
             <Toggle label="Currently using another GLP-1RA or dual incretin agent" value={currentGlp1} onChange={(v) => setCurrentGlp1(v as YN)} options={YN_OPTS} />
+            <Toggle
+              label="Currently on a DPP-4 inhibitor (gliptin)"
+              help="Sitagliptin, linagliptin, saxagliptin, vildagliptin, alogliptin. Never combine with a GLP-1RA / dual incretin agent."
+              value={dpp4}
+              onChange={(v) => setDpp4(v as YN)}
+              options={YN_OPTS}
+            />
           </div>
+          {dpp4 === "yes" && ["semaglutide", "tirzepatide", "liraglutide", "dulaglutide"].includes(agent) && (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-amber-600">
+                <ShieldAlert className="w-4 h-4" /> Stop the DPP-4 inhibitor at GLP-1RA initiation
+              </div>
+              <ul className="mt-1.5 text-xs space-y-0.5 list-disc ml-4">
+                <li>Stop sitagliptin / linagliptin / saxagliptin / vildagliptin / alogliptin on the day the incretin agent starts — no taper or washout required.</li>
+                <li>Do not combine a DPP-4 inhibitor with a GLP-1 receptor agonist or dual GIP–GLP-1 agonist (no added benefit).</li>
+                <li>Review insulin and sulfonylureas for hypoglycaemia-risk dose reduction at initiation and each titration step.</li>
+              </ul>
+            </div>
+          )}
           <CheckGroup label="GI disorders" options={GI_OPTIONS} value={gi} onChange={setGi} noneOption="None known" />
           <CheckGroup label="Renal / volume-depletion risk" options={RENAL_OPTIONS} value={renal} onChange={setRenal} noneOption="None known" />
         </CardContent>
