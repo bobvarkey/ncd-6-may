@@ -394,11 +394,41 @@ export default function HypertensionMedicationGuide() {
     return "";
   });
 
+  // Highlight and scroll to matched drug logic
+  const drugRefs = React.useRef<Record<string, HTMLTableRowElement | null>>({});
+
   // Effect to sync search from URL if it changes while component is mounted
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const q = params.get("q");
-    if (q) setDrugSearch(q);
+    if (q) {
+      setDrugSearch(q);
+      
+      // Auto-expand class if a specific drug matches
+      const drugMatch = drugDoseDetails.find(d => 
+        d.name.toLowerCase() === q.toLowerCase() || 
+        d.brand.toLowerCase().includes(q.toLowerCase())
+      );
+      
+      if (drugMatch) {
+        const matchingClass = medicationClasses.find(c => c.classMatch.includes(drugMatch.drugClass));
+        if (matchingClass) {
+          setExpandedClass(matchingClass.class);
+          
+          // Small delay to allow expansion animation/render
+          setTimeout(() => {
+            const element = drugRefs.current[drugMatch.name];
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              element.classList.add('bg-primary/20', 'animate-pulse');
+              setTimeout(() => {
+                element.classList.remove('animate-pulse');
+              }, 2000);
+            }
+          }, 300);
+        }
+      }
+    }
   }, []);
 
   return (
