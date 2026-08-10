@@ -27,8 +27,6 @@ const ALL_MEDS = [
   m.drug && index === self.findIndex((t) => t.drug.toLowerCase() === m.drug.toLowerCase())
 );
 
-// @ts-ignore
-window.ALL_MEDS = ALL_MEDS;
 
 // Every page and topic in the app — searchable by label or keyword
 const CLINICAL_TOPICS = [
@@ -332,7 +330,7 @@ export function GlobalMedSearch() {
                   {item.type === 'medication' ? (
                     <button
                       type="button"
-                      onClick={() => goToDrug(item.drug, (item as { _target?: "htn" })._target)}
+                      onClick={() => goToDrug(item.drug, item._target)}
                       className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-muted/60 transition-colors"
                     >
                       <Pill className="mt-0.5 h-4 w-4 text-primary shrink-0" />
