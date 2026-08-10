@@ -406,7 +406,7 @@ function PreScreen() {
             : { tier: "Routine", note: "Standard annual dilated eye examination; report new visual symptoms promptly." };
 
     return { fired: sorted.filter((f) => f.id !== "default_eligible" || sorted.length === 1), primary, missing, pending, ophthTier };
-  }, [agent, indication, h, w, bmi, weightIndicationMet, comorbidities, lifestyle, personalMtc, familyMtc, men2, hypersensitivity, pregnant, breastfeeding, pregnancyPlanned, diabetes, diabetesType, insulinSu, pancreatitis, biliary, gi, renal, psych, currentGlp1, retinopathy, retinopathyRx, visualFlags, otherEye, rapidA1cFallRisk, a1c, creatinine, egfr, alt, bp, eyeExamDate]);
+  }, [agent, indication, h, w, bmi, weightIndicationMet, comorbidities, lifestyle, personalMtc, familyMtc, men2, hypersensitivity, pregnant, breastfeeding, pregnancyPlanned, diabetes, diabetesType, insulinSu, pancreatitis, biliary, gi, renal, psych, currentGlp1, dpp4, retinopathy, retinopathyRx, visualFlags, otherEye, rapidA1cFallRisk, a1c, creatinine, egfr, alt, bp, eyeExamDate]);
 
   const meta = OUTCOME_META[evaluation.primary.outcome];
 
