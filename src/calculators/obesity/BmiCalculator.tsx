@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import {
   ETHNICITY_GUIDELINES,
   getBmiCategory,
+  getBmiClassificationDetail,
   getTreatmentGuidelines,
   getUnderweightGrade,
   EthnicityType,
