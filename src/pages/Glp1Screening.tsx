@@ -554,7 +554,26 @@ function PreScreen() {
             <Toggle label="Active biliary colic, cholecystitis, choledocholithiasis or cholestatic symptoms" value={biliary} onChange={(v) => setBiliary(v as YNU)} options={YNU_OPTS} />
             <Toggle label="Active eating disorder or major psychiatric risk" value={psych} onChange={(v) => setPsych(v as YNU)} options={YNU_OPTS} />
             <Toggle label="Currently using another GLP-1RA or dual incretin agent" value={currentGlp1} onChange={(v) => setCurrentGlp1(v as YN)} options={YN_OPTS} />
+            <Toggle
+              label="Currently on a DPP-4 inhibitor (gliptin)"
+              help="Sitagliptin, linagliptin, saxagliptin, vildagliptin, alogliptin. Never combine with a GLP-1RA / dual incretin agent."
+              value={dpp4}
+              onChange={(v) => setDpp4(v as YN)}
+              options={YN_OPTS}
+            />
           </div>
+          {dpp4 === "yes" && ["semaglutide", "tirzepatide", "liraglutide", "dulaglutide"].includes(agent) && (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-amber-600">
+                <ShieldAlert className="w-4 h-4" /> Stop the DPP-4 inhibitor at GLP-1RA initiation
+              </div>
+              <ul className="mt-1.5 text-xs space-y-0.5 list-disc ml-4">
+                <li>Stop sitagliptin / linagliptin / saxagliptin / vildagliptin / alogliptin on the day the incretin agent starts — no taper or washout required.</li>
+                <li>Do not combine a DPP-4 inhibitor with a GLP-1 receptor agonist or dual GIP–GLP-1 agonist (no added benefit).</li>
+                <li>Review insulin and sulfonylureas for hypoglycaemia-risk dose reduction at initiation and each titration step.</li>
+              </ul>
+            </div>
+          )}
           <CheckGroup label="GI disorders" options={GI_OPTIONS} value={gi} onChange={setGi} noneOption="None known" />
           <CheckGroup label="Renal / volume-depletion risk" options={RENAL_OPTIONS} value={renal} onChange={setRenal} noneOption="None known" />
         </CardContent>
