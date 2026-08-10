@@ -411,38 +411,39 @@ export default function BmiCalculator() {
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  {/* Ethnicity Selector */}
+                  {/* Classification Standard Toggle (WHO / Asian-Pacific / Indian) */}
                   <div className="space-y-2">
-                    <Label htmlFor="ethnicity">Ethnicity / Population Group</Label>
-                    <Select
-                      value={selectedEthnicity}
-                      onValueChange={(value: EthnicityType) => {
-                        setValue("ethnicity", value, { shouldValidate: true });
-                        // Auto-recalculate if we have height/weight already
-                        const h = Number(watch("height"));
-                        const w = Number(watch("weight"));
-                        if (h > 0 && w > 0) {
-                          handleSubmit(onSubmit)();
-                        }
-                      }}
-                    >
-                      <SelectTrigger id="ethnicity" className="bg-card border-border">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card border-border">
-                        {ETHNICITY_GUIDELINES.map((guideline) => (
-                          <SelectItem
-                            key={guideline.id}
-                            value={guideline.id}
-                            className="text-foreground focus:bg-muted focus:text-foreground"
-                          >
-                            {guideline.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label>BMI Classification Standard</Label>
+                    <div className="inline-flex w-full rounded-md border border-border bg-card p-0.5">
+                      {ETHNICITY_GUIDELINES.map((guideline) => (
+                        <button
+                          key={guideline.id}
+                          type="button"
+                          onClick={() => {
+                            setValue("ethnicity", guideline.id, { shouldValidate: true });
+                            const h = Number(watch("height"));
+                            const w = Number(watch("weight"));
+                            if (h > 0 && w > 0) {
+                              handleSubmit(onSubmit)();
+                            }
+                          }}
+                          className={cn(
+                            "flex-1 px-2 py-2 text-xs font-semibold rounded transition-colors",
+                            selectedEthnicity === guideline.id
+                              ? "bg-primary text-primary-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
+                          )}
+                          aria-pressed={selectedEthnicity === guideline.id}
+                        >
+                          {guideline.name}
+                        </button>
+                      ))}
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       {ETHNICITY_GUIDELINES.find((g) => g.id === selectedEthnicity)?.description}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground italic">
+                      Overweight & obesity thresholds change with the standard; underweight (< 18.5 kg/m²) and the mild / moderate / severe thinness grades are identical across all standards.
                     </p>
                   </div>
 
