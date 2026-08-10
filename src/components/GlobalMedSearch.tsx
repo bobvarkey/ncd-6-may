@@ -242,6 +242,9 @@ export function GlobalMedSearch() {
   }, []);
 
   function goToDrug(drugName: string, target?: "htn") {
+    // Log search query for analytics and debugging
+    console.log(`[Search Analytics] Term: "${drugName}", Target: ${target || 'default'}`);
+    
     setOpen(false);
     setQ("");
     
@@ -264,9 +267,13 @@ export function GlobalMedSearch() {
     }
 
     if (drug) {
+      // For any matched drug from other datasets, also default to HTN guide as a safe fallback
+      // unless it's explicitly renal or another category we've handled.
+      // Currently the user wants "safe redirect to Hypertension Medication Guide"
       navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
     } else {
       // Fallback for unknown medications to ensure a safe route
+      console.warn(`[Search] No exact match for "${drugName}". Redirecting to HTN guide fallback.`);
       navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
     }
   }
