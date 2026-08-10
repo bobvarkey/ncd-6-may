@@ -21,7 +21,22 @@ function extractCardFreq(dose: string): string {
 
 // Antihypertensive Classes — `classMatch` maps a class card to entries in
 // drugDoseDetails so we can render the full name/dose/interval table per class.
-const medicationClasses = [
+interface MedicationClass {
+  class: string;
+  suffix: string;
+  classMatch: string[];
+  mechanism: string;
+  indications: string[];
+  contraindications: string[];
+  sideEffects: string[];
+  monitoring: string[];
+  firstLine: boolean;
+  color: string;
+  showMraCard?: boolean;
+  pearls?: string;
+}
+
+const medicationClasses: MedicationClass[] = [
   {
     class: "ACE Inhibitors",
     suffix: "-pril",
@@ -420,7 +435,7 @@ export default function HypertensionMedicationGuide() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {medicationClasses.map((medClass) => (
+                {medicationClasses.map((medClass: MedicationClass) => (
                   <div
                     key={medClass.class}
                     className={`border-2 rounded-lg overflow-hidden ${medClass.color} ${
