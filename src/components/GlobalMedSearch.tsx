@@ -240,14 +240,26 @@ export function GlobalMedSearch() {
     };
   }, []);
 
-  function goToDrug(drug: string, target?: "htn") {
+  function goToDrug(drugName: string, target?: "htn") {
     setOpen(false);
     setQ("");
+    
     if (target === "htn") {
-      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drug)}`);
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
+      return;
+    }
+
+    const drug = ALL_MEDS.find((m) => m.drug.toLowerCase() === drugName.toLowerCase());
+    if (drug && drug._target === "htn") {
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
+      return;
+    }
+
+    if (drug) {
+      navigate(`/renal-dosing?search=${encodeURIComponent(drugName)}`);
     } else {
-      // Default to renal dosing for other meds
-      navigate(`/renal-dosing?q=${encodeURIComponent(drug)}`);
+      // Fallback for unknown medications to ensure a safe route
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
     }
   }
 
