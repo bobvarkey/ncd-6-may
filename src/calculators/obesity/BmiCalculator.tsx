@@ -70,9 +70,13 @@ interface AdiposityRisk {
 
 interface BmiResult {
   bmi: number;
+  exactBmi: number;
   category: string;
   color: string;
   ethnicityName: string;
+  ethnicityId: EthnicityType;
+  rangeLabel: string;
+  confidence: { level: "high" | "moderate" | "low"; label: string; percent: number; note: string };
   adiposity?: AdiposityRisk;
 }
 
