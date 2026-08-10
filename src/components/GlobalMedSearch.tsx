@@ -258,7 +258,8 @@ export function GlobalMedSearch() {
     }
 
     if (drug) {
-      navigate(`/renal-dosing?search=${encodeURIComponent(drugName)}`);
+      // Use 'q' as renal dosing uses that parameter
+      navigate(`/renal-dosing?q=${encodeURIComponent(drugName)}`);
     } else {
       // Fallback for unknown medications to ensure a safe route
       navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
