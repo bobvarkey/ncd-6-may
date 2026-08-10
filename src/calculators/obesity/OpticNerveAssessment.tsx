@@ -348,6 +348,12 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
     L.push(`NAION systemic risk factors: ${factors.length ? factors.join(", ") : "not recorded"}`);
     L.push("");
     L.push(`--- RESULT: ${tone.label.toUpperCase()} ---`);
+    L.push(`NAION / glaucoma risk score: ${result.score}/${result.maxScore} — ${result.bandLabel}`);
+    L.push(`Summary: ${result.summary}`);
+    if (result.scoreItems.length) {
+      L.push("Score contributors:");
+      [...result.scoreItems].sort((a, b) => b.points - a.points).forEach((i) => L.push(`  +${i.points}  ${i.label}`));
+    }
     if (missing.length) {
       L.push("Required fields outstanding:");
       missing.forEach((m) => L.push(`  ! ${m}`));
