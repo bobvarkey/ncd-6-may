@@ -443,7 +443,7 @@ export default function BmiCalculator() {
                       {ETHNICITY_GUIDELINES.find((g) => g.id === selectedEthnicity)?.description}
                     </p>
                     <p className="text-[11px] text-muted-foreground italic">
-                      Overweight & obesity thresholds change with the standard; underweight (< 18.5 kg/m²) and the mild / moderate / severe thinness grades are identical across all standards.
+                      Overweight & obesity thresholds change with the standard; underweight ({'<'} 18.5 kg/m²) and the mild / moderate / severe thinness grades are identical across all standards.
                     </p>
                   </div>
 
