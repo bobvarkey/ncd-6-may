@@ -155,12 +155,13 @@ const selectionData: Category[] = [
     ],
   },
   {
-    category: "Gout",
+    category: "Gout & Hyperuricemia",
     conditions: [
       {
         condition: "Hyperuricemia or gout",
-        preferred_drugs: ["Losartan", "Calcium channel blocker"],
-        avoid: ["Thiazide diuretics", "Loop diuretics"],
+        preferred_drugs: ["MRA (Neutral effect on uric acid)", "Losartan (Uricosuric effect)", "Calcium channel blocker"],
+        avoid: ["Thiazide diuretics (Worsen hyperuricemia)", "Loop diuretics (Worsen hyperuricemia)"],
+        considerations: ["MRAs are preferred over loop/thiazide diuretics as they do not trigger gout flares."]
       },
     ],
   },

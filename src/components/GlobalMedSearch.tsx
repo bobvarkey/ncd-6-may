@@ -24,8 +24,9 @@ const ALL_MEDS = [
   ...ADDITIONAL_MEDS_DATA,
   ...HTN_MEDS_NORMALIZED,
 ].filter((m, index, self) => 
-  index === self.findIndex((t) => t.drug.toLowerCase() === m.drug.toLowerCase())
+  m.drug && index === self.findIndex((t) => t.drug.toLowerCase() === m.drug.toLowerCase())
 );
+
 
 // Every page and topic in the app — searchable by label or keyword
 const CLINICAL_TOPICS = [
@@ -240,14 +241,33 @@ export function GlobalMedSearch() {
     };
   }, []);
 
-  function goToDrug(drug: string, target?: "htn") {
+  function goToDrug(drugName: string, target?: "htn") {
     setOpen(false);
     setQ("");
+    
     if (target === "htn") {
-      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drug)}`);
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
+      return;
+    }
+
+    // Use term-based search to find the drug entry
+    const term = drugName.toLowerCase();
+    const drug = ALL_MEDS.find((m) => 
+      m.drug.toLowerCase() === term || 
+      ('brand' in m && typeof m.brand === 'string' && m.brand.toLowerCase().includes(term))
+    );
+    
+    // Type-safe check for _target
+    if (drug && '_target' in drug && drug._target === "htn") {
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
+      return;
+    }
+
+    if (drug) {
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
     } else {
-      // Default to renal dosing for other meds
-      navigate(`/renal-dosing?q=${encodeURIComponent(drug)}`);
+      // Fallback for unknown medications to ensure a safe route
+      navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drugName)}`);
     }
   }
 
@@ -269,6 +289,11 @@ export function GlobalMedSearch() {
           placeholder="Search any topic — reninoma, hypothyroidism, medications…"
           className="flex-1 bg-transparent py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none"
           aria-label="Search medications"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && q.trim()) {
+              goToDrug(q.trim());
+            }
+          }}
         />
         {q && (
           <button
@@ -305,7 +330,7 @@ export function GlobalMedSearch() {
                   {item.type === 'medication' ? (
                     <button
                       type="button"
-                      onClick={() => goToDrug(item.drug, (item as { _target?: "htn" })._target)}
+                      onClick={() => goToDrug(item.drug, '_target' in item ? (item as any)._target : undefined)}
                       className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-muted/60 transition-colors"
                     >
                       <Pill className="mt-0.5 h-4 w-4 text-primary shrink-0" />

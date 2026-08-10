@@ -52,6 +52,7 @@ const algorithmNodes: AlgorithmNode[] = [
       { label: "Coronary Artery Disease", nextId: "cad" },
       { label: "Stroke / Cerebrovascular Disease", nextId: "stroke" },
       { label: "Pregnancy", nextId: "pregnancy" },
+      { label: "Hyperuricemia / Gout", nextId: "gout" },
       { label: "No major comorbidity", nextId: "uncomplicated" },
     ],
   },
@@ -219,6 +220,17 @@ const algorithmNodes: AlgorithmNode[] = [
       notes: "CCB or thiazide preferred in older and Black patients due to lower renin states. ALLHAT trial supports thiazide-like diuretics. Step 4 (resistant): Add Spironolactone (PATHWAY-2 trial). Target BP < 140/90 mmHg.",
     },
   },
+  {
+    id: "gout",
+    question: "",
+    type: "recommendation",
+    recommendation: {
+      firstLine: ["Losartan (Uricosuric)", "CCB (Amlodipine)", "MRA (Neutral uric acid effect)"],
+      secondLine: ["ARB (other than losartan)", "ACEi"],
+      avoid: ["Thiazide diuretics", "Loop diuretics"],
+      notes: "MRAs (Spironolactone, Eplerenone, Finerenone) have a neutral effect on serum uric acid, unlike thiazides or loop diuretics which can trigger gout flares. Losartan has a beneficial uricosuric effect.",
+    },
+  },
 ];
 
 // ===== POTENCY TABLE =====
@@ -352,10 +364,17 @@ interface ChecklistItem {
   condition: string;
   tests: string[];
   icon: React.ReactNode;
-  category: 'endocrine' | 'renal' | 'lifestyle' | 'vascular' | 'other';
+  category: 'endocrine' | 'renal' | 'lifestyle' | 'vascular' | 'gout' | 'other';
 }
 
 const checklistItems: ChecklistItem[] = [
+  {
+    id: 'hyperuricemia-gout',
+    condition: 'Hyperuricemia / Gout',
+    tests: ['Serum uric acid level', 'Synovial fluid analysis (if flare)', 'Renal function (eGFR)'],
+    icon: <AlertTriangle className="h-5 w-5" />,
+    category: 'gout'
+  },
   {
     id: 'primary-aldosteronism',
     condition: 'Primary Aldosteronism',
