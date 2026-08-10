@@ -217,13 +217,19 @@ export function GlobalMedSearch() {
     const term = q.trim().toLowerCase();
     if (!term) return [];
 
+    // Check synonyms first
+    const synonymMatches = Object.entries(MED_SYNONYMS).filter(([mainDrug, synonyms]) => 
+      synonyms.some(s => s.toLowerCase().includes(term))
+    ).map(([mainDrug]) => mainDrug.toLowerCase());
+
     // Search both medications and clinical topics
     const medResults = ALL_MEDS
       .filter(
         (m) =>
           m.drug.toLowerCase().includes(term) ||
           m.drugClass.toLowerCase().includes(term) ||
-          ("brand" in m && typeof m.brand === "string" && m.brand.toLowerCase().includes(term))
+          ("brand" in m && typeof m.brand === "string" && m.brand.toLowerCase().includes(term)) ||
+          synonymMatches.includes(m.drug.toLowerCase())
       )
       .slice(0, 8)
       .map(m => ({ type: 'medication' as const, ...m }));
