@@ -239,13 +239,48 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
     const examStale = examTiming === "Completed more than 12 months ago" || examTiming === "Not yet scheduled";
     if (examStale) gaps.push("Comprehensive dilated eye examination is not current — arrange before or at initiation (mandatory for diabetes).");
 
+    // ---- Weighted NAION / glaucoma risk score ----
+    const scoreItems: { label: string; points: number }[] = [];
+    const sc = (label: string, points: number) => scoreItems.push({ label, points });
+
+    if (previousNaion === "yes") sc("Previous NAION in either eye", 6);
+    else if (previousNaion === "unknown") sc("NAION history unknown", 1);
+    if (discOedema === "yes") sc("Current optic-disc oedema / unexplained optic neuropathy", 6);
+    else if (discOedema === "unknown") sc("Disc-oedema status unknown", 1);
+    if (vf === "Optic-neuropathy pattern") sc("Visual field: optic-neuropathy pattern", 5);
+    else if (vf === "Glaucomatous defect") sc("Visual field: glaucomatous defect", 3);
+    else if (vf === "Non-specific defect") sc("Visual field: non-specific defect", 1);
+    else if (vf === "Not performed") sc("No baseline visual field", 1);
+    if (glaucoma === "Established glaucoma - unstable or untreated") sc("Unstable / untreated glaucoma", 5);
+    else if (glaucoma === "Established glaucoma - stable") sc("Established stable glaucoma", 2);
+    else if (glaucoma === "Glaucoma suspect") sc("Glaucoma suspect", 2);
+    else if (glaucoma === "Unknown / not assessed") sc("Glaucoma status not assessed", 1);
+    if (discAtRisk === "Yes - confirmed by eye-care clinician") sc("Confirmed crowded disc / disc-at-risk anatomy", 3);
+    else if (discAtRisk === "Indeterminate / needs specialist assessment") sc("Disc-at-risk anatomy indeterminate", 1);
+    if (oct === "Definite RNFL or ganglion-cell-complex thinning") sc("Definite RNFL / GCC thinning on OCT", 3);
+    else if (oct === "Borderline RNFL or ganglion-cell-complex thinning") sc("Borderline RNFL / GCC thinning on OCT", 1);
+    else if (oct === "Not performed" || oct === "Indeterminate") sc("No usable baseline OCT / RNFL", 1);
+    if (maxVertical >= 0.7) sc(`Vertical CDR ${maxVertical.toFixed(2)} (≥0.70)`, 2);
+    else if (maxVertical >= 0.6) sc(`Vertical CDR ${maxVertical.toFixed(2)} (0.60–0.69)`, 1);
+    else if (maxVertical >= 0 && maxVertical < 0.3) sc(`Small crowded cup (vertical CDR ${maxVertical.toFixed(2)})`, 1);
+    if (vR !== null && vL !== null && Math.abs(vR - vL) >= 0.2) sc(`CDR asymmetry ${Math.abs(vR - vL).toFixed(2)} (≥0.20)`, 2);
+    if (maxIop > 21) sc(`IOP ${maxIop.toFixed(0)} mmHg (>21)`, 2);
+    if (vascular.length >= 2) sc(`${vascular.length} NAION-associated systemic risk factors`, 2);
+    else if (vascular.length === 1) sc(`Systemic risk factor: ${vascular[0]}`, 1);
+    if (examStale) sc("Dilated eye examination not current", 1);
+
+    const score = scoreItems.reduce((t, i) => t + i.points, 0);
+    const MAX_SCORE = 30;
+    const scoreBand: "high" | "moderate" | "low" =
+      flags.length > 0 || score >= 8 ? "high" : score >= 3 ? "moderate" : "low";
+
     // Level
     const level: "high" | "moderate" | "low" | "incomplete" =
-      flags.length > 0
+      flags.length > 0 || scoreBand === "high"
         ? "high"
         : missing.length > 0
           ? "incomplete"
-          : cautions.length > 0
+          : scoreBand === "moderate" || cautions.length > 0
             ? "moderate"
             : gaps.length > 2
               ? "incomplete"
