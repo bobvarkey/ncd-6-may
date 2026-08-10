@@ -674,7 +674,7 @@ export default function BmiCalculator() {
                           </p>
                         </div>
                         {(() => {
-                          const grade = getUnderweightGrade(result.bmi);
+                          const grade = getUnderweightGrade(result.exactBmi);
                           if (!grade) return null;
                           return (
                             <div className="mt-3 mx-auto max-w-sm rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-3 text-left">
