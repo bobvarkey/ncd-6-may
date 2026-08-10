@@ -708,6 +708,9 @@ export default function GLP1AssessmentCalculator() {
                     <Button size="sm" variant="outline" onClick={() => downloadTextFile("glp1-assessment.txt", report)}>
                       Download .txt
                     </Button>
+                    <Button size="sm" variant="outline" onClick={() => navigate("/obesity/optic-nerve-assessment")}>
+                      Optic nerve / NAION check
+                    </Button>
                   </div>
                 </div>
               </>
