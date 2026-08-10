@@ -261,9 +261,13 @@ export default function BmiCalculator() {
 
     setResult({
       bmi: roundedBmi,
+      exactBmi,
       category: category.label,
       color: category.color,
       ethnicityName: guideline?.name || "Standard WHO",
+      ethnicityId: data.ethnicity,
+      rangeLabel: detail.rangeLabel,
+      confidence: detail.confidence,
       adiposity,
     });
     setTreatmentData(treatment);
