@@ -222,13 +222,13 @@ const algorithmNodes: AlgorithmNode[] = [
   },
   {
     id: "gout",
-    question: "",
+    question: "Hyperuricemia or Gout — Guidance",
     type: "recommendation",
     recommendation: {
-      firstLine: ["Losartan (Uricosuric)", "CCB (Amlodipine)", "MRA (Neutral uric acid effect)"],
+      firstLine: ["Losartan (Uricosuric effect)", "CCB (Amlodipine)", "MRA (Neutral uric acid effect)"],
       secondLine: ["ARB (other than losartan)", "ACEi"],
-      avoid: ["Thiazide diuretics", "Loop diuretics"],
-      notes: "MRAs (Spironolactone, Eplerenone, Finerenone) have a neutral effect on serum uric acid, unlike thiazides or loop diuretics which can trigger gout flares. Losartan has a beneficial uricosuric effect.",
+      avoid: ["Thiazide diuretics (Worsen hyperuricemia)", "Loop diuretics (Worsen hyperuricemia)"],
+      notes: "MRAs (Spironolactone, Eplerenone, Finerenone) are preferred over thiazide or loop diuretics in patients with gout because they have a neutral effect on serum uric acid and do not trigger flares. Losartan has a unique uricosuric effect, making it the preferred ARB.",
     },
   },
 ];
