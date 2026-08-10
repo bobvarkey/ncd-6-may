@@ -436,6 +436,7 @@ function PreScreen() {
     L.push(`Renal / volume risk: ${renal.join(", ") || "not recorded"}`);
     L.push(`Eating disorder / psychiatric risk: ${YNU_LABEL[psych]}`);
     L.push(`Currently on another incretin agent: ${currentGlp1 === "yes" ? "Yes" : "No"}`);
+    L.push(`Current DPP-4 inhibitor (gliptin): ${dpp4 === "yes" ? "Yes — STOP at GLP-1RA initiation, no taper/washout needed" : "No"}`);
     L.push("");
     L.push("--- OPHTHALMIC RISK TIER AND FOLLOW-UP ---");
     L.push(`Tier: ${evaluation.ophthTier.tier} — ${evaluation.ophthTier.note}`);
