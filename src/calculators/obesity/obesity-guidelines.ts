@@ -505,6 +505,98 @@ export function getBmiCategory(bmi: number, ethnicity: EthnicityType): BmiThresh
   return guideline.thresholds[guideline.thresholds.length - 1];
 }
 
+// Normalise a threshold boundary for display: thresholds stored as X.9
+// (e.g. 22.9, 24.9, 29.9) represent the conceptual boundary X+0.1 (23, 25, 30).
+function displayBoundary(max: number): number {
+  if (Number.isFinite(max) && Math.round(max * 10) % 10 === 9) {
+    return Math.round((max + 0.1) * 10) / 10;
+  }
+  return max;
+}
+
+export interface BmiClassificationConfidence {
+  level: "high" | "moderate" | "low";
+  label: string;
+  percent: number; // 0-100
+  note: string;
+}
+
+export interface BmiClassificationDetail {
+  rangeLabel: string; // "18.5 – 24.9 kg/m²" / "17.0 – 18.4 kg/m²" / "≥ 30.0 kg/m²"
+  rangeMin: number; // 0 if unbounded below
+  rangeMax: number; // Infinity if unbounded above
+  confidence: BmiClassificationConfidence;
+}
+
+// Returns the matched BMI range (with thinness sub-grade for underweight) and a
+// confidence estimate based on how far the value sits from the nearest category
+// boundary. Values near a boundary are flagged "Borderline"; mid-range values are
+// "Confident".
+export function getBmiClassificationDetail(
+  bmi: number,
+  ethnicity: EthnicityType
+): BmiClassificationDetail {
+  const guideline = ETHNICITY_GUIDELINES.find((g) => g.id === ethnicity);
+  if (!guideline) throw new Error(`Unknown ethnicity: ${ethnicity}`);
+
+  let idx = guideline.thresholds.findIndex((t) => bmi < t.max);
+  if (idx === -1) idx = guideline.thresholds.length - 1;
+  const threshold = guideline.thresholds[idx];
+  const rawLower = idx === 0 ? 0 : guideline.thresholds[idx - 1].max;
+  const rawUpper = threshold.max;
+  const lower = displayBoundary(rawLower);
+  const upper = displayBoundary(rawUpper);
+
+  // Range label
+  let rangeLabel: string;
+  if (threshold.category === "underweight") {
+    const grade = getUnderweightGrade(bmi);
+    rangeLabel = grade ? `${grade.range}` : "< 18.5 kg/m²";
+  } else if (!Number.isFinite(upper)) {
+    rangeLabel = `≥ ${lower.toFixed(1)} kg/m²`;
+  } else {
+    rangeLabel = `${lower.toFixed(1)} – ${upper.toFixed(1)} kg/m²`;
+  }
+
+  // Confidence: distance to nearest conceptual boundary.
+  const boundaries = guideline.thresholds
+    .map((t) => t.max)
+    .filter((m) => Number.isFinite(m))
+    .map((m) => displayBoundary(m));
+  const dist = Math.min(...boundaries.map((b) => Math.abs(bmi - b)));
+  const percent = Math.round(Math.min(98, 50 + dist * 24));
+  let confidence: BmiClassificationConfidence;
+  if (percent >= 80) {
+    confidence = {
+      level: "high",
+      label: "Confident",
+      percent,
+      note: "Value sits well within the matched category — classification is robust.",
+    };
+  } else if (percent >= 65) {
+    confidence = {
+      level: "moderate",
+      label: "Moderate",
+      percent,
+      note: "Value is within the category but relatively near a boundary.",
+    };
+  } else {
+    confidence = {
+      level: "low",
+      label: "Borderline",
+      percent,
+      note: "Value is very close to a category boundary — recheck with a precise measurement; the category may shift with small changes.",
+    };
+  }
+
+  return {
+    rangeLabel,
+    rangeMin: lower,
+    rangeMax: upper,
+    confidence,
+  };
+}
+
 export interface UnderweightGrade {
   key: "mild" | "moderate" | "severe";
   label: string;

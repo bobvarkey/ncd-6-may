@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import {
   ETHNICITY_GUIDELINES,
   getBmiCategory,
+  getBmiClassificationDetail,
   getTreatmentGuidelines,
   getUnderweightGrade,
   EthnicityType,
@@ -69,9 +70,13 @@ interface AdiposityRisk {
 
 interface BmiResult {
   bmi: number;
+  exactBmi: number;
   category: string;
   color: string;
   ethnicityName: string;
+  ethnicityId: EthnicityType;
+  rangeLabel: string;
+  confidence: { level: "high" | "moderate" | "low"; label: string; percent: number; note: string };
   adiposity?: AdiposityRisk;
 }
 
@@ -170,10 +175,12 @@ export default function BmiCalculator() {
     };
     const heightM = data.height / 100;
     const bmi = data.weight / (heightM * heightM);
-    const roundedBmi = Math.round(bmi * 10) / 10;
+    const exactBmi = Math.round(bmi * 100) / 100; // 2 dp — "exact" value
+    const roundedBmi = Math.round(bmi * 10) / 10; // 1 dp — used for display ranges
 
-    const category = getBmiCategory(roundedBmi, data.ethnicity);
+    const category = getBmiCategory(exactBmi, data.ethnicity);
     const guideline = ETHNICITY_GUIDELINES.find((g) => g.id === data.ethnicity);
+    const detail = getBmiClassificationDetail(exactBmi, data.ethnicity);
 
     const treatment = getTreatmentGuidelines(roundedBmi, data.ethnicity);
 
@@ -254,9 +261,13 @@ export default function BmiCalculator() {
 
     setResult({
       bmi: roundedBmi,
+      exactBmi,
       category: category.label,
       color: category.color,
       ethnicityName: guideline?.name || "Standard WHO",
+      ethnicityId: data.ethnicity,
+      rangeLabel: detail.rangeLabel,
+      confidence: detail.confidence,
       adiposity,
     });
     setTreatmentData(treatment);
@@ -400,38 +411,39 @@ export default function BmiCalculator() {
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  {/* Ethnicity Selector */}
+                  {/* Classification Standard Toggle (WHO / Asian-Pacific / Indian) */}
                   <div className="space-y-2">
-                    <Label htmlFor="ethnicity">Ethnicity / Population Group</Label>
-                    <Select
-                      value={selectedEthnicity}
-                      onValueChange={(value: EthnicityType) => {
-                        setValue("ethnicity", value, { shouldValidate: true });
-                        // Auto-recalculate if we have height/weight already
-                        const h = Number(watch("height"));
-                        const w = Number(watch("weight"));
-                        if (h > 0 && w > 0) {
-                          handleSubmit(onSubmit)();
-                        }
-                      }}
-                    >
-                      <SelectTrigger id="ethnicity" className="bg-card border-border">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card border-border">
-                        {ETHNICITY_GUIDELINES.map((guideline) => (
-                          <SelectItem
-                            key={guideline.id}
-                            value={guideline.id}
-                            className="text-foreground focus:bg-muted focus:text-foreground"
-                          >
-                            {guideline.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label>BMI Classification Standard</Label>
+                    <div className="inline-flex w-full rounded-md border border-border bg-card p-0.5">
+                      {ETHNICITY_GUIDELINES.map((guideline) => (
+                        <button
+                          key={guideline.id}
+                          type="button"
+                          onClick={() => {
+                            setValue("ethnicity", guideline.id, { shouldValidate: true });
+                            const h = Number(watch("height"));
+                            const w = Number(watch("weight"));
+                            if (h > 0 && w > 0) {
+                              handleSubmit(onSubmit)();
+                            }
+                          }}
+                          className={cn(
+                            "flex-1 px-2 py-2 text-xs font-semibold rounded transition-colors",
+                            selectedEthnicity === guideline.id
+                              ? "bg-primary text-primary-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
+                          )}
+                          aria-pressed={selectedEthnicity === guideline.id}
+                        >
+                          {guideline.name}
+                        </button>
+                      ))}
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       {ETHNICITY_GUIDELINES.find((g) => g.id === selectedEthnicity)?.description}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground italic">
+                      Overweight & obesity thresholds change with the standard; underweight ({'<'} 18.5 kg/m²) and the mild / moderate / severe thinness grades are identical across all standards.
                     </p>
                   </div>
 
@@ -603,15 +615,67 @@ export default function BmiCalculator() {
                     <div className="rounded-lg border border-border bg-card/50 p-6">
                       <div className="text-center">
                         <p className="text-sm text-muted-foreground">Body Mass Index</p>
-                        <p className="text-5xl font-bold text-primary">{result.bmi}</p>
+                        <p className="text-5xl font-bold text-primary">{result.exactBmi.toFixed(2)}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          (rounded: {result.bmi.toFixed(1)} kg/m²)
+                        </p>
                         <p className={`mt-2 text-lg font-medium ${result.color}`}>
                           {result.category}
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-foreground">
+                          Matched range: {result.rangeLabel}
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground">
                           Using {result.ethnicityName} guidelines
                         </p>
+                        {/* Classification confidence */}
+                        <div className={cn(
+                          "mt-3 mx-auto max-w-sm rounded-lg border p-3 text-left",
+                          result.confidence.level === "high"
+                            ? "border-emerald-500/40 bg-emerald-500/10"
+                            : result.confidence.level === "moderate"
+                            ? "border-amber-500/40 bg-amber-500/10"
+                            : "border-orange-500/40 bg-orange-500/10"
+                        )}>
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-sm font-semibold flex items-center gap-1.5">
+                              <Activity className={cn(
+                                "h-4 w-4",
+                                result.confidence.level === "high" ? "text-emerald-500"
+                                  : result.confidence.level === "moderate" ? "text-amber-500"
+                                  : "text-orange-500"
+                              )} />
+                              Classification confidence
+                            </p>
+                            <span className={cn(
+                              "text-xs font-bold rounded-full px-2 py-0.5",
+                              result.confidence.level === "high"
+                                ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                                : result.confidence.level === "moderate"
+                                ? "bg-amber-500/20 text-amber-600 dark:text-amber-400"
+                                : "bg-orange-500/20 text-orange-600 dark:text-orange-400"
+                            )}>
+                              {result.confidence.label} · {result.confidence.percent}%
+                            </span>
+                          </div>
+                          {/* Confidence bar */}
+                          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                            <div
+                              className={cn(
+                                "h-full rounded-full transition-all",
+                                result.confidence.level === "high" ? "bg-emerald-500"
+                                  : result.confidence.level === "moderate" ? "bg-amber-500"
+                                  : "bg-orange-500"
+                              )}
+                              style={{ width: `${result.confidence.percent}%` }}
+                            />
+                          </div>
+                          <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed">
+                            {result.confidence.note}
+                          </p>
+                        </div>
                         {(() => {
-                          const grade = getUnderweightGrade(result.bmi);
+                          const grade = getUnderweightGrade(result.exactBmi);
                           if (!grade) return null;
                           return (
                             <div className="mt-3 mx-auto max-w-sm rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-3 text-left">
