@@ -505,6 +505,26 @@ export function getBmiCategory(bmi: number, ethnicity: EthnicityType): BmiThresh
   return guideline.thresholds[guideline.thresholds.length - 1];
 }
 
+export interface UnderweightGrade {
+  key: "mild" | "moderate" | "severe";
+  label: string;
+  range: string;
+  note: string;
+}
+
+export const UNDERWEIGHT_GRADES: UnderweightGrade[] = [
+  { key: "mild", label: "Mild thinness", range: "17.0 – 18.4 kg/m²", note: "Borderline low weight — screen for nutritional adequacy and recent unintentional loss." },
+  { key: "moderate", label: "Moderate thinness", range: "16.0 – 16.9 kg/m²", note: "Increased risk of morbidity — nutritional assessment and work-up for underlying causes." },
+  { key: "severe", label: "Severe thinness", range: "Below 16.0 kg/m²", note: "High risk — urgent nutritional support and evaluation for malabsorption, malignancy, or eating disorder." },
+];
+
+export function getUnderweightGrade(bmi: number): UnderweightGrade | null {
+  if (bmi <= 0 || bmi >= 18.5) return null;
+  if (bmi >= 17.0) return UNDERWEIGHT_GRADES[0];
+  if (bmi >= 16.0) return UNDERWEIGHT_GRADES[1];
+  return UNDERWEIGHT_GRADES[2];
+}
+
 export function getWhtrCategory(whtr: number): WhtrCategory {
   for (const category of WHTR_CATEGORIES) {
     if (whtr < category.max) return category;
