@@ -246,6 +246,7 @@ export function GlobalMedSearch() {
     if (target === "htn") {
       navigate(`/hypertension/medication-guide?q=${encodeURIComponent(drug)}`);
     } else {
+      // Default to renal dosing for other meds
       navigate(`/renal-dosing?q=${encodeURIComponent(drug)}`);
     }
   }
