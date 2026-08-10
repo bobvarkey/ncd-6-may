@@ -27,6 +27,9 @@ const ALL_MEDS = [
   m.drug && index === self.findIndex((t) => t.drug.toLowerCase() === m.drug.toLowerCase())
 );
 
+// @ts-ignore
+window.ALL_MEDS = ALL_MEDS;
+
 // Every page and topic in the app — searchable by label or keyword
 const CLINICAL_TOPICS = [
   // ── Home ──
