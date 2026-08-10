@@ -570,8 +570,12 @@ export default function HypertensionMedicationGuide() {
                                     </tr>
                                   </thead>
                                   <tbody className="divide-y divide-border/60">
-                                    {drugs.map((d) => (
-                                      <tr key={d.name} className="align-top">
+                                      {drugs.map((d) => (
+                                        <tr 
+                                          key={d.name} 
+                                          className="align-top transition-colors duration-500"
+                                          ref={el => drugRefs.current[d.name] = el}
+                                        >
                                         <td className="px-2 py-1.5">
                                           <div className="font-semibold text-foreground">{d.name}</div>
                                           <div className="text-[11px] text-muted-foreground">{d.brand}</div>
