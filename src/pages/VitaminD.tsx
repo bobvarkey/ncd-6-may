@@ -30,9 +30,15 @@ export default function VitaminD() {
             Vitamin D Reference Chart
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <ImageLink imageId="vitamin-d" label="View Vitamin D Reference Chart →" />
+        <CardContent className="space-y-3">
+          <ZoomableImage
+            src={vitaminDProtocol.url}
+            alt="Adult vitamin D deficiency treatment and monitoring protocol: 25(OH)D classification bands with loading doses, retest intervals, maintenance dosing, exclusions, and safety rules"
+            caption="Adult Vitamin D Deficiency: Treatment & Monitoring Protocol"
+          />
+          <ImageLink imageId="vitamin-d" label="Open in image gallery →" />
         </CardContent>
+
       </Card>
 
       {/* Treatment Guide */}
