@@ -2,6 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sun } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
+import ZoomableImage from "@/components/ZoomableImage";
+import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
+
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 
 export default function VitaminD() {
@@ -30,9 +33,19 @@ export default function VitaminD() {
             Vitamin D Reference Chart
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <ImageLink imageId="vitamin-d" label="View Vitamin D Reference Chart →" />
+        <CardContent className="space-y-3">
+          <ZoomableImage
+            src={vitaminDProtocol.url}
+            alt="Adult vitamin D deficiency treatment and monitoring protocol: 25(OH)D classification bands with loading doses, retest intervals, maintenance dosing, exclusions, and safety rules"
+            className="w-full rounded-lg border border-border/60"
+          />
+          <p className="text-xs text-muted-foreground text-center">
+            Adult Vitamin D Deficiency: Treatment &amp; Monitoring Protocol — tap to zoom
+          </p>
+
+          <ImageLink imageId="vitamin-d" label="Open in image gallery →" />
         </CardContent>
+
       </Card>
 
       {/* Treatment Guide */}

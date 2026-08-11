@@ -2,6 +2,8 @@ import haalandMnemonic from "@/assets/haaland-mnemonic.png.asset.json";
 import kdigoAkiAkd from "@/assets/kdigo-2026-aki-akd-guideline.png.asset.json";
 import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
 import acuteDiarrhoeaClassification from "@/assets/acute-diarrhoea-classification.jpg.asset.json";
+import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
+
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Image, Home, ChevronDown, ChevronUp, ExternalLink, Search } from "lucide-react";
@@ -63,7 +65,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
   { id: "hrt-algorithm", src: "/images/hrt-algorithm.png", label: "HRT Algorithm", category: "Women's Health", description: "Hormone replacement therapy algorithm", sourcePages: [{ label: "Women Health", path: "/women-health" }] },
 
   // ─── Other ───
-  { id: "vitamin-d", src: "/images/vitamin-d.png", label: "Vitamin D", category: "Other", description: "Vitamin D assessment and management", sourcePages: [{ label: "Vitamin D", path: "/vitamin-d" }] },
+  { id: "vitamin-d", src: vitaminDProtocol.url, label: "Vitamin D Treatment & Monitoring Protocol", category: "Other", description: "Adult vitamin D deficiency: 25(OH)D classification, loading and maintenance dosing, monitoring, exclusions and safety rules", sourcePages: [{ label: "Vitamin D", path: "/vitamin-d" }] },
   { id: "fatigue-flowchart", src: "/fatigue-flowchart.jpg", label: "Fatigue Flowchart", category: "Other", description: "Fatigue evaluation flowchart", sourcePages: [{ label: "Fatigue", path: "/fatigue" }] },
   { id: "anticoagulation-cheatsheet", src: "/anticoagulation-cheatsheet.jpg", label: "Anticoagulation Cheatsheet", category: "Other", description: "Anticoagulation quick reference", sourcePages: [{ label: "Liver Mini App", path: "/liver" }] },
   { id: "doctor-monitors", src: "/doctor-monitors.jpg", label: "Doctor Monitors", category: "Other", description: "Landing page hero image", sourcePages: [{ label: "Landing Page", path: "/" }] },
