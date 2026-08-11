@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Download, FlaskConical, RotateCcw } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
+import ZoomableImage from "@/components/ZoomableImage";
+import ironProfileStory from "@/assets/iron-profile-story.png.asset.json";
+
 
 type Category =
   | "iron_overload"
