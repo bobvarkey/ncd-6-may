@@ -370,8 +370,13 @@ export default function SecondaryHtnPage() {
               <ul className="space-y-2 text-xs">
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">•</span>
+                  <span><strong>Screen ALL hypertensive patients for primary aldosteronism</strong> — guidelines recommend universal screening, but in practice it rarely happens. A major reason is reluctance to perform an antihypertensive washout. <strong>Washout is NOT required:</strong> take aldosterone, renin and potassium <em>while the patient continues their antihypertensives</em>, then interpret with drug effects in mind (β-blockers/central α₂-agonists can raise ARR → false positives; MRAs, ENaC inhibitors and diuretics raise renin → false negatives). Only re-test off the confounding drug when the result is discordant with clinical suspicion.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
                   <span><strong>Screen for primary aldosteronism</strong> in resistant HTN + hypokalemia (even mild). Aldosterone/renin ratio is the screening test. Confirm with saline suppression or oral salt loading.</span>
                 </li>
+
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">•</span>
                   <span><strong>Pheochromocytoma:</strong> Measure plasma metanephrines (supine ≥30 min, LC-MS/MS). Avoid TCAs, SNRIs, levodopa 2 weeks before. If positive, CT/MRI abdomen + 123I-MIBG or 68Ga-DOTATATE PET.</span>
