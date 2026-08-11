@@ -37,8 +37,12 @@ export default function VitaminD() {
           <ZoomableImage
             src={vitaminDProtocol.url}
             alt="Adult vitamin D deficiency treatment and monitoring protocol: 25(OH)D classification bands with loading doses, retest intervals, maintenance dosing, exclusions, and safety rules"
-            caption="Adult Vitamin D Deficiency: Treatment & Monitoring Protocol"
+            className="w-full rounded-lg border border-border/60"
           />
+          <p className="text-xs text-muted-foreground text-center">
+            Adult Vitamin D Deficiency: Treatment &amp; Monitoring Protocol — tap to zoom
+          </p>
+
           <ImageLink imageId="vitamin-d" label="Open in image gallery →" />
         </CardContent>
 
