@@ -8,33 +8,55 @@ import { TestTube, CheckCircle2, AlertTriangle } from "lucide-react";
 export default function DstInterpretationPanel() {
   const [value, setValue] = useState<string>("");
   const [unit, setUnit] = useState<"nmol" | "ug">("nmol");
+  const [dexa, setDexa] = useState<string>("");
 
   const num = parseFloat(value);
   const nmol = Number.isFinite(num) ? (unit === "nmol" ? num : num * 27.59) : null;
 
+  const dexaNum = parseFloat(dexa);
+  const dexaVal = Number.isFinite(dexaNum) ? dexaNum : null;
+  const dexaAdequate = dexaVal === null ? null : dexaVal > 200;
+
+  const suppressed = nmol === null ? null : nmol <= 50;
+
   const result =
     nmol === null
       ? null
-      : nmol <= 50
+      : suppressed
         ? {
-            label: "Suppressed — Cushing's syndrome ruled out",
+            label: "Suppressed — Cushing's syndrome effectively excluded",
             note: "Adequate suppression (≤50 nmol/L / 1.8 µg/dL). No further Cushing's workup needed unless clinical suspicion remains high.",
             tone: "text-emerald-600 border-emerald-500/30 bg-emerald-500/10",
             ok: true,
           }
-        : nmol <= 138
+        : dexaAdequate === false
           ? {
-              label: "Non-suppressed — possible hypercortisolism",
-              note: "Confirm with a second test (late-night salivary cortisol ×2 or 24 h urine free cortisol). Exclude false positives: estrogens/OCP, CYP3A4 inducers, poor adherence, pregnancy, severe obesity, depression, alcohol.",
+              label: "Inadequate dexamethasone exposure — result uninterpretable",
+              note: "Serum dexamethasone ≤200 ng/dL at 08:00 indicates poor adherence, malabsorption, or rapid metabolism (CYP3A4 inducers). Repeat the DST or use an alternative test (late-night salivary cortisol ×2 or 24 h urine free cortisol) before labelling non-suppression.",
               tone: "text-warning border-amber-500/30 bg-warning/10",
               ok: false,
             }
-          : {
-              label: "Markedly non-suppressed — Cushing's likely",
-              note: "Proceed with confirmatory testing and endocrinology referral; then ACTH ± further localisation.",
-              tone: "text-destructive border-red-500/30 bg-destructive/10",
-              ok: false,
-            };
+          : nmol <= 138
+            ? {
+                label:
+                  dexaAdequate === true
+                    ? "True non-suppression — proceed with Cushing's workup"
+                    : "Non-suppressed — possible hypercortisolism",
+                note:
+                  (dexaAdequate === true
+                    ? "Dexamethasone level confirms adequate exposure (>200 ng/dL), so non-suppression is genuine. "
+                    : "Check serum dexamethasone to confirm adequate exposure. ") +
+                  "Confirm with a second test (late-night salivary cortisol ×2 or 24 h urine free cortisol). Exclude false positives: estrogens/OCP, CYP3A4 inducers, poor adherence, pregnancy, severe obesity, depression, alcohol.",
+                tone: "text-warning border-amber-500/30 bg-warning/10",
+                ok: false,
+              }
+            : {
+                label: "Markedly non-suppressed — Cushing's likely",
+                note: "Proceed with confirmatory testing and endocrinology referral; then ACTH ± further localisation.",
+                tone: "text-destructive border-red-500/30 bg-destructive/10",
+                ok: false,
+              };
+
 
   return (
     <div className="p-4 rounded-lg border-2 border-purple-500/30 bg-purple-500/5">
