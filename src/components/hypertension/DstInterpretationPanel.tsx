@@ -96,7 +96,30 @@ export default function DstInterpretationPanel() {
             <option value="ug">µg/dL</option>
           </select>
         </div>
+        <div className="space-y-1.5">
+          <label htmlFor="dst-dexa" className="text-xs text-muted-foreground block">
+            08:00 serum dexamethasone (ng/dL) — optional
+          </label>
+          <input
+            id="dst-dexa"
+            type="number"
+            inputMode="decimal"
+            className="w-40 h-9 rounded-md border border-border bg-muted px-3 text-xs"
+            placeholder="e.g. 350"
+            value={dexa}
+            onChange={(e) => setDexa(e.target.value)}
+          />
+        </div>
       </div>
+
+      {dexaAdequate !== null && (
+        <p className="text-xs mb-3">
+          Dexamethasone exposure:{" "}
+          <strong className={dexaAdequate ? "text-emerald-600" : "text-warning"}>
+            {dexaAdequate ? "adequate (>200 ng/dL)" : "inadequate (≤200 ng/dL)"}
+          </strong>
+        </p>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs mb-3">
         <div className="p-2 rounded border border-emerald-500/30 bg-emerald-500/5">
@@ -109,6 +132,7 @@ export default function DstInterpretationPanel() {
           <strong>&gt;138 nmol/L (&gt;5 µg/dL)</strong> — Cushing's likely
         </div>
       </div>
+
 
       {result && (
         <div className={`p-3 rounded-lg border text-xs font-medium ${result.tone}`} role="status" aria-live="polite">
