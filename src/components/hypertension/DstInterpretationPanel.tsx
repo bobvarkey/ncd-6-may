@@ -133,6 +133,35 @@ export default function DstInterpretationPanel() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3">
+        <div className="p-3 rounded border border-purple-500/30 bg-background/50">
+          <p className="font-semibold mb-1">Protocol (DST + dexamethasone level)</p>
+          <ul className="space-y-1 text-muted-foreground list-disc pl-4">
+            <li>Night before: <strong>1 mg dexamethasone orally 23:00–midnight</strong>.</li>
+            <li>Next morning 08:00–09:00: draw <strong>serum cortisol AND serum dexamethasone</strong> from the same sample (or paired tubes).</li>
+            <li>A dexamethasone level confirms adequate drug exposure and reduces false positives.</li>
+          </ul>
+        </div>
+        <div className="p-3 rounded border border-purple-500/30 bg-background/50">
+          <p className="font-semibold mb-1">Serum dexamethasone reference (lab-dependent)</p>
+          <ul className="space-y-1 text-muted-foreground list-disc pl-4">
+            <li>Baseline (no dexamethasone): <strong>&lt;20–30 ng/dL</strong>.</li>
+            <li>08:00 after 1 mg overnight: usually <strong>≥100–180 ng/dL</strong> (some labs quote 180–550 ng/dL).</li>
+            <li>08:00 after 8 mg overnight: usually <strong>&gt;800 ng/dL</strong>.</li>
+            <li>Adequacy cutoff used here: <strong>&gt;200 ng/dL (4.5 nmol/L)</strong>; some labs accept &gt;100 ng/dL after 1 mg.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="p-3 rounded border border-amber-500/30 bg-amber-500/5 text-xs mb-3">
+        <p className="font-semibold mb-1">Subtherapeutic dexamethasone (≤200 ng/dL)</p>
+        <p className="text-muted-foreground">
+          Suggests poor absorption, rapid metabolism, non-adherence, or drug interactions (CYP3A4 inducers).
+          Do <strong>not</strong> label as Cushing's on this basis alone — repeat the DST, address interacting drugs,
+          or use an alternative screening test (late-night salivary cortisol ×2, 24 h urine free cortisol).
+        </p>
+      </div>
+
 
       {result && (
         <div className={`p-3 rounded-lg border text-xs font-medium ${result.tone}`} role="status" aria-live="polite">
