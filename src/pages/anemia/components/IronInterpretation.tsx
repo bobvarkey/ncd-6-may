@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Download, FlaskConical, RotateCcw } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
+import ZoomableImage from "@/components/ZoomableImage";
+import ironProfileStory from "@/assets/iron-profile-story.png.asset.json";
+
 
 type Category =
   | "iron_overload"
@@ -259,10 +262,21 @@ export default function IronInterpretation() {
             <RotateCcw className="h-3.5 w-3.5 mr-1.5" /> Reset
           </Button>
         </div>
+        <div className="rounded-lg border p-3 space-y-2">
+          <p className="text-xs font-semibold">Iron profile patterns — visual mnemonic</p>
+          <p className="text-[11px] text-muted-foreground">
+            IDA vs anaemia of chronic disease vs sideroblastic anaemia: serum iron, TSAT, ferritin and TIBC patterns. Tap to zoom.
+          </p>
+          <ZoomableImage
+            src={ironProfileStory.url}
+            alt="Iron profile patterns comparing iron deficiency anaemia, anaemia of chronic disease and sideroblastic anaemia across serum iron, transferrin saturation, ferritin and TIBC"
+          />
+        </div>
         <p className="text-[11px] text-muted-foreground">
           Cut-offs: overload = ferritin &gt;300 µg/L + TSAT &gt;45%; absolute deficiency = ferritin &lt;{ferritinCut} µg/L; functional
           deficiency = ferritin 30–300 µg/L with TSAT &lt;20% and inflammation.
         </p>
+
       </CardContent>
     </Card>
   );
