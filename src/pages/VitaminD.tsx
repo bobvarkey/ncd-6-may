@@ -2,6 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sun } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
+import ZoomableImage from "@/components/ZoomableImage";
+import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
+
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 
 export default function VitaminD() {
