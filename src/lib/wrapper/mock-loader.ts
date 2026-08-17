@@ -8,8 +8,8 @@ export const injectMock = () => {
   if (typeof window === 'undefined') return;
   
   const hostname = window.location.hostname;
-  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
-  const isLovable = hostname.includes('lovable.app');
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0';
+  const isLovable = hostname.includes('lovable.app') || hostname.includes('lovable.dev');
   
   if (isLocal || isLovable) {
     if (!window.AppbuildWrapper) {
