@@ -266,9 +266,13 @@ const SidebarLayout = ({ title, children }: { title: string; children: ReactNode
   </SidebarProvider>
 );
 
-const App = () => (
+const App = () => {
+  useEffect(() => {
+    injectMock();
+  }, []);
 
-  <QueryClientProvider client={queryClient}>
+  return (
+    <QueryClientProvider client={queryClient}>
     <LabProvider>
     <TooltipProvider>
       <Toaster />
