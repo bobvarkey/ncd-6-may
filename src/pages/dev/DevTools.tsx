@@ -46,6 +46,11 @@ const DevTools = () => {
 
   useEffect(() => {
     refreshData();
+    // Expose for E2E tests
+    (window as any).__REFRESH_DEV_TOOLS__ = refreshData;
+    return () => {
+      delete (window as any).__REFRESH_DEV_TOOLS__;
+    };
   }, []);
 
   const togglePremium = async () => {
