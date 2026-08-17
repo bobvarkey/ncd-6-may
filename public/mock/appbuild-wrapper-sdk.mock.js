@@ -82,6 +82,7 @@
   const ENTITLEMENTS_STORAGE_KEY = "__appbuild_mock_entitlements_v2__";
   const USER_ID_STORAGE_KEY = "__appbuild_mock_user_id_v2__";
   const CONFIG_OVERRIDE_KEY = "__appbuild_mock_config_overrides__";
+  const PRESET_STORAGE_KEY = "__appbuild_mock_preset__";
 
   function log(...args) {
     console.info(MOCK_CONFIG.logPrefix, ...args);
@@ -472,6 +473,7 @@
         safeRemoveItem(ENTITLEMENTS_STORAGE_KEY);
         safeRemoveItem(USER_ID_STORAGE_KEY);
         safeRemoveItem(CONFIG_OVERRIDE_KEY);
+        safeRemoveItem(PRESET_STORAGE_KEY);
 
         isConfigured = false;
         configuredApiKey = null;
