@@ -1,4 +1,6 @@
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
+import { useEffect } from "react";
+import { injectMock } from "@/lib/wrapper/mock-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { CommandPalette } from "@/components/CommandPalette";
@@ -193,6 +195,7 @@ const Type1TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type1T
 const Type2TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type2TreatmentAlgorithm"));
 const GoldmanCardiacIndex = lazyWithModuleRetry(() => import("@/pages/GoldmanCardiacIndex"));
 const PerioperativeCalculators = lazyWithModuleRetry(() => import("@/pages/PerioperativeCalculators"));
+const DevTools = lazyWithModuleRetry(() => import("@/pages/dev/DevTools"));
 
 const queryClient = new QueryClient();
 
@@ -263,9 +266,13 @@ const SidebarLayout = ({ title, children }: { title: string; children: ReactNode
   </SidebarProvider>
 );
 
-const App = () => (
+const App = () => {
+  useEffect(() => {
+    injectMock();
+  }, []);
 
-  <QueryClientProvider client={queryClient}>
+  return (
+    <QueryClientProvider client={queryClient}>
     <LabProvider>
     <TooltipProvider>
       <Toaster />
@@ -381,6 +388,7 @@ const App = () => (
           <Route path="/images" element={<><TabNavigation /><ImageGallery /></>} />
           <Route path="/image-gallery" element={<Navigate to="/images" replace />} />
           <Route path="/guides/mme-cdc" element={<><TabNavigation /><MMEGuide /></>} />
+          <Route path="/dev/tools" element={<><TabNavigation /><DevTools /></>} />
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
@@ -391,7 +399,8 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
     </LabProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+};
 
 export default App;
