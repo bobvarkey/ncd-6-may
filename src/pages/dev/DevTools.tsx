@@ -88,9 +88,29 @@ const DevTools = () => {
 
   if (!appInfo && !loading) {
     return (
-      <div className="p-8 text-center">
-        <h1 className="text-2xl font-bold mb-4">Mock SDK Not Found</h1>
-        <p className="text-muted-foreground">Ensure you are running in a development environment where the mock script is injected.</p>
+      <div className="p-8 max-w-2xl mx-auto">
+        <Card className="border-destructive/50 bg-destructive/5">
+          <CardHeader>
+            <div className="flex items-center gap-2 text-destructive">
+              <ShieldCheck className="h-6 w-6" />
+              <CardTitle>Mock SDK Not Found</CardTitle>
+            </div>
+            <CardDescription>
+              The AppBuildWrapper mock is not active. This page only works when the mock is injected.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm">
+              Current Host: <code className="bg-muted px-1 rounded">{typeof window !== 'undefined' ? window.location.hostname : 'N/A'}</code>
+            </p>
+            <p className="text-sm">
+              window.AppbuildWrapper status: <Badge variant="outline">{typeof window !== 'undefined' && window.AppbuildWrapper ? "Present" : "Missing"}</Badge>
+            </p>
+            <Button onClick={refreshData} variant="outline" className="w-full">
+              <RefreshCw className="mr-2 h-4 w-4" /> Try Reconnecting
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
