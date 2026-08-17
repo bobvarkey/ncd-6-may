@@ -99,6 +99,7 @@
 
   function safeJsonParse(value, fallback = {}) {
     try {
+      if (!value) return fallback;
       return JSON.parse(value);
     } catch {
       return fallback;
