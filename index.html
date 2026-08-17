@@ -47,6 +47,17 @@
       "logo": "https://ncdapp.store/favicon.ico"
     }
     </script>
+    <script>
+      (function() {
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const isLovable = window.location.hostname.includes('lovable.app');
+        if (isLocal || isLovable) {
+          const script = document.createElement('script');
+          script.src = '/mock/appbuild-wrapper-sdk.mock.js';
+          document.head.appendChild(script);
+        }
+      })();
+    </script>
   </head>
 
   <body>
