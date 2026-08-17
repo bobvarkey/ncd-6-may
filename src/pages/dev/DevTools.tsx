@@ -26,6 +26,11 @@ const DevTools = () => {
   const [loading, setLoading] = useState(true);
   const [activePreset, setActivePreset] = useState<string | null>(localStorage.getItem("__appbuild_mock_preset__"));
 
+  useEffect(() => {
+    // If a preset was saved but not applied in this session (e.g. fresh reload), 
+    // we just want the UI to reflect what's in localStorage.
+  }, []);
+
   const refreshData = async () => {
     setLoading(true);
     try {

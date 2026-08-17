@@ -473,6 +473,7 @@
         safeRemoveItem(ENTITLEMENTS_STORAGE_KEY);
         safeRemoveItem(USER_ID_STORAGE_KEY);
         safeRemoveItem(CONFIG_OVERRIDE_KEY);
+        safeRemoveItem(PRESET_STORAGE_KEY);
 
         isConfigured = false;
         configuredApiKey = null;
