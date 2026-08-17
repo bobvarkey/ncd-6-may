@@ -1,3 +1,10 @@
+/**
+ * src/pages/dev/DevTools.tsx
+ * -----------------------------------------------------------------------
+ * DEVELOPMENT-ONLY in-app panel to manage AppBuildWrapper mock state.
+ * Accessible at /dev/tools in development.
+ * -----------------------------------------------------------------------
+ */
 import React, { useState, useEffect } from "react";
 import { getAppInfo, BridgeInfo } from "@/lib/wrapper";
 import { getPurchases, CustomerInfo, checkPremium } from "@/lib/wrapper/revenuecat";
