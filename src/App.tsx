@@ -382,6 +382,7 @@ const App = () => (
           <Route path="/images" element={<><TabNavigation /><ImageGallery /></>} />
           <Route path="/image-gallery" element={<Navigate to="/images" replace />} />
           <Route path="/guides/mme-cdc" element={<><TabNavigation /><MMEGuide /></>} />
+          <Route path="/dev/tools" element={<><TabNavigation /><DevTools /></>} />
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
