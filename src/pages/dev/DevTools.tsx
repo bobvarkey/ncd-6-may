@@ -7,7 +7,7 @@
  */
 import React, { useState, useEffect } from "react";
 import { getAppInfo, BridgeInfo } from "@/lib/wrapper";
-import { getPurchases, CustomerInfo, checkPremium } from "@/lib/wrapper/revenuecat";
+import { getPurchases, CustomerInfo, checkPremium, Offerings } from "@/lib/wrapper/revenuecat";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,13 +16,15 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Smartphone, ShieldCheck, RefreshCw, Trash2, Globe, Database } from "lucide-react";
+import { Smartphone, ShieldCheck, RefreshCw, Trash2, Globe, Database, AlertCircle, CheckCircle2 } from "lucide-react";
 
 const DevTools = () => {
   const [appInfo, setAppInfo] = useState<BridgeInfo | null>(null);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   const [isPremium, setIsPremium] = useState(false);
+  const [offerings, setOfferings] = useState<Offerings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activePreset, setActivePreset] = useState<string | null>(localStorage.getItem("__appbuild_mock_preset__"));
 
   const refreshData = async () => {
     setLoading(true);
@@ -35,6 +37,9 @@ const DevTools = () => {
         const { customerInfo: cInfo } = await purchases.getCustomerInfo();
         setCustomerInfo(cInfo);
         setIsPremium(await checkPremium());
+        
+        const offeringsData = await purchases.getOfferings();
+        setOfferings(offeringsData.offerings as any);
       }
     } catch (err) {
       console.error("Error refreshing dev tools data", err);
@@ -89,6 +94,91 @@ const DevTools = () => {
       toast.info(`Platform set to ${platform}. Reloading...`);
       setTimeout(() => window.location.reload(), 1000);
     }
+  };
+
+  const applyPreset = async (presetId: string) => {
+    const p = getPurchases();
+    if (!p) return;
+
+    try {
+      setLoading(true);
+      await p.__mockReset?.();
+      
+      switch (presetId) {
+        case 'active-sub':
+          await p.__mockGrantPremium?.();
+          break;
+        case 'lapsed':
+          // Just reset
+          break;
+        case 'ios-premium':
+          if (window.AppbuildWrapper && (window.AppbuildWrapper as any).__updateConfig) {
+            (window.AppbuildWrapper as any).__updateConfig({ platform: 'ios' });
+          }
+          await p.__mockGrantPremium?.();
+          break;
+        case 'android-premium':
+          if (window.AppbuildWrapper && (window.AppbuildWrapper as any).__updateConfig) {
+            (window.AppbuildWrapper as any).__updateConfig({ platform: 'android' });
+          }
+          await p.__mockGrantPremium?.();
+          break;
+      }
+      
+      localStorage.setItem("__appbuild_mock_preset__", presetId);
+      setActivePreset(presetId);
+      toast.success(`Preset "${presetId}" applied`);
+      
+      // Reload to ensure platform changes and SDK re-init take effect
+      if (presetId.includes('ios') || presetId.includes('android')) {
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        await refreshData();
+      }
+    } catch (err) {
+      toast.error("Failed to apply preset");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getValidationReport = () => {
+    if (!customerInfo || !offerings) return null;
+    
+    const reports: { type: 'success' | 'error' | 'warning', message: string }[] = [];
+    const activeEntitlements = Object.keys(customerInfo.entitlements.active);
+    
+    // Check if entitlements match products in offerings
+    activeEntitlements.forEach(entId => {
+      const entitlement = customerInfo.entitlements.active[entId];
+      const productIdentifier = entitlement.productIdentifier;
+      
+      // Flatten all products from all offerings
+      const allProductIds = Object.values(offerings.all).flatMap(offering => 
+        offering.availablePackages.map(pkg => pkg.product.identifier)
+      );
+      
+      if (!allProductIds.includes(productIdentifier)) {
+        reports.push({
+          type: 'error',
+          message: `Entitlement "${entId}" points to product "${productIdentifier}" which is missing from offerings.`
+        });
+      } else {
+        reports.push({
+          type: 'success',
+          message: `Entitlement "${entId}" correctly mapped to product "${productIdentifier}".`
+        });
+      }
+    });
+
+    if (activeEntitlements.length === 0) {
+      reports.push({
+        type: 'warning',
+        message: "No active entitlements found."
+      });
+    }
+
+    return reports;
   };
 
   if (!appInfo && !loading) {
@@ -204,23 +294,59 @@ const DevTools = () => {
             <div className="flex flex-col gap-2">
               <Label className="text-xs font-semibold uppercase text-muted-foreground">Scenarios</Label>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const p = getPurchases();
-                  await p?.__mockReset?.();
-                  await p?.__mockGrantPremium?.();
-                  refreshData();
-                }}>
+                <Button 
+                  variant={activePreset === 'active-sub' ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => applyPreset('active-sub')}
+                >
                   Active Sub
                 </Button>
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const p = getPurchases();
-                  await p?.__mockReset?.();
-                  refreshData();
-                }}>
-                  New User
+                <Button 
+                  variant={activePreset === 'lapsed' ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => applyPreset('lapsed')}
+                >
+                  Lapsed
+                </Button>
+                <Button 
+                  variant={activePreset === 'ios-premium' ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => applyPreset('ios-premium')}
+                >
+                  iOS Premium
+                </Button>
+                <Button 
+                  variant={activePreset === 'android-premium' ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => applyPreset('android-premium')}
+                >
+                  Android Prem
                 </Button>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Validation Report */}
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-primary" />
+              <CardTitle>Validation Report</CardTitle>
+            </div>
+            <CardDescription>Checks for mismatches between offerings and entitlements</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {getValidationReport()?.map((report, i) => (
+              <div key={i} className={`flex items-start gap-2 p-2 rounded-md border ${
+                report.type === 'success' ? 'bg-green-500/5 border-green-500/20 text-green-600' :
+                report.type === 'error' ? 'bg-destructive/5 border-destructive/20 text-destructive' :
+                'bg-amber-500/5 border-amber-500/20 text-amber-600'
+              }`}>
+                {report.type === 'success' ? <CheckCircle2 className="h-4 w-4 mt-0.5" /> : <AlertCircle className="h-4 w-4 mt-0.5" />}
+                <span className="text-sm font-medium">{report.message}</span>
+              </div>
+            )) || <p className="text-sm text-muted-foreground">No data to validate.</p>}
           </CardContent>
         </Card>
 
