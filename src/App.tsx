@@ -155,7 +155,6 @@ const PrivacyPolicy = lazyWithModuleRetry(() => import("@/pages/PrivacyPolicy"))
 const TermsOfService = lazyWithModuleRetry(() => import("@/pages/TermsOfService"));
 const DisclaimerPage = lazyWithModuleRetry(() => import("@/pages/Disclaimer"));
 const DeleteAccount = lazyWithModuleRetry(() => import("@/pages/DeleteAccount"));
-const DevTools = lazyWithModuleRetry(() => import("@/pages/dev/DevTools"));
 const ImageGallery = lazyWithModuleRetry(() => import("@/pages/ImageGallery"));
 const MMEGuide = lazyWithModuleRetry(() => import("@/pages/guides/MMEGuide"));
 const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
