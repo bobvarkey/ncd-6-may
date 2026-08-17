@@ -399,7 +399,8 @@ const App = () => {
       </BrowserRouter>
     </TooltipProvider>
     </LabProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+};
 
 export default App;
