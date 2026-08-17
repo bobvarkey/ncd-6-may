@@ -1,4 +1,6 @@
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
+import { useEffect } from "react";
+import { injectMock } from "@/lib/wrapper/mock-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { CommandPalette } from "@/components/CommandPalette";
