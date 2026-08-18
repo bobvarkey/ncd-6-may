@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { ChevronDown, Download } from "lucide-react";
+import { ChevronDown, Download, Copy, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
   Collapsible,
@@ -106,30 +106,63 @@ export function SectionCard({
   exportable?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const [copied, setCopied] = useState(false);
   const t = TONE_STYLES[tone];
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const handleDownload = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const getReportText = () => {
     const el = contentRef.current;
     const bodyText = el ? (el.innerText || el.textContent || "").trim() : "";
     const stamp = new Date().toLocaleString();
-    const text = `${title}\n${"=".repeat(title.length)}\nExported: ${stamp}\n\n${bodyText}\n`;
+    return `${title}\n${"=".repeat(title.length)}\nExported: ${stamp}\n\n${bodyText}\n`;
+  };
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const text = getReportText();
     const safe = title.replace(/[^a-z0-9-_ ]/gi, "_").slice(0, 60);
     downloadTextFile(`${safe}.txt`, text);
   };
 
-  const DownloadBtn = exportable ? (
-    <button
-      type="button"
-      onClick={handleDownload}
-      aria-label={`Download ${title} as text file`}
-      title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            all reports should be copyable as txt`}
-      className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
-    >
-      <Download className="h-3.5 w-3.5" />
-      <span className="hidden sm:inline">.txt</span>
-    </button>
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const text = getReportText();
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  const ActionButtons = exportable ? (
+    <div className="flex items-center gap-1.5">
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={`Copy ${title} to clipboard`}
+        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Add a copy button to every generated report so I can copy it as plain TXT to my clipboard.`}
+        className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
+      >
+        {copied ? (
+          <Check className="h-3.5 w-3.5 text-emerald-500" />
+        ) : (
+          <Copy className="h-3.5 w-3.5" />
+        )}
+        <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
+      </button>
+      <button
+        type="button"
+        onClick={handleDownload}
+        aria-label={`Download ${title} as text file`}
+        title="Download as .txt"
+        className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
+      >
+        <Download className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">.txt</span>
+      </button>
+    </div>
   ) : null;
 
   const Header = (
@@ -142,7 +175,7 @@ export function SectionCard({
         {badge}
       </div>
       <div className="flex items-center gap-2">
-        {DownloadBtn}
+        {ActionButtons}
         {collapsible && (
           <ChevronDown className={`h-4 w-4 ${t.title} transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
         )}
