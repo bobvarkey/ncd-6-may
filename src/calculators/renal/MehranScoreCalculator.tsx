@@ -140,17 +140,13 @@ export default function MehranScoreCalculator() {
   };
 
   return (
-    <Card className="border-2 border-primary/20">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-2">
-          <Gauge className="h-5 w-5 text-primary" />
-          <CardTitle className="text-lg">Mehran Score for Post-PCI Contrast Nephropathy</CardTitle>
-        </div>
+    <div className="space-y-4">
+      <div className="pb-3">
         <CardDescription className="text-xs">
           Predicts risk of Contrast-Induced Nephropathy (CIN) and requirement for dialysis after PCI.
         </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+      </div>
+      <div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-1.5">
             <Label className="text-xs">Age (years)</Label>
@@ -263,7 +259,7 @@ export default function MehranScoreCalculator() {
             <RotateCcw className="h-3.5 w-3.5 mr-1.5" /> Reset
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
