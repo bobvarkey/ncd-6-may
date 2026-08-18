@@ -658,8 +658,8 @@ const QUICK_ACCESS = [
   { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets },
   { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart },
   { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet },
-  { to: "/renal-dosing", label: "Renal Dosing", desc: "Dose adjustment by eGFR",     Icon: Filter },
-  { to: "/images",       label: "Image Gallery",desc: "Algorithms & pocket cards",   Icon: Scan },
+  { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator },
+  { to: "/renal-dosing#mehran", label: "Mehran Score", desc: "Post-PCI CIN risk",     Icon: Filter },
 ] as const;
 
 // Static hero data — module-level so it never recreates per render.
@@ -740,10 +740,16 @@ export default function Home() {
       to: "/insulin-titration",
     },
     {
-      title: "GFR Calculator",
-      description: "Calculate eGFR using CKD-EPI and Cockcroft-Gault",
+      title: "GFR + KDIGO Staging",
+      description: "Calculate eGFR using CKD-EPI 2021 and KDIGO staging with UACR",
       icon: <Activity className="h-4 w-4 text-orange-500" />,
-      to: "/gfr-calculator",
+      to: "/renal-dosing#egfr",
+    },
+    {
+      title: "Mehran CIN Score",
+      description: "Post-PCI Contrast-Induced Nephropathy risk stratification",
+      icon: <Filter className="h-4 w-4 text-amber-500" />,
+      to: "/renal-dosing#mehran",
     },
     {
       title: "Drug Interactions",
