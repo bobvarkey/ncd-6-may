@@ -1032,11 +1032,29 @@ const RenalDoseAdjustment = () => {
       </a>
 
 
-      {/* Mehran Score for Post-PCI CIN */}
-      <MehranScoreCalculator />
+      {/* Mehran Score for Post-PCI CIN - Collapsible */}
+      <details className="clinical-card p-0 overflow-hidden group">
+        <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
+          <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
+          <Calculator className="w-4 h-4 text-primary shrink-0" />
+          <span className="text-sm font-semibold">Mehran Score for Post-PCI Contrast Nephropathy</span>
+        </summary>
+        <div className="border-t border-border p-4">
+          <MehranScoreCalculator />
+        </div>
+      </details>
 
-      {/* Full KDIGO Staging with heatmap (eGFR + UACR) */}
-      <KDIGOStagingCalculator />
+      {/* Full KDIGO Staging with heatmap (eGFR + UACR) - Collapsible */}
+      <details className="clinical-card p-0 overflow-hidden group">
+        <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
+          <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
+          <FlaskConical className="w-4 h-4 text-primary shrink-0" />
+          <span className="text-sm font-semibold">eGFR + UACR Calculator</span>
+        </summary>
+        <div className="border-t border-border p-4">
+          <KDIGOStagingCalculator />
+        </div>
+      </details>
 
       {/* Formula Reference */}
       <details className="clinical-card p-3 group">

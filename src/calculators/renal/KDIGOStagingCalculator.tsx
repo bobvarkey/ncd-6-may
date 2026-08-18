@@ -184,24 +184,20 @@ export default function KDIGOStagingCalculator() {
     : null;
 
   return (
-    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-muted/5">
-      <CardHeader className="pb-3">
+    <div className="space-y-4">
+      <div className="pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Calculator className="h-5 w-5 text-primary" />
-            <CardTitle className="text-xl">eGFR + UACR Calculator</CardTitle>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            CKD-EPI 2021 (race-free) + UACR — KDIGO 2024 GA staging
+          </p>
           {gfr !== null && (
-            <Button variant="ghost" size="sm" onClick={reset} className="text-muted-foreground">
-              <RotateCcw className="h-4 w-4 mr-1" /> Reset
+            <Button variant="ghost" size="sm" onClick={reset} className="text-muted-foreground h-7 px-2">
+              <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
             </Button>
           )}
         </div>
-        <p className="text-xs text-muted-foreground">
-          CKD-EPI 2021 (race-free) + UACR — KDIGO 2024 GA staging
-        </p>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           {/* Creatinine */}
           <div className="space-y-1.5">
@@ -432,7 +428,7 @@ export default function KDIGOStagingCalculator() {
             </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
