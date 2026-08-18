@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import KDIGOStagingCalculator from "@/calculators/renal/KDIGOStagingCalculator";
+import MehranScoreCalculator from "@/calculators/renal/MehranScoreCalculator";
 import { ADDITIONAL_MEDS_DATA } from "@/calculators/diabetes/additional-meds-data";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import { ANTICOAGULANTS_DATA } from "@/calculators/diabetes/anticoagulants-data";
@@ -1030,6 +1031,9 @@ const RenalDoseAdjustment = () => {
         <span className="text-xs font-medium text-amber-600">Open →</span>
       </a>
 
+
+      {/* Mehran Score for Post-PCI CIN */}
+      <MehranScoreCalculator />
 
       {/* Full KDIGO Staging with heatmap (eGFR + UACR) */}
       <KDIGOStagingCalculator />

@@ -59,7 +59,7 @@ const SECTIONS: Section[] = [
     items: [
       { title: "Prediabetes", url: "/prediabetes", icon: HeartPulse },
       { title: "Hypo Risk Score", url: "/hypo-risk", icon: ShieldAlert },
-      { title: "Renal Dosing", url: "/renal-dosing", icon: FlaskConical, keywords: "egfr ckd" },
+      { title: "Renal Dosing", url: "/renal-dosing", icon: FlaskConical, keywords: "egfr ckd mehran pci cin" },
       { title: "CKD Guideline", url: "/ckd-guideline", icon: Bean, keywords: "kdigo" },
     ],
   },
