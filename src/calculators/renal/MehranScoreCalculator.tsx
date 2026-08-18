@@ -157,6 +157,16 @@ export default function MehranScoreCalculator() {
             <Input type="number" value={eGFR} onChange={e => setEGFR(e.target.value)} placeholder="e.g. 45" />
           </div>
           <div className="space-y-1.5">
+            <Label className="text-xs">Serum Creatinine (mg/dL)</Label>
+            <Input 
+              type="number" 
+              value={creatinine} 
+              onChange={e => setCreatinine(e.target.value)} 
+              placeholder="If eGFR unknown" 
+              step="0.1"
+            />
+          </div>
+          <div className="space-y-1.5">
             <Label className="text-xs">Contrast Volume (mL)</Label>
             <Input type="number" value={contrastVolume} onChange={e => setContrastVolume(e.target.value)} placeholder="e.g. 200" />
           </div>
