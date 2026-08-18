@@ -740,10 +740,16 @@ export default function Home() {
       to: "/insulin-titration",
     },
     {
-      title: "GFR Calculator",
-      description: "Calculate eGFR using CKD-EPI and Cockcroft-Gault",
+      title: "GFR + KDIGO Staging",
+      description: "Calculate eGFR using CKD-EPI 2021 and KDIGO staging with UACR",
       icon: <Activity className="h-4 w-4 text-orange-500" />,
-      to: "/gfr-calculator",
+      to: "/renal-dosing#egfr",
+    },
+    {
+      title: "Mehran CIN Score",
+      description: "Post-PCI Contrast-Induced Nephropathy risk stratification",
+      icon: <Filter className="h-4 w-4 text-amber-500" />,
+      to: "/renal-dosing#mehran",
     },
     {
       title: "Drug Interactions",
