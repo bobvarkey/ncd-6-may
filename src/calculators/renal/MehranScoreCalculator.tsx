@@ -191,14 +191,24 @@ export default function MehranScoreCalculator() {
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">Serum Creatinine (mg/dL)</Label>
-            <Input 
-              type="number" 
-              value={creatinine} 
-              onChange={e => setCreatinine(e.target.value)} 
-              placeholder="e.g. 1.2" 
-              step="0.01"
-            />
+            <Label className="text-xs">Serum Creatinine</Label>
+            <div className="flex gap-1">
+              <Input 
+                type="number" 
+                value={creatinine} 
+                onChange={e => setCreatinine(e.target.value)} 
+                placeholder={creatinineUnit === "mgdl" ? "e.g. 1.2" : "e.g. 106"} 
+                step="0.01"
+                className="flex-1"
+              />
+              <Select value={creatinineUnit} onValueChange={(v: "mgdl" | "umol") => setCreatinineUnit(v)}>
+                <SelectTrigger className="h-9 w-20 px-2 text-[10px]"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mgdl">mg/dL</SelectItem>
+                  <SelectItem value="umol">µmol/L</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">eGFR (mL/min/1.73m²)</Label>
