@@ -29,6 +29,7 @@ const fmt = (v: number, d = 2) => (isNaN(v) ? "—" : v.toFixed(d));
 export default function MehranScoreCalculator() {
   const [age, setAge] = useState("");
   const [creatinine, setCreatinine] = useState("");
+  const [creatinineUnit, setCreatinineUnit] = useState<"mgdl" | "umol">("mgdl");
   const [gender, setGender] = useState<"male" | "female">("male");
   const [eGFR, setEGFR] = useState("");
   const [diabetes, setDiabetes] = useState("0");
@@ -40,14 +41,16 @@ export default function MehranScoreCalculator() {
 
   useEffect(() => {
     const a = n(age);
-    const cr = n(creatinine);
+    let cr = n(creatinine);
     if (!isNaN(a) && !isNaN(cr) && cr > 0) {
-      const calculated = calculateEGFR(a, cr, gender);
+      // Convert to mg/dL for the formula if it's in umol/L
+      const crMgDl = creatinineUnit === "umol" ? cr / 88.4 : cr;
+      const calculated = calculateEGFR(a, crMgDl, gender);
       if (calculated !== null) {
         setEGFR(calculated.toFixed(0));
       }
     }
-  }, [age, creatinine, gender]);
+  }, [age, creatinine, creatinineUnit, gender]);
 
   const scoreData = useMemo(() => {
     let score = 0;
