@@ -142,7 +142,7 @@ export function SectionCard({
         type="button"
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
-        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            add a creatinine entry in mehran score in case eGFR is not known`}
+        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            the eGFR should auto-populate in mehran when age and creatinine and gender (male/ female) are entered`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Download, Gauge, RotateCcw, AlertTriangle } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 
+function calculateEGFR(age: number, creatinine: number, gender: "male" | "female") {
+  if (isNaN(age) || isNaN(creatinine) || !creatinine) return null;
+  // CKD-EPI 2021 formula
+  const kappa = gender === "female" ? 0.7 : 0.9;
+  const alpha = gender === "female" ? -0.241 : -0.302;
+  const genderConstant = gender === "female" ? 1.012 : 1;
+  
+  const minCrK = Math.min(creatinine / kappa, 1);
+  const maxCrK = Math.max(creatinine / kappa, 1);
+  
+  return 142 * Math.pow(minCrK, alpha) * Math.pow(maxCrK, -1.2) * Math.pow(0.9938, age) * genderConstant;
+}
+
 type MehranRisk = "low" | "moderate" | "high" | "very_high" | null;
 
 const n = (v: string) => (v.trim() === "" ? NaN : Number(v));
@@ -16,6 +29,7 @@ const fmt = (v: number, d = 2) => (isNaN(v) ? "—" : v.toFixed(d));
 export default function MehranScoreCalculator() {
   const [age, setAge] = useState("");
   const [creatinine, setCreatinine] = useState("");
+  const [gender, setGender] = useState<"male" | "female">("male");
   const [eGFR, setEGFR] = useState("");
   const [diabetes, setDiabetes] = useState("0");
   const [anaemia, setAnaemia] = useState("0");
@@ -23,6 +37,17 @@ export default function MehranScoreCalculator() {
   const [hypotension, setHypotension] = useState("0");
   const [iabp, setIABP] = useState("0");
   const [contrastVolume, setContrastVolume] = useState("");
+
+  useEffect(() => {
+    const a = n(age);
+    const cr = n(creatinine);
+    if (!isNaN(a) && !isNaN(cr) && cr > 0) {
+      const calculated = calculateEGFR(a, cr, gender);
+      if (calculated !== null) {
+        setEGFR(calculated.toFixed(0));
+      }
+    }
+  }, [age, creatinine, gender]);
 
   const scoreData = useMemo(() => {
     let score = 0;
@@ -153,8 +178,14 @@ export default function MehranScoreCalculator() {
             <Input type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="e.g. 76" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">eGFR (mL/min/1.73m²)</Label>
-            <Input type="number" value={eGFR} onChange={e => setEGFR(e.target.value)} placeholder="e.g. 45" />
+            <Label className="text-xs">Gender</Label>
+            <Select value={gender} onValueChange={(v: "male" | "female") => setGender(v)}>
+              <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">Serum Creatinine (mg/dL)</Label>
@@ -162,9 +193,13 @@ export default function MehranScoreCalculator() {
               type="number" 
               value={creatinine} 
               onChange={e => setCreatinine(e.target.value)} 
-              placeholder="If eGFR unknown" 
-              step="0.1"
+              placeholder="e.g. 1.2" 
+              step="0.01"
             />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">eGFR (mL/min/1.73m²)</Label>
+            <Input type="number" value={eGFR} onChange={e => setEGFR(e.target.value)} placeholder="Auto-calculated" />
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">Contrast Volume (mL)</Label>
