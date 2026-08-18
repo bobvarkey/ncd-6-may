@@ -980,6 +980,31 @@ function EgfrCalculator() {
 
 const RenalDoseAdjustment = () => {
   const [search, setSearch] = useState("");
+  const mehranRef = useRef<HTMLDetailsElement>(null);
+  const egfrRef = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (!hash) return;
+
+      if (hash === "#mehran" && mehranRef.current) {
+        mehranRef.current.open = true;
+        setTimeout(() => {
+          mehranRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } else if (hash === "#egfr" && egfrRef.current) {
+        egfrRef.current.open = true;
+        setTimeout(() => {
+          egfrRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   // Group drugs by class
   const groupedByClass = ALL_RENAL_DATA.reduce((acc, drug) => {
