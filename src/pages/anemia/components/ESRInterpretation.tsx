@@ -122,7 +122,7 @@ export default function ESRInterpretation() {
               <Timer className="w-5 h-5 text-rose-600" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">ESR Interpretation</h2>
+              <h2 className="text-lg font-bold text-foreground">interpretation of ESR</h2>
               <p className="text-xs text-muted-foreground">Erythrocyte Sedimentation Rate</p>
             </div>
           </div>
