@@ -468,7 +468,7 @@ export default function Infections() {
             <Hospital className="h-4 w-4" /> Serious & nosocomial
           </button>
           <button
-            onClick={() => setTab("csdh")}
+            onClick={() => { setTab("csdh"); setSearchParams({ tab: "csdh" }); }}
             className={`px-3 py-2 text-sm font-medium border-b-2 -mb-px inline-flex items-center gap-1.5 ${
               tab === "csdh" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
