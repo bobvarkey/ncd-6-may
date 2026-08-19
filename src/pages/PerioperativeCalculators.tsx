@@ -1940,6 +1940,8 @@ const STSCardiacRiskCalculator = () => {
           )}
         </CardContent>
       </Card>
+
+      <CsdhRiskCalculator />
     </div>
   );
 };
