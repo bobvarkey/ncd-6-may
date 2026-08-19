@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { useLabContext } from "@/components/SmartLabelUpload/GlobalLabContext";
 import { DIABETES_FIELDS, HTN_FIELDS, LIPID_FIELDS, OBESITY_FIELDS, THYROID_FIELDS, CBC_FIELDS, RENAL_FIELDS } from "@/components/SmartLabelUpload";
+import AKIAKDMiniApp from "@/pages/AKIAKDMiniApp";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Collapsible,
