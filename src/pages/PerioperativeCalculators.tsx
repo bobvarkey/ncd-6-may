@@ -426,6 +426,9 @@ const PerioperativeCalculators = () => {
         <TabsContent value="sts" className="mt-4 space-y-4">
           <STSCardiacRiskCalculator />
         </TabsContent>
+        <TabsContent value="csdh" className="mt-4 space-y-4">
+          <CsdhRiskCalculator />
+        </TabsContent>
       </Tabs>
     </div>
   );
