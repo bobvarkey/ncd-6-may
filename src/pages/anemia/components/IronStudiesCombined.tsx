@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { Copy, Printer, ChevronDown, Download, AlertTriangle, Droplets, Stethoscope, FlaskConical, Dna, HeartPulse, Syringe, Pill, Activity, RotateCcw, Info } from "lucide-react";
+import { Copy, Printer, ChevronDown, Download, AlertTriangle, Droplets, Stethoscope, FlaskConical, Dna, HeartPulse, Syringe, Pill, Activity, RotateCcw, Info, Check } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
@@ -897,6 +897,43 @@ export default function IronStudiesCombined() {
                 </div>
               </div>
             </div>
+
+            {/* Interpretation Summary */}
+            {hasData && (
+              <div className={cn(
+                "p-3 rounded-lg border",
+                deficiencyDiagnosis?.label === "none" || pattern === "normal"
+                  ? "bg-emerald-500/5 border-emerald-500/20"
+                  : "bg-primary/5 border-primary/20"
+              )}>
+                <div className="flex items-center gap-2 mb-2">
+                  <Stethoscope className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-bold">Interpretation Summary</span>
+                </div>
+                <div className="text-sm">
+                  {deficiencyDiagnosis?.label !== "none" && deficiencyDiagnosis?.label !== "unknown" ? (
+                    <div className="flex items-start gap-2 text-amber-600 dark:text-amber-400">
+                      <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
+                      <p>
+                        Likely <span className="font-bold">{deficiencyDiagnosis.diagnosis}</span>. {deficiencyDiagnosis.detail}
+                      </p>
+                    </div>
+                  ) : pattern !== "normal" && pattern !== null ? (
+                    <div className="flex items-start gap-2 text-primary">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0" />
+                      <p>
+                        Pattern indicates <span className="font-bold">{overloadType === 'reactive' ? 'Reactive Hyperferritinemia' : 'Possible Iron Overload'}</span>. TSAT is {tsVal}%.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex items-start gap-2 text-emerald-600 dark:text-emerald-400">
+                      <Check className="h-4 w-4 mt-0.5 shrink-0" />
+                      <p>Iron studies are currently within <span className="font-bold">Normal Limits</span> for iron deficiency assessment.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Deficiency + Ganzoni */}
             {deficiencyDiagnosis && (
