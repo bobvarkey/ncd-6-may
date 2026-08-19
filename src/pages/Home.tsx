@@ -725,7 +725,7 @@ export default function Home() {
       title: "cSDH Risk Assessment",
       description: "Structured perioperative assessment for chronic subdural hematoma",
       icon: <Brain className="h-4 w-4 text-indigo-500" />,
-      to: "/perioperative-calculators#csdh",
+      to: "/infections?tab=csdh",
     },
     {
       title: "Meal Planner",
