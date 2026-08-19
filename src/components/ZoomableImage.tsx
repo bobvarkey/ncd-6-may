@@ -296,7 +296,9 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
               1:1
             </button>
             <div className="flex-1" />
-            <p className="text-white/60 text-xs hidden sm:block">{alt}</p>
+            <p className="text-white/60 text-xs hidden sm:block">
+              {current.alt}{hasGallery ? ` (${safeIndex + 1}/${gallery.length})` : ""}
+            </p>
             <div className="flex-1" />
             <button
               type="button"
