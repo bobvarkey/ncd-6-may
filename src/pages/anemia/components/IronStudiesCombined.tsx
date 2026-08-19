@@ -106,6 +106,31 @@ function RangeOrExact({
 }: { id: string; label: string; unit?: string; value: string; onChange: (v: string) => void; ranges: Range[]; tooltip?: string }) {
   const [mode, setMode] = useState<"range" | "exact" | "slider">("slider");
   const bounds = SLIDER_BOUNDS[id] ?? { min: 0, max: 100, step: 1 };
+
+  const validation = useMemo(() => {
+    const v = parseFloat(value);
+    if (isNaN(v)) return null;
+    
+    // Typical adult reference ranges (simplified)
+    const ranges: Record<string, { min: number, max: number }> = {
+      serumIron: { min: 60, max: 170 },
+      tibc: { min: 240, max: 450 },
+      ts: { min: 20, max: 50 },
+      ferritin: { min: 30, max: 300 },
+      hemoglobin: { min: 12, max: 17.5 },
+      weight: { min: 40, max: 150 },
+      alt: { min: 0, max: 56 },
+      ast: { min: 0, max: 40 },
+    };
+    
+    const range = ranges[id];
+    if (!range) return null;
+    
+    if (v < range.min) return { type: 'low', msg: `Value is below typical range (${range.min})` };
+    if (v > range.max) return { type: 'high', msg: `Value is above typical range (${range.max})` };
+    return null;
+  }, [id, value]);
+
   const nextMode = mode === "slider" ? "range" : mode === "range" ? "exact" : "slider";
   const sliderValue = value === "" || isNaN(Number(value))
     ? (bounds.min + bounds.max) / 2
@@ -114,7 +139,7 @@ function RangeOrExact({
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <Label htmlFor={id} className="text-xs">{label} {unit && <span className="text-muted-foreground">({unit})</span>}</Label>
+          <Label htmlFor={id} className={`text-xs ${validation ? 'text-amber-600 dark:text-amber-400' : ''}`}>{label} {unit && <span className="text-muted-foreground">({unit})</span>}</Label>
           {tooltip && (
             <TooltipProvider>
               <Tooltip>
@@ -135,11 +160,11 @@ function RangeOrExact({
       </div>
       {mode === "range" ? (
         <Select value={value} onValueChange={onChange}>
-          <SelectTrigger id={id} className="h-9"><SelectValue placeholder="Select range" /></SelectTrigger>
+          <SelectTrigger id={id} className={cn("h-9", validation && "border-amber-500/50")}><SelectValue placeholder="Select range" /></SelectTrigger>
           <SelectContent>{ranges.map(r => <SelectItem key={r.label} value={String(r.value)}>{r.label}</SelectItem>)}</SelectContent>
         </Select>
       ) : mode === "exact" ? (
-        <Input id={id} type="number" inputMode="decimal" className="h-9" value={value} onChange={e => onChange(e.target.value)} />
+        <Input id={id} type="number" inputMode="decimal" className={cn("h-9", validation && "border-amber-500/50")} value={value} onChange={e => onChange(e.target.value)} />
       ) : (
         <div className="flex items-center gap-3 h-9">
           <Slider
@@ -156,11 +181,16 @@ function RangeOrExact({
             type="number"
             inputMode="decimal"
             aria-label={`${label} value`}
-            className="h-9 w-20 shrink-0 text-center"
+            className={cn("h-9 w-20 shrink-0 text-center", validation && "border-amber-500/50")}
             value={value}
             onChange={e => onChange(e.target.value)}
           />
         </div>
+      )}
+      {validation && (
+        <p className="text-[10px] text-amber-600 dark:text-amber-400 font-medium leading-none">
+          {validation.msg}
+        </p>
       )}
     </div>
   );
