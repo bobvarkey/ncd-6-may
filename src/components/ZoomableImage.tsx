@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, CSSProperties, useEffect } from "react";
+import { useState, useRef, useCallback, CSSProperties, useEffect, forwardRef, useImperativeHandle } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,16 +12,18 @@ interface ZoomableImageProps {
   style?: CSSProperties;
   wrapperClassName?: string;
   loading?: "lazy" | "eager";
+  triggerType?: "thumbnail" | "none";
 }
 
-export default function ZoomableImage({
+const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(({
   src,
   alt,
   className = "",
   style,
   wrapperClassName = "",
   loading = "lazy",
-}: ZoomableImageProps) {
+  triggerType = "thumbnail",
+}, ref) => {
   const [open, setOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
@@ -30,6 +32,13 @@ export default function ZoomableImage({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    openModal: () => {
+      setOpen(true);
+      reset();
+    },
+  }));
 
   /** Clamp position so the image stays within panning bounds */
   const clampPosition = useCallback((pos: { x: number; y: number }, currentZoom: number) => {
@@ -167,24 +176,26 @@ export default function ZoomableImage({
   return (
     <>
       {/* Thumbnail trigger */}
-      <button
-        type="button"
-        aria-label={`Zoom: ${alt}`}
-        className={`group relative cursor-zoom-in block w-full overflow-hidden ${wrapperClassName}`}
-        onClick={() => { setOpen(true); reset(); }}
-      >
-        <img
-          src={src}
-          alt={alt}
-          loading={loading}
-          className={className}
-          style={style}
-          draggable={false}
-        />
-        <span className="pointer-events-none absolute top-2 right-2 rounded-full bg-black/50 p-1 opacity-0 transition-opacity group-hover:opacity-100">
-          <ZoomIn className="h-4 w-4 text-white" />
-        </span>
-      </button>
+      {triggerType === "thumbnail" && (
+        <button
+          type="button"
+          aria-label={`Zoom: ${alt}`}
+          className={`group relative cursor-zoom-in block w-full overflow-hidden ${wrapperClassName}`}
+          onClick={() => { setOpen(true); reset(); }}
+        >
+          <img
+            src={src}
+            alt={alt}
+            loading={loading}
+            className={className}
+            style={style}
+            draggable={false}
+          />
+          <span className="pointer-events-none absolute top-2 right-2 rounded-full bg-black/50 p-1 opacity-0 transition-opacity group-hover:opacity-100">
+            <ZoomIn className="h-4 w-4 text-white" />
+          </span>
+        </button>
+      )}
 
       {/* Full-screen modal */}
       <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) reset(); }}>
@@ -285,4 +296,8 @@ export default function ZoomableImage({
       </Dialog>
     </>
   );
-}
+});
+
+ZoomableImage.displayName = "ZoomableImage";
+
+export default ZoomableImage;
