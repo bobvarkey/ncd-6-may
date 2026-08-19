@@ -820,9 +820,9 @@ export default function IronStudiesCombined() {
             {/* Deficiency + Ganzoni */}
             {deficiencyDiagnosis && (
               <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs font-semibold mb-2 flex items-center gap-2">
+                <div className="text-xs mb-2 flex items-center gap-2">
                   <Pill className="h-3 w-3 text-primary" />
-                  Iron Deficiency Assessment
+                  <span className="font-bold">Iron Deficiency Assessment</span>
                 </div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <div>
