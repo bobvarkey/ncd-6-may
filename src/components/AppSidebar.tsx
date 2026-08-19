@@ -84,7 +84,7 @@ const SECTIONS: Section[] = [
     items: [
       { title: "Perioperative Tools", url: "/perioperative-calculators", icon: Stethoscope, keywords: "rcri asa mallampati caprini apgar med management" },
       { title: "cSDH Risk", url: "/infections?tab=csdh", icon: Brain, keywords: "chronic subdural hematoma neurosurgery neuro assessment" },
-      { title: "AKI / AKD Criteria", url: "/aki-criteria", icon: Activity, keywords: "acute kidney injury renal kdigo rifle" },
+      { title: "AKI / AKD Criteria", url: "/aki-criteria", icon: Activity, keywords: "acute kidney injury renal kdigo rifle akd" },
     ],
   },
   {
