@@ -323,7 +323,19 @@ const CALCULATOR_CARDS: {
 
 // ─── Component ───
 const PerioperativeCalculators = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("rcri");
+
+  useEffect(() => {
+    const hash = location.hash.replace("#", "");
+    if (hash && ["rcri", "asa", "mallampati", "stopbang", "caprini", "apgar", "meds", "labs", "woo", "sts", "csdh"].includes(hash)) {
+      setActiveTab(hash);
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
 
   return (
     <div className="space-y-5 animate-slide-in">
