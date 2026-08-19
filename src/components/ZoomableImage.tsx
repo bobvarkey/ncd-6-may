@@ -164,8 +164,19 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
     setDragging(false);
   }, []);
 
-  // Keyboard: zoom, rotate, close. Radix Dialog already handles focus trap + Esc,
-  // but we add explicit shortcuts and cycle through toolbar buttons with arrows.
+  const goPrev = useCallback(() => {
+    if (gallery.length < 2) return;
+    setIndex((i) => (i - 1 + gallery.length) % gallery.length);
+    setZoom(1); setPosition({ x: 0, y: 0 }); setRotation(0);
+  }, [gallery.length]);
+
+  const goNext = useCallback(() => {
+    if (gallery.length < 2) return;
+    setIndex((i) => (i + 1) % gallery.length);
+    setZoom(1); setPosition({ x: 0, y: 0 }); setRotation(0);
+  }, [gallery.length]);
+
+  // Keyboard: zoom, rotate, navigate, close.
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!open) return;
@@ -180,10 +191,12 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
       else if (e.key === "Escape") { setOpen(false); }
       else if (e.key === "ArrowUp") { e.preventDefault(); zoomIn(); }
       else if (e.key === "ArrowDown") { e.preventDefault(); zoomOut(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); goPrev(); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); goNext(); }
     };
     window.addEventListener("keydown", handler);
     return () => { window.clearTimeout(t); window.removeEventListener("keydown", handler); };
-  }, [open, zoomIn, zoomOut, reset, isFullscreen]);
+  }, [open, zoomIn, zoomOut, reset, isFullscreen, goPrev, goNext]);
 
   const toggleFullscreen = useCallback(() => {
     if (!isFullscreen) {
