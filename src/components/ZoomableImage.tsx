@@ -277,7 +277,7 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
               src={src}
               alt={alt}
               draggable={false}
-              className="max-w-full max-h-full select-none pointer-events-none"
+              className="max-w-[90vw] max-h-[85vh] w-auto h-auto object-contain select-none pointer-events-none"
               style={{
                 transform: `translate(${position.x}px, ${position.y}px) scale(${zoom}) rotate(${rotation}deg)`,
                 transformOrigin: "center center",
