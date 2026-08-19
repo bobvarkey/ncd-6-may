@@ -1665,9 +1665,10 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
               })()}
 
               <div className="p-3 rounded-lg bg-warning/5 border border-warning/20">
-                <h4 className="text-xs font-medium text-warning mb-1">⚠️ Placeholder Coefficients</h4>
+                <h4 className="text-xs font-medium text-warning mb-1">Clinical Scope</h4>
                 <p className="text-xs">
-                  These probabilities use placeholder β-values from the HTML skeleton. Replace with actual coefficients from the Woo paper (Table S1-S5) for clinically accurate predictions.
+                  No, the Woo perioperative risk scores—developed by Dr. Jonathan Sang Hoon Woo and colleagues—cannot be used for all types of cases. These predictive tools are specifically tailored for non-cardiac, non-neurological surgery to estimate specific 30-day postoperative risks like acute kidney injury (AKI), major adverse kidney events (MAKE), or stroke/cardiac complications.
+                </p>
                 </p>
               </div>
             </div>
