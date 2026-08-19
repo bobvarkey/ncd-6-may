@@ -158,7 +158,7 @@ Plan: ${data.assessment_context.planned_management.replace(/_/g, " ")}
 
 NEUROLOGICAL STATUS
 GCS: ${gcsTotal}/15 (E${data.neurological_assessment.gcs.eye}V${data.neurological_assessment.gcs.verbal}M${data.neurological_assessment.gcs.motor})
-Markwalder Grade: ${data.markwalder_grade}
+Markwalder Grade: ${data.markwalder_grade.grade}
 Trajectory: ${data.neurological_assessment.trajectory}
 
 RADIOLOGICAL FEATURES
