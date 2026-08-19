@@ -5,7 +5,7 @@ import {
   Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, Info,
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
-  Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors,
+  Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors, Brain,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
@@ -658,8 +658,8 @@ const QUICK_ACCESS = [
   { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets },
   { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart },
   { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet },
+  { to: "/infections?tab=csdh", label: "cSDH Risk", desc: "Neuro-perioperative plan",  Icon: Brain },
   { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator },
-  { to: "/renal-dosing#mehran", label: "Mehran Score", desc: "Post-PCI CIN risk",     Icon: Filter },
 ] as const;
 
 // Static hero data — module-level so it never recreates per render.
@@ -719,7 +719,13 @@ export default function Home() {
       title: "Perioperative Calculators",
       description: "RCRI, ASA, Mallampati, Caprini, STOP-Bang, Apgar, Med Management",
       icon: <Scissors className="h-4 w-4 text-indigo-500" />,
-      to: "/perioperative",
+      to: "/perioperative-calculators",
+    },
+    {
+      title: "cSDH Risk Assessment",
+      description: "Structured perioperative assessment for chronic subdural hematoma",
+      icon: <Brain className="h-4 w-4 text-indigo-500" />,
+      to: "/infections?tab=csdh",
     },
     {
       title: "Meal Planner",
@@ -1013,6 +1019,13 @@ export default function Home() {
             icon={<Bug className="h-5 w-5 text-rose-400" />}
             to="/infections"
             accent="bg-rose-500"
+          />
+          <DiseaseCard
+            title="cSDH Risk Assessment"
+            description="Structured perioperative assessment for chronic subdural hematoma patients"
+            icon={<Brain className="h-5 w-5 text-indigo-400" />}
+            to="/infections?tab=csdh"
+            accent="bg-indigo-500"
           />
           <DiseaseCard
             title="Diarrhoea & Constipation"

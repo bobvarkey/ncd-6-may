@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText,
 } from "lucide-react";
@@ -20,6 +21,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import ZoomableImage from "@/components/ZoomableImage";
+import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import mallampatiAsset from "@/assets/mallampati-score.png.asset.json";
 
 // ─── RCRI (Revised Cardiac Risk Index) ───
@@ -317,11 +319,24 @@ const CALCULATOR_CARDS: {
   { value: "sts", title: "STS Cardiac", icon: Heart, inputs: "Cardiac-surgery specific patient and procedure variables", results: "Estimated operative mortality and morbidity band" },
   { value: "meds", title: "Med Management", icon: Pill, inputs: "Browse by drug class (anticoagulants, antiplatelets, diabetes, etc.)", results: "Hold / continue timing before surgery and restart guidance" },
   { value: "labs", title: "Pre-op Labs", icon: FileText, inputs: "Patient factors and planned procedure risk", results: "Which pre-operative tests are indicated (and which are not)" },
+  { value: "csdh", title: "cSDH Risk", icon: Brain, inputs: "Age, GCS, imaging (shift/thickness), ASA, frailty", results: "Standardized perioperative report for chronic SDH" },
 ];
 
 // ─── Component ───
 const PerioperativeCalculators = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("rcri");
+
+  useEffect(() => {
+    const hash = location.hash.replace("#", "");
+    if (hash && ["rcri", "asa", "mallampati", "stopbang", "caprini", "apgar", "meds", "labs", "woo", "sts", "csdh"].includes(hash)) {
+      setActiveTab(hash);
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
 
   return (
     <div className="space-y-5 animate-slide-in">
@@ -375,6 +390,7 @@ const PerioperativeCalculators = () => {
           <TabsTrigger value="labs" className="text-sm">Pre-op Labs</TabsTrigger>
           <TabsTrigger value="woo" className="text-sm">Woo Perioperative Risk (Non-Cardiac Surgery)</TabsTrigger>
           <TabsTrigger value="sts" className="text-sm">STS Cardiac</TabsTrigger>
+          <TabsTrigger value="csdh" className="text-sm">cSDH Risk</TabsTrigger>
         </TabsList>
 
 
@@ -422,6 +438,9 @@ const PerioperativeCalculators = () => {
         </TabsContent>
         <TabsContent value="sts" className="mt-4 space-y-4">
           <STSCardiacRiskCalculator />
+        </TabsContent>
+        <TabsContent value="csdh" className="mt-4 space-y-4">
+          <CsdhRiskCalculator />
         </TabsContent>
       </Tabs>
     </div>

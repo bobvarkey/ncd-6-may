@@ -1,10 +1,11 @@
 import { FrequencyBadge } from "@/components/FrequencyBadge";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AlertTriangle, Pill, Printer, Copy, Download, ShieldAlert, Baby, Activity, Hospital, FlaskConical, Image as ImageIcon } from "lucide-react";
+import { AlertTriangle, Pill, Printer, Copy, Download, ShieldAlert, Baby, Activity, Hospital, FlaskConical, Image as ImageIcon, Brain } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 import SeriousInfections from "./infections/SeriousInfections";
+import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import ZoomableImage from "@/components/ZoomableImage";
 import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
@@ -302,6 +303,16 @@ const CONDITIONS: ConditionDef[] = [
     severityEscalation: "Septic, urinary retention, immunocompromised, post-procedure → admit for IV (ceftriaxone or pip-tazo).",
     redFlags: ["Sepsis / hemodynamic instability", "Urinary retention", "Prostatic abscess", "Failure after 48–72 h"],
   },
+  {
+    id: "csdh",
+    label: "Chronic Subdural Hematoma (cSDH)",
+    category: "Neurosurgery",
+    needsAbx: () => ({ needed: false, rationale: "Medical condition, not an infection. Requires neurosurgical assessment for risk stratification." }),
+    firstLine: [],
+    pregnancy: { safe: [], avoid: [] },
+    severityEscalation: "Increasing midline shift, worsening GCS, or new focal deficits → immediate neurosurgical consult.",
+    redFlags: ["Worsening GCS", "New pupillary changes", "Rapidly progressive focal deficit", "Increasing midline shift"],
+  },
 ];
 
 const PILL_INPUT =
@@ -309,8 +320,12 @@ const PILL_INPUT =
 
 export default function Infections() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlTab = searchParams.get("tab") as "primary" | "serious" | null;
-  const [tab, setTab] = useState<"primary" | "serious">(urlTab ?? "primary");
+  const urlTab = searchParams.get("tab") as "primary" | "serious" | "csdh" | null;
+  const [tab, setTab] = useState<"primary" | "serious" | "csdh">(urlTab ?? "primary");
+
+  useEffect(() => {
+    if (urlTab) setTab(urlTab);
+  }, [urlTab]);
   const [conditionId, setConditionId] = useState<string>("strep");
   const [severity, setSeverity] = useState<Severity>("mild");
   const [pregnant, setPregnant] = useState(false);
@@ -452,10 +467,20 @@ export default function Infections() {
           >
             <Hospital className="h-4 w-4" /> Serious & nosocomial
           </button>
+          <button
+            onClick={() => { setTab("csdh"); setSearchParams({ tab: "csdh" }); }}
+            className={`px-3 py-2 text-sm font-medium border-b-2 -mb-px inline-flex items-center gap-1.5 ${
+              tab === "csdh" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Brain className="h-4 w-4" /> cSDH Risk
+          </button>
         </div>
 
         {tab === "serious" ? (
           <SeriousInfections />
+        ) : tab === "csdh" ? (
+          <CsdhRiskCalculator />
         ) : (
         <>
         <div className="rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-amber-900 flex gap-2">
