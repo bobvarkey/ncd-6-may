@@ -20,6 +20,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import ZoomableImage from "@/components/ZoomableImage";
+import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import mallampatiAsset from "@/assets/mallampati-score.png.asset.json";
 
 // ─── RCRI (Revised Cardiac Risk Index) ───
