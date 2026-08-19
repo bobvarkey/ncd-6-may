@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
-import { ZoomIn, ZoomOut, RotateCw } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCw, Maximize, Minimize } from "lucide-react";
 
 interface ZoomableImageProps {
   src: string;
@@ -30,6 +30,7 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +57,7 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
   const reset = useCallback(() => {
     setZoom(1);
     setPosition({ x: 0, y: 0 });
+    setIsFullscreen(false);
   }, []);
 
   const zoomIn = useCallback(() => {
@@ -163,6 +165,7 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
       if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomIn(); }
       else if (e.key === "-" || e.key === "_") { e.preventDefault(); zoomOut(); }
       else if (e.key === "r" || e.key === "R") { setRotation((prev) => (prev + 90) % 360); }
+      else if (e.key === "f" || e.key === "F") { toggleFullscreen(); }
       else if (e.key === "0") { reset(); }
       else if (e.key === "Escape") { setOpen(false); }
       else if (e.key === "ArrowUp") { e.preventDefault(); zoomIn(); }
@@ -170,7 +173,27 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
     };
     window.addEventListener("keydown", handler);
     return () => { window.clearTimeout(t); window.removeEventListener("keydown", handler); };
-  }, [open, zoomIn, zoomOut, reset]);
+  }, [open, zoomIn, zoomOut, reset, isFullscreen]);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!isFullscreen) {
+      containerRef.current?.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    const handler = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
 
 
   return (
@@ -230,6 +253,15 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
               title="Rotate (R)"
             >
               <RotateCw className="h-4 w-4" />
+            </button>
+            <div className="w-px h-5 bg-white/20 mx-1" />
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              title={isFullscreen ? "Exit Fullscreen (F)" : "Fullscreen (F)"}
+            >
+              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
             </button>
             <div className="w-px h-5 bg-white/20 mx-1" />
             <button
