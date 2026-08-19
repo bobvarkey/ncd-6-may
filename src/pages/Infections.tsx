@@ -320,7 +320,7 @@ const PILL_INPUT =
 export default function Infections() {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlTab = searchParams.get("tab") as "primary" | "serious" | null;
-  const [tab, setTab] = useState<"primary" | "serious">(urlTab ?? "primary");
+  const [tab, setTab] = useState<"primary" | "serious" | "csdh">(urlTab ?? "primary");
   const [conditionId, setConditionId] = useState<string>("strep");
   const [severity, setSeverity] = useState<Severity>("mild");
   const [pregnant, setPregnant] = useState(false);
