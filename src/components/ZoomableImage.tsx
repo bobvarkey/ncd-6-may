@@ -316,7 +316,7 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
           {/* Image area */}
           <div
             ref={containerRef}
-            className="flex-1 flex items-center justify-center overflow-hidden select-none"
+            className="relative flex-1 w-full flex items-center justify-center overflow-hidden select-none"
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -329,18 +329,40 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
               cursor: zoom > 1 ? (dragging ? "grabbing" : "grab") : "default",
             }}
           >
+            {hasGallery && (
+              <button
+                type="button"
+                onClick={goPrev}
+                aria-label="Previous image"
+                title="Previous image (←)"
+                className="absolute left-2 sm:left-4 z-20 inline-flex items-center justify-center h-11 w-11 rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+            )}
             <img
               ref={imageRef}
-              src={src}
-              alt={alt}
+              src={current.src}
+              alt={current.alt}
               draggable={false}
-              className="max-w-[90vw] max-h-[85vh] w-auto h-auto object-contain select-none pointer-events-none"
+              className="mx-auto max-w-[90vw] max-h-[82vh] w-auto h-auto object-contain select-none pointer-events-none"
               style={{
                 transform: `translate(${position.x}px, ${position.y}px) scale(${zoom}) rotate(${rotation}deg)`,
                 transformOrigin: "center center",
                 transition: dragging ? "none" : "transform 0.15s ease-out",
               }}
             />
+            {hasGallery && (
+              <button
+                type="button"
+                onClick={goNext}
+                aria-label="Next image"
+                title="Next image (→)"
+                className="absolute right-2 sm:right-4 z-20 inline-flex items-center justify-center h-11 w-11 rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            )}
           </div>
 
           {/* Bottom hint */}
