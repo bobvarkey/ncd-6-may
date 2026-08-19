@@ -102,8 +102,8 @@ const SLIDER_BOUNDS: Record<string, { min: number; max: number; step: number }> 
 };
 
 function RangeOrExact({
-  id, label, unit, value, onChange, ranges,
-}: { id: string; label: string; unit?: string; value: string; onChange: (v: string) => void; ranges: Range[] }) {
+  id, label, unit, value, onChange, ranges, tooltip,
+}: { id: string; label: string; unit?: string; value: string; onChange: (v: string) => void; ranges: Range[]; tooltip?: string }) {
   const [mode, setMode] = useState<"range" | "exact" | "slider">("slider");
   const bounds = SLIDER_BOUNDS[id] ?? { min: 0, max: 100, step: 1 };
   const nextMode = mode === "slider" ? "range" : mode === "range" ? "exact" : "slider";
@@ -113,7 +113,23 @@ function RangeOrExact({
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <Label htmlFor={id} className="text-xs">{label} {unit && <span className="text-muted-foreground">({unit})</span>}</Label>
+        <div className="flex items-center gap-1">
+          <Label htmlFor={id} className="text-xs">{label} {unit && <span className="text-muted-foreground">({unit})</span>}</Label>
+          {tooltip && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button type="button" className="text-muted-foreground hover:text-foreground">
+                    <Info className="h-3 w-3" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs max-w-xs">{tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
         <button type="button" onClick={() => setMode(nextMode)}
           className="text-xs text-primary hover:underline">{nextMode}</button>
       </div>
@@ -575,14 +591,78 @@ export default function IronStudiesCombined() {
             <Button size="sm" variant="ghost" onClick={handleReset}><RotateCcw className="h-3 w-3" /></Button>
           </CardHeader>
           <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <RangeOrExact id="serumIron" label="Serum Iron" unit="µg/dL" value={serumIron} onChange={setSerumIron} ranges={RANGES.serumIron} />
-            <RangeOrExact id="tibc" label="TIBC" unit="µg/dL" value={tibc} onChange={setTibc} ranges={RANGES.tibc} />
-            <RangeOrExact id="ts" label="Transferrin Saturation" unit="%" value={ts} onChange={setTs} ranges={RANGES.ts} />
-            <RangeOrExact id="ferritin" label="Ferritin" unit="µg/L" value={ferritin} onChange={setFerritin} ranges={RANGES.ferritin} />
-            <RangeOrExact id="hemoglobin" label="Hemoglobin" unit="g/dL" value={hemoglobin} onChange={setHemoglobin} ranges={RANGES.hemoglobin} />
-            <RangeOrExact id="weight" label="Weight" unit="kg" value={weight} onChange={setWeight} ranges={RANGES.weight} />
-            <RangeOrExact id="alt" label="ALT" unit="U/L" value={alt} onChange={setAlt} ranges={RANGES.alt} />
-            <RangeOrExact id="ast" label="AST" unit="U/L" value={ast} onChange={setAst} ranges={RANGES.ast} />
+            <RangeOrExact 
+              id="serumIron" 
+              label="Serum Iron" 
+              unit="µg/dL" 
+              value={serumIron} 
+              onChange={setSerumIron} 
+              ranges={RANGES.serumIron} 
+              tooltip="Measures iron circulating in the blood. Varies significantly by diet and time of day. Ref: 60-170 µg/dL."
+            />
+            <RangeOrExact 
+              id="tibc" 
+              label="TIBC" 
+              unit="µg/dL" 
+              value={tibc} 
+              onChange={setTibc} 
+              ranges={RANGES.tibc} 
+              tooltip="Total Iron Binding Capacity. Measures transferrin's capacity to bind iron; high levels usually indicate low iron stores. Ref: 240-450 µg/dL."
+            />
+            <RangeOrExact 
+              id="ts" 
+              label="Transferrin Saturation" 
+              unit="%" 
+              value={ts} 
+              onChange={setTs} 
+              ranges={RANGES.ts} 
+              tooltip="The ratio of serum iron to TIBC. A key indicator of iron availability for erythropoiesis. Low (<20%) indicates deficiency. Ref: 20-50%."
+            />
+            <RangeOrExact 
+              id="ferritin" 
+              label="Ferritin" 
+              unit="µg/L" 
+              value={ferritin} 
+              onChange={setFerritin} 
+              ranges={RANGES.ferritin} 
+              tooltip="Reflects total body iron stores. Also an acute-phase reactant (can be falsely high in inflammation). Ref: 30-300 µg/L."
+            />
+            <RangeOrExact 
+              id="hemoglobin" 
+              label="Hemoglobin" 
+              unit="g/dL" 
+              value={hemoglobin} 
+              onChange={setHemoglobin} 
+              ranges={RANGES.hemoglobin} 
+              tooltip="The iron-containing oxygen-transport metalloprotein in red blood cells. Ref: 12-16 (F), 13.5-17.5 (M) g/dL."
+            />
+            <RangeOrExact 
+              id="weight" 
+              label="Weight" 
+              unit="kg" 
+              value={weight} 
+              onChange={setWeight} 
+              ranges={RANGES.weight} 
+              tooltip="Required for Ganzoni formula deficit calculation."
+            />
+            <RangeOrExact 
+              id="alt" 
+              label="ALT" 
+              unit="U/L" 
+              value={alt} 
+              onChange={setAlt} 
+              ranges={RANGES.alt} 
+              tooltip="Alanine Transaminase. Liver enzyme used to screen for liver damage in iron overload. Ref: 7-56 U/L."
+            />
+            <RangeOrExact 
+              id="ast" 
+              label="AST" 
+              unit="U/L" 
+              value={ast} 
+              onChange={setAst} 
+              ranges={RANGES.ast} 
+              tooltip="Aspartate Transaminase. Liver enzyme used alongside ALT to assess liver health. Ref: 10-40 U/L."
+            />
           </CardContent>
           {computedTs && (
             <CardContent className="pt-0">
