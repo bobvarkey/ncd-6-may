@@ -31,29 +31,58 @@ interface CsdhData {
       verbal_limitation: string;
     };
     pupils: {
+      left_size_mm?: string;
+      right_size_mm?: string;
       left_reactivity: string;
       right_reactivity: string;
       anisocoria: boolean;
+      new_abnormality: boolean;
     };
-    focal_deficit: boolean;
+    focal_deficit: {
+      present: boolean;
+      types: string[];
+      trajectory: string;
+    };
     seizures: string;
     trajectory: string;
+    raised_icp: string[];
   };
   ct_mass_effect: {
     laterality: string;
     thickness_mm: string;
+    left_thickness_mm?: string;
+    right_thickness_mm?: string;
     midline_shift_mm: string;
     cistern_status: string;
+    ventricular_compression: string;
+    density_pattern: string;
+    septations: string;
     trajectory: string;
+    associated_findings: string[];
   };
-  markwalder_grade: string;
+  markwalder_grade: {
+    applicable: boolean;
+    grade: string;
+    reason?: string;
+  };
   frailty: {
     cfs: string;
     mrs: string;
+    residence: string;
+    mobility: string;
+    cognition: string;
   };
   perioperative: {
     asa: string;
     emergency_modifier: boolean;
+    rcri: {
+      ihd: boolean;
+      hf: boolean;
+      cva: boolean;
+      dm_insulin: boolean;
+      ckd: boolean;
+      high_risk_surg: boolean;
+    };
   };
 }
 
@@ -70,21 +99,30 @@ export const CsdhRiskCalculator = () => {
     },
     neurological_assessment: {
       gcs: { eye: "4", verbal: "5", motor: "6", verbal_limitation: "none" },
-      pupils: { left_reactivity: "brisk", right_reactivity: "brisk", anisocoria: false },
-      focal_deficit: false,
+      pupils: { left_reactivity: "brisk", right_reactivity: "brisk", anisocoria: false, new_abnormality: false },
+      focal_deficit: { present: false, types: [], trajectory: "none" },
       seizures: "none_known",
       trajectory: "stable",
+      raised_icp: ["none"],
     },
     ct_mass_effect: {
       laterality: "uncertain",
       thickness_mm: "",
       midline_shift_mm: "",
       cistern_status: "patent",
+      ventricular_compression: "none",
+      density_pattern: "hypodense_chronic",
+      septations: "absent",
       trajectory: "stable",
+      associated_findings: ["none"],
     },
-    markwalder_grade: "0",
-    frailty: { cfs: "1", mrs: "0" },
-    perioperative: { asa: "ASA_II", emergency_modifier: false },
+    markwalder_grade: { applicable: true, grade: "0" },
+    frailty: { cfs: "1", mrs: "0", residence: "independent_home", mobility: "independent_without_aid", cognition: "no_known_cognitive_impairment" },
+    perioperative: { 
+      asa: "ASA_II", 
+      emergency_modifier: false,
+      rcri: { ihd: false, hf: false, cva: false, dm_insulin: false, ckd: false, high_risk_surg: false }
+    },
   });
 
   const update = (path: string, value: any) => {
