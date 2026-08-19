@@ -719,7 +719,13 @@ export default function Home() {
       title: "Perioperative Calculators",
       description: "RCRI, ASA, Mallampati, Caprini, STOP-Bang, Apgar, Med Management",
       icon: <Scissors className="h-4 w-4 text-indigo-500" />,
-      to: "/perioperative",
+      to: "/perioperative-calculators",
+    },
+    {
+      title: "cSDH Risk Assessment",
+      description: "Structured perioperative assessment for chronic subdural hematoma",
+      icon: <Brain className="h-4 w-4 text-indigo-500" />,
+      to: "/perioperative-calculators#csdh",
     },
     {
       title: "Meal Planner",
