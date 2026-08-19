@@ -246,7 +246,7 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
       {/* Full-screen modal */}
       <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) reset(); }}>
         <DialogContent
-          className="fixed inset-0 z-50 flex flex-col bg-black/95 border-0 rounded-none max-w-none w-full h-full p-0 data-[state=open]:animate-in data-[state=closed]:animate-out"
+          className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 z-50 flex flex-col items-stretch justify-center bg-black/95 border-0 rounded-none !max-w-none !w-screen !h-screen p-0 gap-0 data-[state=open]:animate-in data-[state=closed]:animate-out"
           onInteractOutside={(e) => e.preventDefault()}
         >
           {/* Top toolbar */}
