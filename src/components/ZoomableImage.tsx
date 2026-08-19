@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
-import { ZoomIn, ZoomOut, RotateCw, Maximize, Minimize } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCw, Maximize, Minimize, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ZoomableImageProps {
   src: string;
@@ -13,9 +13,11 @@ interface ZoomableImageProps {
   wrapperClassName?: string;
   loading?: "lazy" | "eager";
   triggerType?: "thumbnail" | "none";
+  /** Optional gallery: when provided, the modal shows next/previous navigation */
+  images?: { src: string; alt: string }[];
 }
 
-const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(({
+const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, ZoomableImageProps>(({
   src,
   alt,
   className = "",
@@ -23,6 +25,7 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
   wrapperClassName = "",
   loading = "lazy",
   triggerType = "thumbnail",
+  images,
 }, ref) => {
   const [open, setOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -31,11 +34,18 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [index, setIndex] = useState(0);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const gallery = images && images.length > 0 ? images : [{ src, alt }];
+  const safeIndex = Math.min(index, gallery.length - 1);
+  const current = gallery[safeIndex];
+  const hasGallery = gallery.length > 1;
+
   useImperativeHandle(ref, () => ({
-    openModal: () => {
+    openModal: (i?: number) => {
+      setIndex(typeof i === "number" ? i : 0);
       setOpen(true);
       reset();
     },
@@ -154,8 +164,19 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
     setDragging(false);
   }, []);
 
-  // Keyboard: zoom, rotate, close. Radix Dialog already handles focus trap + Esc,
-  // but we add explicit shortcuts and cycle through toolbar buttons with arrows.
+  const goPrev = useCallback(() => {
+    if (gallery.length < 2) return;
+    setIndex((i) => (i - 1 + gallery.length) % gallery.length);
+    setZoom(1); setPosition({ x: 0, y: 0 }); setRotation(0);
+  }, [gallery.length]);
+
+  const goNext = useCallback(() => {
+    if (gallery.length < 2) return;
+    setIndex((i) => (i + 1) % gallery.length);
+    setZoom(1); setPosition({ x: 0, y: 0 }); setRotation(0);
+  }, [gallery.length]);
+
+  // Keyboard: zoom, rotate, navigate, close.
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!open) return;
@@ -170,10 +191,12 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
       else if (e.key === "Escape") { setOpen(false); }
       else if (e.key === "ArrowUp") { e.preventDefault(); zoomIn(); }
       else if (e.key === "ArrowDown") { e.preventDefault(); zoomOut(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); goPrev(); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); goNext(); }
     };
     window.addEventListener("keydown", handler);
     return () => { window.clearTimeout(t); window.removeEventListener("keydown", handler); };
-  }, [open, zoomIn, zoomOut, reset, isFullscreen]);
+  }, [open, zoomIn, zoomOut, reset, isFullscreen, goPrev, goNext]);
 
   const toggleFullscreen = useCallback(() => {
     if (!isFullscreen) {
@@ -223,7 +246,7 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
       {/* Full-screen modal */}
       <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) reset(); }}>
         <DialogContent
-          className="fixed inset-0 z-50 flex flex-col bg-black/95 border-0 rounded-none max-w-none w-full h-full p-0 data-[state=open]:animate-in data-[state=closed]:animate-out"
+          className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 z-50 flex flex-col items-stretch justify-center bg-black/95 border-0 rounded-none !max-w-none !w-screen !h-screen p-0 gap-0 data-[state=open]:animate-in data-[state=closed]:animate-out"
           onInteractOutside={(e) => e.preventDefault()}
         >
           {/* Top toolbar */}
@@ -273,7 +296,9 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
               1:1
             </button>
             <div className="flex-1" />
-            <p className="text-white/60 text-xs hidden sm:block">{alt}</p>
+            <p className="text-white/60 text-xs hidden sm:block">
+              {current.alt}{hasGallery ? ` (${safeIndex + 1}/${gallery.length})` : ""}
+            </p>
             <div className="flex-1" />
             <button
               type="button"
@@ -291,7 +316,7 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
           {/* Image area */}
           <div
             ref={containerRef}
-            className="flex-1 flex items-center justify-center overflow-hidden select-none"
+            className="relative flex-1 w-full flex items-center justify-center overflow-hidden select-none"
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -304,24 +329,46 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
               cursor: zoom > 1 ? (dragging ? "grabbing" : "grab") : "default",
             }}
           >
+            {hasGallery && (
+              <button
+                type="button"
+                onClick={goPrev}
+                aria-label="Previous image"
+                title="Previous image (←)"
+                className="absolute left-2 sm:left-4 z-20 inline-flex items-center justify-center h-11 w-11 rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+            )}
             <img
               ref={imageRef}
-              src={src}
-              alt={alt}
+              src={current.src}
+              alt={current.alt}
               draggable={false}
-              className="max-w-[90vw] max-h-[85vh] w-auto h-auto object-contain select-none pointer-events-none"
+              className="mx-auto max-w-[90vw] max-h-[82vh] w-auto h-auto object-contain select-none pointer-events-none"
               style={{
                 transform: `translate(${position.x}px, ${position.y}px) scale(${zoom}) rotate(${rotation}deg)`,
                 transformOrigin: "center center",
                 transition: dragging ? "none" : "transform 0.15s ease-out",
               }}
             />
+            {hasGallery && (
+              <button
+                type="button"
+                onClick={goNext}
+                aria-label="Next image"
+                title="Next image (→)"
+                className="absolute right-2 sm:right-4 z-20 inline-flex items-center justify-center h-11 w-11 rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            )}
           </div>
 
           {/* Bottom hint */}
           <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-3">
             <p className="text-white/40 text-xs">
-              Scroll to zoom · Drag to pan · <span className="sm:hidden">Pinch to zoom</span><span className="hidden sm:inline">+/− to zoom</span> · R to rotate · Esc to close
+              Scroll to zoom · Drag to pan · <span className="sm:hidden">Pinch to zoom</span><span className="hidden sm:inline">+/− to zoom</span> · R to rotate{hasGallery ? " · ←/→ to browse" : ""} · Esc to close
             </p>
           </div>
         </DialogContent>
