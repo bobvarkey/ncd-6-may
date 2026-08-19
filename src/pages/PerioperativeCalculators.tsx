@@ -1451,13 +1451,19 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="mb-4 p-3 rounded-lg bg-purple-500/5 border border-purple-500/20 space-y-2">
+          <div className="mb-4 p-3 rounded-lg bg-purple-500/5 border border-purple-500/20 space-y-3">
             <p className="text-xs">
               <strong className="text-purple-600 dark:text-purple-400">About:</strong> A machine-learning–derived
               risk model developed from over 1.16 million adults undergoing non-cardiac surgery in the ACS-NSQIP
               database (Woo SH et al., <em>JAHA</em> 2021; PMID: 33522252). It uses routinely available
               preoperative variables to estimate individualized perioperative risk.
             </p>
+            <div className="p-2.5 rounded bg-warning/5 border border-warning/20">
+              <p className="text-[11px] leading-relaxed italic text-muted-foreground">
+                No, the Woo perioperative risk scores—developed by Dr. Jonathan Sang Hoon Woo and colleagues—cannot be used for all types of cases. 
+                These predictive tools are specifically tailored for <strong>non-cardiac, non-neurological surgery</strong> to estimate specific 30-day postoperative risks like acute kidney injury (AKI), major adverse kidney events (MAKE), or stroke/cardiac complications. [1, 2, 3, 4]
+              </p>
+            </div>
             <p className="text-xs">
               <strong className="text-purple-600 dark:text-purple-400">Predicts (30-day postoperative):</strong>
             </p>
