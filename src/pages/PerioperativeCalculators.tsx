@@ -1669,7 +1669,6 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
                 <p className="text-xs">
                   No, the Woo perioperative risk scores—developed by Dr. Jonathan Sang Hoon Woo and colleagues—cannot be used for all types of cases. These predictive tools are specifically tailored for non-cardiac, non-neurological surgery to estimate specific 30-day postoperative risks like acute kidney injury (AKI), major adverse kidney events (MAKE), or stroke/cardiac complications.
                 </p>
-                </p>
               </div>
             </div>
           )}
