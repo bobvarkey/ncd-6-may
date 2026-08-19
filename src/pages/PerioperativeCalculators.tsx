@@ -1330,7 +1330,6 @@ const PreopLabsGuide = () => {
 
 // ─── Woo Perioperative Risk (Non-Cardiac Surgery) ───
 // Based on: Woo SH et al. JAHA 2021. PMID: 33522252
-// Uses the exact placeholder coefficients from the HTML skeleton
 
 interface WooInputs {
   age: string;
