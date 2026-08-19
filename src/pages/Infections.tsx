@@ -1,10 +1,11 @@
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AlertTriangle, Pill, Printer, Copy, Download, ShieldAlert, Baby, Activity, Hospital, FlaskConical, Image as ImageIcon } from "lucide-react";
+import { AlertTriangle, Pill, Printer, Copy, Download, ShieldAlert, Baby, Activity, Hospital, FlaskConical, Image as ImageIcon, Brain } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 import SeriousInfections from "./infections/SeriousInfections";
+import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import ZoomableImage from "@/components/ZoomableImage";
 import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
