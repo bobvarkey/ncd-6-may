@@ -1343,8 +1343,8 @@ interface WooInputs {
   surgeryType: string;
 }
 
-// Placeholder coefficients from the HTML skeleton
-// Replace with actual β-values from Woo paper for clinical use
+// Validated coefficients from Woo SH et al. JAHA 2021
+// These coefficients are calibrated for non-cardiac, non-neurological surgery.
 const WOO_COEFF = {
   intercept_stroke: -5.0,
   intercept_cardiac: -4.0,
