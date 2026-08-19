@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { Copy, Printer, ChevronDown, Download, AlertTriangle, Droplets, Stethoscope, FlaskConical, Dna, HeartPulse, Syringe, Pill, Activity, RotateCcw, Info } from "lucide-react";
+import { Copy, Printer, ChevronDown, Download, AlertTriangle, Droplets, Stethoscope, FlaskConical, Dna, HeartPulse, Syringe, Pill, Activity, RotateCcw, Info, Check } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
