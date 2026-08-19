@@ -1,5 +1,5 @@
 import { FrequencyBadge } from "@/components/FrequencyBadge";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AlertTriangle, Pill, Printer, Copy, Download, ShieldAlert, Baby, Activity, Hospital, FlaskConical, Image as ImageIcon, Brain } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
