@@ -318,6 +318,7 @@ const CALCULATOR_CARDS: {
   { value: "sts", title: "STS Cardiac", icon: Heart, inputs: "Cardiac-surgery specific patient and procedure variables", results: "Estimated operative mortality and morbidity band" },
   { value: "meds", title: "Med Management", icon: Pill, inputs: "Browse by drug class (anticoagulants, antiplatelets, diabetes, etc.)", results: "Hold / continue timing before surgery and restart guidance" },
   { value: "labs", title: "Pre-op Labs", icon: FileText, inputs: "Patient factors and planned procedure risk", results: "Which pre-operative tests are indicated (and which are not)" },
+  { value: "csdh", title: "cSDH Risk", icon: Brain, inputs: "Age, GCS, imaging (shift/thickness), ASA, frailty", results: "Standardized perioperative report for chronic SDH" },
 ];
 
 // ─── Component ───
