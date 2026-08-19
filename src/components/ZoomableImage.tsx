@@ -368,7 +368,7 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
           {/* Bottom hint */}
           <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-3">
             <p className="text-white/40 text-xs">
-              Scroll to zoom · Drag to pan · <span className="sm:hidden">Pinch to zoom</span><span className="hidden sm:inline">+/− to zoom</span> · R to rotate · Esc to close
+              Scroll to zoom · Drag to pan · <span className="sm:hidden">Pinch to zoom</span><span className="hidden sm:inline">+/− to zoom</span> · R to rotate{hasGallery ? " · ←/→ to browse" : ""} · Esc to close
             </p>
           </div>
         </DialogContent>
