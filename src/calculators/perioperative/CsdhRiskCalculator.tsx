@@ -292,7 +292,7 @@ Generated on: ${new Date().toLocaleString()}`;
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-xs">Markwalder Grade</Label>
-                <Select value={data.markwalder_grade} onValueChange={v => update("markwalder_grade", v)}>
+                <Select value={data.markwalder_grade.grade} onValueChange={v => update("markwalder_grade.grade", v)}>
                   <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">Grade 0: Normal</SelectItem>
