@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
-import { ZoomIn, ZoomOut, RotateCw, Maximize, Minimize } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCw, Maximize, Minimize, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ZoomableImageProps {
   src: string;
@@ -13,9 +13,11 @@ interface ZoomableImageProps {
   wrapperClassName?: string;
   loading?: "lazy" | "eager";
   triggerType?: "thumbnail" | "none";
+  /** Optional gallery: when provided, the modal shows next/previous navigation */
+  images?: { src: string; alt: string }[];
 }
 
-const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(({
+const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, ZoomableImageProps>(({
   src,
   alt,
   className = "",
@@ -23,6 +25,7 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
   wrapperClassName = "",
   loading = "lazy",
   triggerType = "thumbnail",
+  images,
 }, ref) => {
   const [open, setOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -31,11 +34,18 @@ const ZoomableImage = forwardRef<{ openModal: () => void }, ZoomableImageProps>(
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [index, setIndex] = useState(0);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const gallery = images && images.length > 0 ? images : [{ src, alt }];
+  const safeIndex = Math.min(index, gallery.length - 1);
+  const current = gallery[safeIndex];
+  const hasGallery = gallery.length > 1;
+
   useImperativeHandle(ref, () => ({
-    openModal: () => {
+    openModal: (i?: number) => {
+      setIndex(typeof i === "number" ? i : 0);
       setOpen(true);
       reset();
     },
