@@ -1021,6 +1021,13 @@ export default function Home() {
             accent="bg-rose-500"
           />
           <DiseaseCard
+            title="cSDH Risk Assessment"
+            description="Structured perioperative assessment for chronic subdural hematoma patients"
+            icon={<Brain className="h-5 w-5 text-indigo-400" />}
+            to="/infections?tab=csdh"
+            accent="bg-indigo-500"
+          />
+          <DiseaseCard
             title="Diarrhoea & Constipation"
             description="Assessment, rehydration therapy, empiric antibiotics, when to refer, WHO guidelines"
             icon={<UtensilsCrossed className="h-5 w-5 text-amber-400" />}
