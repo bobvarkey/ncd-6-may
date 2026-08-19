@@ -141,6 +141,7 @@ const toneClass: Record<Rule["tone"], string> = {
 };
 
 export default function IronInterpretation() {
+  const zoomableImageRef = useRef<{ openModal: () => void } | null>(null);
   const [hb, setHb] = useState("");
   const [ferritin, setFerritin] = useState("");
   const [tsat, setTsat] = useState("");
@@ -263,13 +264,22 @@ export default function IronInterpretation() {
           </Button>
         </div>
         <div className="rounded-lg border p-3 space-y-2">
-          <p className="text-xs font-semibold">Iron profile patterns — visual mnemonic</p>
+          <button
+            type="button"
+            onClick={() => zoomableImageRef.current?.openModal()}
+            className="text-xs font-semibold text-primary hover:underline flex items-center gap-1.5"
+          >
+            <ImageIcon className="h-3.5 w-3.5" />
+            Iron profile patterns — visual mnemonic
+          </button>
           <p className="text-[11px] text-muted-foreground">
-            IDA vs anaemia of chronic disease vs sideroblastic anaemia: serum iron, TSAT, ferritin and TIBC patterns. Tap to zoom.
+            IDA vs anaemia of chronic disease vs sideroblastic anaemia: serum iron, TSAT, ferritin and TIBC patterns.
           </p>
           <ZoomableImage
+            ref={zoomableImageRef}
             src={ironProfileStory.url}
             alt="Iron profile patterns comparing iron deficiency anaemia, anaemia of chronic disease and sideroblastic anaemia across serum iron, transferrin saturation, ferritin and TIBC"
+            triggerType="none"
           />
         </div>
         <p className="text-[11px] text-muted-foreground">
