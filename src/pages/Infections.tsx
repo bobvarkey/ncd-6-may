@@ -322,6 +322,10 @@ export default function Infections() {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlTab = searchParams.get("tab") as "primary" | "serious" | null;
   const [tab, setTab] = useState<"primary" | "serious" | "csdh">(urlTab ?? "primary");
+
+  useEffect(() => {
+    if (urlTab) setTab(urlTab as any);
+  }, [urlTab]);
   const [conditionId, setConditionId] = useState<string>("strep");
   const [severity, setSeverity] = useState<Severity>("mild");
   const [pregnant, setPregnant] = useState(false);
