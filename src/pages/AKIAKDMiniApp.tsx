@@ -494,7 +494,17 @@ export default function AKIAKDMiniApp() {
               </div>
 
               <div>
-                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Clinical Next Steps</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Clinical Next Steps</div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-6 text-[10px] uppercase font-bold text-primary hover:text-primary/80 px-2"
+                    onClick={() => setShowFullDetails(!showFullDetails)}
+                  >
+                    {showFullDetails ? "Show Condensed" : "Show Full Details"}
+                  </Button>
+                </div>
                 <ul className="space-y-1.5">
                   {result.steps.map((s, i) => (
                     <li key={i} className="text-sm flex gap-2">
