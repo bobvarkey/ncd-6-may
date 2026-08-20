@@ -668,10 +668,28 @@ const MallampatiCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Eye className="w-4 h-4 text-violet-500" />
-            Mallampati Score (Airway Assessment)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Eye className="w-4 h-4 text-violet-500" />
+              Mallampati Score (Airway Assessment)
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const m = MALLAMPATI_CLASSES.find(c => c.class === selectedClass);
+                const note = `MALLAMPATI SCORE\nDate: ${new Date().toLocaleString()}\n\nResult:\n- Class: ${selectedClass || "Not selected"}\n- Description: ${m?.description || "N/A"}\n- Intubation: ${m?.intubation || "N/A"}\n- Risk: ${m?.risk || "N/A"} risk`;
+                copyToClipboard(note, "Mallampati result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const m = MALLAMPATI_CLASSES.find(c => c.class === selectedClass);
+                const note = `MALLAMPATI SCORE\nDate: ${new Date().toLocaleString()}\n\nResult:\n- Class: ${selectedClass || "Not selected"}\n- Description: ${m?.description || "N/A"}\n- Intubation: ${m?.intubation || "N/A"}\n- Risk: ${m?.risk || "N/A"} risk`;
+                downloadTextFile("Mallampati_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
