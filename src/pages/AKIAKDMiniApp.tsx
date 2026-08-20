@@ -174,15 +174,15 @@ export default function AKIAKDMiniApp() {
     // Next steps
     const steps: string[] = [];
     if (akiPresent) {
-      steps.push("Confirm reversible drivers: volume status, sepsis screen, obstruction (bladder scan/US).");
-      steps.push("Review & hold nephrotoxins: NSAIDs, ACEi/ARB, aminoglycosides, contrast, iodinated dyes.");
-      steps.push("Adjust renally-cleared drugs; check drug levels where relevant.");
+      steps.push("Confirm volume, screen sepsis, check obstruction.");
+      steps.push("Hold nephrotoxins: NSAIDs, ACEi/ARB, aminoglycosides, contrast.");
+      steps.push("Dose adjust drugs; check drug levels.");
       steps.push("Repeat SCr q12–24h; strict I/O; daily weights.");
       if (stage === "stage_2" || stage === "stage_3") {
-        steps.push("Nephrology consult; consider ICU-level monitoring; evaluate for RRT indications (AEIOU).");
+        steps.push("Nephrology consult; ICU-level monitoring; evaluate RRT.");
       }
       if (imputed) {
-        steps.push("Flag as 'AKI suspected' — baseline is imputed; seek prior labs / clinician adjudication.");
+        steps.push("Suspected AKI (imputed baseline) — seek prior labs.");
       }
     } else if (akdPresent) {
       steps.push("Order urine ACR, urinalysis with microscopy, renal ultrasound.");
