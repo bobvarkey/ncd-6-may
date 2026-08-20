@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Brain, AlertTriangle, User, Activity, ClipboardList, Stethoscope } from "lucide-react";
+import { Copy, Brain, AlertTriangle, User, Activity, ClipboardList, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { downloadTextFile } from "@/lib/clinical-utils";
 
 interface CsdhData {
   patient: {
