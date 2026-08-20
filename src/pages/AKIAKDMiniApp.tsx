@@ -237,7 +237,7 @@ export default function AKIAKDMiniApp() {
     baselineSource, baselineMethod, baselineValue, age, sex, weightKg,
     currentScr, scr48hAgo, cystatinBaseline, cystatinCurrent,
     uopMl, uopHours, biomarkerPositive, albuminuria, hematuria,
-    currentGFR, baselineGFR, durationDays,
+    currentGFR, baselineGFR, durationDays, showFullDetails,
   ]);
 
   const stageColor =
