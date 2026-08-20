@@ -828,7 +828,7 @@ export default function UnifiedPrescriptionMiniApp() {
                       "G5": "bg-purple-100 text-purple-800 border-purple-300",
                     };
                     return (
-                      <div className="flex items-center gap-1.5 mt-1">
+                      <div className="flex items-center gap-1.5 mt-1 select-all">
                         <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${colors[stage] || "bg-muted text-muted-foreground border-border"}`}>
                           KDIGO {stage}
                         </span>
