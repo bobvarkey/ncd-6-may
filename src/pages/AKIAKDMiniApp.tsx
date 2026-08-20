@@ -91,7 +91,7 @@ export default function AKIAKDMiniApp() {
 
     // 48h delta
     if (Number.isFinite(scrNow) && Number.isFinite(scr48) && scrNow - scr48 >= 0.3) {
-      triggered.push(`SCr rise ≥0.3 mg/dL in 48h (Δ ${(scrNow - scr48).toFixed(2)})`);
+      triggered.push(`SCr rise ≥0.3 mg/dL in 48h (Δ ${(scrNow - scr48).toFixed(2)}) [KDIGO 2026]`);
       reasons.push("scr_rise_48h");
     }
     // 7d ratio
@@ -99,7 +99,7 @@ export default function AKIAKDMiniApp() {
     if (Number.isFinite(scrNow) && Number.isFinite(effBaseline) && effBaseline > 0) {
       ratio7d = scrNow / effBaseline;
       if (ratio7d >= 1.5) {
-        triggered.push(`SCr ≥1.5× baseline (ratio ${ratio7d.toFixed(2)})`);
+        triggered.push(`SCr ≥1.5× baseline (ratio ${ratio7d.toFixed(2)}) [KDIGO 2026]`);
         reasons.push("scr_ratio_7d");
       }
     }
@@ -107,7 +107,7 @@ export default function AKIAKDMiniApp() {
     const cysB = num(cystatinBaseline);
     const cysN = num(cystatinCurrent);
     if (Number.isFinite(cysB) && Number.isFinite(cysN) && cysB > 0 && cysN / cysB >= 1.5) {
-      triggered.push(`Cystatin C ≥1.5× baseline (ratio ${(cysN / cysB).toFixed(2)})`);
+      triggered.push(`Cystatin C ≥1.5× baseline (ratio ${(cysN / cysB).toFixed(2)}) [KDIGO 2026]`);
       reasons.push("cystatin_c_ratio_7d");
     }
     // Urine output — ideal body weight ~ use provided weight
@@ -115,13 +115,13 @@ export default function AKIAKDMiniApp() {
     if (Number.isFinite(uop) && Number.isFinite(bWt) && bWt > 0 && hrs > 0) {
       uopPerKgHr = uop / bWt / hrs;
       if (uopPerKgHr < 0.5 && hrs >= 6) {
-        triggered.push(`UOP <0.5 mL/kg/h for ${hrs}h (${uopPerKgHr.toFixed(2)})`);
+        triggered.push(`UOP <0.5 mL/kg/h for ${hrs}h (${uopPerKgHr.toFixed(2)}) [KDIGO 2026]`);
         reasons.push("uop_low_6h");
       }
     }
     // Structural
     if (biomarkerPositive) {
-      triggered.push("Kidney damage biomarker positive");
+      triggered.push("Kidney damage biomarker positive [KDIGO 2026]");
       reasons.push("structural_biomarker");
     }
 
@@ -161,14 +161,14 @@ export default function AKIAKDMiniApp() {
     const dur = num(durationDays);
     const akdCriteria: string[] = [];
     if (akiPresent) akdCriteria.push("AKI functional criteria met");
-    if (Number.isFinite(cGFR) && cGFR < 60) akdCriteria.push(`GFR <60 (${cGFR})`);
+    if (Number.isFinite(cGFR) && cGFR < 60) akdCriteria.push(`GFR <60 (${cGFR}) [KDIGO 2026]`);
     if (Number.isFinite(cGFR) && Number.isFinite(bGFR) && bGFR - cGFR >= 35)
-      akdCriteria.push(`GFR drop ≥35 (Δ ${(bGFR - cGFR).toFixed(0)})`);
+      akdCriteria.push(`GFR drop ≥35 (Δ ${(bGFR - cGFR).toFixed(0)}) [KDIGO 2026]`);
     if (Number.isFinite(scrNow) && Number.isFinite(effBaseline) && scrNow / effBaseline > 1.5)
-      akdCriteria.push(`SCr rise >50% from baseline`);
-    if (albuminuria) akdCriteria.push("Albuminuria present");
-    if (hematuria) akdCriteria.push("Hematuria present");
-    if (biomarkerPositive) akdCriteria.push("Structural biomarker positive");
+      akdCriteria.push(`SCr rise >50% from baseline [KDIGO 2026]`);
+    if (albuminuria) akdCriteria.push("Albuminuria present [KDIGO 2026]");
+    if (hematuria) akdCriteria.push("Hematuria present [KDIGO 2026]");
+    if (biomarkerPositive) akdCriteria.push("Structural biomarker positive [KDIGO 2026]");
     const akdPresent = akdCriteria.length > 0 && (!Number.isFinite(dur) || dur <= 90);
 
     // Next steps

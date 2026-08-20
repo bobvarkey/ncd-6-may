@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Brain, AlertTriangle, User, Activity, ClipboardList, Stethoscope } from "lucide-react";
+import { Copy, Brain, AlertTriangle, User, Activity, ClipboardList, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { downloadTextFile } from "@/lib/clinical-utils";
 
 interface CsdhData {
   patient: {
@@ -148,14 +149,14 @@ export const CsdhRiskCalculator = () => {
   const csdhScore = useMemo(() => {
     let score = 0;
     
-    // GCS component (lower is worse)
+    // GCS component (lower is worse) - Ref: Markwalder et al. 1981
     if (gcsTotal <= 8) score += 4;
     else if (gcsTotal <= 12) score += 2;
     
-    // Markwalder Grade
+    // Markwalder Grade - Ref: Markwalder et al. 1981
     score += parseInt(data.markwalder_grade.grade);
     
-    // CT features
+    // CT features - Ref: Nomura et al. 1994
     const thickness = parseFloat(data.ct_mass_effect.thickness_mm) || 0;
     const shift = parseFloat(data.ct_mass_effect.midline_shift_mm) || 0;
     
@@ -165,7 +166,7 @@ export const CsdhRiskCalculator = () => {
     if (shift > 10) score += 3;
     else if (shift > 5) score += 1;
     
-    // Trajectory
+    // Trajectory - Clinical consensus
     if (data.neurological_assessment.trajectory === "rapidly_deteriorating") score += 3;
     else if (data.neurological_assessment.trajectory === "deteriorating") score += 1;
     
@@ -185,13 +186,13 @@ Plan: ${data.assessment_context.planned_management.replace(/_/g, " ")}
 
 NEUROLOGICAL STATUS
 GCS: ${gcsTotal}/15 (E${data.neurological_assessment.gcs.eye}V${data.neurological_assessment.gcs.verbal}M${data.neurological_assessment.gcs.motor})
-Markwalder Grade: ${data.markwalder_grade.grade}
-Trajectory: ${data.neurological_assessment.trajectory}
+Markwalder Grade: ${data.markwalder_grade.grade} [Markwalder et al. 1981]
+Trajectory: ${data.neurological_assessment.trajectory} [Clinical consensus]
 
 RADIOLOGICAL FEATURES
 Laterality: ${data.ct_mass_effect.laterality}
-Max Thickness: ${data.ct_mass_effect.thickness_mm} mm
-Midline Shift: ${data.ct_mass_effect.midline_shift_mm} mm
+Max Thickness: ${data.ct_mass_effect.thickness_mm} mm [Nomura et al. 1994]
+Midline Shift: ${data.ct_mass_effect.midline_shift_mm} mm [Nomura et al. 1994]
 
 RISK & FRAILTY
 ASA Class: ${data.perioperative.asa}${data.perioperative.emergency_modifier ? "E" : ""}
@@ -205,6 +206,40 @@ Generated on: ${new Date().toLocaleString()}`;
 
     navigator.clipboard.writeText(report);
     toast({ title: "Report copied as plain text" });
+  };
+
+  const downloadAsTextFile = () => {
+    const report = `CHRONIC SUBDURAL HEMATOMA (cSDH) ASSESSMENT REPORT
+--------------------------------------------------
+Patient ID: ${data.patient.patient_id || "N/A"}
+Age: ${data.patient.age_years || "N/A"} | Sex: ${data.patient.sex}
+
+CLINICAL CONTEXT
+Type: ${data.assessment_context.sdh_type.replace(/_/g, " ")}
+Urgency: ${data.assessment_context.clinical_urgency.replace(/_/g, " ")}
+Plan: ${data.assessment_context.planned_management.replace(/_/g, " ")}
+
+NEUROLOGICAL STATUS
+GCS: ${gcsTotal}/15 (E${data.neurological_assessment.gcs.eye}V${data.neurological_assessment.gcs.verbal}M${data.neurological_assessment.gcs.motor})
+Markwalder Grade: ${data.markwalder_grade.grade} [Markwalder et al. 1981]
+Trajectory: ${data.neurological_assessment.trajectory} [Clinical consensus]
+
+RADIOLOGICAL FEATURES
+Laterality: ${data.ct_mass_effect.laterality}
+Max Thickness: ${data.ct_mass_effect.thickness_mm} mm [Nomura et al. 1994]
+Midline Shift: ${data.ct_mass_effect.midline_shift_mm} mm [Nomura et al. 1994]
+
+RISK & FRAILTY
+ASA Class: ${data.perioperative.asa}${data.perioperative.emergency_modifier ? "E" : ""}
+Clinical Frailty Scale (CFS): ${data.frailty.cfs}
+Pre-morbid mRS: ${data.frailty.mrs}
+
+ASSESSMENT SCORE
+cSDH Risk Score: ${csdhScore}
+--------------------------------------------------
+Generated on: ${new Date().toLocaleString()}`;
+    
+    downloadTextFile(`csdh-assessment-${data.patient.patient_id || 'patient'}`, report);
   };
 
   return (
@@ -221,9 +256,14 @@ Generated on: ${new Date().toLocaleString()}`;
                 <span className="text-[10px] font-mono text-indigo-500 uppercase tracking-widest font-bold">Score: {csdhScore}</span>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={copyAsReport} className="gap-2">
-              <Copy className="w-4 h-4" /> Copy Report
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={copyAsReport} className="gap-2">
+                <Copy className="w-4 h-4" /> Copy Report
+              </Button>
+              <Button variant="outline" size="sm" onClick={downloadAsTextFile} className="gap-2">
+                <Download className="w-4 h-4" /> TXT
+              </Button>
+            </div>
           </CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
             Standardized tool for multidisciplinary documentation and shared decision-making in chronic SDH management.
