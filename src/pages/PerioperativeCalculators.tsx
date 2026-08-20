@@ -471,10 +471,26 @@ const RCRICalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Heart className="w-5 h-5 text-rose-500" />
-            Revised Cardiac Risk Index (RCRI)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Heart className="w-5 h-5 text-rose-500" />
+              Revised Cardiac Risk Index (RCRI)
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `REVISED CARDIAC RISK INDEX (RCRI)\nDate: ${new Date().toLocaleString()}\n\nFactors:\n${result.active.map(f => `- ${f.label}`).join("\n") || "- None"}\n\nResult:\n- Total Score: ${result.total}\n- Risk Class: ${result.cls.label}\n- MACE Risk: ${result.cls.risk}\n\nReference: Lee et al., Circulation 1999.`;
+                copyToClipboard(note, "RCRI result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `REVISED CARDIAC RISK INDEX (RCRI)\nDate: ${new Date().toLocaleString()}\n\nFactors:\n${result.active.map(f => `- ${f.label}`).join("\n") || "- None"}\n\nResult:\n- Total Score: ${result.total}\n- Risk Class: ${result.cls.label}\n- MACE Risk: ${result.cls.risk}\n\nReference: Lee et al., Circulation 1999.`;
+                downloadTextFile("RCRI_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
