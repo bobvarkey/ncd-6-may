@@ -858,12 +858,12 @@ export default function UnifiedPrescriptionMiniApp() {
               </div>
               <div className="text-sm font-semibold mt-0.5">{result.classification}</div>
             </div>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={handleCopy} className="h-8 text-xs">
-                <Copy className="h-3.5 w-3.5 mr-1" /> Copy summary
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="outline" onClick={() => copyToClipboard(summaryText, "Summary")} className="h-8 text-xs">
+                <Copy className="h-3.5 w-3.5 mr-1" /> Copy results
               </Button>
               <Button size="sm" variant="outline" onClick={() => downloadTextFile(`prescription-${new Date().toISOString().slice(0,10)}`, summaryText)} className="h-8 text-xs">
-                <Download className="h-3.5 w-3.5 mr-1" /> Download .txt
+                <Download className="h-3.5 w-3.5 mr-1" /> Download report
               </Button>
               <Button size="sm" variant="outline" onClick={handlePrint} className="h-8 text-xs">
                 <Printer className="h-3.5 w-3.5 mr-1" /> Print / PDF

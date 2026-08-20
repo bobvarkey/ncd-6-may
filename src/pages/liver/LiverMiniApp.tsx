@@ -647,9 +647,9 @@ export default function LiverMiniApp() {
               Using {preset === "custom" ? "custom thresholds" : PRESETS[preset].label} · Pattern, fibrosis triage and next-step pathway
             </CardDescription>
           </div>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={handleCopy}><Copy className="h-4 w-4 mr-1" />Copy</Button>
-            <Button size="sm" variant="outline" onClick={() => downloadTextFile(`liver-${new Date().toISOString().slice(0,10)}`, buildSummary())}><Download className="h-4 w-4 mr-1" />Download .txt</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={() => copyToClipboard(buildSummary(), "Liver Assessment")}><Copy className="h-4 w-4 mr-1" />Copy results</Button>
+            <Button size="sm" variant="outline" onClick={() => downloadTextFile(`liver-${new Date().toISOString().slice(0,10)}`, buildSummary())}><Download className="h-4 w-4 mr-1" />Download report</Button>
             <Button size="sm" onClick={handlePrint}><Printer className="h-4 w-4 mr-1" />Print / PDF</Button>
           </div>
         </CardHeader>
