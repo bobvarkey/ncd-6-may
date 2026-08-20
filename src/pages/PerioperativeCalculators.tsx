@@ -3517,19 +3517,35 @@ const GoldmanCardiacIndex = () => {
         </Collapsible>
       </Card>
       {/* Expand All / Collapse All */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setExpandedCats(new Set(["history", "examination", "ecg", "vitals", "lab", "age"]))}
-          className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted"
-        >
-          Expand All
-        </button>
-        <button
-          onClick={() => setExpandedCats(new Set())}
-          className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted"
-        >
-          Collapse All
-        </button>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setExpandedCats(new Set(["history", "examination", "ecg", "vitals", "lab", "age"]))}
+            className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted"
+          >
+            Expand All
+          </button>
+          <button
+            onClick={() => setExpandedCats(new Set())}
+            className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted"
+          >
+            Collapse All
+          </button>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+            const note = `GOLDMAN CARDIAC RISK INDEX\nDate: ${new Date().toLocaleString()}\n\nSelected Factors:\n${result.activeFactors.length === 0 ? "- None" : result.activeFactors.map(f => `- ${f.factor} (+${f.points})`).join("\n")}\n\nSummary:\n- Total Points: ${result.totalPoints}\n- Risk Class: ${result.riskClass}\n- Complication Rate: ${result.observedRisk.complications}\n- Mortality: ${result.observedRisk.mortality}`;
+            copyToClipboard(note, "Goldman result copied");
+          }}>
+            <Copy className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+            const note = `GOLDMAN CARDIAC RISK INDEX\nDate: ${new Date().toLocaleString()}\n\nSelected Factors:\n${result.activeFactors.length === 0 ? "- None" : result.activeFactors.map(f => `- ${f.factor} (+${f.points})`).join("\n")}\n\nSummary:\n- Total Points: ${result.totalPoints}\n- Risk Class: ${result.riskClass}\n- Complication Rate: ${result.observedRisk.complications}\n- Mortality: ${result.observedRisk.mortality}`;
+            downloadTextFile("Goldman_Result", note);
+          }}>
+            <Download className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Risk factor categories */}
