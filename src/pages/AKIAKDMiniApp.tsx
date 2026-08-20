@@ -38,6 +38,7 @@ function estimateBaselineMDRD(age: number, sex: "M" | "F"): number {
 }
 
 export default function AKIAKDMiniApp() {
+  const [showFullDetails, setShowFullDetails] = useState(false);
   // Baseline
   const [baselineSource, setBaselineSource] = useState<BaselineSource>("known");
   const [baselineMethod, setBaselineMethod] = useState<BaselineMethod>("outpatient_recent");
@@ -174,24 +175,43 @@ export default function AKIAKDMiniApp() {
     // Next steps
     const steps: string[] = [];
     if (akiPresent) {
-      steps.push("Check volume/sepsis/obstruction.");
-      steps.push("Hold NSAIDs/ACEi/ARB/contrast.");
-      steps.push("Dose adjust drugs; check levels.");
-      steps.push("Serial SCr; strict I/O; daily weights.");
-      if (stage === "stage_2" || stage === "stage_3") {
-        steps.push("Nephrology consult; ICU; RRT eval.");
-      }
-      if (imputed) {
-        steps.push("Suspected AKI (imputed baseline).");
+      if (showFullDetails) {
+        steps.push("Confirm reversible drivers: volume status, sepsis screen, obstruction (bladder scan/US).");
+        steps.push("Review & hold nephrotoxins: NSAIDs, ACEi/ARB, aminoglycosides, contrast, iodinated dyes.");
+        steps.push("Adjust renally-cleared drugs; check drug levels where relevant.");
+        steps.push("Repeat SCr q12–24h; strict I/O; daily weights.");
+        if (stage === "stage_2" || stage === "stage_3") {
+          steps.push("Nephrology consult; ICU-level monitoring; evaluate RRT.");
+        }
+        if (imputed) {
+          steps.push("Suspected AKI (imputed baseline) — seek prior labs.");
+        }
+      } else {
+        steps.push("Check volume/sepsis/obstruction.");
+        steps.push("Hold NSAIDs/ACEi/ARB/contrast.");
+        steps.push("Dose adjust drugs; check levels.");
+        steps.push("Serial SCr; strict I/O; daily weights.");
+        if (stage === "stage_2" || stage === "stage_3") {
+          steps.push("Nephrology consult; ICU; RRT eval.");
+        }
+        if (imputed) {
+          steps.push("Suspected AKI (imputed baseline).");
+        }
       }
     } else if (akdPresent) {
-      steps.push("Order urine ACR, urinalysis with microscopy, renal ultrasound.");
-      steps.push("Repeat SCr in 7–14 days; monitor trajectory over ≤3 months.");
-      steps.push("Address chronic drivers: BP, glycemia, proteinuria, cardiovascular risk.");
+      if (showFullDetails) {
+        steps.push("Order urine ACR, urinalysis with microscopy, renal ultrasound.");
+        steps.push("Repeat SCr in 7–14 days; monitor trajectory over ≤3 months.");
+        steps.push("Address chronic drivers: BP, glycemia, proteinuria, cardiovascular risk.");
+      } else {
+        steps.push("Urine ACR/UA/US.");
+        steps.push("Serial SCr (7–14d); monitor ≤3mo.");
+        steps.push("Manage BP/glucose/proteinuria.");
+      }
     } else if (missingBaseline && Number.isFinite(scrNow)) {
       steps.push("No baseline available — continue surveillance: serial SCr q12–24h and 6h UOP windows.");
     } else {
-      steps.push("No AKI/AKD criteria met on current data. Reassess if clinical status changes.");
+      steps.push("No AKI/AKD criteria met on current data.");
     }
 
     return {
@@ -217,7 +237,7 @@ export default function AKIAKDMiniApp() {
     baselineSource, baselineMethod, baselineValue, age, sex, weightKg,
     currentScr, scr48hAgo, cystatinBaseline, cystatinCurrent,
     uopMl, uopHours, biomarkerPositive, albuminuria, hematuria,
-    currentGFR, baselineGFR, durationDays,
+    currentGFR, baselineGFR, durationDays, showFullDetails,
   ]);
 
   const stageColor =
@@ -474,7 +494,17 @@ export default function AKIAKDMiniApp() {
               </div>
 
               <div>
-                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Clinical Next Steps</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Clinical Next Steps</div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-6 text-[10px] uppercase font-bold text-primary hover:text-primary/80 px-2"
+                    onClick={() => setShowFullDetails(!showFullDetails)}
+                  >
+                    {showFullDetails ? "Show Condensed" : "Show Full Details"}
+                  </Button>
+                </div>
                 <ul className="space-y-1.5">
                   {result.steps.map((s, i) => (
                     <li key={i} className="text-sm flex gap-2">
