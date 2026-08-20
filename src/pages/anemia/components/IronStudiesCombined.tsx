@@ -608,7 +608,7 @@ export default function IronStudiesCombined() {
             <CardTitle className="text-xl">Iron Studies — Comprehensive Assessment</CardTitle>
           </div>
           <CardDescription>
-            Unified iron evaluation: deficiency diagnosis + Ganzoni dosing + iron overload algorithm + differential diagnosis. Enter any combination of labs to begin.
+            Unified iron evaluation: deficiency diagnosis + Ganzoni deficit calculation + iron overload algorithm + differential diagnosis. Enter any combination of labs to begin.
           </CardDescription>
         </CardHeader>
       </Card>
