@@ -8,7 +8,9 @@ const bloodSubItems: { tab: string; label: string; icon: React.ComponentType<{ c
   { tab: "thrombocytopenia", label: "Thrombocytopenia", icon: Bandage },
   { tab: "bleeding-clotting", label: "Bleeding / Clotting", icon: Bandage },
   { tab: "iron", label: "Iron Parameters", icon: Syringe },
+  { tab: "ganzoni", label: "Ganzoni Deficit", icon: Calculator },
   { tab: "esr", label: "ESR", icon: Timer },
+
   { tab: "anticoagulants", label: "Anticoagulants", icon: Pill },
 ];
 

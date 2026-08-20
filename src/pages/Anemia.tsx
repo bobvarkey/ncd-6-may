@@ -10,6 +10,8 @@ import ReferenceRanges from './anemia/components/ReferenceRanges';
 import IronTherapy from './anemia/components/IronTherapy';
 import IronStudiesCombined from './anemia/components/IronStudiesCombined';
 import IronInterpretation from './anemia/components/IronInterpretation';
+import GanzoniDeficitCalculator from '@/calculators/iron/GanzoniDeficitCalculator';
+
 import ThrombocytopeniaEvaluator from './anemia/components/ThrombocytopeniaEvaluator';
 import BleedingClottingEvaluator from './anemia/components/BleedingClottingEvaluator';
 import ESRInterpretation from './anemia/components/ESRInterpretation';
@@ -19,12 +21,12 @@ import TestSuggestionAlgorithm from './anemia/components/TestSuggestionAlgorithm
 
 const EMPTY_CBC: CBCValues = { hgb: '', rbc: '', mcv: '', mch: '', mchc: '', rdw: '', hct: '' };
 
-type Tab = 'anemia' | 'thrombocytopenia' | 'bleeding-clotting' | 'iron' | 'esr' | 'anticoagulants';
+type Tab = 'anemia' | 'thrombocytopenia' | 'bleeding-clotting' | 'iron' | 'ganzoni' | 'esr' | 'anticoagulants';
 
 export default function Anemia() {
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs: Tab[] = ['anemia', 'thrombocytopenia', 'bleeding-clotting', 'iron', 'esr', 'anticoagulants'];
+  const validTabs: Tab[] = ['anemia', 'thrombocytopenia', 'bleeding-clotting', 'iron', 'ganzoni', 'esr', 'anticoagulants'];
   const activeTab: Tab = validTabs.includes(tabParam as Tab) ? (tabParam as Tab) : 'anemia';
   const [cbc, setCbc] = useState<CBCValues>(() => {
     try { const s = localStorage.getItem('ncd_anemia_cbc'); return s ? JSON.parse(s) : EMPTY_CBC; } catch { return EMPTY_CBC; }
@@ -200,7 +202,10 @@ export default function Anemia() {
 
         ) : activeTab === 'bleeding-clotting' ? (
           <BleedingClottingEvaluator />
+        ) : activeTab === 'ganzoni' ? (
+          <GanzoniDeficitCalculator />
         ) : activeTab === 'esr' ? (
+
           <ESRInterpretation />
         ) : activeTab === 'anticoagulants' ? (
           <Anticoagulants />

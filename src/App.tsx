@@ -135,6 +135,8 @@ const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesi
 const OpticNerveAssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/OpticNerveAssessment"));
 const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/Glp1Screening"));
 const IronReplacementCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/IronReplacementCalculator"));
+const GanzoniDeficitCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/GanzoniDeficitCalculator"));
+
 const ThyroidCalculator = lazyWithModuleRetry(() => import("@/calculators/thyroid/ThyroidCalculator"));
 const Dashboard = lazyWithModuleRetry(() => import("@/pages/Dashboard"));
 const PatientInput = lazyWithModuleRetry(() => import("@/pages/PatientInput"));
