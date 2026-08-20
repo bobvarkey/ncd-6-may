@@ -5,9 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, Gauge, RotateCcw, AlertTriangle, Copy, Clock } from "lucide-react";
+import { Download, Gauge, RotateCcw, AlertTriangle, Copy, Clock, Settings2, CheckSquare, Square } from "lucide-react";
 import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
 
 function calculateEGFR(age: number, creatinine: number, gender: "male" | "female") {
   if (isNaN(age) || isNaN(creatinine) || !creatinine) return null;
