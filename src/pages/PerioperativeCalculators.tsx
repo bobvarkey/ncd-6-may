@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
-  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText,
+  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -316,8 +316,8 @@ const CALCULATOR_CARDS: {
   { value: "caprini", title: "Caprini VTE", icon: Droplets, inputs: "Weighted thrombosis risk factors (1, 2, 3 and 5-point items)", results: "Total score → VTE risk band and prophylaxis recommendation" },
   { value: "apgar", title: "Surgical Apgar", icon: Timer, inputs: "Estimated blood loss, lowest MAP, lowest heart rate (intra-op)", results: "0–10 score → 30-day major complication / mortality risk" },
   { value: "woo", title: "Woo Perioperative Risk", icon: Brain, inputs: "Age, ASA class, surgery type and comorbidities", results: "Predicted stroke / MACE category with clinical interpretation" },
+  { value: "goldman", title: "Goldman Cardiac Index", icon: Heart, inputs: "S3 gallop, JVP, recent MI, PVCs, rhythm, age, urgency", results: "Class I-IV with observed cardiac mortality risk" },
   { value: "sts", title: "STS Cardiac", icon: Heart, inputs: "Cardiac-surgery specific patient and procedure variables", results: "Estimated operative mortality and morbidity band" },
-  { value: "meds", title: "Med Management", icon: Pill, inputs: "Browse by drug class (anticoagulants, antiplatelets, diabetes, etc.)", results: "Hold / continue timing before surgery and restart guidance" },
   { value: "labs", title: "Pre-op Labs", icon: FileText, inputs: "Patient factors and planned procedure risk", results: "Which pre-operative tests are indicated (and which are not)" },
   { value: "csdh", title: "cSDH Risk", icon: Brain, inputs: "Age, GCS, imaging (shift/thickness), ASA, frailty", results: "Standardized perioperative report for chronic SDH" },
 ];
@@ -329,7 +329,7 @@ const PerioperativeCalculators = () => {
 
   useEffect(() => {
     const hash = location.hash.replace("#", "");
-    if (hash && ["rcri", "asa", "mallampati", "stopbang", "caprini", "apgar", "meds", "labs", "woo", "sts", "csdh"].includes(hash)) {
+    if (hash && ["rcri", "asa", "mallampati", "stopbang", "caprini", "apgar", "meds", "labs", "woo", "sts", "csdh", "goldman"].includes(hash)) {
       setActiveTab(hash);
       const element = document.getElementById(hash);
       if (element) {
@@ -388,7 +388,8 @@ const PerioperativeCalculators = () => {
           <TabsTrigger value="apgar" className="text-sm">Surgical Apgar</TabsTrigger>
           <TabsTrigger value="meds" className="text-sm">Med Management</TabsTrigger>
           <TabsTrigger value="labs" className="text-sm">Pre-op Labs</TabsTrigger>
-          <TabsTrigger value="woo" className="text-sm">Woo Perioperative Risk (Non-Cardiac Surgery)</TabsTrigger>
+          <TabsTrigger value="woo" className="text-sm">Woo Risk</TabsTrigger>
+          <TabsTrigger value="goldman" className="text-sm">Goldman Index</TabsTrigger>
           <TabsTrigger value="sts" className="text-sm">STS Cardiac</TabsTrigger>
           <TabsTrigger value="csdh" className="text-sm">cSDH Risk</TabsTrigger>
         </TabsList>
@@ -435,6 +436,9 @@ const PerioperativeCalculators = () => {
         </TabsContent>
         <TabsContent value="woo" className="mt-4 space-y-4">
           <WooRiskCalculator onSwitchToASA={() => setActiveTab("asa")} />
+        </TabsContent>
+        <TabsContent value="goldman" className="mt-4 space-y-4">
+          <GoldmanCardiacIndex />
         </TabsContent>
         <TabsContent value="sts" className="mt-4 space-y-4">
           <STSCardiacRiskCalculator />
