@@ -310,7 +310,7 @@ export default function KDIGOStagingCalculator() {
         {gfr !== null && gStage && (
           <div className="mt-4 space-y-3">
             {/* eGFR + G stage */}
-            <div className="p-4 rounded-lg bg-card border-2 border-border">
+            <div className="p-4 rounded-lg bg-card border-2 border-border select-all">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <p className="text-sm text-muted-foreground">Estimated GFR (CKD-EPI 2021)</p>
@@ -329,7 +329,7 @@ export default function KDIGOStagingCalculator() {
 
             {/* UACR + A stage */}
             {uacrMgG !== null && aStage && (
-              <div className="p-4 rounded-lg bg-card border-2 border-border">
+              <div className="p-4 rounded-lg bg-card border-2 border-border select-all">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <p className="text-sm text-muted-foreground">Urine Albumin-to-Creatinine Ratio</p>
@@ -349,7 +349,7 @@ export default function KDIGOStagingCalculator() {
 
             {/* Combined KDIGO Risk */}
             {uacrMgG !== null && riskLevel !== null && (
-              <div className={`p-4 rounded-lg border-2 ${RISK_COLORS[riskLevel]}`}>
+              <div className={`p-4 rounded-lg border-2 select-all ${RISK_COLORS[riskLevel]}`}>
                 <div className="flex items-center gap-2 mb-2">
                   <AlertTriangle className="h-4 w-4" />
                   <span className="text-sm font-semibold">KDIGO Risk Category</span>
