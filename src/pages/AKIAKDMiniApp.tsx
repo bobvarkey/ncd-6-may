@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import BackToHome from "@/components/BackToHome";
 import Seo from "@/components/Seo";
-import { AlertTriangle, Activity, Download, Copy, Image } from "lucide-react";
+import { AlertTriangle, Activity, Download, Copy, Image, Printer } from "lucide-react";
 import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 type BaselineSource = "known" | "estimated" | "provisional" | "unknown";
 type BaselineMethod =
@@ -38,7 +39,7 @@ function estimateBaselineMDRD(age: number, sex: "M" | "F"): number {
 }
 
 export default function AKIAKDMiniApp() {
-  const [showFullDetails, setShowFullDetails] = useState(false);
+  const [showFullDetails, setShowFullDetails] = useLocalStorage("aki_show_full_details", false);
   // Baseline
   const [baselineSource, setBaselineSource] = useState<BaselineSource>("known");
   const [baselineMethod, setBaselineMethod] = useState<BaselineMethod>("outpatient_recent");
@@ -173,46 +174,53 @@ export default function AKIAKDMiniApp() {
     const akdPresent = akdCriteria.length > 0 && (!Number.isFinite(dur) || dur <= 90);
 
     // Next steps
-    const steps: string[] = [];
-    if (akiPresent) {
-      if (showFullDetails) {
-        steps.push("Confirm reversible drivers: volume status, sepsis screen, obstruction (bladder scan/US).");
-        steps.push("Review & hold nephrotoxins: NSAIDs, ACEi/ARB, aminoglycosides, contrast, iodinated dyes.");
-        steps.push("Adjust renally-cleared drugs; check drug levels where relevant.");
-        steps.push("Repeat SCr q12–24h; strict I/O; daily weights.");
-        if (stage === "stage_2" || stage === "stage_3") {
-          steps.push("Nephrology consult; ICU-level monitoring; evaluate RRT.");
+    const getSteps = (full: boolean) => {
+      const s: string[] = [];
+      if (akiPresent) {
+        if (full) {
+          s.push("Confirm reversible drivers: volume status, sepsis screen, obstruction (bladder scan/US).");
+          s.push("Review & hold nephrotoxins: NSAIDs, ACEi/ARB, aminoglycosides, contrast, iodinated dyes.");
+          s.push("Adjust renally-cleared drugs; check drug levels where relevant.");
+          s.push("Repeat SCr q12–24h; strict I/O; daily weights.");
+          if (stage === "stage_2" || stage === "stage_3") {
+            s.push("Nephrology consult; ICU-level monitoring; evaluate RRT.");
+          }
+          if (imputed) {
+            s.push("Suspected AKI (imputed baseline) — seek prior labs.");
+          }
+        } else {
+          s.push("Check volume/sepsis/obstruction.");
+          s.push("Hold NSAIDs/ACEi/ARB/contrast.");
+          s.push("Dose adjust drugs; check levels.");
+          s.push("Serial SCr; strict I/O; daily weights.");
+          if (stage === "stage_2" || stage === "stage_3") {
+            s.push("Nephrology consult; ICU; RRT eval.");
+          }
+          if (imputed) {
+            s.push("Suspected AKI (imputed baseline).");
+          }
         }
-        if (imputed) {
-          steps.push("Suspected AKI (imputed baseline) — seek prior labs.");
+      } else if (akdPresent) {
+        if (full) {
+          s.push("Order urine ACR, urinalysis with microscopy, renal ultrasound.");
+          s.push("Repeat SCr in 7–14 days; monitor trajectory over ≤3 months.");
+          s.push("Address chronic drivers: BP, glycemia, proteinuria, cardiovascular risk.");
+        } else {
+          s.push("Urine ACR/UA/US.");
+          s.push("Serial SCr (7–14d); monitor ≤3mo.");
+          s.push("Manage BP/glucose/proteinuria.");
         }
+      } else if (missingBaseline && Number.isFinite(scrNow)) {
+        s.push("No baseline available — continue surveillance: serial SCr q12–24h and 6h UOP windows.");
       } else {
-        steps.push("Check volume/sepsis/obstruction.");
-        steps.push("Hold NSAIDs/ACEi/ARB/contrast.");
-        steps.push("Dose adjust drugs; check levels.");
-        steps.push("Serial SCr; strict I/O; daily weights.");
-        if (stage === "stage_2" || stage === "stage_3") {
-          steps.push("Nephrology consult; ICU; RRT eval.");
-        }
-        if (imputed) {
-          steps.push("Suspected AKI (imputed baseline).");
-        }
+        s.push("No AKI/AKD criteria met on current data.");
       }
-    } else if (akdPresent) {
-      if (showFullDetails) {
-        steps.push("Order urine ACR, urinalysis with microscopy, renal ultrasound.");
-        steps.push("Repeat SCr in 7–14 days; monitor trajectory over ≤3 months.");
-        steps.push("Address chronic drivers: BP, glycemia, proteinuria, cardiovascular risk.");
-      } else {
-        steps.push("Urine ACR/UA/US.");
-        steps.push("Serial SCr (7–14d); monitor ≤3mo.");
-        steps.push("Manage BP/glucose/proteinuria.");
-      }
-    } else if (missingBaseline && Number.isFinite(scrNow)) {
-      steps.push("No baseline available — continue surveillance: serial SCr q12–24h and 6h UOP windows.");
-    } else {
-      steps.push("No AKI/AKD criteria met on current data.");
-    }
+      return s;
+    };
+
+    const steps = getSteps(showFullDetails);
+    const condensedSteps = getSteps(false);
+    const fullSteps = getSteps(true);
 
     return {
       akiPresent,
@@ -232,6 +240,8 @@ export default function AKIAKDMiniApp() {
       akdPresent,
       akdCriteria,
       steps,
+      condensedSteps,
+      fullSteps,
     };
   }, [
     baselineSource, baselineMethod, baselineValue, age, sex, weightKg,
@@ -250,10 +260,10 @@ export default function AKIAKDMiniApp() {
     result.confidence === "high" ? "text-success" :
     result.confidence === "moderate" ? "text-warning" : "text-destructive";
 
-  const buildReport = () => {
+  const buildReport = (includeBothDetails = false) => {
     const lines: string[] = [];
-    lines.push("AKI / AKD Assessment");
-    lines.push("=====================");
+    lines.push("AKI / AKD Assessment Report");
+    lines.push("============================");
     lines.push(`Date: ${new Date().toLocaleString()}`);
     lines.push("");
     lines.push("INPUTS");
@@ -284,7 +294,15 @@ export default function AKIAKDMiniApp() {
     (result.akdCriteria.length ? result.akdCriteria : ["(none)"]).forEach(t => lines.push(`- ${t}`));
     lines.push("");
     lines.push("NEXT STEPS");
-    result.steps.forEach(s => lines.push(`- ${s}`));
+    if (includeBothDetails) {
+      lines.push("[CONDENSED ACTIONS]");
+      result.condensedSteps.forEach(s => lines.push(`- ${s}`));
+      lines.push("");
+      lines.push("[FULL CLINICAL DETAILS]");
+      result.fullSteps.forEach(s => lines.push(`- ${s}`));
+    } else {
+      result.steps.forEach(s => lines.push(`- ${s}`));
+    }
     lines.push("");
     lines.push("Reference: KDIGO 2026 Clinical Practice Guideline for AKI & AKD");
     return lines.join("\n");
@@ -449,6 +467,17 @@ export default function AKIAKDMiniApp() {
                   <Button variant="outline" size="sm" onClick={() => copyToClipboard(buildReport(), "Report copied")}>
                     <Copy className="h-4 w-4 mr-1" /> Copy
                   </Button>
+                  <Button variant="outline" size="sm" onClick={() => {
+                    const printContent = buildReport(true);
+                    const printWindow = window.open('', '_blank');
+                    if (printWindow) {
+                      printWindow.document.write(`<pre style="font-family: monospace; white-space: pre-wrap; padding: 20px;">${printContent}</pre>`);
+                      printWindow.document.close();
+                      printWindow.print();
+                    }
+                  }}>
+                    <Printer className="h-4 w-4 mr-1" /> Print/PDF
+                  </Button>
                 </div>
               </div>
             </CardHeader>
@@ -539,9 +568,9 @@ export default function AKIAKDMiniApp() {
                 variant="ghost" 
                 size="sm" 
                 className="w-full text-xs gap-2"
-                onClick={() => downloadTextFile("aki-akd-assessment", buildReport())}
+                onClick={() => downloadTextFile("aki-akd-assessment", buildReport(true))}
               >
-                <Download className="h-3 w-3" /> Download .txt
+                <Download className="h-3 w-3" /> Download .txt (Full)
               </Button>
             </CardContent>
           </Card>
