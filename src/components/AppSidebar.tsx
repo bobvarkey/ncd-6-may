@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope, Eye,
+  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope, Eye, Calculator,
   type LucideIcon,
 } from "lucide-react";
+
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -47,7 +48,9 @@ const SECTIONS: Section[] = [
       { title: "Medications", url: "/medications", icon: Pill },
       { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, keywords: "basal bolus" },
       { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties },
+      { title: "Ganzoni Iron Deficit", url: "/anemia?tab=ganzoni", icon: Calculator },
       { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, keywords: "semaglutide tirzepatide" },
+
       { title: "GLP-1 Screening", url: "/glp1-screening", icon: Eye, keywords: "prescreen pre-screen eligibility contraindication naion optic nerve glaucoma retinopathy semaglutide tirzepatide" },
       { title: "Insulin Therapy", url: "/insulin-therapy", icon: BookMarked },
     ],
