@@ -310,15 +310,60 @@ export default function MehranScoreCalculator() {
         </div>
 
         <div className="flex flex-wrap gap-2 pt-2">
-          <Button variant="outline" size="sm" onClick={() => copyToClipboard(`Mehran Score Assessment\nScore: ${scoreData.score}\nRisk: ${scoreData.risk}\nCIN Risk: ${scoreData.cinRisk}\nDialysis Risk: ${scoreData.dialysisRisk}`, "Mehran Score")}>
+          <Button variant="outline" size="sm" onClick={() => copyToClipboard(`Mehran Score Assessment\nScore: ${scoreData.score}\nRisk: ${scoreData.risk}\nCIN Risk: ${scoreData.cinRisk}\nDialysis Risk: ${scoreData.dialysisRisk}\n\nPost–intra-arterial angiography renal monitoring\nBaseline:\n- Serum creatinine, eGFR, electrolytes\n- Assess AKI/CKD, volume status, heart failure, diabetes, nephrotoxins\n- Record contrast type and total volume\n\nHigh-risk definition:\n- eGFR <30 mL/min/1.73 m², AKI, unstable renal function,\n  first-pass renal arterial contrast, or CKD plus major haemodynamic/clinical risks\n\nAfter procedure:\n- Monitor urine output and haemodynamics if admitted/high risk\n- Maintain clinically appropriate hydration\n- Avoid NSAIDs and avoid repeat iodinated contrast if possible\n- Serum creatinine/eGFR at 48 hours; accept 48–72 h for outpatient follow-up\n- Consider an additional earlier check (~12–24 h) in severe CKD, shock,\n  ICU patients, or ongoing haemodynamic instability\n\nEscalate:\n- Creatinine rise ≥0.3 mg/dL or ≥1.5× baseline\n- Oliguria, fluid overload, hyperkalaemia, acidosis, or uraemic symptoms\n- Consider nephrology consultation based on severity/trajectory`, "Mehran Score")}>
             <Copy className="h-3.5 w-3.5 mr-1.5" /> Copy results
           </Button>
-          <Button variant="outline" size="sm" onClick={() => downloadTextFile("mehran-score-pci.txt", `Mehran Score Assessment\nScore: ${scoreData.score}\nRisk: ${scoreData.risk}\nCIN Risk: ${scoreData.cinRisk}\nDialysis Risk: ${scoreData.dialysisRisk}`)}>
+          <Button variant="outline" size="sm" onClick={() => downloadTextFile("mehran-score-pci.txt", `Mehran Score Assessment\nScore: ${scoreData.score}\nRisk: ${scoreData.risk}\nCIN Risk: ${scoreData.cinRisk}\nDialysis Risk: ${scoreData.dialysisRisk}\n\nPost–intra-arterial angiography renal monitoring\nBaseline:\n- Serum creatinine, eGFR, electrolytes\n- Assess AKI/CKD, volume status, heart failure, diabetes, nephrotoxins\n- Record contrast type and total volume\n\nHigh-risk definition:\n- eGFR <30 mL/min/1.73 m², AKI, unstable renal function,\n  first-pass renal arterial contrast, or CKD plus major haemodynamic/clinical risks\n\nAfter procedure:\n- Monitor urine output and haemodynamics if admitted/high risk\n- Maintain clinically appropriate hydration\n- Avoid NSAIDs and avoid repeat iodinated contrast if possible\n- Serum creatinine/eGFR at 48 hours; accept 48–72 h for outpatient follow-up\n- Consider an additional earlier check (~12–24 h) in severe CKD, shock,\n  ICU patients, or ongoing haemodynamic instability\n\nEscalate:\n- Creatinine rise ≥0.3 mg/dL or ≥1.5× baseline\n- Oliguria, fluid overload, hyperkalaemia, acidosis, or uraemic symptoms\n- Consider nephrology consultation based on severity/trajectory`)}>
             <Download className="h-3.5 w-3.5 mr-1.5" /> Download report
           </Button>
           <Button variant="ghost" size="sm" onClick={reset}>
             <RotateCcw className="h-3.5 w-3.5 mr-1.5" /> Reset
           </Button>
+        </div>
+
+        <div className="mt-6 border-t border-border pt-4">
+          <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded-lg border border-border/50">
+            <AlertTriangle className="h-3.5 w-3.5 mt-0.5 text-amber-500 shrink-0" />
+            <div className="space-y-2">
+              <p className="font-semibold text-foreground/80">Post–intra-arterial angiography renal monitoring</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                <div>
+                  <p className="font-medium text-foreground/70">Baseline:</p>
+                  <ul className="list-disc pl-4 space-y-0.5">
+                    <li>Serum creatinine, eGFR, electrolytes</li>
+                    <li>Assess AKI/CKD, volume status, HF, DM, nephrotoxins</li>
+                    <li>Record contrast type and total volume</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <p className="font-medium text-foreground/70">High-risk definition:</p>
+                  <p>eGFR &lt;30, AKI, unstable function, first-pass renal contrast, or CKD plus major clinical risks.</p>
+                </div>
+                
+                <div className="md:col-span-2">
+                  <p className="font-medium text-foreground/70">After procedure:</p>
+                  <ul className="list-disc pl-4 grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                    <li>Monitor UOP and haemodynamics if admitted/high risk</li>
+                    <li>Maintain clinically appropriate hydration</li>
+                    <li>Avoid NSAIDs and repeat iodinated contrast</li>
+                    <li>SCr/eGFR at 48h (48–72h for outpatient)</li>
+                    <li>Earlier check (~12–24h) in severe CKD/shock/ICU</li>
+                  </ul>
+                </div>
+                
+                <div className="md:col-span-2">
+                  <p className="font-medium text-foreground/70">Escalate:</p>
+                  <p>Cr rise ≥0.3 mg/dL or ≥1.5× baseline; oliguria, fluid overload, hyperkalaemia, acidosis, or uraemic symptoms.</p>
+                </div>
+              </div>
+              
+              <p className="italic pt-1 border-t border-border/50 mt-2">
+                Note: ESUR advises 48h eGFR in at-risk patients; Canadian guidance uses eGFR ≤30 threshold after intra-arterial contrast.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
