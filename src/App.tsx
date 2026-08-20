@@ -375,7 +375,7 @@ const App = () => {
           <Route path="/hyperglycemic-emergency" element={<><TabNavigation /><HyperglycemicEmergency /></>} />
           <Route path="/type1-treatment-algorithm" element={<><TabNavigation /><Type1TreatmentAlgorithm /></>} />
           <Route path="/type2-treatment-algorithm" element={<><TabNavigation /><Type2TreatmentAlgorithm /></>} />
-          <Route path="/goldman-cardiac" element={<><TabNavigation /><GoldmanCardiacIndex /></>} />
+          <Route path="/goldman-cardiac" element={<Navigate to="/perioperative-calculators#goldman" replace />} />
           <Route path="/perioperative-calculators" element={<><TabNavigation /><PerioperativeCalculators /></>} />
           <Route path="/perioperative" element={<Navigate to="/perioperative-calculators" replace />} />
 

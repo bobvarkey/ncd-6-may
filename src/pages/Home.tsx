@@ -714,7 +714,7 @@ export default function Home() {
       title: "Goldman Cardiac Index",
       description: "Cardiac risk stratification for non-cardiac surgery",
       icon: <Heart className="h-4 w-4 text-rose-500" />,
-      to: "/goldman-cardiac",
+      to: "/perioperative-calculators#goldman",
     },
     {
       title: "Perioperative Calculators",
