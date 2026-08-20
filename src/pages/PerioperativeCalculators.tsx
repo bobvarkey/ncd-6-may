@@ -1964,11 +1964,6 @@ const STSCardiacRiskCalculator = () => {
     </div>
   );
 };
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-
 interface RiskFactor {
   id: string;
   letter: string;
