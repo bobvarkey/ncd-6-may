@@ -193,7 +193,7 @@ const Hyperphosphatemia = lazyWithModuleRetry(() => import("@/pages/Hyperphospha
 const HyperglycemicEmergency = lazyWithModuleRetry(() => import("@/pages/HyperglycemicEmergency"));
 const Type1TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type1TreatmentAlgorithm"));
 const Type2TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type2TreatmentAlgorithm"));
-const GoldmanCardiacIndex = lazyWithModuleRetry(() => import("@/pages/GoldmanCardiacIndex"));
+
 const PerioperativeCalculators = lazyWithModuleRetry(() => import("@/pages/PerioperativeCalculators"));
 const DevTools = lazyWithModuleRetry(() => import("@/pages/dev/DevTools"));
 
@@ -375,7 +375,7 @@ const App = () => {
           <Route path="/hyperglycemic-emergency" element={<><TabNavigation /><HyperglycemicEmergency /></>} />
           <Route path="/type1-treatment-algorithm" element={<><TabNavigation /><Type1TreatmentAlgorithm /></>} />
           <Route path="/type2-treatment-algorithm" element={<><TabNavigation /><Type2TreatmentAlgorithm /></>} />
-          <Route path="/goldman-cardiac" element={<><TabNavigation /><GoldmanCardiacIndex /></>} />
+          <Route path="/goldman-cardiac" element={<Navigate to="/perioperative-calculators#goldman" replace />} />
           <Route path="/perioperative-calculators" element={<><TabNavigation /><PerioperativeCalculators /></>} />
           <Route path="/perioperative" element={<Navigate to="/perioperative-calculators" replace />} />
 
