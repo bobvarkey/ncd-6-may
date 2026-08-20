@@ -888,10 +888,26 @@ const CapriniCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Droplets className="w-4 h-4 text-indigo-500" />
-            Caprini VTE Risk Assessment
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Droplets className="w-4 h-4 text-indigo-500" />
+              Caprini VTE Risk Assessment
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `CAPRINI VTE RISK SCORE\nDate: ${new Date().toLocaleString()}\n\nFactors Selected: ${result.active.length}\n${result.active.map(f => `- ${f.label}`).join("\n") || "- None"}\n\nResult:\n- Total Score: ${result.total}\n- Risk Level: ${result.level.risk}\n- VTE Risk: ${result.level.vte_risk}\n- Prophylaxis: ${result.level.prophylaxis}`;
+                copyToClipboard(note, "Caprini result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `CAPRINI VTE RISK SCORE\nDate: ${new Date().toLocaleString()}\n\nFactors Selected: ${result.active.length}\n${result.active.map(f => `- ${f.label}`).join("\n") || "- None"}\n\nResult:\n- Total Score: ${result.total}\n- Risk Level: ${result.level.risk}\n- VTE Risk: ${result.level.vte_risk}\n- Prophylaxis: ${result.level.prophylaxis}`;
+                downloadTextFile("Caprini_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
