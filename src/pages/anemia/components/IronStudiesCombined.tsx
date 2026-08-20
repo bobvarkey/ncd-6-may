@@ -873,7 +873,7 @@ export default function IronStudiesCombined() {
             <div>
               <CardTitle className="text-base">Computed Assessment</CardTitle>
               <CardDescription>
-                Iron deficiency diagnosis, Ganzoni dosing, overload classification, and differential diagnosis
+                Iron deficiency diagnosis, Ganzoni deficit calculation, overload classification, and differential diagnosis
               </CardDescription>
             </div>
             <div className="flex gap-2">
