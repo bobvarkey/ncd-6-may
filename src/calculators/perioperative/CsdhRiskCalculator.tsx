@@ -5,9 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Brain, AlertTriangle, User, Activity, ClipboardList, Download } from "lucide-react";
+import { Copy, Brain, AlertTriangle, User, Activity, ClipboardList, Download, Info } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { downloadTextFile } from "@/lib/clinical-utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface CsdhData {
   patient: {
@@ -86,6 +93,18 @@ interface CsdhData {
     };
   };
 }
+
+const CFS_LEVELS = [
+  { level: 1, title: "Very Fit", description: "People who are robust, active, energetic and motivated. These people commonly exercise regularly. They are among the fittest for their age." },
+  { level: 2, title: "Well", description: "People who have no active disease symptoms but are less fit than category 1. Often, they exercise or are very active occasionally, e.g. seasonally." },
+  { level: 3, title: "Managing Well", description: "People whose medical problems are well controlled, even if they are not regularly active beyond routine walking." },
+  { level: 4, title: "Vulnerable", description: "While not dependent on others for daily help, often symptoms limit activities. A common complaint is being \"slowed up\", and/or being tired during the day." },
+  { level: 5, title: "Mildly Frail", description: "These people often have more evident slowing, and need help in high order IADLs (finances, transportation, heavy housework, medications). Typically, mild frailty progressively impairs shopping and walking outside alone, meal preparation and housework." },
+  { level: 6, title: "Moderately Frail", description: "People need help with all outside activities and with keeping house. Inside, they often have problems with stairs and need help with bathing and might need minimal assistance (cuing, standby) with dressing." },
+  { level: 7, title: "Severely Frail", description: "Completely dependent for personal care, from whatever cause (physical or cognitive). Even so, they seem stable and not at high risk of dying (within ~6 months)." },
+  { level: 8, title: "Very Severely Frail", description: "Completely dependent, approaching the end of life. Typically, they could not recover even from a minor illness." },
+  { level: 9, title: "Terminally Ill", description: "Approaching the end of life. This category applies to people with a life expectancy <6 months, who are not otherwise evidently frail." }
+];
 
 export const CsdhRiskCalculator = () => {
   const { toast } = useToast();
@@ -425,13 +444,54 @@ Generated on: ${new Date().toLocaleString()}`;
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-3 bg-muted/20 rounded-lg">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label className="text-xs">Clinical Frailty Scale (1-9)</Label>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-xs">Clinical Frailty Scale (1-9)</Label>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-4 w-4 rounded-full">
+                          <Info className="h-3 w-3 text-muted-foreground" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>Clinical Frailty Scale (CFS)</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          {CFS_LEVELS.map((cfs) => (
+                            <button
+                              key={cfs.level}
+                              onClick={() => update("frailty.cfs", cfs.level.toString())}
+                              className={`text-left p-3 rounded-md border transition-colors ${
+                                data.frailty.cfs === cfs.level.toString()
+                                  ? "bg-primary/10 border-primary"
+                                  : "hover:bg-muted border-transparent"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                                  {cfs.level}
+                                </span>
+                                <span className="font-semibold text-sm">{cfs.title}</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                {cfs.description}
+                              </p>
+                            </button>
+                          ))}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                   <p className="text-[10px] text-muted-foreground">Pre-morbid status</p>
                 </div>
                 <Select value={data.frailty.cfs} onValueChange={v => update("frailty.cfs", v)}>
                   <SelectTrigger className="w-32 h-8"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => <SelectItem key={n} value={n.toString()}>{n}</SelectItem>)}
+                    {CFS_LEVELS.map(cfs => (
+                      <SelectItem key={cfs.level} value={cfs.level.toString()}>
+                        {cfs.level}: {cfs.title}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
