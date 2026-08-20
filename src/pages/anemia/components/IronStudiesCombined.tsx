@@ -549,6 +549,7 @@ export default function IronStudiesCombined() {
       `  Iron deficiency: ${deficiencyDiagnosis ? deficiencyDiagnosis.diagnosis : "—"}`,
       "",
       ganzoni ? `  Ganzoni deficit: ${Math.round(ganzoni.deficit)} mg (target Hb ${ganzoni.targetHb} g/dL)` : "",
+      ganzoni ? `  (Formula: Weight × [Target Hb - Actual Hb] × 2.4 + Stores)` : "",
       ganzoni ? `  Recommended route: ${ganzoni.isIV ? "IV iron" : "Oral iron"}` : "",
       ganzoni ? `  Dose: ${ganzoni.doseText}` : "",
       "",
