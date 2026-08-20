@@ -193,7 +193,7 @@ const Hyperphosphatemia = lazyWithModuleRetry(() => import("@/pages/Hyperphospha
 const HyperglycemicEmergency = lazyWithModuleRetry(() => import("@/pages/HyperglycemicEmergency"));
 const Type1TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type1TreatmentAlgorithm"));
 const Type2TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type2TreatmentAlgorithm"));
-const GoldmanCardiacIndex = lazyWithModuleRetry(() => import("@/pages/GoldmanCardiacIndex"));
+
 const PerioperativeCalculators = lazyWithModuleRetry(() => import("@/pages/PerioperativeCalculators"));
 const DevTools = lazyWithModuleRetry(() => import("@/pages/dev/DevTools"));
 
