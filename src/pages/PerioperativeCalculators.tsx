@@ -1920,10 +1920,28 @@ const STSCardiacRiskCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Heart className="w-4 h-4 text-red-500" />
-            STS-Style Cardiac Surgery Risk Calculator
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Heart className="w-4 h-4 text-red-500" />
+              STS-Style Cardiac Surgery Risk Calculator
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                if (!result) return;
+                const note = `STS CARDIAC RISK\nDate: ${new Date().toLocaleString()}\n\nResults:\n- Mortality: ${result.mortality.toFixed(2)}%\n- Stroke: ${result.stroke.toFixed(2)}%\n- Major Morbidity: ${result.majorMorbidity.toFixed(2)}%`;
+                copyToClipboard(note, "STS result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                if (!result) return;
+                const note = `STS CARDIAC RISK\nDate: ${new Date().toLocaleString()}\n\nResults:\n- Mortality: ${result.mortality.toFixed(2)}%\n- Stroke: ${result.stroke.toFixed(2)}%\n- Major Morbidity: ${result.majorMorbidity.toFixed(2)}%`;
+                downloadTextFile("STS_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
