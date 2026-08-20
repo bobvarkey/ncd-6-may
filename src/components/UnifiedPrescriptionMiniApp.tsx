@@ -23,6 +23,8 @@ import {
   Stethoscope,
   Sparkles,
   Copy,
+  CheckCircle,
+  XCircle,
   Printer,
   Download,
   RotateCcw,
@@ -32,7 +34,7 @@ import {
   Upload,
   ChevronDown,
 } from "lucide-react";
-import { downloadTextFile } from "@/lib/clinical-utils";
+import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
 
 /* =====================================================================
  * Unified Prescription Mini App
