@@ -5,8 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, Gauge, RotateCcw, AlertTriangle } from "lucide-react";
-import { downloadTextFile } from "@/lib/clinical-utils";
+import { Download, Gauge, RotateCcw, AlertTriangle, Copy } from "lucide-react";
+import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
 
 function calculateEGFR(age: number, creatinine: number, gender: "male" | "female") {
   if (isNaN(age) || isNaN(creatinine) || !creatinine) return null;
@@ -310,6 +310,9 @@ export default function MehranScoreCalculator() {
         </div>
 
         <div className="flex flex-wrap gap-2 pt-2">
+          <Button variant="outline" size="sm" onClick={() => copyToClipboard(`Mehran Score Assessment\nScore: ${scoreData.score}\nRisk: ${scoreData.risk}\nCIN Risk: ${scoreData.cinRisk}\nDialysis Risk: ${scoreData.dialysisRisk}`, "Mehran Score")}>
+            <Copy className="h-3.5 w-3.5 mr-1.5" /> Copy results
+          </Button>
           <Button variant="outline" size="sm" onClick={() => downloadTextFile("mehran-score-pci.txt", `Mehran Score Assessment\nScore: ${scoreData.score}\nRisk: ${scoreData.risk}\nCIN Risk: ${scoreData.cinRisk}\nDialysis Risk: ${scoreData.dialysisRisk}`)}>
             <Download className="h-3.5 w-3.5 mr-1.5" /> Download report
           </Button>

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Copy, Printer, Activity, Settings2, ChevronDown, Download, ImageIcon, Table2 } from "lucide-react";
-import { downloadTextFile } from "@/lib/clinical-utils";
+import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
 import ZoomableImage from "@/components/ZoomableImage";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
@@ -647,9 +647,9 @@ export default function LiverMiniApp() {
               Using {preset === "custom" ? "custom thresholds" : PRESETS[preset].label} · Pattern, fibrosis triage and next-step pathway
             </CardDescription>
           </div>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={handleCopy}><Copy className="h-4 w-4 mr-1" />Copy</Button>
-            <Button size="sm" variant="outline" onClick={() => downloadTextFile(`liver-${new Date().toISOString().slice(0,10)}`, buildSummary())}><Download className="h-4 w-4 mr-1" />Download .txt</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={() => copyToClipboard(buildSummary(), "Liver Assessment")}><Copy className="h-4 w-4 mr-1" />Copy results</Button>
+            <Button size="sm" variant="outline" onClick={() => downloadTextFile(`liver-${new Date().toISOString().slice(0,10)}`, buildSummary())}><Download className="h-4 w-4 mr-1" />Download report</Button>
             <Button size="sm" onClick={handlePrint}><Printer className="h-4 w-4 mr-1" />Print / PDF</Button>
           </div>
         </CardHeader>

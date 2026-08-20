@@ -501,6 +501,14 @@ export default function AKIAKDMiniApp() {
                 variant="ghost" 
                 size="sm" 
                 className="w-full text-xs gap-2"
+                onClick={() => copyToClipboard(buildReport(), "AKI/AKD Results")}
+              >
+                <Copy className="h-3 w-3" /> Copy results
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full text-xs gap-2"
                 onClick={() => downloadTextFile("aki-akd-assessment", buildReport())}
               >
                 <Download className="h-3 w-3" /> Download .txt

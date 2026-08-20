@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calculator, RotateCcw, ArrowLeftRight, AlertTriangle, Info } from "lucide-react";
+import { Calculator, RotateCcw, ArrowLeftRight, AlertTriangle, Info, Copy, Download } from "lucide-react";
+import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
 
 type CreatinineUnit = "mgdl" | "umol";
 type Sex = "male" | "female" | null;
@@ -182,6 +183,22 @@ export default function KDIGOStagingCalculator() {
   const riskLevel = gfr !== null && uacrMgG !== null
     ? RISK_MATRIX[G_STAGES.indexOf(gStage!)][A_STAGES.indexOf(aStage!)]
     : null;
+
+  const buildSummary = () => {
+    const lines = ["KDIGO CKD Assessment", "===================="];
+    if (gfr !== null && gStage) {
+      lines.push(`eGFR: ${gfr} mL/min/1.73m² (${gStage.stage} - ${gStage.label})`);
+    }
+    if (uacrMgG !== null && aStage) {
+      lines.push(`UACR: ${uacrMgG.toFixed(0)} mg/g (${aStage.stage} - ${aStage.label})`);
+    }
+    if (riskLevel !== null && gStage && aStage) {
+      lines.push(`Overall Risk: ${RISK_LABELS[riskLevel]} (${gStage.stage}${aStage.stage})`);
+    }
+    lines.push(`Generated: ${new Date().toLocaleString()}`);
+    return lines.join("\n");
+  };
+
 
   return (
     <div className="space-y-4">
@@ -408,6 +425,23 @@ export default function KDIGOStagingCalculator() {
                 </p>
               </details>
             )}
+
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => copyToClipboard(buildSummary(), "KDIGO Results")}
+              >
+                <Copy className="h-3.5 w-3.5 mr-1.5" /> Copy results
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => downloadTextFile("kdigo-assessment.txt", buildSummary())}
+              >
+                <Download className="h-3.5 w-3.5 mr-1.5" /> Download report
+              </Button>
+            </div>
 
             {gfr < 60 && (
               <p className="text-xs text-destructive font-medium border-t border-border pt-2">
