@@ -3534,13 +3534,13 @@ const GoldmanCardiacIndex = () => {
         </div>
         <div className="flex gap-2">
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
-            const note = `GOLDMAN CARDIAC RISK INDEX\nDate: ${new Date().toLocaleString()}\n\nSelected Factors:\n${result.activeFactors.length === 0 ? "- None" : result.activeFactors.map(f => `- ${f.factor} (+${f.points})`).join("\n")}\n\nSummary:\n- Total Points: ${result.totalPoints}\n- Risk Class: ${result.riskClass}\n- Complication Rate: ${result.observedRisk.complications}\n- Mortality: ${result.observedRisk.mortality}`;
+            const note = `GOLDMAN CARDIAC RISK INDEX\nDate: ${new Date().toLocaleString()}\n\nSelected Factors:\n${result.activeFactors.length === 0 ? "- None" : result.activeFactors.map(f => `- ${f.factor} (+${f.points})`).join("\n")}\n\nSummary:\n- Total Points: ${result.totalPoints}\n- Risk Class: ${result.riskClass}\n- Observed Risk (Mortality): ${result.observedRisk}`;
             copyToClipboard(note, "Goldman result copied");
           }}>
             <Copy className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
-            const note = `GOLDMAN CARDIAC RISK INDEX\nDate: ${new Date().toLocaleString()}\n\nSelected Factors:\n${result.activeFactors.length === 0 ? "- None" : result.activeFactors.map(f => `- ${f.factor} (+${f.points})`).join("\n")}\n\nSummary:\n- Total Points: ${result.totalPoints}\n- Risk Class: ${result.riskClass}\n- Complication Rate: ${result.observedRisk.complications}\n- Mortality: ${result.observedRisk.mortality}`;
+            const note = `GOLDMAN CARDIAC RISK INDEX\nDate: ${new Date().toLocaleString()}\n\nSelected Factors:\n${result.activeFactors.length === 0 ? "- None" : result.activeFactors.map(f => `- ${f.factor} (+${f.points})`).join("\n")}\n\nSummary:\n- Total Points: ${result.totalPoints}\n- Risk Class: ${result.riskClass}\n- Observed Risk (Mortality): ${result.observedRisk}`;
             downloadTextFile("Goldman_Result", note);
           }}>
             <Download className="h-4 w-4" />
