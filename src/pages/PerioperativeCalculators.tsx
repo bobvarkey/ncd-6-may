@@ -1049,13 +1049,13 @@ const SurgicalApgarCalculator = () => {
             </CardTitle>
             <div className="flex gap-2">
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
-                const note = `SURGICAL APGAR SCORE\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Estimated Blood Loss: ${inputs.ebl} mL\n- Lowest MAP: ${inputs.lowestMAP} mmHg\n- Lowest HR: ${inputs.lowestHR} bpm\n\nResult:\n- Total Points: ${result.points}/10\n- Risk Level: ${result.level.risk}`;
+                const note = `SURGICAL APGAR SCORE\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Estimated Blood Loss: ${inputs.estimatedBloodLoss} mL\n- Lowest MAP: ${inputs.lowestMAP} mmHg\n- Lowest HR: ${inputs.lowestHR} bpm\n\nResult:\n- Total Points: ${result.points}/10\n- Risk Level: ${result.level.risk}`;
                 copyToClipboard(note, "Apgar result copied");
               }}>
                 <Copy className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
-                const note = `SURGICAL APGAR SCORE\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Estimated Blood Loss: ${inputs.ebl} mL\n- Lowest MAP: ${inputs.lowestMAP} mmHg\n- Lowest HR: ${inputs.lowestHR} bpm\n\nResult:\n- Total Points: ${result.points}/10\n- Risk Level: ${result.level.risk}`;
+                const note = `SURGICAL APGAR SCORE\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Estimated Blood Loss: ${inputs.estimatedBloodLoss} mL\n- Lowest MAP: ${inputs.lowestMAP} mmHg\n- Lowest HR: ${inputs.lowestHR} bpm\n\nResult:\n- Total Points: ${result.points}/10\n- Risk Level: ${result.level.risk}`;
                 downloadTextFile("Apgar_Result", note);
               }}>
                 <Download className="h-4 w-4" />
