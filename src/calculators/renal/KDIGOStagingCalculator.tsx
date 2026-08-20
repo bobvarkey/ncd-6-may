@@ -199,20 +199,6 @@ export default function KDIGOStagingCalculator() {
     return lines.join("\n");
   };
 
-  const buildSummary = () => {
-    const lines = ["KDIGO CKD Assessment", "===================="];
-    if (gfr !== null && gStage) {
-      lines.push(`eGFR: ${gfr} mL/min/1.73m² (${gStage.stage} - ${gStage.label})`);
-    }
-    if (uacrMgG !== null && aStage) {
-      lines.push(`UACR: ${uacrMgG.toFixed(0)} mg/g (${aStage.stage} - ${aStage.label})`);
-    }
-    if (riskLevel !== null && gStage && aStage) {
-      lines.push(`Overall Risk: ${RISK_LABELS[riskLevel]} (${gStage.stage}${aStage.stage})`);
-    }
-    lines.push(`Generated: ${new Date().toLocaleString()}`);
-    return lines.join("\n");
-  };
 
   return (
     <div className="space-y-4">
