@@ -5,9 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, Gauge, RotateCcw, AlertTriangle, Copy, Clock } from "lucide-react";
+import { Download, Gauge, RotateCcw, AlertTriangle, Copy, Clock, Settings2, CheckSquare, Square } from "lucide-react";
 import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
 
 function calculateEGFR(age: number, creatinine: number, gender: "male" | "female") {
   if (isNaN(age) || isNaN(creatinine) || !creatinine) return null;
@@ -39,6 +40,26 @@ export default function MehranScoreCalculator() {
   const [hypotension, setHypotension] = useState("0");
   const [iabp, setIABP] = useState("0");
   const [contrastVolume, setContrastVolume] = useState("");
+  
+  // Settings for thresholds
+  const [gfrThreshold, setGfrThreshold] = useState("30");
+  const [earlyCheckTrigger, setEarlyCheckTrigger] = useState("severe_ckd"); // severe_ckd, always, high_risk
+
+  // Checklist state
+  const [checklist, setChecklist] = useState({
+    baselineLabs: false,
+    assessVolume: false,
+    recordContrast: false,
+    monitorUOP: false,
+    hydration: false,
+    avoidNsaids: false,
+    check48h: false,
+    earlyCheck: false
+  });
+
+  const toggleCheck = (key: keyof typeof checklist) => {
+    setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
+  };
 
   useEffect(() => {
     const a = n(age);
@@ -175,6 +196,43 @@ export default function MehranScoreCalculator() {
           Predicts risk of Contrast-Induced Nephropathy (CIN) and requirement for dialysis after PCI.
         </CardDescription>
       </div>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="settings" className="border-none">
+          <AccordionTrigger className="py-0 hover:no-underline">
+            <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              <Settings2 className="h-3 w-3" />
+              Guideline Configuration
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-muted/30 p-3 rounded-lg border border-border/50">
+              <div className="space-y-1.5">
+                <Label className="text-[10px] uppercase text-muted-foreground">High-Risk eGFR Threshold</Label>
+                <Select value={gfrThreshold} onValueChange={setGfrThreshold}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30">eGFR &lt; 30 (KDIGO/Canadian)</SelectItem>
+                    <SelectItem value="45">eGFR &lt; 45 (Aggressive)</SelectItem>
+                    <SelectItem value="60">eGFR &lt; 60 (Classic Mehran)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-[10px] uppercase text-muted-foreground">Early Check (12-24h) Trigger</Label>
+                <Select value={earlyCheckTrigger} onValueChange={setEarlyCheckTrigger}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="severe_ckd">Severe CKD/Shock/ICU only</SelectItem>
+                    <SelectItem value="high_risk">Any High/Very High Risk</SelectItem>
+                    <SelectItem value="always">Always post-procedure</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
       <div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-1.5">
@@ -330,16 +388,16 @@ export default function MehranScoreCalculator() {
                 <p className="font-semibold text-foreground/80">Post–intra-arterial angiography renal monitoring</p>
               </div>
               
-              <Accordion type="single" collapsible className="w-full border-none">
+              <Accordion type="single" collapsible className="w-full border-none" defaultValue="timeline">
                 <AccordionItem value="timeline" className="border-none">
                   <AccordionTrigger className="py-2 hover:no-underline hover:bg-muted/30 rounded px-2 transition-colors">
                     <div className="flex items-center gap-2 text-xs font-medium text-primary">
                       <Clock className="h-3.5 w-3.5" />
-                      View Monitoring Timeline & Criteria
+                      Monitoring Timeline & Guidelines
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="pt-3 pb-1 px-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-[11px]">
                       <div className="space-y-1.5">
                         <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-foreground/60">
                           <span className="w-2 h-2 rounded-full bg-slate-400" />
@@ -357,7 +415,9 @@ export default function MehranScoreCalculator() {
                           <span className="w-2 h-2 rounded-full bg-amber-500" />
                           High-risk definition
                         </div>
-                        <p className="pl-4">eGFR &lt;30, AKI, unstable function, first-pass renal contrast, or CKD plus major clinical risks.</p>
+                        <p className="pl-4 font-medium text-foreground/80">
+                          eGFR &lt;{gfrThreshold}, AKI, unstable function, first-pass renal contrast, or CKD plus major clinical risks.
+                        </p>
                       </div>
                       
                       <div className="space-y-1.5">
@@ -365,7 +425,7 @@ export default function MehranScoreCalculator() {
                           <span className="w-2 h-2 rounded-full bg-blue-500" />
                           After procedure
                         </div>
-                        <ul className="list-disc pl-4 space-y-0.5">
+                        <ul className="list-disc pl-4 space-y-0.5 text-muted-foreground">
                           <li>Monitor UOP and haemodynamics if admitted/high risk</li>
                           <li>Maintain clinically appropriate hydration</li>
                           <li>Avoid NSAIDs and repeat iodinated contrast</li>
@@ -375,17 +435,21 @@ export default function MehranScoreCalculator() {
                       <div className="space-y-1.5">
                         <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-indigo-500">
                           <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                          12–24h (Severe/ICU)
+                          12–24h Check
                         </div>
-                        <p className="pl-4">Earlier check in severe CKD, shock, ICU patients, or ongoing haemodynamic instability.</p>
+                        <p className="pl-4 text-muted-foreground">
+                          {earlyCheckTrigger === "always" ? "Routine check recommended for all patients." : 
+                           earlyCheckTrigger === "high_risk" ? "Recommended for all High/Very High risk scores." :
+                           "Recommended only in severe CKD, shock, ICU, or haemodynamic instability."}
+                        </p>
                       </div>
 
                       <div className="space-y-1.5">
                         <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-purple-500">
                           <span className="w-2 h-2 rounded-full bg-purple-500" />
-                          48h Follow-up
+                          Standard Follow-up
                         </div>
-                        <p className="pl-4">SCr/eGFR at 48h (accept 48–72h for outpatient follow-up).</p>
+                        <p className="pl-4 text-muted-foreground">SCr/eGFR at 48h (accept 48–72h for outpatient follow-up).</p>
                       </div>
                       
                       <div className="space-y-1.5">
@@ -393,12 +457,62 @@ export default function MehranScoreCalculator() {
                           <span className="w-2 h-2 rounded-full bg-destructive" />
                           Escalate
                         </div>
-                        <p className="pl-4">Cr rise ≥0.3 mg/dL or ≥1.5× baseline; oliguria, fluid overload, hyperkalaemia, acidosis, or uraemic symptoms.</p>
+                        <p className="pl-4 text-muted-foreground">Cr rise ≥0.3 mg/dL or ≥1.5× baseline; oliguria, fluid overload, hyperkalaemia, acidosis, or uraemic symptoms.</p>
                       </div>
                     </div>
+                  </AccordionContent>
+                </AccordionItem>
 
-                    <div className="italic pt-2 border-t border-border/50 mt-4 text-[10px]">
-                      Note: ESUR advises 48h eGFR in at-risk patients; Canadian guidance uses eGFR ≤30 threshold after intra-arterial contrast.
+                <AccordionItem value="checklist" className="border-none">
+                  <AccordionTrigger className="py-2 hover:no-underline hover:bg-muted/30 rounded px-2 transition-colors">
+                    <div className="flex items-center gap-2 text-xs font-medium text-emerald-600">
+                      <CheckSquare className="h-3.5 w-3.5" />
+                      Action Checklist
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-3 pb-1 px-2">
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-2">Baseline Actions</div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {[
+                            { id: 'baselineLabs', label: 'Baseline Labs (Cr/eGFR/Lytes)' },
+                            { id: 'assessVolume', label: 'Volume/Clinical Assessment' },
+                            { id: 'recordContrast', label: 'Contrast Volume/Type Goal' },
+                          ].map(item => (
+                            <div key={item.id} className="flex items-center space-x-2 bg-muted/20 p-2 rounded border border-border/30">
+                              <Checkbox 
+                                id={item.id} 
+                                checked={checklist[item.id as keyof typeof checklist]} 
+                                onCheckedChange={() => toggleCheck(item.id as keyof typeof checklist)}
+                              />
+                              <label htmlFor={item.id} className="text-[11px] font-medium leading-none cursor-pointer">{item.label}</label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-2">Post-Procedure Actions</div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {[
+                            { id: 'monitorUOP', label: 'Urine Output/Vitals Tracking' },
+                            { id: 'hydration', label: 'Hydration Strategy Administered' },
+                            { id: 'avoidNsaids', label: 'Nephrotoxins Held (NSAIDs)' },
+                            { id: 'earlyCheck', label: 'Early Check (12-24h)' },
+                            { id: 'check48h', label: 'Standard Follow-up (48-72h)' },
+                          ].map(item => (
+                            <div key={item.id} className="flex items-center space-x-2 bg-muted/20 p-2 rounded border border-border/30">
+                              <Checkbox 
+                                id={item.id} 
+                                checked={checklist[item.id as keyof typeof checklist]} 
+                                onCheckedChange={() => toggleCheck(item.id as keyof typeof checklist)}
+                              />
+                              <label htmlFor={item.id} className="text-[11px] font-medium leading-none cursor-pointer">{item.label}</label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
