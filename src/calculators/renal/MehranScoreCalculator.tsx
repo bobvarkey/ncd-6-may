@@ -40,6 +40,26 @@ export default function MehranScoreCalculator() {
   const [hypotension, setHypotension] = useState("0");
   const [iabp, setIABP] = useState("0");
   const [contrastVolume, setContrastVolume] = useState("");
+  
+  // Settings for thresholds
+  const [gfrThreshold, setGfrThreshold] = useState("30");
+  const [earlyCheckTrigger, setEarlyCheckTrigger] = useState("severe_ckd"); // severe_ckd, always, high_risk
+
+  // Checklist state
+  const [checklist, setChecklist] = useState({
+    baselineLabs: false,
+    assessVolume: false,
+    recordContrast: false,
+    monitorUOP: false,
+    hydration: false,
+    avoidNsaids: false,
+    check48h: false,
+    earlyCheck: false
+  });
+
+  const toggleCheck = (key: keyof typeof checklist) => {
+    setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
+  };
 
   useEffect(() => {
     const a = n(age);
