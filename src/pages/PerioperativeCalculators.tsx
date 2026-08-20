@@ -1551,10 +1551,28 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Brain className="w-4 h-4 text-purple-500" />
-            Woo Perioperative Risk (Non-Cardiac Surgery)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Brain className="w-4 h-4 text-purple-500" />
+              Woo Perioperative Risk (Non-Cardiac Surgery)
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                if (!result) return;
+                const note = `WOO PERIOPERATIVE RISK\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Age: ${inputs.age}\n- ASA: ${inputs.asa}\n- Emergency: ${inputs.emergency}\n- Surgery: ${SURGERY_TYPES.find(t => t.value === inputs.surgeryType)?.label}\n\nResults:\n- 30d Mortality: ${result.mortality.toFixed(2)}%\n- 30d Cardiac MACE: ${result.cardiac.toFixed(2)}%\n- 30d Stroke: ${result.stroke.toFixed(2)}%`;
+                copyToClipboard(note, "Woo result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                if (!result) return;
+                const note = `WOO PERIOPERATIVE RISK\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Age: ${inputs.age}\n- ASA: ${inputs.asa}\n- Emergency: ${inputs.emergency}\n- Surgery: ${SURGERY_TYPES.find(t => t.value === inputs.surgeryType)?.label}\n\nResults:\n- 30d Mortality: ${result.mortality.toFixed(2)}%\n- 30d Cardiac MACE: ${result.cardiac.toFixed(2)}%\n- 30d Stroke: ${result.stroke.toFixed(2)}%`;
+                downloadTextFile("Woo_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="mb-4 p-3 rounded-lg bg-purple-500/5 border border-purple-500/20 space-y-3">
