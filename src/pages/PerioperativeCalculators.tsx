@@ -1,13 +1,14 @@
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
-  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity
+  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity, Copy, Download
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -23,6 +24,7 @@ import {
 import ZoomableImage from "@/components/ZoomableImage";
 import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import mallampatiAsset from "@/assets/mallampati-score.png.asset.json";
+import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
 
 // ─── RCRI (Revised Cardiac Risk Index) ───
 interface RCRIFactor {
@@ -469,10 +471,26 @@ const RCRICalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Heart className="w-5 h-5 text-rose-500" />
-            Revised Cardiac Risk Index (RCRI)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Heart className="w-5 h-5 text-rose-500" />
+              Revised Cardiac Risk Index (RCRI)
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `REVISED CARDIAC RISK INDEX (RCRI)\nDate: ${new Date().toLocaleString()}\n\nFactors:\n${result.active.map(f => `- ${f.label}`).join("\n") || "- None"}\n\nResult:\n- Total Score: ${result.total}\n- Risk Class: ${result.cls.label}\n- MACE Risk: ${result.cls.risk}\n\nReference: Lee et al., Circulation 1999.`;
+                copyToClipboard(note, "RCRI result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `REVISED CARDIAC RISK INDEX (RCRI)\nDate: ${new Date().toLocaleString()}\n\nFactors:\n${result.active.map(f => `- ${f.label}`).join("\n") || "- None"}\n\nResult:\n- Total Score: ${result.total}\n- Risk Class: ${result.cls.label}\n- MACE Risk: ${result.cls.risk}\n\nReference: Lee et al., Circulation 1999.`;
+                downloadTextFile("RCRI_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
@@ -650,10 +668,28 @@ const MallampatiCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Eye className="w-4 h-4 text-violet-500" />
-            Mallampati Score (Airway Assessment)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Eye className="w-4 h-4 text-violet-500" />
+              Mallampati Score (Airway Assessment)
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const m = MALLAMPATI_CLASSES.find(c => c.class === selectedClass);
+                const note = `MALLAMPATI SCORE\nDate: ${new Date().toLocaleString()}\n\nResult:\n- Class: ${selectedClass || "Not selected"}\n- Description: ${m?.description || "N/A"}\n- Intubation: ${m?.intubation || "N/A"}\n- Risk: ${m?.risk || "N/A"} risk`;
+                copyToClipboard(note, "Mallampati result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const m = MALLAMPATI_CLASSES.find(c => c.class === selectedClass);
+                const note = `MALLAMPATI SCORE\nDate: ${new Date().toLocaleString()}\n\nResult:\n- Class: ${selectedClass || "Not selected"}\n- Description: ${m?.description || "N/A"}\n- Intubation: ${m?.intubation || "N/A"}\n- Risk: ${m?.risk || "N/A"} risk`;
+                downloadTextFile("Mallampati_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
@@ -746,10 +782,26 @@ const STOPBangCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Wind className="w-4 h-4 text-cyan-500" />
-            STOP-Bang (OSA Screening)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Wind className="w-4 h-4 text-cyan-500" />
+              STOP-Bang (OSA Screening)
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `STOP-BANG OSA SCREEN\nDate: ${new Date().toLocaleString()}\n\nPositive Items:\n${result.total === 0 ? "- None" : items.filter(i => i.active).map(i => `- ${i.label}`).join("\n")}\n\nResult:\n- Total Score: ${result.total}/8\n- Risk Level: ${result.level.risk}\n- OSA Probability: ${result.level.osa_prob}`;
+                copyToClipboard(note, "STOP-Bang result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `STOP-BANG OSA SCREEN\nDate: ${new Date().toLocaleString()}\n\nPositive Items:\n${result.total === 0 ? "- None" : items.filter(i => i.active).map(i => `- ${i.label}`).join("\n")}\n\nResult:\n- Total Score: ${result.total}/8\n- Risk Level: ${result.level.risk}\n- OSA Probability: ${result.level.osa_prob}`;
+                downloadTextFile("STOPBang_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
@@ -852,10 +904,26 @@ const CapriniCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Droplets className="w-4 h-4 text-indigo-500" />
-            Caprini VTE Risk Assessment
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Droplets className="w-4 h-4 text-indigo-500" />
+              Caprini VTE Risk Assessment
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `CAPRINI VTE RISK SCORE\nDate: ${new Date().toLocaleString()}\n\nFactors Selected: ${result.active.length}\n${result.active.map(f => `- ${f.label}`).join("\n") || "- None"}\n\nResult:\n- Total Score: ${result.total}\n- Risk Level: ${result.level.risk}\n- VTE Risk: ${result.level.vte_risk}\n- Prophylaxis: ${result.level.prophylaxis}`;
+                copyToClipboard(note, "Caprini result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `CAPRINI VTE RISK SCORE\nDate: ${new Date().toLocaleString()}\n\nFactors Selected: ${result.active.length}\n${result.active.map(f => `- ${f.label}`).join("\n") || "- None"}\n\nResult:\n- Total Score: ${result.total}\n- Risk Level: ${result.level.risk}\n- VTE Risk: ${result.level.vte_risk}\n- Prophylaxis: ${result.level.prophylaxis}`;
+                downloadTextFile("Caprini_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
@@ -974,10 +1042,26 @@ const SurgicalApgarCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Timer className="w-4 h-4 text-amber-500" />
-            Surgical Apgar Score
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Timer className="w-4 h-4 text-amber-500" />
+              Surgical Apgar Score
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `SURGICAL APGAR SCORE\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Estimated Blood Loss: ${inputs.estimatedBloodLoss} mL\n- Lowest MAP: ${inputs.lowestMAP} mmHg\n- Lowest HR: ${inputs.lowestHR} bpm\n\nResult:\n- Total Points: ${result.points}/10\n- Risk Level: ${result.level.risk}`;
+                copyToClipboard(note, "Apgar result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `SURGICAL APGAR SCORE\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Estimated Blood Loss: ${inputs.estimatedBloodLoss} mL\n- Lowest MAP: ${inputs.lowestMAP} mmHg\n- Lowest HR: ${inputs.lowestHR} bpm\n\nResult:\n- Total Points: ${result.points}/10\n- Risk Level: ${result.level.risk}`;
+                downloadTextFile("Apgar_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
@@ -1467,10 +1551,28 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Brain className="w-4 h-4 text-purple-500" />
-            Woo Perioperative Risk (Non-Cardiac Surgery)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Brain className="w-4 h-4 text-purple-500" />
+              Woo Perioperative Risk (Non-Cardiac Surgery)
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                if (!result) return;
+                const note = `WOO PERIOPERATIVE RISK\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Age: ${inputs.age}\n- ASA: ${inputs.asa}\n- Emergency: ${inputs.emergency}\n- Surgery: ${SURGERY_TYPES.find(t => t.value === inputs.surgeryType)?.label}\n\nResults:\n- 30d Mortality: ${result.mortality.toFixed(2)}%\n- 30d Cardiac MACE: ${result.cardiac.toFixed(2)}%\n- 30d Stroke: ${result.stroke.toFixed(2)}%`;
+                copyToClipboard(note, "Woo result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                if (!result) return;
+                const note = `WOO PERIOPERATIVE RISK\nDate: ${new Date().toLocaleString()}\n\nInputs:\n- Age: ${inputs.age}\n- ASA: ${inputs.asa}\n- Emergency: ${inputs.emergency}\n- Surgery: ${SURGERY_TYPES.find(t => t.value === inputs.surgeryType)?.label}\n\nResults:\n- 30d Mortality: ${result.mortality.toFixed(2)}%\n- 30d Cardiac MACE: ${result.cardiac.toFixed(2)}%\n- 30d Stroke: ${result.stroke.toFixed(2)}%`;
+                downloadTextFile("Woo_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="mb-4 p-3 rounded-lg bg-purple-500/5 border border-purple-500/20 space-y-3">
@@ -1818,10 +1920,28 @@ const STSCardiacRiskCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Heart className="w-4 h-4 text-red-500" />
-            STS-Style Cardiac Surgery Risk Calculator
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Heart className="w-4 h-4 text-red-500" />
+              STS-Style Cardiac Surgery Risk Calculator
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                if (!result) return;
+                const note = `STS CARDIAC RISK\nDate: ${new Date().toLocaleString()}\n\nResults:\n- Mortality: ${result.mortality.toFixed(2)}%\n- Stroke: ${result.stroke.toFixed(2)}%\n- Major Morbidity: ${result.majorMorbidity.toFixed(2)}%`;
+                copyToClipboard(note, "STS result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                if (!result) return;
+                const note = `STS CARDIAC RISK\nDate: ${new Date().toLocaleString()}\n\nResults:\n- Mortality: ${result.mortality.toFixed(2)}%\n- Stroke: ${result.stroke.toFixed(2)}%\n- Major Morbidity: ${result.majorMorbidity.toFixed(2)}%`;
+                downloadTextFile("STS_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
@@ -3397,19 +3517,35 @@ const GoldmanCardiacIndex = () => {
         </Collapsible>
       </Card>
       {/* Expand All / Collapse All */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setExpandedCats(new Set(["history", "examination", "ecg", "vitals", "lab", "age"]))}
-          className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted"
-        >
-          Expand All
-        </button>
-        <button
-          onClick={() => setExpandedCats(new Set())}
-          className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted"
-        >
-          Collapse All
-        </button>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setExpandedCats(new Set(["history", "examination", "ecg", "vitals", "lab", "age"]))}
+            className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted"
+          >
+            Expand All
+          </button>
+          <button
+            onClick={() => setExpandedCats(new Set())}
+            className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted"
+          >
+            Collapse All
+          </button>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+            const note = `GOLDMAN CARDIAC RISK INDEX\nDate: ${new Date().toLocaleString()}\n\nSelected Factors:\n${result.activeFactors.length === 0 ? "- None" : result.activeFactors.map(f => `- ${f.factor} (+${f.points})`).join("\n")}\n\nSummary:\n- Total Points: ${result.totalPoints}\n- Risk Class: ${result.riskClass}\n- Observed Risk (Mortality): ${result.observedRisk}`;
+            copyToClipboard(note, "Goldman result copied");
+          }}>
+            <Copy className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+            const note = `GOLDMAN CARDIAC RISK INDEX\nDate: ${new Date().toLocaleString()}\n\nSelected Factors:\n${result.activeFactors.length === 0 ? "- None" : result.activeFactors.map(f => `- ${f.factor} (+${f.points})`).join("\n")}\n\nSummary:\n- Total Points: ${result.totalPoints}\n- Risk Class: ${result.riskClass}\n- Observed Risk (Mortality): ${result.observedRisk}`;
+            downloadTextFile("Goldman_Result", note);
+          }}>
+            <Download className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Risk factor categories */}
