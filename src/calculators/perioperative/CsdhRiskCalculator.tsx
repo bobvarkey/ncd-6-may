@@ -145,6 +145,33 @@ export const CsdhRiskCalculator = () => {
            parseInt(data.neurological_assessment.gcs.motor);
   }, [data.neurological_assessment.gcs]);
 
+  const csdhScore = useMemo(() => {
+    let score = 0;
+    
+    // GCS component (lower is worse)
+    if (gcsTotal <= 8) score += 4;
+    else if (gcsTotal <= 12) score += 2;
+    
+    // Markwalder Grade
+    score += parseInt(data.markwalder_grade.grade);
+    
+    // CT features
+    const thickness = parseFloat(data.ct_mass_effect.thickness_mm) || 0;
+    const shift = parseFloat(data.ct_mass_effect.midline_shift_mm) || 0;
+    
+    if (thickness > 20) score += 2;
+    else if (thickness > 10) score += 1;
+    
+    if (shift > 10) score += 3;
+    else if (shift > 5) score += 1;
+    
+    // Trajectory
+    if (data.neurological_assessment.trajectory === "rapidly_deteriorating") score += 3;
+    else if (data.neurological_assessment.trajectory === "deteriorating") score += 1;
+    
+    return score;
+  }, [gcsTotal, data.markwalder_grade.grade, data.ct_mass_effect.thickness_mm, data.ct_mass_effect.midline_shift_mm, data.neurological_assessment.trajectory]);
+
   const copyAsReport = () => {
     const report = `CHRONIC SUBDURAL HEMATOMA (cSDH) ASSESSMENT REPORT
 --------------------------------------------------
@@ -170,6 +197,9 @@ RISK & FRAILTY
 ASA Class: ${data.perioperative.asa}${data.perioperative.emergency_modifier ? "E" : ""}
 Clinical Frailty Scale (CFS): ${data.frailty.cfs}
 Pre-morbid mRS: ${data.frailty.mrs}
+
+ASSESSMENT SCORE
+cSDH Risk Score: ${csdhScore}
 --------------------------------------------------
 Generated on: ${new Date().toLocaleString()}`;
 
@@ -182,9 +212,14 @@ Generated on: ${new Date().toLocaleString()}`;
       <Card className="border-border/40 overflow-hidden">
         <CardHeader className="bg-muted/30 pb-4 border-b">
           <CardTitle className="flex justify-between items-center text-lg">
-            <div className="flex items-center gap-2">
-              <Brain className="w-5 h-5 text-indigo-500" />
-              cSDH Perioperative Risk Assessment
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                <Brain className="w-5 h-5 text-indigo-500" />
+              </div>
+              <div className="flex flex-col">
+                <span>cSDH Risk Assessment</span>
+                <span className="text-[10px] font-mono text-indigo-500 uppercase tracking-widest font-bold">Score: {csdhScore}</span>
+              </div>
             </div>
             <Button variant="outline" size="sm" onClick={copyAsReport} className="gap-2">
               <Copy className="w-4 h-4" /> Copy Report

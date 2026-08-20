@@ -416,81 +416,98 @@ export default function AKIAKDMiniApp() {
           </CardContent>
         </Card>
 
-        {/* Result */}
-        <Card className="border-2 border-primary/20">
-          <CardHeader>
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <AlertTriangle className={`h-5 w-5 ${result.akiPresent ? "text-destructive" : "text-muted-foreground"}`} />
-                Result
-              </CardTitle>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => copyToClipboard(buildReport(), "Report copied")}>
-                  <Copy className="h-4 w-4 mr-1" /> Copy
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => downloadTextFile("aki-akd-assessment", buildReport())}>
-                  <Download className="h-4 w-4 mr-1" /> Download .txt
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              <Badge className={stageColor}>
-                {result.akiPresent ? `AKI — ${result.stage.replace("_", " ")}` : "No AKI"}
-              </Badge>
-              {result.akdPresent && <Badge variant="outline">AKD (≤3 months)</Badge>}
-              <Badge variant="outline" className={confColor}>Confidence: {result.confidence}</Badge>
-              {result.imputed && <Badge variant="outline" className="text-warning">Baseline imputed → AKI suspected</Badge>}
-              {result.inpatientOnly && <Badge variant="outline" className="text-warning">Inpatient-nadir baseline</Badge>}
-              <Badge variant="outline">Misclassification risk: {result.misclass}</Badge>
-            </div>
-
-            <div className="grid gap-3 md:grid-cols-2 text-sm">
-              <div>
-                <div className="font-medium mb-1">Effective baseline</div>
-                <div className="text-muted-foreground">
-                  {Number.isFinite(result.effBaseline) ? `${result.effBaseline.toFixed(2)} mg/dL` : "—"}
-                  {result.imputed && " (MDRD back-calc, eGFR=75)"}
+        {/* Result & Criteria Summary Panel */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card className={`md:col-span-2 border-2 ${result.akiPresent ? "border-destructive/30" : "border-primary/20"}`}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Activity className={`h-5 w-5 ${result.akiPresent ? "text-destructive" : "text-success"}`} />
+                  KDIGO 2026 Detection Result
+                </CardTitle>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => copyToClipboard(buildReport(), "Report copied")}>
+                    <Copy className="h-4 w-4 mr-1" /> Copy
+                  </Button>
                 </div>
               </div>
-              <div>
-                <div className="font-medium mb-1">Computed ratios</div>
-                <div className="text-muted-foreground">
-                  SCr ratio (7d): {Number.isFinite(result.ratio7d) ? result.ratio7d.toFixed(2) : "—"} ·
-                  UOP: {Number.isFinite(result.uopPerKgHr) ? `${result.uopPerKgHr.toFixed(2)} mL/kg/h` : "—"}
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge className={`${stageColor} text-sm py-1 px-3`}>
+                  {result.akiPresent ? `AKI — ${result.stage.replace("_", " ")}` : "No AKI Criteria Met"}
+                </Badge>
+                {result.akdPresent && <Badge variant="secondary" className="text-sm py-1 px-3">AKD Detected</Badge>}
+                <Badge variant="outline" className={confColor}>Data Confidence: {result.confidence.toUpperCase()}</Badge>
+              </div>
+
+              <div className="space-y-3">
+                <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Primary Criteria Summary</div>
+                  <div className="grid gap-2 text-sm">
+                    {result.triggered.length > 0 ? (
+                      result.triggered.map((t, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-destructive shrink-0" />
+                          <span>{t}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-muted-foreground italic">No functional or structural criteria triggered.</div>
+                    )}
+                  </div>
                 </div>
+
+                {result.akdCriteria.length > 0 && (
+                  <div className="p-3 rounded-lg bg-amber-500/5 border border-amber-500/20">
+                    <div className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-2">AKD Indicators (Duration ≤90d)</div>
+                    <div className="grid gap-1 text-sm">
+                      {result.akdCriteria.map((t, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+                          <span>{t}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
 
-            <div>
-              <div className="font-medium mb-1 text-sm">Triggered criteria</div>
-              {result.triggered.length ? (
-                <ul className="list-disc pl-5 text-sm space-y-1">
-                  {result.triggered.map((t, i) => <li key={i}>{t}</li>)}
-                </ul>
-              ) : <div className="text-sm text-muted-foreground">None</div>}
-            </div>
-
-            {result.akdCriteria.length > 0 && (
               <div>
-                <div className="font-medium mb-1 text-sm">AKD criteria met</div>
-                <ul className="list-disc pl-5 text-sm space-y-1">
-                  {result.akdCriteria.map((t, i) => <li key={i}>{t}</li>)}
+                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Clinical Next Steps</div>
+                <ul className="space-y-1.5">
+                  {result.steps.map((s, i) => (
+                    <li key={i} className="text-sm flex gap-2">
+                      <span className="text-primary font-bold">•</span>
+                      <span>{s}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
-            )}
+            </CardContent>
+          </Card>
 
-            <div>
-              <div className="font-medium mb-1 text-sm">Next steps</div>
-              <ul className="list-disc pl-5 text-sm space-y-1">
-                {result.steps.map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
-
-            <Textarea readOnly value={buildReport()} className="font-mono text-xs h-48" />
-          </CardContent>
-        </Card>
+          <Card className="bg-muted/30 border-none shadow-none">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Internal Log</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Textarea 
+                readOnly 
+                value={buildReport()} 
+                className="font-mono text-[10px] h-[340px] bg-background/50 resize-none border-none" 
+              />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full text-xs gap-2"
+                onClick={() => downloadTextFile("aki-akd-assessment", buildReport())}
+              >
+                <Download className="h-3 w-3" /> Download .txt
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="text-xs text-muted-foreground">
           Reference: KDIGO 2026 Clinical Practice Guideline for AKI & AKD. This tool assists interpretation and does not replace clinical judgment.
