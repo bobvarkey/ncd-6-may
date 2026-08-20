@@ -985,7 +985,21 @@ export default function IronStudiesCombined() {
                         <div className="text-sm font-semibold mt-0.5">{ganzoni.isIV ? "IV iron" : "Oral iron"}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-muted-foreground">Ganzoni Deficit</div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                          Ganzoni Deficit
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="text-[10px] leading-tight max-w-[200px]">
+                                  Total Iron Deficit (mg) = [Weight (kg) × (Target Hb - Actual Hb) × 2.4] + Iron Stores (mg)
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                         <div className="text-sm font-semibold mt-0.5">{Math.round(ganzoni.deficit)} mg</div>
                         <div className="text-[10px] text-muted-foreground mt-0.5">Target Hb: {ganzoni.targetHb} g/dL</div>
                       </div>
