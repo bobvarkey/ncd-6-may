@@ -38,6 +38,7 @@ function estimateBaselineMDRD(age: number, sex: "M" | "F"): number {
 }
 
 export default function AKIAKDMiniApp() {
+  const [showFullDetails, setShowFullDetails] = useState(false);
   // Baseline
   const [baselineSource, setBaselineSource] = useState<BaselineSource>("known");
   const [baselineMethod, setBaselineMethod] = useState<BaselineMethod>("outpatient_recent");
