@@ -985,29 +985,56 @@ export default function IronStudiesCombined() {
                         <div className="text-xs text-muted-foreground">Route</div>
                         <div className="text-sm font-semibold mt-0.5">{ganzoni.isIV ? "IV iron" : "Oral iron"}</div>
                       </div>
-                      <div>
-                        <div className="text-xs text-muted-foreground flex items-center gap-1">
-                          Ganzoni Deficit
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p className="text-[10px] leading-tight max-w-[200px]">
-                                  Total Iron Deficit (mg) = [Weight (kg) × (Target Hb - Actual Hb) × 2.4] + Iron Stores (mg)
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                      <div className="lg:col-span-2">
+                        <div className="text-xs text-muted-foreground flex items-center justify-between">
+                          <span className="flex items-center gap-1">
+                            Ganzoni Deficit Calculation
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p className="text-[10px] leading-tight max-w-[200px]">
+                                    Total Iron Deficit (mg) = [Weight (kg) × (Target Hb - Actual Hb) × 2.4] + Iron Stores (mg)
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </span>
+                          <span className="text-primary font-bold">{Math.round(ganzoni.deficit)} mg total</span>
                         </div>
-                        <div className="text-sm font-semibold mt-0.5">{Math.round(ganzoni.deficit)} mg</div>
-                        <div className="text-[10px] text-muted-foreground mt-0.5">Target Hb: {ganzoni.targetHb} g/dL</div>
+                        
+                        <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 bg-muted/30 p-2 rounded border border-dashed">
+                          <div className="text-center">
+                            <div className="text-[10px] text-muted-foreground uppercase">Weight</div>
+                            <div className="text-xs font-mono">{weight} kg</div>
+                          </div>
+                          <div className="text-center border-l">
+                            <div className="text-[10px] text-muted-foreground uppercase">Target Hb</div>
+                            <div className="text-xs font-mono">{ganzoni.targetHb} g/dL</div>
+                          </div>
+                          <div className="text-center border-l">
+                            <div className="text-[10px] text-muted-foreground uppercase">Actual Hb</div>
+                            <div className="text-xs font-mono">{hemoglobin} g/dL</div>
+                          </div>
+                          <div className="text-center border-l">
+                            <div className="text-[10px] text-muted-foreground uppercase">Stores</div>
+                            <div className="text-xs font-mono">{ganzoni.stores} mg</div>
+                          </div>
+                        </div>
+
+                        <div className="mt-2 text-[10px] font-mono text-muted-foreground bg-black/5 dark:bg-white/5 p-1.5 rounded text-center">
+                          {weight} × ({ganzoni.targetHb} - {hemoglobin}) × 2.4 + {ganzoni.stores} = {Math.round(ganzoni.deficit)} mg
+                        </div>
                       </div>
                       <div>
-                        <div className="text-xs text-muted-foreground">Dose</div>
-                        <div className="text-xs font-semibold mt-0.5">{ganzoni.doseText}</div>
+                        <div className="text-xs text-muted-foreground">Dose Recommendation</div>
+                        <div className="text-xs font-semibold mt-1 p-2 rounded bg-primary/10 border border-primary/20 text-primary">
+                          {ganzoni.doseText}
+                        </div>
                       </div>
+
                     </>
                   )}
                 </div>
