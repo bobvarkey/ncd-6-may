@@ -5,8 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, Gauge, RotateCcw, AlertTriangle, Copy } from "lucide-react";
+import { Download, Gauge, RotateCcw, AlertTriangle, Copy, Clock } from "lucide-react";
 import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 function calculateEGFR(age: number, creatinine: number, gender: "male" | "female") {
   if (isNaN(age) || isNaN(creatinine) || !creatinine) return null;
@@ -324,44 +325,84 @@ export default function MehranScoreCalculator() {
         <div className="mt-6 border-t border-border pt-4">
           <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded-lg border border-border/50">
             <AlertTriangle className="h-3.5 w-3.5 mt-0.5 text-amber-500 shrink-0" />
-            <div className="space-y-2">
-              <p className="font-semibold text-foreground/80">Post–intra-arterial angiography renal monitoring</p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
-                <div>
-                  <p className="font-medium text-foreground/70">Baseline:</p>
-                  <ul className="list-disc pl-4 space-y-0.5">
-                    <li>Serum creatinine, eGFR, electrolytes</li>
-                    <li>Assess AKI/CKD, volume status, HF, DM, nephrotoxins</li>
-                    <li>Record contrast type and total volume</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <p className="font-medium text-foreground/70">High-risk definition:</p>
-                  <p>eGFR &lt;30, AKI, unstable function, first-pass renal contrast, or CKD plus major clinical risks.</p>
-                </div>
-                
-                <div className="md:col-span-2">
-                  <p className="font-medium text-foreground/70">After procedure:</p>
-                  <ul className="list-disc pl-4 grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                    <li>Monitor UOP and haemodynamics if admitted/high risk</li>
-                    <li>Maintain clinically appropriate hydration</li>
-                    <li>Avoid NSAIDs and repeat iodinated contrast</li>
-                    <li>SCr/eGFR at 48h (48–72h for outpatient)</li>
-                    <li>Earlier check (~12–24h) in severe CKD/shock/ICU</li>
-                  </ul>
-                </div>
-                
-                <div className="md:col-span-2">
-                  <p className="font-medium text-foreground/70">Escalate:</p>
-                  <p>Cr rise ≥0.3 mg/dL or ≥1.5× baseline; oliguria, fluid overload, hyperkalaemia, acidosis, or uraemic symptoms.</p>
-                </div>
+            <div className="w-full space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="font-semibold text-foreground/80">Post–intra-arterial angiography renal monitoring</p>
               </div>
               
-              <p className="italic pt-1 border-t border-border/50 mt-2">
-                Note: ESUR advises 48h eGFR in at-risk patients; Canadian guidance uses eGFR ≤30 threshold after intra-arterial contrast.
-              </p>
+              <Accordion type="single" collapsible className="w-full border-none">
+                <AccordionItem value="timeline" className="border-none">
+                  <AccordionTrigger className="py-2 hover:no-underline hover:bg-muted/30 rounded px-2 transition-colors">
+                    <div className="flex items-center gap-2 text-xs font-medium text-primary">
+                      <Clock className="h-3.5 w-3.5" />
+                      View Monitoring Timeline & Criteria
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-3 pb-1 px-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-foreground/60">
+                          <span className="w-2 h-2 rounded-full bg-slate-400" />
+                          Baseline
+                        </div>
+                        <ul className="list-disc pl-4 space-y-0.5">
+                          <li>Serum creatinine, eGFR, electrolytes</li>
+                          <li>Assess AKI/CKD, volume status, HF, DM, nephrotoxins</li>
+                          <li>Record contrast type and total volume</li>
+                        </ul>
+                      </div>
+                      
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-amber-500">
+                          <span className="w-2 h-2 rounded-full bg-amber-500" />
+                          High-risk definition
+                        </div>
+                        <p className="pl-4">eGFR &lt;30, AKI, unstable function, first-pass renal contrast, or CKD plus major clinical risks.</p>
+                      </div>
+                      
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-blue-500">
+                          <span className="w-2 h-2 rounded-full bg-blue-500" />
+                          After procedure
+                        </div>
+                        <ul className="list-disc pl-4 space-y-0.5">
+                          <li>Monitor UOP and haemodynamics if admitted/high risk</li>
+                          <li>Maintain clinically appropriate hydration</li>
+                          <li>Avoid NSAIDs and repeat iodinated contrast</li>
+                        </ul>
+                      </div>
+                      
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-indigo-500">
+                          <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                          12–24h (Severe/ICU)
+                        </div>
+                        <p className="pl-4">Earlier check in severe CKD, shock, ICU patients, or ongoing haemodynamic instability.</p>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-purple-500">
+                          <span className="w-2 h-2 rounded-full bg-purple-500" />
+                          48h Follow-up
+                        </div>
+                        <p className="pl-4">SCr/eGFR at 48h (accept 48–72h for outpatient follow-up).</p>
+                      </div>
+                      
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-destructive">
+                          <span className="w-2 h-2 rounded-full bg-destructive" />
+                          Escalate
+                        </div>
+                        <p className="pl-4">Cr rise ≥0.3 mg/dL or ≥1.5× baseline; oliguria, fluid overload, hyperkalaemia, acidosis, or uraemic symptoms.</p>
+                      </div>
+                    </div>
+
+                    <div className="italic pt-2 border-t border-border/50 mt-4 text-[10px]">
+                      Note: ESUR advises 48h eGFR in at-risk patients; Canadian guidance uses eGFR ≤30 threshold after intra-arterial contrast.
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
         </div>
