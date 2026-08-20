@@ -1,13 +1,14 @@
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
-  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity
+  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity, Copy, Download
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -23,6 +24,7 @@ import {
 import ZoomableImage from "@/components/ZoomableImage";
 import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import mallampatiAsset from "@/assets/mallampati-score.png.asset.json";
+import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
 
 // ─── RCRI (Revised Cardiac Risk Index) ───
 interface RCRIFactor {
