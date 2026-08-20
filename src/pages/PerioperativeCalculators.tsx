@@ -782,10 +782,26 @@ const STOPBangCalculator = () => {
     <div className="space-y-4">
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Wind className="w-4 h-4 text-cyan-500" />
-            STOP-Bang (OSA Screening)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Wind className="w-4 h-4 text-cyan-500" />
+              STOP-Bang (OSA Screening)
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `STOP-BANG OSA SCREEN\nDate: ${new Date().toLocaleString()}\n\nPositive Items:\n${result.total === 0 ? "- None" : items.filter(i => i.active).map(i => `- ${i.label}`).join("\n")}\n\nResult:\n- Total Score: ${result.total}/8\n- Risk Level: ${result.level.risk}\n- OSA Probability: ${result.level.osa_prob}`;
+                copyToClipboard(note, "STOP-Bang result copied");
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                const note = `STOP-BANG OSA SCREEN\nDate: ${new Date().toLocaleString()}\n\nPositive Items:\n${result.total === 0 ? "- None" : items.filter(i => i.active).map(i => `- ${i.label}`).join("\n")}\n\nResult:\n- Total Score: ${result.total}/8\n- Risk Level: ${result.level.risk}\n- OSA Probability: ${result.level.osa_prob}`;
+                downloadTextFile("STOPBang_Result", note);
+              }}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-muted-foreground mb-4">
