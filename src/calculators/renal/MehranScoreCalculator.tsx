@@ -196,6 +196,43 @@ export default function MehranScoreCalculator() {
           Predicts risk of Contrast-Induced Nephropathy (CIN) and requirement for dialysis after PCI.
         </CardDescription>
       </div>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="settings" className="border-none">
+          <AccordionTrigger className="py-0 hover:no-underline">
+            <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              <Settings2 className="h-3 w-3" />
+              Guideline Configuration
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-muted/30 p-3 rounded-lg border border-border/50">
+              <div className="space-y-1.5">
+                <Label className="text-[10px] uppercase text-muted-foreground">High-Risk eGFR Threshold</Label>
+                <Select value={gfrThreshold} onValueChange={setGfrThreshold}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30">eGFR &lt; 30 (KDIGO/Canadian)</SelectItem>
+                    <SelectItem value="45">eGFR &lt; 45 (Aggressive)</SelectItem>
+                    <SelectItem value="60">eGFR &lt; 60 (Classic Mehran)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-[10px] uppercase text-muted-foreground">Early Check (12-24h) Trigger</Label>
+                <Select value={earlyCheckTrigger} onValueChange={setEarlyCheckTrigger}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="severe_ckd">Severe CKD/Shock/ICU only</SelectItem>
+                    <SelectItem value="high_risk">Any High/Very High Risk</SelectItem>
+                    <SelectItem value="always">Always post-procedure</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
       <div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-1.5">
