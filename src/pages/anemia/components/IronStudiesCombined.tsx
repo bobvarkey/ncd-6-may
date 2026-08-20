@@ -549,6 +549,7 @@ export default function IronStudiesCombined() {
       `  Iron deficiency: ${deficiencyDiagnosis ? deficiencyDiagnosis.diagnosis : "—"}`,
       "",
       ganzoni ? `  Ganzoni deficit: ${Math.round(ganzoni.deficit)} mg (target Hb ${ganzoni.targetHb} g/dL)` : "",
+      ganzoni ? `  (Formula: Weight × [Target Hb - Actual Hb] × 2.4 + Stores)` : "",
       ganzoni ? `  Recommended route: ${ganzoni.isIV ? "IV iron" : "Oral iron"}` : "",
       ganzoni ? `  Dose: ${ganzoni.doseText}` : "",
       "",
@@ -608,7 +609,7 @@ export default function IronStudiesCombined() {
             <CardTitle className="text-xl">Iron Studies — Comprehensive Assessment</CardTitle>
           </div>
           <CardDescription>
-            Unified iron evaluation: deficiency diagnosis + Ganzoni dosing + iron overload algorithm + differential diagnosis. Enter any combination of labs to begin.
+            Unified iron evaluation: deficiency diagnosis + Ganzoni deficit calculation + iron overload algorithm + differential diagnosis. Enter any combination of labs to begin.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -873,7 +874,7 @@ export default function IronStudiesCombined() {
             <div>
               <CardTitle className="text-base">Computed Assessment</CardTitle>
               <CardDescription>
-                Iron deficiency diagnosis, Ganzoni dosing, overload classification, and differential diagnosis
+                Iron deficiency diagnosis, Ganzoni deficit calculation, overload classification, and differential diagnosis
               </CardDescription>
             </div>
             <div className="flex gap-2">
@@ -985,7 +986,21 @@ export default function IronStudiesCombined() {
                         <div className="text-sm font-semibold mt-0.5">{ganzoni.isIV ? "IV iron" : "Oral iron"}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-muted-foreground">Ganzoni Deficit</div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                          Ganzoni Deficit
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="text-[10px] leading-tight max-w-[200px]">
+                                  Total Iron Deficit (mg) = [Weight (kg) × (Target Hb - Actual Hb) × 2.4] + Iron Stores (mg)
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                         <div className="text-sm font-semibold mt-0.5">{Math.round(ganzoni.deficit)} mg</div>
                         <div className="text-[10px] text-muted-foreground mt-0.5">Target Hb: {ganzoni.targetHb} g/dL</div>
                       </div>
