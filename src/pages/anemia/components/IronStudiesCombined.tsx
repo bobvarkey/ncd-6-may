@@ -941,7 +941,7 @@ export default function IronStudiesCombined() {
                   <span className="text-sm font-bold">Interpretation Summary</span>
                 </div>
                 <div className="text-sm">
-                  {deficiencyDiagnosis?.label !== "none" && deficiencyDiagnosis?.label !== "unknown" ? (
+                  {deficiencyDiagnosis && deficiencyDiagnosis.label !== "none" && deficiencyDiagnosis.label !== "unknown" ? (
                     <div className="flex items-start gap-2 text-amber-600 dark:text-amber-400">
                       <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
                       <p>
