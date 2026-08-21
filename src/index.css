@@ -244,18 +244,21 @@
   }
 
   /* Preserve explicit foreground tokens on colored buttons / badges */
-  [class*="text-primary-foreground"]    { color: hsl(var(--primary-foreground)) !important; }
-  [class*="text-secondary-foreground"]  { color: hsl(var(--secondary-foreground)) !important; }
-  [class*="text-accent-foreground"]     { color: hsl(var(--accent-foreground)) !important; }
-  [class*="text-destructive-foreground"]{ color: hsl(var(--destructive-foreground)) !important; }
-  [class*="text-card-foreground"]       { color: hsl(var(--card-foreground)) !important; }
-  [class*="text-popover-foreground"]    { color: hsl(var(--popover-foreground)) !important; }
-  [class*="text-white"][class][class]   { color: #fff !important; }
+  /* Exact class-token matches only — substring matching used to also hit
+     variant classes such as `hover:text-accent-foreground`, which forced
+     white label text on outline/ghost buttons in light mode. */
+  [class~="text-primary-foreground"]    { color: hsl(var(--primary-foreground)) !important; }
+  [class~="text-secondary-foreground"]  { color: hsl(var(--secondary-foreground)) !important; }
+  [class~="text-accent-foreground"]     { color: hsl(var(--accent-foreground)) !important; }
+  [class~="text-destructive-foreground"]{ color: hsl(var(--destructive-foreground)) !important; }
+  [class~="text-card-foreground"]       { color: hsl(var(--card-foreground)) !important; }
+  [class~="text-popover-foreground"]    { color: hsl(var(--popover-foreground)) !important; }
+  [class~="text-white"][class][class]   { color: #fff !important; }
 
   /* Preserve white text on gradient/solid-color hero regions: descendants
      of any text-white* ancestor inherit white instead of the aggressive
      foreground override above. */
-  [class*="text-white"] *:not([class*="text-"]) {
+  [class~="text-white"] *:not([class*="text-"]) {
     color: inherit !important;
   }
 
