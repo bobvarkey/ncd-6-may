@@ -3730,6 +3730,74 @@ const GoldmanCardiacIndex = () => {
           </CollapsibleContent>
         </Collapsible>
       </Card>
+      {/* Calculator Selector Utility */}
+      <Card className="border-border/40 bg-primary/5">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Filter className="w-4 h-4 text-primary" />
+            Calculator Selector Guide
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="p-3 rounded-lg bg-background/60 border border-border/40">
+              <h4 className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Patient & Surgery Type</h4>
+              <div className="space-y-2">
+                <div className="text-xs">
+                  <span className="font-semibold block text-foreground">Non-cardiac Surgery:</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">RCRI</span>
+                    <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">ASA</span>
+                    <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">NSQIP</span>
+                    <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Goldman</span>
+                  </div>
+                </div>
+                <div className="text-xs">
+                  <span className="font-semibold block text-foreground">Cardiac Surgery:</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-600 border border-red-500/20">STS Score</span>
+                  </div>
+                </div>
+                <div className="text-xs">
+                  <span className="font-semibold block text-foreground">Emergency/Neurosurgery:</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">cSDH Risk</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-3 rounded-lg bg-background/60 border border-border/40">
+              <h4 className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Clinical Focus</h4>
+              <div className="space-y-2">
+                <div className="text-xs">
+                  <span className="font-semibold block text-foreground">Airway & OSA:</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 border border-blue-500/20">Mallampati</span>
+                    <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 border border-blue-500/20">STOP-Bang</span>
+                  </div>
+                </div>
+                <div className="text-xs">
+                  <span className="font-semibold block text-foreground">Vascular/Clot Risk:</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">Caprini VTE</span>
+                  </div>
+                </div>
+                <div className="text-xs">
+                  <span className="font-semibold block text-foreground">Intra-op Performance:</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    <span className="px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 border border-purple-500/20">Surgical Apgar</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground italic">
+            Tip: Use RCRI for quick bedside cardiac risk; NSQIP for detailed morbidity; STS for CABG/Valve procedures.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Expand All / Collapse All */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex gap-2">
