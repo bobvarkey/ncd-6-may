@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { FONT, SHADOW } from "./src/lib/design-tokens";
 
 export default {
   darkMode: ["class"],
@@ -11,10 +12,14 @@ export default {
       screens: { "2xl": "1400px" },
     },
     extend: {
+      // Rule 1 — one family, two weights (SF Pro on iOS)
       fontFamily: {
-        sans: ["Source Sans 3", "system-ui", "sans-serif"],
-        heading: ["Space Grotesk", "system-ui", "sans-serif"],
+        sans: FONT.family.split(",").map((s) => s.trim().replace(/^'|'$/g, "")),
+        heading: FONT.family.split(",").map((s) => s.trim().replace(/^'|'$/g, "")),
       },
+      // Rule 2 — spacing: Tailwind default 4px scale (p-1=4px, p-2=8px…)
+      // enforced by lint; arbitrary values are banned (see design-tokens.ts)
+      // Rule 3 — semantic color tokens (kept as-is below; see design-tokens.ts)
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -92,6 +97,13 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      // Rule 5 — one shadow scale (4 elevation steps; no arbitrary shadows)
+      boxShadow: {
+        sm: SHADOW.sm,
+        md: SHADOW.md,
+        lg: SHADOW.lg,
+        xl: SHADOW.xl,
       },
       keyframes: {
         "accordion-down": {
