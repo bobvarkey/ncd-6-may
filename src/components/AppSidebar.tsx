@@ -54,6 +54,7 @@ const SECTIONS: Section[] = [
       { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, keywords: "semaglutide tirzepatide" },
 
       { title: "GLP-1 Screening", url: "/glp1-screening", icon: Eye, keywords: "prescreen pre-screen eligibility contraindication naion optic nerve glaucoma retinopathy semaglutide tirzepatide" },
+      { title: "GLP-1 Pre-Initiation Screener", url: "/glp1-prescreen", icon: Syringe, keywords: "glp1 prescreening pre-initiation wizard mtc men2 pancreatitis scoff eating disorder dpp4 hypoglycaemia sarcopenia referral" },
       { title: "Insulin Therapy", url: "/insulin-therapy", icon: BookMarked },
     ],
   },
