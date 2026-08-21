@@ -158,9 +158,9 @@ export async function flushQueue(remote: RemoteAdapter): Promise<FlushResult> {
   const items = (await listQueue()).filter((i) => i.status === "pending" || i.status === "failed");
 
   for (const item of items) {
-    let response: Awaited<ReturnType<RemoteAdapter["push"]>>;
+    let pushed: PushResponse | null = null;
     try {
-      response = await remote.push(item);
+      pushed = await remote.push(item);
     } catch (error) {
       await db().put(QUEUE, item.opId, {
         ...item,
@@ -173,7 +173,9 @@ export async function flushQueue(remote: RemoteAdapter): Promise<FlushResult> {
       break;
     }
 
-    if (response.ok) {
+    const response: PushResponse = pushed;
+
+    if (response.ok === true) {
       await db().put(QUEUE, item.opId, { ...item, status: "done", attempts: item.attempts + 1 });
       if (response.applied) result.synced += 1;
       else result.skipped += 1;
@@ -189,7 +191,8 @@ export async function flushQueue(remote: RemoteAdapter): Promise<FlushResult> {
       continue;
     }
 
-    if (response.conflict) {
+    if (response.conflict === true) {
+
       await db().put(QUEUE, item.opId, {
         ...item,
         status: "conflict",
