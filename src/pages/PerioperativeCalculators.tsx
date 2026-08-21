@@ -3744,19 +3744,15 @@ const GoldmanCardiacIndex = () => {
               <Label className="text-xs font-semibold">1. What is the surgery type?</Label>
               <div className="flex flex-wrap gap-2">
                 {[
-                  { id: 'non-cardiac', label: 'Non-cardiac' },
-                  { id: 'cardiac', label: 'Cardiac' },
-                  { id: 'neuro', label: 'Neurosurgery' },
-                  { id: 'emergency', label: 'Emergency' }
+                  { id: 'non-cardiac', label: 'Non-cardiac', target: 'rcri' },
+                  { id: 'cardiac', label: 'Cardiac', target: 'sts-score' },
+                  { id: 'neuro', label: 'Neurosurgery', target: 'csdh-risk' },
+                  { id: 'emergency', label: 'Emergency', target: 'rcri' }
                 ].map((type) => (
                   <button
                     key={type.id}
                     onClick={() => {
-                      const el = document.getElementById(
-                        type.id === 'cardiac' ? 'sts-score' : 
-                        type.id === 'neuro' ? 'csdh-risk' : 
-                        'rcri'
-                      );
+                      const el = document.getElementById(type.target);
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
                     className="text-[10px] px-2.5 py-1.5 rounded-md bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all font-medium"
