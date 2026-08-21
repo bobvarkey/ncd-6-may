@@ -142,7 +142,7 @@ export function SectionCard({
         type="button"
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
-        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Add a side-by-side comparison page that summarizes the recommended Perioperative Calculator, required inputs, and interpretation criteria for my selected options.\n\nImplement shareable deep links so I can open a specific Perioperative Calculator with my selected surgery type and clinical focus already filled in.\n\nEnable saving my selector answers in local storage so I can return to the selector later and continue from where I left off.`}
+        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            put the RCRI class after the risk factor selection`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
