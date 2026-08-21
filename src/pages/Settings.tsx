@@ -235,6 +235,80 @@ export default function Settings() {
           </CardContent>
         </Card>
 
+        {/* Backup & restore */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Download className="h-5 w-5 text-primary" aria-hidden /> Backup &amp; Restore
+            </CardTitle>
+            <CardDescription>
+              Export saved records, queued changes and preferences to a JSON file you keep. Import it
+              after a reinstall or on a new device. Works fully offline — nothing is uploaded.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">On import</p>
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Import mode">
+                <Button
+                  variant={importMode === "merge" ? "default" : "outline"}
+                  size="sm"
+                  className="min-h-11"
+                  aria-pressed={importMode === "merge"}
+                  onClick={() => setImportMode("merge")}
+                >
+                  Merge with existing
+                </Button>
+                <Button
+                  variant={importMode === "replace" ? "default" : "outline"}
+                  size="sm"
+                  className="min-h-11"
+                  aria-pressed={importMode === "replace"}
+                  onClick={() => setImportMode("replace")}
+                >
+                  Replace everything
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {importMode === "merge"
+                  ? "Keeps what is on this device and overwrites only entries present in the file."
+                  : "Clears local records, queue and preferences first, then restores the file exactly."}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" disabled={busy !== null} onClick={() => void handleExport()}>
+                <Download className="mr-1.5 h-4 w-4" aria-hidden />
+                {busy === "export" ? "Exporting…" : "Export backup"}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={busy !== null}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="mr-1.5 h-4 w-4" aria-hidden />
+                {busy === "import" ? "Importing…" : "Import backup"}
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json,.json"
+                className="sr-only"
+                aria-label="Choose a backup file to import"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void handleImportFile(file);
+                }}
+              />
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              Backup files contain clinical data in plain text — store them somewhere secure.
+            </p>
+          </CardContent>
+        </Card>
+
         {/* Conflicts */}
         {conflictRecords.length > 0 && (
           <Card className="border-destructive/40">
