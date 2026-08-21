@@ -332,13 +332,6 @@
     outline-offset: 2px;
     border-radius: 4px;
   }
-  a, button, [role="button"], [role="tab"], input, select, textarea, summary, [tabindex]:not([tabindex="-1"]) {
-    &:focus-visible {
-      outline: 2px solid hsl(var(--focus));
-      outline-offset: 2px;
-    }
-  }
-
   /* Secondary / muted text keeps AA contrast in both themes */
   .text-secondary { color: hsl(var(--text-secondary)); }
 
