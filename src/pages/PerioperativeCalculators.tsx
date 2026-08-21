@@ -921,6 +921,29 @@ const RCRICalculator = () => {
           </p>
 
 
+          {/* Factors */}
+          <div className="space-y-2 mb-6">
+            {factors.map(f => (
+              <label key={f.id} className={`flex items-start gap-3 p-2.5 rounded-lg transition-colors cursor-pointer ${
+                f.active ? "bg-warning/5 border border-warning/20" : "hover:bg-muted/30"
+              }`}>
+                <Switch
+                  checked={f.active}
+                  onCheckedChange={() => toggleFactor(f.id)}
+                  className="mt-0.5 shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">{f.label}</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground shrink-0">
+                      +{f.points}
+                    </span>
+                  </div>
+                </div>
+              </label>
+            ))}
+          </div>
+
           {/* Result */}
           <div className={`clinical-card border-l-4 mb-4 ${
             result.total === 0 ? "border-l-success" :
@@ -956,36 +979,14 @@ const RCRICalculator = () => {
                 cls.color === "text-warning" ? "bg-warning/10 border border-warning/20" :
                 "bg-destructive/10 border border-destructive/20"
               }`}>
-                <div className="font-medium text-sm">{cls.label}</div>
-                <div className="text-xs text-muted-foreground">{cls.points} pts</div>
-                <div className={`text-lg font-bold ${cls.color}`}>{cls.risk}</div>
-                <div className="text-xs text-muted-foreground">MACE</div>
+                <div className="font-medium text-xs">{cls.label}</div>
+                <div className="text-[10px] text-muted-foreground">{cls.points} pts</div>
+                <div className={`text-sm font-bold ${cls.color}`}>{cls.risk}</div>
+                <div className="text-[10px] text-muted-foreground">MACE</div>
               </div>
             ))}
           </div>
 
-          {/* Factors */}
-          <div className="space-y-2">
-            {factors.map(f => (
-              <label key={f.id} className={`flex items-start gap-3 p-2.5 rounded-lg transition-colors cursor-pointer ${
-                f.active ? "bg-warning/5 border border-warning/20" : "hover:bg-muted/30"
-              }`}>
-                <Switch
-                  checked={f.active}
-                  onCheckedChange={() => toggleFactor(f.id)}
-                  className="mt-0.5 shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">{f.label}</span>
-                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground shrink-0">
-                      +{f.points}
-                    </span>
-                  </div>
-                </div>
-              </label>
-            ))}
-          </div>
 
           {/* Management by class */}
           <div className="mt-4 p-3 rounded-lg bg-muted/30 border border-border/30">
