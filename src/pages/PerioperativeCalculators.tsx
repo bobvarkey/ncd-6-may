@@ -786,14 +786,30 @@ const PerioperativeCalculators = () => {
                       <td className="py-2 px-3 text-muted-foreground">{tool.inputs}</td>
                       <td className="py-2 px-3 text-muted-foreground line-clamp-2 md:line-clamp-none">{tool.results}</td>
                       <td className="py-2 px-3 text-right">
-                        <Button 
-                          variant="link" 
-                          size="sm" 
-                          className="h-7 p-0 text-primary" 
-                          onClick={() => setActiveTab(val)}
-                        >
-                          Open
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-7 text-[10px] border-primary/20 text-primary hover:bg-primary/10" 
+                            onClick={() => {
+                              // If it's cardiac surgery, pre-select factors if possible
+                              if (val === 'sts') {
+                                // Specific logic for STS or other calculators could go here
+                              }
+                              setActiveTab(val);
+                            }}
+                          >
+                            Start with Pre-fills
+                          </Button>
+                          <Button 
+                            variant="link" 
+                            size="sm" 
+                            className="h-7 p-0 text-primary" 
+                            onClick={() => setActiveTab(val)}
+                          >
+                            Open
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -822,27 +838,27 @@ const PerioperativeCalculators = () => {
 
         {/* ─── RCRI ─── */}
         <TabsContent value="rcri" className="mt-4 space-y-4">
-          <RCRICalculator />
+          <RCRICalculator surgeryType={selectorAnswers.surgeryType} />
         </TabsContent>
 
         {/* ─── ASA ─── */}
         <TabsContent value="asa" className="mt-4 space-y-4">
-          <ASACalculator />
+          <ASACalculator surgeryType={selectorAnswers.surgeryType} />
         </TabsContent>
 
         {/* ─── Mallampati ─── */}
         <TabsContent value="mallampati" className="mt-4 space-y-4">
-          <MallampatiCalculator />
+          <MallampatiCalculator clinicalFocus={selectorAnswers.clinicalFocus} />
         </TabsContent>
 
         {/* ─── STOP-Bang ─── */}
         <TabsContent value="stopbang" className="mt-4 space-y-4">
-          <STOPBangCalculator />
+          <STOPBangCalculator clinicalFocus={selectorAnswers.clinicalFocus} />
         </TabsContent>
 
         {/* ─── Caprini ─── */}
         <TabsContent value="caprini" className="mt-4 space-y-4">
-          <CapriniCalculator />
+          <CapriniCalculator clinicalFocus={selectorAnswers.clinicalFocus} />
         </TabsContent>
 
         {/* ─── Surgical Apgar ─── */}
@@ -877,8 +893,13 @@ const PerioperativeCalculators = () => {
 };
 
 // ─── RCRI Calculator ───
-const RCRICalculator = () => {
-  const [factors, setFactors] = useState<RCRIFactor[]>(RCRI_FACTORS);
+const RCRICalculator = ({ surgeryType }: { surgeryType?: string }) => {
+  const [factors, setFactors] = useState<RCRIFactor[]>(() => {
+    if (surgeryType === 'non-cardiac') {
+      return RCRI_FACTORS.map(f => f.id === 'high_risk_surg' ? { ...f, active: true } : f);
+    }
+    return RCRI_FACTORS;
+  });
 
   const toggleFactor = (id: string) => {
     setFactors(prev => prev.map(f => f.id === id ? { ...f, active: !f.active } : f));
@@ -1010,8 +1031,11 @@ const RCRICalculator = () => {
 };
 
 // ─── ASA Physical Status ───
-const ASACalculator = () => {
-  const [selectedClass, setSelectedClass] = useState<string>("");
+const ASACalculator = ({ surgeryType }: { surgeryType?: string }) => {
+  const [selectedClass, setSelectedClass] = useState<string>(() => {
+    if (surgeryType === 'emergency') return 'IV';
+    return '';
+  });
   const [showExamples, setShowExamples] = useState(false);
 
   return (
@@ -1085,8 +1109,11 @@ const ASACalculator = () => {
 };
 
 // ─── Mallampati Score ───
-const MallampatiCalculator = () => {
-  const [selectedClass, setSelectedClass] = useState<string>("");
+const MallampatiCalculator = ({ clinicalFocus }: { clinicalFocus?: string }) => {
+  const [selectedClass, setSelectedClass] = useState<string>(() => {
+    if (clinicalFocus === 'airway') return 'III';
+    return '';
+  });
 
   return (
     <div className="space-y-4">
@@ -1189,8 +1216,13 @@ const MallampatiCalculator = () => {
 };
 
 // ─── STOP-Bang Calculator ───
-const STOPBangCalculator = () => {
-  const [items, setItems] = useState<STOPBangItem[]>(STOPBANG_ITEMS);
+const STOPBangCalculator = ({ clinicalFocus }: { clinicalFocus?: string }) => {
+  const [items, setItems] = useState<STOPBangItem[]>(() => {
+    if (clinicalFocus === 'airway') {
+      return STOPBANG_ITEMS.map(i => i.id === 'snore' || i.id === 'tired' ? { ...i, active: true } : i);
+    }
+    return STOPBANG_ITEMS;
+  });
 
   const toggleItem = (id: string) => {
     setItems(prev => prev.map(i => i.id === id ? { ...i, active: !i.active } : i));
@@ -1297,8 +1329,13 @@ const STOPBangCalculator = () => {
 };
 
 // ─── Caprini VTE Risk Score ───
-const CapriniCalculator = () => {
-  const [factors, setFactors] = useState<CapriniFactor[]>(CAPRINI_FACTORS);
+const CapriniCalculator = ({ clinicalFocus }: { clinicalFocus?: string }) => {
+  const [factors, setFactors] = useState<CapriniFactor[]>(() => {
+    if (clinicalFocus === 'vte') {
+      return CAPRINI_FACTORS.map(f => f.id === 'major_surg' ? { ...f, active: true } : f);
+    }
+    return CAPRINI_FACTORS;
+  });
 
   const toggleFactor = (id: string) => {
     setFactors(prev => prev.map(f => f.id === id ? { ...f, active: !f.active } : f));
