@@ -3730,70 +3730,68 @@ const GoldmanCardiacIndex = () => {
           </CollapsibleContent>
         </Collapsible>
       </Card>
-      {/* Calculator Selector Utility */}
+      {/* Interactive Calculator Selector Wizard */}
       <Card className="border-border/40 bg-primary/5">
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <Filter className="w-4 h-4 text-primary" />
-            Calculator Selector Guide
+            Interactive Tool Selector
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="p-3 rounded-lg bg-background/60 border border-border/40">
-              <h4 className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Patient & Surgery Type</h4>
-              <div className="space-y-2">
-                <div className="text-xs">
-                  <span className="font-semibold block text-foreground">Non-cardiac Surgery:</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">RCRI</span>
-                    <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">ASA</span>
-                    <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">NSQIP</span>
-                    <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Goldman</span>
-                  </div>
-                </div>
-                <div className="text-xs">
-                  <span className="font-semibold block text-foreground">Cardiac Surgery:</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-600 border border-red-500/20">STS Score</span>
-                  </div>
-                </div>
-                <div className="text-xs">
-                  <span className="font-semibold block text-foreground">Emergency/Neurosurgery:</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">cSDH Risk</span>
-                  </div>
-                </div>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold">1. What is the surgery type?</Label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'non-cardiac', label: 'Non-cardiac' },
+                  { id: 'cardiac', label: 'Cardiac' },
+                  { id: 'neuro', label: 'Neurosurgery' },
+                  { id: 'emergency', label: 'Emergency' }
+                ].map((type) => (
+                  <button
+                    key={type.id}
+                    onClick={() => {
+                      const el = document.getElementById(
+                        type.id === 'cardiac' ? 'sts-score' : 
+                        type.id === 'neuro' ? 'csdh-risk' : 
+                        'rcri'
+                      );
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="text-[10px] px-2.5 py-1.5 rounded-md bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all font-medium"
+                  >
+                    {type.label}
+                  </button>
+                ))}
               </div>
             </div>
-            
-            <div className="p-3 rounded-lg bg-background/60 border border-border/40">
-              <h4 className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Clinical Focus</h4>
-              <div className="space-y-2">
-                <div className="text-xs">
-                  <span className="font-semibold block text-foreground">Airway & OSA:</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 border border-blue-500/20">Mallampati</span>
-                    <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 border border-blue-500/20">STOP-Bang</span>
-                  </div>
-                </div>
-                <div className="text-xs">
-                  <span className="font-semibold block text-foreground">Vascular/Clot Risk:</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">Caprini VTE</span>
-                  </div>
-                </div>
-                <div className="text-xs">
-                  <span className="font-semibold block text-foreground">Intra-op Performance:</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    <span className="px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 border border-purple-500/20">Surgical Apgar</span>
-                  </div>
-                </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold">2. What is the clinical focus?</Label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'airway', label: 'Airway / OSA', target: 'mallampati' },
+                  { id: 'vte', label: 'VTE / Clotting', target: 'caprini' },
+                  { id: 'frailty', label: 'Frailty / General', target: 'asa' },
+                  { id: 'meds', label: 'Medication Management', target: 'med-management' }
+                ].map((focus) => (
+                  <button
+                    key={focus.id}
+                    onClick={() => {
+                      const el = document.getElementById(focus.target);
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="text-[10px] px-2.5 py-1.5 rounded-md bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all font-medium"
+                  >
+                    {focus.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
-          <p className="text-[10px] text-muted-foreground italic">
-            Tip: Use RCRI for quick bedside cardiac risk; NSQIP for detailed morbidity; STS for CABG/Valve procedures.
+          <p className="text-[10px] text-muted-foreground italic border-t border-border/40 pt-2">
+            Click a button to jump to the best-matched calculator for your scenario.
           </p>
         </CardContent>
       </Card>
