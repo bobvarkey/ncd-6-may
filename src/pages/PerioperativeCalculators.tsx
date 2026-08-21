@@ -3739,15 +3739,15 @@ const GoldmanCardiacIndex = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">1. What is the surgery type?</Label>
-              <div className="flex flex-wrap gap-2">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">1. What is the surgery type?</Label>
+              <div className="grid grid-cols-2 gap-2">
                 {[
-                  { id: 'non-cardiac', label: 'Non-cardiac', target: 'rcri' },
-                  { id: 'cardiac', label: 'Cardiac', target: 'sts-score' },
-                  { id: 'neuro', label: 'Neurosurgery', target: 'csdh-risk' },
-                  { id: 'emergency', label: 'Emergency', target: 'rcri' }
+                  { id: 'non-cardiac', label: 'Non-cardiac', target: 'rcri', desc: 'General, Ortho, Vascular' },
+                  { id: 'cardiac', label: 'Cardiac', target: 'sts-score', desc: 'CABG, Valve, Aorta' },
+                  { id: 'neuro', label: 'Neurosurgery', target: 'csdh-risk', desc: 'Brain, Spine, cSDH' },
+                  { id: 'emergency', label: 'Emergency', target: 'asa', desc: 'Urgent salvage' }
                 ].map((type) => (
                   <button
                     key={type.id}
@@ -3755,22 +3755,23 @@ const GoldmanCardiacIndex = () => {
                       const el = document.getElementById(type.target);
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="text-[10px] px-2.5 py-1.5 rounded-md bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all font-medium"
+                    className="flex flex-col items-start p-2.5 rounded-lg bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all text-left group"
                   >
-                    {type.label}
+                    <span className="text-xs font-bold group-hover:text-primary transition-colors">{type.label}</span>
+                    <span className="text-[10px] text-muted-foreground">{type.desc}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">2. What is the clinical focus?</Label>
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">2. What is the clinical focus?</Label>
+              <div className="grid grid-cols-2 gap-2">
                 {[
-                  { id: 'airway', label: 'Airway / OSA', target: 'mallampati' },
-                  { id: 'vte', label: 'VTE / Clotting', target: 'caprini' },
-                  { id: 'frailty', label: 'Frailty / General', target: 'asa' },
-                  { id: 'meds', label: 'Medication Management', target: 'med-management' }
+                  { id: 'airway', label: 'Airway / OSA', target: 'mallampati', desc: 'Intubation, STOP-Bang' },
+                  { id: 'vte', label: 'VTE / Clotting', target: 'caprini', desc: 'DVT/PE prophylaxis' },
+                  { id: 'frailty', label: 'Frailty / Status', target: 'asa', desc: 'ASA class, general health' },
+                  { id: 'meds', label: 'Medications', target: 'med-management', desc: 'ACEi, Insulin, Anticoag' }
                 ].map((focus) => (
                   <button
                     key={focus.id}
@@ -3778,17 +3779,26 @@ const GoldmanCardiacIndex = () => {
                       const el = document.getElementById(focus.target);
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="text-[10px] px-2.5 py-1.5 rounded-md bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all font-medium"
+                    className="flex flex-col items-start p-2.5 rounded-lg bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all text-left group"
                   >
-                    {focus.label}
+                    <span className="text-xs font-bold group-hover:text-primary transition-colors">{focus.label}</span>
+                    <span className="text-[10px] text-muted-foreground">{focus.desc}</span>
                   </button>
                 ))}
               </div>
             </div>
           </div>
-          <p className="text-[10px] text-muted-foreground italic border-t border-border/40 pt-2">
-            Click a button to jump to the best-matched calculator for your scenario.
-          </p>
+          <div className="pt-3 border-t border-border/40">
+            <p className="text-[10px] text-muted-foreground italic mb-2">
+              Choose your criteria above to jump to the best-matched Perioperative Calculator.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Quick Choice:</span>
+              <button onClick={() => document.getElementById('rcri')?.scrollIntoView({ behavior: 'smooth' })} className="text-[9px] font-bold text-primary hover:underline">RCRI (Cardiac)</button>
+              <button onClick={() => document.getElementById('asa')?.scrollIntoView({ behavior: 'smooth' })} className="text-[9px] font-bold text-primary hover:underline">ASA (General)</button>
+              <button onClick={() => document.getElementById('caprini')?.scrollIntoView({ behavior: 'smooth' })} className="text-[9px] font-bold text-primary hover:underline">Caprini (VTE)</button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
