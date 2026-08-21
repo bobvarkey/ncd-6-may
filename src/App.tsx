@@ -357,6 +357,17 @@ const App = () => {
           <Route path="/obesity/glp1-assessment" element={<><TabNavigation /><GLP1AssessmentCalc /></>} />
           <Route path="/obesity/optic-nerve-assessment" element={<><TabNavigation /><OpticNerveAssessmentCalc /></>} />
           <Route path="/glp1-screening" element={<><TabNavigation /><Glp1Screening /></>} />
+          <Route
+            path="/glp1-prescreen"
+            element={
+              <>
+                <TabNavigation />
+                <div className="max-w-4xl mx-auto px-4 py-6">
+                  <GLP1PreInitiationScreenerCalc />
+                </div>
+              </>
+            }
+          />
           <Route path="/diet-plan" element={<><TabNavigation /><DietPlanPage /></>} />
           <Route path="/iron-calculator" element={<><TabNavigation /><IronReplacementCalculator /></>} />
           <Route path="/thyroid" element={<><TabNavigation /><ThyroidCalculator /></>} />
