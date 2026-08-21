@@ -838,7 +838,7 @@ const PerioperativeCalculators = () => {
 
         {/* ─── RCRI ─── */}
         <TabsContent value="rcri" className="mt-4 space-y-4">
-          <RCRICalculator />
+          <RCRICalculator surgeryType={selectorAnswers.surgeryType} />
         </TabsContent>
 
         {/* ─── ASA ─── */}
