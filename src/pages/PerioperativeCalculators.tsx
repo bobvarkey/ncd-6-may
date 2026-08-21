@@ -1031,8 +1031,11 @@ const RCRICalculator = ({ surgeryType }: { surgeryType?: string }) => {
 };
 
 // ─── ASA Physical Status ───
-const ASACalculator = () => {
-  const [selectedClass, setSelectedClass] = useState<string>("");
+const ASACalculator = ({ surgeryType }: { surgeryType?: string }) => {
+  const [selectedClass, setSelectedClass] = useState<string>(() => {
+    if (surgeryType === 'emergency') return 'IV';
+    return '';
+  });
   const [showExamples, setShowExamples] = useState(false);
 
   return (
