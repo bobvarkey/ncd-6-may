@@ -451,9 +451,36 @@ const PerioperativeCalculators = () => {
                 isActive ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-muted/40"
               }`}
             >
-              <div className="flex items-center gap-2">
-                <Icon className={`w-4 h-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-                <h2 className="text-sm font-heading font-semibold">{card.title}</h2>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Icon className={`w-4 h-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                  <h2 className="text-sm font-heading font-semibold">{card.title}</h2>
+                </div>
+                {card.bestFit && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1 hover:bg-muted rounded-full transition-colors"
+                        title="Best case-fit for this tool"
+                      >
+                        <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                          <Icon className="w-5 h-5 text-primary" />
+                          {card.title} Clinical Context
+                        </DialogTitle>
+                        <DialogDescription className="text-base pt-4 text-foreground leading-relaxed">
+                          {card.bestFit}
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 <span className="font-medium text-foreground">Inputs: </span>{card.inputs}
