@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   AlertTriangle,
   CloudOff,
   Database,
+  Download,
   Monitor,
   Moon,
   RefreshCw,
   Sun,
   Trash2,
   Type,
+  Upload,
   Wifi,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +23,8 @@ import { Separator } from "@/components/ui/separator";
 import { useTheme, type Theme } from "@/components/ThemeProvider";
 import { useOffline } from "@/lib/offline/OfflineContext";
 import { listConflicts, resolveConflict, type OfflineRecord } from "@/lib/offline/db";
+import { downloadBackup, importBackupFromFile, type ImportMode } from "@/lib/offline/backup";
+import { useToast } from "@/hooks/use-toast";
 import Seo from "@/components/Seo";
 
 const TEXT_SCALE_KEY = "ncd-text-scale";
@@ -60,10 +64,53 @@ export default function Settings() {
     clearAll,
   } = useOffline();
   const [conflictRecords, setConflictRecords] = useState<OfflineRecord[]>([]);
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importMode, setImportMode] = useState<ImportMode>("merge");
+  const [busy, setBusy] = useState<"export" | "import" | null>(null);
 
   useEffect(() => {
     void listConflicts().then(setConflictRecords);
   }, [conflicts]);
+
+  const handleExport = async () => {
+    setBusy("export");
+    try {
+      const name = await downloadBackup();
+      toast({ title: "Backup exported", description: `Saved as ${name}` });
+    } catch (error) {
+      toast({
+        title: "Export failed",
+        description: error instanceof Error ? error.message : "Could not create the backup file.",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const handleImportFile = async (file: File) => {
+    setBusy("import");
+    try {
+      const summary = await importBackupFromFile(file, importMode);
+      await refresh();
+      setConflictRecords(await listConflicts());
+      toast({
+        title: "Backup restored",
+        description: `${summary.records} record${summary.records === 1 ? "" : "s"}, ${summary.queue} queued change${summary.queue === 1 ? "" : "s"} and ${summary.preferences} preference${summary.preferences === 1 ? "" : "s"} imported. Reload to apply preferences everywhere.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Import failed",
+        description: error instanceof Error ? error.message : "Could not read that backup file.",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
 
   const statusMeta = {
     offline: { label: "Offline", Icon: CloudOff, tone: "text-warning" },
@@ -185,6 +232,80 @@ export default function Settings() {
                 <Link to="/delete-account">Delete account &amp; data</Link>
               </Button>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Backup & restore */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Download className="h-5 w-5 text-primary" aria-hidden /> Backup &amp; Restore
+            </CardTitle>
+            <CardDescription>
+              Export saved records, queued changes and preferences to a JSON file you keep. Import it
+              after a reinstall or on a new device. Works fully offline — nothing is uploaded.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">On import</p>
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Import mode">
+                <Button
+                  variant={importMode === "merge" ? "default" : "outline"}
+                  size="sm"
+                  className="min-h-11"
+                  aria-pressed={importMode === "merge"}
+                  onClick={() => setImportMode("merge")}
+                >
+                  Merge with existing
+                </Button>
+                <Button
+                  variant={importMode === "replace" ? "default" : "outline"}
+                  size="sm"
+                  className="min-h-11"
+                  aria-pressed={importMode === "replace"}
+                  onClick={() => setImportMode("replace")}
+                >
+                  Replace everything
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {importMode === "merge"
+                  ? "Keeps what is on this device and overwrites only entries present in the file."
+                  : "Clears local records, queue and preferences first, then restores the file exactly."}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" disabled={busy !== null} onClick={() => void handleExport()}>
+                <Download className="mr-1.5 h-4 w-4" aria-hidden />
+                {busy === "export" ? "Exporting…" : "Export backup"}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={busy !== null}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="mr-1.5 h-4 w-4" aria-hidden />
+                {busy === "import" ? "Importing…" : "Import backup"}
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json,.json"
+                className="sr-only"
+                aria-label="Choose a backup file to import"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void handleImportFile(file);
+                }}
+              />
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              Backup files contain clinical data in plain text — store them somewhere secure.
+            </p>
           </CardContent>
         </Card>
 
