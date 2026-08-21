@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity, Copy, Download,
-  HelpCircle, Filter
+  HelpCircle, Filter, Share2, Save
 } from "lucide-react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -514,9 +515,28 @@ const CALCULATOR_CARDS: {
 // ─── Component ───
 const PerioperativeCalculators = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("rcri");
+  const [selectedTools, setSelectedTools] = useState<Set<string>>(new Set());
+
+  // Persistence for selector answers
+  const [selectorAnswers, setSelectorAnswers] = useLocalStorage<{
+    surgeryType: string;
+    clinicalFocus: string;
+  }>("periop-selector-answers", { surgeryType: "", clinicalFocus: "" });
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const sType = params.get("sType");
+    const cFocus = params.get("cFocus");
+    
+    if (sType || cFocus) {
+      setSelectorAnswers({ 
+        surgeryType: sType || selectorAnswers.surgeryType, 
+        clinicalFocus: cFocus || selectorAnswers.clinicalFocus 
+      });
+    }
+
     const hash = location.hash.replace("#", "");
     if (hash && ["rcri", "asa", "mallampati", "stopbang", "caprini", "apgar", "meds", "labs", "woo", "sts", "csdh", "goldman"].includes(hash)) {
       setActiveTab(hash);
@@ -525,7 +545,21 @@ const PerioperativeCalculators = () => {
         element.scrollIntoView({ behavior: "smooth" });
       }
     }
-  }, [location]);
+  }, [location.search, location.hash]);
+
+  const toggleToolComparison = (val: string) => {
+    const next = new Set(selectedTools);
+    if (next.has(val)) next.delete(val);
+    else next.add(val);
+    setSelectedTools(next);
+  };
+
+  const handleShareSelector = () => {
+    const url = new URL(window.location.href);
+    if (selectorAnswers.surgeryType) url.searchParams.set("sType", selectorAnswers.surgeryType);
+    if (selectorAnswers.clinicalFocus) url.searchParams.set("cFocus", selectorAnswers.clinicalFocus);
+    copyToClipboard(url.toString(), "Deep link copied to clipboard");
+  };
 
   return (
     <div className="space-y-5 animate-slide-in">
@@ -538,60 +572,128 @@ const PerioperativeCalculators = () => {
 
       {/* Calculator cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {CALCULATOR_CARDS.map(card => {
-          const Icon = card.icon;
           const isActive = activeTab === card.value;
+          const isSelected = selectedTools.has(card.value);
           return (
-            <button
-              key={card.value}
-              type="button"
-              onClick={() => setActiveTab(card.value)}
-              aria-pressed={isActive}
-              className={`text-left rounded-xl border p-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                isActive ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-muted/40"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Icon className={`w-4 h-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-                  <h2 className="text-sm font-heading font-semibold">{card.title}</h2>
+            <div key={card.value} className="relative group/card">
+              <button
+                type="button"
+                onClick={() => setActiveTab(card.value)}
+                aria-pressed={isActive}
+                className={`w-full text-left rounded-xl border p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  isActive ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-muted/40"
+                } ${isSelected ? "ring-1 ring-primary/40 shadow-md" : ""}`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Icon className={`w-4 h-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                    <h2 className="text-sm font-heading font-semibold">{card.title}</h2>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleToolComparison(card.value);
+                      }}
+                      className={`p-1 rounded-md transition-colors ${
+                        isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted text-muted-foreground"
+                      }`}
+                      title="Add to comparison"
+                    >
+                      <CheckCircle className="w-3.5 h-3.5" />
+                    </button>
+                    {card.bestFit && (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1 hover:bg-muted rounded-full transition-colors"
+                            title="Best case-fit for this tool"
+                          >
+                            <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md">
+                          <DialogHeader>
+                            <DialogTitle className="flex items-center gap-2">
+                              <Icon className="w-5 h-5 text-primary" />
+                              {card.title} Clinical Context
+                            </DialogTitle>
+                            <DialogDescription className="text-sm pt-4 text-foreground leading-relaxed whitespace-pre-wrap">
+                              {card.bestFit}
+                            </DialogDescription>
+                          </DialogHeader>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
                 </div>
-                {card.bestFit && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <button
-                        type="button"
-                        onClick={(e) => e.stopPropagation()}
-                        className="p-1 hover:bg-muted rounded-full transition-colors"
-                        title="Best case-fit for this tool"
-                      >
-                        <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
-                      </button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                          <Icon className="w-5 h-5 text-primary" />
-                          {card.title} Clinical Context
-                        </DialogTitle>
-                        <DialogDescription className="text-sm pt-4 text-foreground leading-relaxed whitespace-pre-wrap">
-                          {card.bestFit}
-                        </DialogDescription>
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                <span className="font-medium text-foreground">Inputs: </span>{card.inputs}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                <span className="font-medium text-foreground">Results: </span>{card.results}
-              </p>
-            </button>
+                <p className="text-xs text-muted-foreground mt-2">
+                  <span className="font-medium text-foreground">Inputs: </span>{card.inputs}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  <span className="font-medium text-foreground">Results: </span>{card.results}
+                </p>
+              </button>
+            </div>
           );
         })}
       </div>
+
+      {selectedTools.size > 0 && (
+        <Card className="border-primary/20 bg-primary/5 overflow-hidden">
+          <CardHeader className="py-3 px-4 border-b border-primary/10 flex flex-row items-center justify-between">
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <Activity className="w-4 h-4 text-primary" />
+              Side-by-Side Comparison ({selectedTools.size})
+            </CardTitle>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-7 text-[10px]" 
+              onClick={() => setSelectedTools(new Set())}
+            >
+              Clear
+            </Button>
+          </CardHeader>
+          <CardContent className="p-0 overflow-x-auto">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-muted/50 border-b border-border/40">
+                  <th className="text-left py-2 px-3 font-semibold min-w-[120px]">Calculator</th>
+                  <th className="text-left py-2 px-3 font-semibold min-w-[180px]">Inputs Required</th>
+                  <th className="text-left py-2 px-3 font-semibold">Interpretation Criteria</th>
+                  <th className="py-2 px-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from(selectedTools).map(val => {
+                  const tool = CALCULATOR_CARDS.find(c => c.value === val);
+                  if (!tool) return null;
+                  return (
+                    <tr key={val} className="border-b border-border/40 hover:bg-muted/30 transition-colors">
+                      <td className="py-2 px-3 font-medium text-primary">{tool.title}</td>
+                      <td className="py-2 px-3 text-muted-foreground">{tool.inputs}</td>
+                      <td className="py-2 px-3 text-muted-foreground line-clamp-2 md:line-clamp-none">{tool.results}</td>
+                      <td className="py-2 px-3 text-right">
+                        <Button 
+                          variant="link" 
+                          size="sm" 
+                          className="h-7 p-0 text-primary" 
+                          onClick={() => setActiveTab(val)}
+                        >
+                          Open
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
 
@@ -3731,12 +3833,34 @@ const GoldmanCardiacIndex = () => {
         </Collapsible>
       </Card>
       {/* Interactive Calculator Selector Wizard */}
-      <Card className="border-border/40 bg-primary/5">
+      <Card className="border-border/40 bg-primary/5 relative">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Filter className="w-4 h-4 text-primary" />
-            Interactive Tool Selector
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Filter className="w-4 h-4 text-primary" />
+              Interactive Tool Selector
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                onClick={handleShareSelector}
+                title="Share selector deep link"
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-muted-foreground"
+                onClick={() => setSelectorAnswers({ surgeryType: "", clinicalFocus: "" })}
+                title="Reset selector"
+              >
+                <Save className="h-4 w-4 rotate-180" />
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-4">
@@ -3752,13 +3876,20 @@ const GoldmanCardiacIndex = () => {
                   <button
                     key={type.id}
                     onClick={() => {
+                      setSelectorAnswers(prev => ({ ...prev, surgeryType: type.id }));
                       const el = document.getElementById(type.target);
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="flex flex-col items-start p-2.5 rounded-lg bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all text-left group"
+                    className={`flex flex-col items-start p-2.5 rounded-lg border transition-all text-left group ${
+                      selectorAnswers.surgeryType === type.id 
+                        ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                        : "bg-background border-border hover:border-primary hover:bg-primary/5"
+                    }`}
                   >
-                    <span className="text-xs font-bold group-hover:text-primary transition-colors">{type.label}</span>
-                    <span className="text-[10px] text-muted-foreground">{type.desc}</span>
+                    <span className="text-xs font-bold transition-colors">{type.label}</span>
+                    <span className={`text-[10px] ${selectorAnswers.surgeryType === type.id ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                      {type.desc}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -3776,13 +3907,20 @@ const GoldmanCardiacIndex = () => {
                   <button
                     key={focus.id}
                     onClick={() => {
+                      setSelectorAnswers(prev => ({ ...prev, clinicalFocus: focus.id }));
                       const el = document.getElementById(focus.target);
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="flex flex-col items-start p-2.5 rounded-lg bg-background border border-border hover:border-primary hover:bg-primary/5 transition-all text-left group"
+                    className={`flex flex-col items-start p-2.5 rounded-lg border transition-all text-left group ${
+                      selectorAnswers.clinicalFocus === focus.id 
+                        ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                        : "bg-background border-border hover:border-primary hover:bg-primary/5"
+                    }`}
                   >
-                    <span className="text-xs font-bold group-hover:text-primary transition-colors">{focus.label}</span>
-                    <span className="text-[10px] text-muted-foreground">{focus.desc}</span>
+                    <span className="text-xs font-bold transition-colors">{focus.label}</span>
+                    <span className={`text-[10px] ${selectorAnswers.clinicalFocus === focus.id ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                      {focus.desc}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -3790,7 +3928,7 @@ const GoldmanCardiacIndex = () => {
           </div>
           <div className="pt-3 border-t border-border/40">
             <p className="text-[10px] text-muted-foreground italic mb-2">
-              Choose your criteria above to jump to the best-matched Perioperative Calculator.
+              Choose your criteria above to jump to the best-matched Perioperative Calculator. Shareable links save your selections.
             </p>
             <div className="flex flex-wrap gap-2">
               <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Quick Choice:</span>
