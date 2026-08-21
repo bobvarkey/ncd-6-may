@@ -1213,8 +1213,13 @@ const MallampatiCalculator = () => {
 };
 
 // ─── STOP-Bang Calculator ───
-const STOPBangCalculator = () => {
-  const [items, setItems] = useState<STOPBangItem[]>(STOPBANG_ITEMS);
+const STOPBangCalculator = ({ clinicalFocus }: { clinicalFocus?: string }) => {
+  const [items, setItems] = useState<STOPBangItem[]>(() => {
+    if (clinicalFocus === 'airway') {
+      return STOPBANG_ITEMS.map(i => i.id === 'snore' || i.id === 'tired' ? { ...i, active: true } : i);
+    }
+    return STOPBANG_ITEMS;
+  });
 
   const toggleItem = (id: string) => {
     setItems(prev => prev.map(i => i.id === id ? { ...i, active: !i.active } : i));
