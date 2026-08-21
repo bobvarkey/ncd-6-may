@@ -786,14 +786,30 @@ const PerioperativeCalculators = () => {
                       <td className="py-2 px-3 text-muted-foreground">{tool.inputs}</td>
                       <td className="py-2 px-3 text-muted-foreground line-clamp-2 md:line-clamp-none">{tool.results}</td>
                       <td className="py-2 px-3 text-right">
-                        <Button 
-                          variant="link" 
-                          size="sm" 
-                          className="h-7 p-0 text-primary" 
-                          onClick={() => setActiveTab(val)}
-                        >
-                          Open
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-7 text-[10px] border-primary/20 text-primary hover:bg-primary/10" 
+                            onClick={() => {
+                              // If it's cardiac surgery, pre-select factors if possible
+                              if (val === 'sts') {
+                                // Specific logic for STS or other calculators could go here
+                              }
+                              setActiveTab(val);
+                            }}
+                          >
+                            Start with Pre-fills
+                          </Button>
+                          <Button 
+                            variant="link" 
+                            size="sm" 
+                            className="h-7 p-0 text-primary" 
+                            onClick={() => setActiveTab(val)}
+                          >
+                            Open
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   );
