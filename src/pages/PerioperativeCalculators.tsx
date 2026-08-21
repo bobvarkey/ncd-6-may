@@ -572,6 +572,8 @@ const PerioperativeCalculators = () => {
 
       {/* Calculator cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {CALCULATOR_CARDS.map(card => {
+          const Icon = card.icon;
           const isActive = activeTab === card.value;
           const isSelected = selectedTools.has(card.value);
           return (
