@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   AlertTriangle,
   CloudOff,
   Database,
+  Download,
   Monitor,
   Moon,
   RefreshCw,
   Sun,
   Trash2,
   Type,
+  Upload,
   Wifi,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +23,8 @@ import { Separator } from "@/components/ui/separator";
 import { useTheme, type Theme } from "@/components/ThemeProvider";
 import { useOffline } from "@/lib/offline/OfflineContext";
 import { listConflicts, resolveConflict, type OfflineRecord } from "@/lib/offline/db";
+import { downloadBackup, importBackupFromFile, type ImportMode } from "@/lib/offline/backup";
+import { useToast } from "@/hooks/use-toast";
 import Seo from "@/components/Seo";
 
 const TEXT_SCALE_KEY = "ncd-text-scale";
