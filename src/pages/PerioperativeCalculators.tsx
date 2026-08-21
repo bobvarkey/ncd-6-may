@@ -1326,8 +1326,13 @@ const STOPBangCalculator = ({ clinicalFocus }: { clinicalFocus?: string }) => {
 };
 
 // ─── Caprini VTE Risk Score ───
-const CapriniCalculator = () => {
-  const [factors, setFactors] = useState<CapriniFactor[]>(CAPRINI_FACTORS);
+const CapriniCalculator = ({ clinicalFocus }: { clinicalFocus?: string }) => {
+  const [factors, setFactors] = useState<CapriniFactor[]>(() => {
+    if (clinicalFocus === 'vte') {
+      return CAPRINI_FACTORS.map(f => f.id === 'major_surg' ? { ...f, active: true } : f);
+    }
+    return CAPRINI_FACTORS;
+  });
 
   const toggleFactor = (id: string) => {
     setFactors(prev => prev.map(f => f.id === id ? { ...f, active: !f.active } : f));
