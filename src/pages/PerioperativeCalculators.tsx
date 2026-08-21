@@ -327,7 +327,7 @@ const CALCULATOR_CARDS: {
     icon: Heart, 
     inputs: "6 cardiac risk factors (IHD, HF, CVA, insulin-treated DM, CKD, high-risk surgery)", 
     results: "0–6 points → Class I–IV with % major cardiac event risk",
-    bestFit: "Best for estimating major adverse cardiac events (MACE) in patients undergoing non-cardiac surgery. It is the most widely validated and simplest bedside tool for routine cardiac risk stratification."
+    bestFit: "Best-fit: MACE estimation in non-cardiac surgery.\nCriteria: Ischemic heart disease, heart failure, cerebrovascular disease, insulin-treated DM, CKD (Cr >2.0), high-risk surgery.\nInputs: Comorbidity checklist, surgery risk level.\nInterpretation: 0–6 score → Class I–IV risk bands (0.4% to 11% MACE risk)."
   },
   { 
     value: "asa", 
@@ -335,7 +335,7 @@ const CALCULATOR_CARDS: {
     icon: Shield, 
     inputs: "Select the class that matches systemic disease burden", 
     results: "ASA I–VI with description, examples and perioperative implications",
-    bestFit: "Global assessment of a patient's pre-operative physical state. Used universally by anesthesiologists to communicate co-morbidity burden, regardless of the specific surgical procedure."
+    bestFit: "Best-fit: Universal communication of systemic disease burden.\nCriteria: Systemic disease severity, functional limitations.\nInputs: Patient history, exercise tolerance, disease control status.\nInterpretation: Class I (healthy) to VI (brain-dead) with increasing perioperative risk implications."
   },
   { 
     value: "mallampati", 
@@ -343,7 +343,7 @@ const CALCULATOR_CARDS: {
     icon: Eye, 
     inputs: "Oropharyngeal view on mouth opening (Class I–IV)", 
     results: "Airway difficulty grade and intubation risk",
-    bestFit: "Specific for predicting difficult direct laryngoscopy and intubation. Essential part of every pre-anesthetic airway examination."
+    bestFit: "Best-fit: Predicting difficult direct laryngoscopy.\nCriteria: Visualization of oropharyngeal structures.\nInputs: Oropharyngeal view on mouth opening (tongue protruded, no phonation).\nInterpretation: Class I–IV grades; higher classes indicate increased intubation difficulty and airway risk."
   },
   { 
     value: "stopbang", 
@@ -351,7 +351,7 @@ const CALCULATOR_CARDS: {
     icon: Wind, 
     inputs: "Snoring, tiredness, observed apnea, BP, BMI, age, neck size, sex", 
     results: "0–8 score → low / intermediate / high OSA risk with airway plan",
-    bestFit: "Validated screening tool for Obstructive Sleep Apnea (OSA). High sensitivity makes it ideal for identifying patients who may require post-operative CPAP or closer monitoring."
+    bestFit: "Best-fit: Screening for obstructive sleep apnea (OSA).\nCriteria: Snoring, tiredness, observed apnea, BP, BMI, age, neck size, gender.\nInputs: 8-item yes/no clinical screening.\nInterpretation: 0–8 score; high risk (5–8) predicts moderate-severe OSA and guides post-op monitoring/CPAP needs."
   },
   { 
     value: "caprini", 
@@ -359,7 +359,7 @@ const CALCULATOR_CARDS: {
     icon: Droplets, 
     inputs: "Weighted thrombosis risk factors (1, 2, 3 and 5-point items)", 
     results: "Total score → VTE risk band and prophylaxis recommendation",
-    bestFit: "Comprehensive VTE risk assessment. Best for surgical patients where multiple minor and major risk factors (age, BMI, surgery type, history) need to be integrated into a prophylaxis plan."
+    bestFit: "Best-fit: Comprehensive VTE risk stratification.\nCriteria: Age, BMI, mobility, prior VTE, malignancy, surgery type, thrombophilia.\nInputs: Multi-point weighted checklist of ~40 clinical factors.\nInterpretation: 0 to >6 score; risk levels (Low to Very High) with corresponding VTE incidence and prophylaxis protocols."
   },
   { 
     value: "apgar", 
@@ -367,7 +367,7 @@ const CALCULATOR_CARDS: {
     icon: Timer, 
     inputs: "Estimated blood loss, lowest MAP, lowest heart rate (intra-op)", 
     results: "0–10 score → 30-day major complication / mortality risk",
-    bestFit: "Intra-operative 'snapshot' tool. Best used immediately post-surgery to identify patients who had physiological instability or high blood loss, guiding higher-acuity post-op placement."
+    bestFit: "Best-fit: Immediate post-op identification of high-risk physiological instability.\nCriteria: Blood loss, blood pressure, heart rate.\nInputs: Estimated Blood Loss (EBL), lowest MAP, lowest HR (intra-operative values).\nInterpretation: 0–10 score; lower scores predict higher 30-day major morbidity and mortality."
   },
   { 
     value: "woo", 
@@ -375,7 +375,7 @@ const CALCULATOR_CARDS: {
     icon: Brain, 
     inputs: "Age, ASA class, surgery type and comorbidities", 
     results: "Predicted stroke / MACE category with clinical interpretation",
-    bestFit: "Focused on neurological and cardiac risk in general surgery patients. Useful for identifying high-risk individuals who may benefit from tailored perioperative monitoring."
+    bestFit: "Best-fit: Focused stroke and MACE risk in general/non-cardiac/non-neuro surgery.\nCriteria: Age, ASA class, procedure type, comorbidities.\nInputs: Demographic data, ASA status, surgery risk level.\nInterpretation: Risk category output for stroke and cardiac complications."
   },
   { 
     value: "goldman", 
@@ -383,7 +383,7 @@ const CALCULATOR_CARDS: {
     icon: Heart, 
     inputs: "S3 gallop, JVP, recent MI, PVCs, rhythm, age, urgency", 
     results: "Class I-IV with observed cardiac mortality risk",
-    bestFit: "The original cardiac risk index. Best for patients with clear clinical signs of heart failure (S3, JVP) or significant arrhythmias undergoing non-cardiac surgery."
+    bestFit: "Best-fit: Cardiac risk in patients with overt HF signs or arrhythmias.\nCriteria: S3 gallop, JVP, recent MI, PVCs, age, surgical urgency.\nInputs: Physical exam findings, ECG data, patient age, surgery type.\nInterpretation: Class I–IV; highlights highest-risk clinical signs (S3/JVP) pre-operatively."
   },
   { 
     value: "sts", 
@@ -391,7 +391,7 @@ const CALCULATOR_CARDS: {
     icon: Heart, 
     inputs: "Cardiac-surgery specific patient and procedure variables", 
     results: "Estimated operative mortality and morbidity band",
-    bestFit: "The gold standard for adult cardiac surgery (CABG, Valve). Unlike RCRI, this is specific to patients undergoing operations on the heart itself."
+    bestFit: "Best-fit: Adult cardiac surgery operative risk (CABG, Valve).\nCriteria: Cardiac-specific procedure risk factors.\nInputs: Detailed cardiac history and procedure-specific variables.\nInterpretation: Operative mortality and morbidity percentage bands for heart surgery."
   },
   { 
     value: "labs", 
@@ -399,7 +399,7 @@ const CALCULATOR_CARDS: {
     icon: FileText, 
     inputs: "Patient factors and planned procedure risk", 
     results: "Which pre-operative tests are indicated (and which are not)",
-    bestFit: "Guidelines-based framework (ASA/NICE/Choosing Wisely) to reduce unnecessary pre-operative testing by matching specific comorbidities to surgical risk levels."
+    bestFit: "Best-fit: Evidence-based reduction of unnecessary pre-op tests.\nCriteria: NICE/ASA/Choosing Wisely guidelines.\nInputs: Comorbidity profile, surgical risk level (Minor/Intermediate/Major).\nInterpretation: List of indicated vs. not-routinely-indicated pre-operative investigations."
   },
   { 
     value: "csdh", 
@@ -407,7 +407,7 @@ const CALCULATOR_CARDS: {
     icon: Brain, 
     inputs: "Age, GCS, imaging (shift/thickness), ASA, frailty", 
     results: "Standardized perioperative report for chronic SDH",
-    bestFit: "Tailored specifically for Chronic Subdural Hematoma. Best for neurosurgical multidisciplinary communication to weigh surgical drainage vs. conservative management in elderly patients."
+    bestFit: "Best-fit: Chronic Subdural Hematoma (cSDH) neurosurgical multidisciplinary assessment.\nCriteria: GCS, imaging (shift/thickness), ASA, Clinical Frailty Scale.\nInputs: Age, GCS, CT findings, ASA class, frailty level.\nInterpretation: Standardized neurosurgical risk report for drainage vs. conservative management."
   },
 ];
 
