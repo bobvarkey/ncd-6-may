@@ -3167,6 +3167,7 @@ const GoldmanCardiacIndex = () => {
 
   return (
     <div className="space-y-5 animate-slide-in">
+
       <div>
         <h1 className="text-xl font-heading font-bold">Goldman Cardiac Risk Index</h1>
         <p className="text-sm text-muted-foreground">
