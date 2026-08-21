@@ -95,7 +95,8 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^8.0.16",
+    "vite-plugin-pwa": "^1.3.0",
     "vitest": "^4.1.8"
   },
-  "description": "Comprehensive NCD management app \u2014 combining Big Four NCD tools + Diabetes Buddy"
+  "description": "Comprehensive NCD management app — combining Big Four NCD tools + Diabetes Buddy"
 }
