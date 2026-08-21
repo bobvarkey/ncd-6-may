@@ -858,7 +858,7 @@ const PerioperativeCalculators = () => {
 
         {/* ─── Caprini ─── */}
         <TabsContent value="caprini" className="mt-4 space-y-4">
-          <CapriniCalculator />
+          <CapriniCalculator clinicalFocus={selectorAnswers.clinicalFocus} />
         </TabsContent>
 
         {/* ─── Surgical Apgar ─── */}
