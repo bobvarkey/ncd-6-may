@@ -570,6 +570,113 @@ const PerioperativeCalculators = () => {
         </p>
       </div>
 
+      <Card className="border-border/40 bg-primary/5 relative">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Filter className="w-4 h-4 text-primary" />
+              Interactive Tool Selector
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                onClick={handleShareSelector}
+                title="Share selector deep link"
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-muted-foreground"
+                onClick={() => setSelectorAnswers({ surgeryType: "", clinicalFocus: "" })}
+                title="Reset selector"
+              >
+                <Save className="h-4 w-4 rotate-180" />
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">1. What is the surgery type?</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { id: 'non-cardiac', label: 'Non-cardiac', target: 'rcri', desc: 'General, Ortho, Vascular' },
+                  { id: 'cardiac', label: 'Cardiac', target: 'sts-score', desc: 'CABG, Valve, Aorta' },
+                  { id: 'neuro', label: 'Neurosurgery', target: 'csdh-risk', desc: 'Brain, Spine, cSDH' },
+                  { id: 'emergency', label: 'Emergency', target: 'asa', desc: 'Urgent salvage' }
+                ].map((type) => (
+                  <button
+                    key={type.id}
+                    onClick={() => {
+                      setSelectorAnswers(prev => ({ ...prev, surgeryType: type.id }));
+                      const el = document.getElementById(type.target);
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className={`flex flex-col items-start p-2.5 rounded-lg border transition-all text-left group ${
+                      selectorAnswers.surgeryType === type.id 
+                        ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                        : "bg-background border-border hover:border-primary hover:bg-primary/5"
+                    }`}
+                  >
+                    <span className="text-xs font-bold transition-colors">{type.label}</span>
+                    <span className={`text-[10px] ${selectorAnswers.surgeryType === type.id ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                      {type.desc}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">2. What is the clinical focus?</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { id: 'airway', label: 'Airway / OSA', target: 'mallampati', desc: 'Intubation, STOP-Bang' },
+                  { id: 'vte', label: 'VTE / Clotting', target: 'caprini', desc: 'DVT/PE prophylaxis' },
+                  { id: 'frailty', label: 'Frailty / Status', target: 'asa', desc: 'ASA class, general health' },
+                  { id: 'meds', label: 'Medications', target: 'med-management', desc: 'ACEi, Insulin, Anticoag' }
+                ].map((focus) => (
+                  <button
+                    key={focus.id}
+                    onClick={() => {
+                      setSelectorAnswers(prev => ({ ...prev, clinicalFocus: focus.id }));
+                      const el = document.getElementById(focus.target);
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className={`flex flex-col items-start p-2.5 rounded-lg border transition-all text-left group ${
+                      selectorAnswers.clinicalFocus === focus.id 
+                        ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                        : "bg-background border-border hover:border-primary hover:bg-primary/5"
+                    }`}
+                  >
+                    <span className="text-xs font-bold transition-colors">{focus.label}</span>
+                    <span className={`text-[10px] ${selectorAnswers.clinicalFocus === focus.id ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                      {focus.desc}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="pt-3 border-t border-border/40">
+            <p className="text-[10px] text-muted-foreground italic mb-2">
+              Choose your criteria above to jump to the best-matched Perioperative Calculator. Shareable links save your selections.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Quick Choice:</span>
+              <button onClick={() => document.getElementById('rcri')?.scrollIntoView({ behavior: 'smooth' })} className="text-[9px] font-bold text-primary hover:underline">RCRI (Cardiac)</button>
+              <button onClick={() => document.getElementById('asa')?.scrollIntoView({ behavior: 'smooth' })} className="text-[9px] font-bold text-primary hover:underline">ASA (General)</button>
+              <button onClick={() => document.getElementById('caprini')?.scrollIntoView({ behavior: 'smooth' })} className="text-[9px] font-bold text-primary hover:underline">Caprini (VTE)</button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Calculator cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {CALCULATOR_CARDS.map(card => {
@@ -698,7 +805,6 @@ const PerioperativeCalculators = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-
         <TabsList className="flex-wrap h-auto gap-1 p-1">
           <TabsTrigger value="rcri" className="text-sm">RCRI</TabsTrigger>
           <TabsTrigger value="asa" className="text-sm">ASA Class</TabsTrigger>
@@ -713,7 +819,6 @@ const PerioperativeCalculators = () => {
           <TabsTrigger value="sts" className="text-sm">STS Cardiac</TabsTrigger>
           <TabsTrigger value="csdh" className="text-sm">cSDH Risk</TabsTrigger>
         </TabsList>
-
 
         {/* ─── RCRI ─── */}
         <TabsContent value="rcri" className="mt-4 space-y-4">
