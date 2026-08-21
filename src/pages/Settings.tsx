@@ -64,10 +64,53 @@ export default function Settings() {
     clearAll,
   } = useOffline();
   const [conflictRecords, setConflictRecords] = useState<OfflineRecord[]>([]);
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importMode, setImportMode] = useState<ImportMode>("merge");
+  const [busy, setBusy] = useState<"export" | "import" | null>(null);
 
   useEffect(() => {
     void listConflicts().then(setConflictRecords);
   }, [conflicts]);
+
+  const handleExport = async () => {
+    setBusy("export");
+    try {
+      const name = await downloadBackup();
+      toast({ title: "Backup exported", description: `Saved as ${name}` });
+    } catch (error) {
+      toast({
+        title: "Export failed",
+        description: error instanceof Error ? error.message : "Could not create the backup file.",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const handleImportFile = async (file: File) => {
+    setBusy("import");
+    try {
+      const summary = await importBackupFromFile(file, importMode);
+      await refresh();
+      setConflictRecords(await listConflicts());
+      toast({
+        title: "Backup restored",
+        description: `${summary.records} record${summary.records === 1 ? "" : "s"}, ${summary.queue} queued change${summary.queue === 1 ? "" : "s"} and ${summary.preferences} preference${summary.preferences === 1 ? "" : "s"} imported. Reload to apply preferences everywhere.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Import failed",
+        description: error instanceof Error ? error.message : "Could not read that backup file.",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
 
   const statusMeta = {
     offline: { label: "Offline", Icon: CloudOff, tone: "text-warning" },
