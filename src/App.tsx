@@ -137,6 +137,7 @@ const GLP1ObesityAlgorithmCalc = lazyWithModuleRetry(() => import("@/calculators
 const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1AssessmentCalculator"));
 const OpticNerveAssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/OpticNerveAssessment"));
 const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/Glp1Screening"));
+const GLP1PreInitiationScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1PreInitiationScreener"));
 const IronReplacementCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/IronReplacementCalculator"));
 const GanzoniDeficitCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/GanzoniDeficitCalculator"));
 
