@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity, Copy, Download,
-  HelpCircle
+  HelpCircle, Filter
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
