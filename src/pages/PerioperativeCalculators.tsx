@@ -665,7 +665,7 @@ const PerioperativeCalculators = () => {
           </div>
           <div className="pt-3 border-t border-border/40">
             <p className="text-[10px] text-muted-foreground italic mb-2">
-              Choose your criteria above to jump to the best-matched Perioperative Calculator. Shareable links save your selections.
+              Choose your criteria above to jump to the best-matched Perioperative Calculator or use the comparison tool to see recommended options for your selected surgery type and clinical focus. Shareable links save your selections.
             </p>
             <div className="flex flex-wrap gap-2">
               <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Quick Choice:</span>
@@ -770,7 +770,7 @@ const PerioperativeCalculators = () => {
             <table className="w-full text-xs border-collapse">
               <thead>
                 <tr className="bg-muted/50 border-b border-border/40">
-                  <th className="text-left py-2 px-3 font-semibold min-w-[120px]">Calculator</th>
+                  <th className="text-left py-2 px-3 font-semibold min-w-[120px]">Recommended Calculator</th>
                   <th className="text-left py-2 px-3 font-semibold min-w-[180px]">Inputs Required</th>
                   <th className="text-left py-2 px-3 font-semibold">Interpretation Criteria</th>
                   <th className="py-2 px-3"></th>
