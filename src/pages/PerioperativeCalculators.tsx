@@ -574,7 +574,7 @@ const PerioperativeCalculators = () => {
                           <Icon className="w-5 h-5 text-primary" />
                           {card.title} Clinical Context
                         </DialogTitle>
-                        <DialogDescription className="text-base pt-4 text-foreground leading-relaxed">
+                        <DialogDescription className="text-sm pt-4 text-foreground leading-relaxed whitespace-pre-wrap">
                           {card.bestFit}
                         </DialogDescription>
                       </DialogHeader>
