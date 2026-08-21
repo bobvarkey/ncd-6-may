@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
-  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity, Copy, Download
+  Heart, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Shield, Wind, Brain, Eye, Timer, Droplets, Pill, FileText, Info, Activity, Copy, Download,
+  HelpCircle
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -21,6 +22,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import ZoomableImage from "@/components/ZoomableImage";
 import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import mallampatiAsset from "@/assets/mallampati-score.png.asset.json";
