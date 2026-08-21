@@ -319,18 +319,96 @@ const CALCULATOR_CARDS: {
   icon: typeof Heart;
   inputs: string;
   results: string;
+  bestFit?: string;
 }[] = [
-  { value: "rcri", title: "RCRI", icon: Heart, inputs: "6 cardiac risk factors (IHD, HF, CVA, insulin-treated DM, CKD, high-risk surgery)", results: "0–6 points → Class I–IV with % major cardiac event risk" },
-  { value: "asa", title: "ASA Physical Status", icon: Shield, inputs: "Select the class that matches systemic disease burden", results: "ASA I–VI with description, examples and perioperative implications" },
-  { value: "mallampati", title: "Mallampati", icon: Eye, inputs: "Oropharyngeal view on mouth opening (Class I–IV)", results: "Airway difficulty grade and intubation risk" },
-  { value: "stopbang", title: "STOP-Bang", icon: Wind, inputs: "Snoring, tiredness, observed apnea, BP, BMI, age, neck size, sex", results: "0–8 score → low / intermediate / high OSA risk with airway plan" },
-  { value: "caprini", title: "Caprini VTE", icon: Droplets, inputs: "Weighted thrombosis risk factors (1, 2, 3 and 5-point items)", results: "Total score → VTE risk band and prophylaxis recommendation" },
-  { value: "apgar", title: "Surgical Apgar", icon: Timer, inputs: "Estimated blood loss, lowest MAP, lowest heart rate (intra-op)", results: "0–10 score → 30-day major complication / mortality risk" },
-  { value: "woo", title: "Woo Perioperative Risk", icon: Brain, inputs: "Age, ASA class, surgery type and comorbidities", results: "Predicted stroke / MACE category with clinical interpretation" },
-  { value: "goldman", title: "Goldman Cardiac Index", icon: Heart, inputs: "S3 gallop, JVP, recent MI, PVCs, rhythm, age, urgency", results: "Class I-IV with observed cardiac mortality risk" },
-  { value: "sts", title: "STS Cardiac", icon: Heart, inputs: "Cardiac-surgery specific patient and procedure variables", results: "Estimated operative mortality and morbidity band" },
-  { value: "labs", title: "Pre-op Labs", icon: FileText, inputs: "Patient factors and planned procedure risk", results: "Which pre-operative tests are indicated (and which are not)" },
-  { value: "csdh", title: "cSDH Risk", icon: Brain, inputs: "Age, GCS, imaging (shift/thickness), ASA, frailty", results: "Standardized perioperative report for chronic SDH" },
+  { 
+    value: "rcri", 
+    title: "RCRI", 
+    icon: Heart, 
+    inputs: "6 cardiac risk factors (IHD, HF, CVA, insulin-treated DM, CKD, high-risk surgery)", 
+    results: "0–6 points → Class I–IV with % major cardiac event risk",
+    bestFit: "Best for estimating major adverse cardiac events (MACE) in patients undergoing non-cardiac surgery. It is the most widely validated and simplest bedside tool for routine cardiac risk stratification."
+  },
+  { 
+    value: "asa", 
+    title: "ASA Physical Status", 
+    icon: Shield, 
+    inputs: "Select the class that matches systemic disease burden", 
+    results: "ASA I–VI with description, examples and perioperative implications",
+    bestFit: "Global assessment of a patient's pre-operative physical state. Used universally by anesthesiologists to communicate co-morbidity burden, regardless of the specific surgical procedure."
+  },
+  { 
+    value: "mallampati", 
+    title: "Mallampati", 
+    icon: Eye, 
+    inputs: "Oropharyngeal view on mouth opening (Class I–IV)", 
+    results: "Airway difficulty grade and intubation risk",
+    bestFit: "Specific for predicting difficult direct laryngoscopy and intubation. Essential part of every pre-anesthetic airway examination."
+  },
+  { 
+    value: "stopbang", 
+    title: "STOP-Bang", 
+    icon: Wind, 
+    inputs: "Snoring, tiredness, observed apnea, BP, BMI, age, neck size, sex", 
+    results: "0–8 score → low / intermediate / high OSA risk with airway plan",
+    bestFit: "Validated screening tool for Obstructive Sleep Apnea (OSA). High sensitivity makes it ideal for identifying patients who may require post-operative CPAP or closer monitoring."
+  },
+  { 
+    value: "caprini", 
+    title: "Caprini VTE", 
+    icon: Droplets, 
+    inputs: "Weighted thrombosis risk factors (1, 2, 3 and 5-point items)", 
+    results: "Total score → VTE risk band and prophylaxis recommendation",
+    bestFit: "Comprehensive VTE risk assessment. Best for surgical patients where multiple minor and major risk factors (age, BMI, surgery type, history) need to be integrated into a prophylaxis plan."
+  },
+  { 
+    value: "apgar", 
+    title: "Surgical Apgar", 
+    icon: Timer, 
+    inputs: "Estimated blood loss, lowest MAP, lowest heart rate (intra-op)", 
+    results: "0–10 score → 30-day major complication / mortality risk",
+    bestFit: "Intra-operative 'snapshot' tool. Best used immediately post-surgery to identify patients who had physiological instability or high blood loss, guiding higher-acuity post-op placement."
+  },
+  { 
+    value: "woo", 
+    title: "Woo Perioperative Risk", 
+    icon: Brain, 
+    inputs: "Age, ASA class, surgery type and comorbidities", 
+    results: "Predicted stroke / MACE category with clinical interpretation",
+    bestFit: "Focused on neurological and cardiac risk in general surgery patients. Useful for identifying high-risk individuals who may benefit from tailored perioperative monitoring."
+  },
+  { 
+    value: "goldman", 
+    title: "Goldman Cardiac Index", 
+    icon: Heart, 
+    inputs: "S3 gallop, JVP, recent MI, PVCs, rhythm, age, urgency", 
+    results: "Class I-IV with observed cardiac mortality risk",
+    bestFit: "The original cardiac risk index. Best for patients with clear clinical signs of heart failure (S3, JVP) or significant arrhythmias undergoing non-cardiac surgery."
+  },
+  { 
+    value: "sts", 
+    title: "STS Cardiac", 
+    icon: Heart, 
+    inputs: "Cardiac-surgery specific patient and procedure variables", 
+    results: "Estimated operative mortality and morbidity band",
+    bestFit: "The gold standard for adult cardiac surgery (CABG, Valve). Unlike RCRI, this is specific to patients undergoing operations on the heart itself."
+  },
+  { 
+    value: "labs", 
+    title: "Pre-op Labs", 
+    icon: FileText, 
+    inputs: "Patient factors and planned procedure risk", 
+    results: "Which pre-operative tests are indicated (and which are not)",
+    bestFit: "Guidelines-based framework (ASA/NICE/Choosing Wisely) to reduce unnecessary pre-operative testing by matching specific comorbidities to surgical risk levels."
+  },
+  { 
+    value: "csdh", 
+    title: "cSDH Risk", 
+    icon: Brain, 
+    inputs: "Age, GCS, imaging (shift/thickness), ASA, frailty", 
+    results: "Standardized perioperative report for chronic SDH",
+    bestFit: "Tailored specifically for Chronic Subdural Hematoma. Best for neurosurgical multidisciplinary communication to weigh surgical drainage vs. conservative management in elderly patients."
+  },
 ];
 
 // ─── Component ───
