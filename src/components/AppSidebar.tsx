@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  Settings as SettingsIcon, useEffect, useMemo, useState } from "react";
 import {
   LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope, Eye, Calculator,
   type LucideIcon,
@@ -28,6 +29,7 @@ const SECTIONS: Section[] = [
       { title: "Summary", url: "/summary", icon: FileText },
       { title: "Progress", url: "/progress", icon: TrendingDown },
       { title: "Image Gallery", url: "/images", icon: Images, keywords: "figures diagrams algorithms" },
+      { title: "Settings", url: "/settings", icon: SettingsIcon, keywords: "offline mode theme dark light text size accessibility sync" },
     ],
   },
   {

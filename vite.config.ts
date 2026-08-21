@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { visualizer } from "rollup-plugin-visualizer";
+import { VitePWA } from "vite-plugin-pwa";
 import { execSync } from "child_process";
 
 function getGitInfo() {
@@ -33,6 +34,51 @@ export default defineConfig(({ mode }) => {
     react(),
     mode === "development" && componentTagger(),
     analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "stats.html" }),
+    // Offline support (opt-in at runtime via Settings → Offline Mode).
+    VitePWA({
+      strategies: "generateSW",
+      registerType: "autoUpdate",
+      injectRegister: null,
+      devOptions: { enabled: false },
+      filename: "sw.js",
+      manifest: false,
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,svg,png,jpg,jpeg,woff,woff2,ico,webmanifest}"],
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [/^\/~oauth/],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        runtimeCaching: [
+          {
+            // HTML navigations must never be served cache-first.
+            urlPattern: ({ request }) => request.mode === "navigate",
+            handler: "NetworkFirst",
+            options: { cacheName: "html-navigations", networkTimeoutSeconds: 5 },
+          },
+          {
+            urlPattern: ({ url, request, sameOrigin }) =>
+              sameOrigin && !url.pathname.startsWith("/~oauth") &&
+              ["script", "style", "image", "font"].includes(request.destination),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "static-assets",
+              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 60 },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "google-fonts",
+              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
+      },
+    }),
   ].filter(Boolean),
   resolve: {
     alias: {

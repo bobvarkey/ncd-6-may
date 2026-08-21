@@ -9,6 +9,8 @@ import { LabProvider } from "@/components/SmartLabelUpload/GlobalLabContext";
 import BackToHome from "@/components/BackToHome";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { OfflineProvider } from "@/lib/offline/OfflineContext";
+import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -94,6 +96,7 @@ class RouteErrorBoundary extends Component<{ children: ReactNode }, { hasError: 
 
 // Lazy-loaded page components
 const Home = lazyWithModuleRetry(() => import("@/pages/Home"));
+const Settings = lazyWithModuleRetry(() => import("@/pages/Settings"));
 const Diabetes = lazyWithModuleRetry(() => import("@/pages/Diabetes"));
 const Hypertension = lazyWithModuleRetry(() => import("@/pages/Hypertension"));
 const Lipids = lazyWithModuleRetry(() => import("@/pages/Lipids"));
@@ -256,7 +259,8 @@ const SidebarLayout = ({ title, children }: { title: string; children: ReactNode
           <div className="absolute inset-x-0 top-0 h-0.5 bg-sunset" aria-hidden />
           <SidebarTrigger className="ml-2 h-10 w-10 hover:bg-sidebar-accent" aria-label="Toggle sidebar navigation" />
           <span className="ml-3 text-sm font-heading font-semibold text-sunset">{title}</span>
-          <div className="ml-auto mr-2">
+          <div className="ml-auto mr-2 flex items-center gap-2">
+            <OfflineStatusBadge className="hidden sm:inline-flex" />
             <ThemeToggle />
           </div>
         </header>
@@ -280,6 +284,7 @@ const App = () => {
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <OfflineProvider>
         <CommandPalette />
         <GlobalMedSearch />
         <BreadcrumbJsonLd />
@@ -302,6 +307,7 @@ const App = () => {
 
           {/* Main App — unified interface */}
           <Route path="/home" element={<><TabNavigation /><Home /></>} />
+          <Route path="/settings" element={<><TabNavigation /><Settings /></>} />
           <Route path="/diabetes" element={<><TabNavigation /><Diabetes /></>} />
           <Route path="/hypertension" element={<><TabNavigation /><Hypertension /></>} />
           <Route path="/lipids" element={<><TabNavigation /><Lipids /></>} />
@@ -397,6 +403,7 @@ const App = () => {
         </Routes>
         </Suspense>
         </RouteErrorBoundary>
+        </OfflineProvider>
         <BackToHome />
       </BrowserRouter>
     </TooltipProvider>
