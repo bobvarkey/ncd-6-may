@@ -464,7 +464,7 @@
 
   /* Result card with data value emphasis */
   .result-value {
-    @apply text-2xl font-bold tracking-tight;
+    @apply text-2xl font-bold tracking-tight tabular-nums;
   }
   .result-label {
     @apply text-[10px] font-semibold text-muted-foreground uppercase tracking-wider;

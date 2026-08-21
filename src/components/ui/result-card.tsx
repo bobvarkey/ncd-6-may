@@ -37,7 +37,7 @@ export function ResultCard({
   return (
     <div
       className={cn(
-        "rounded-xl border p-6 transition-all duration-300",
+        "rounded-md border p-6 transition-all duration-300",
         "animate-[cardSlideUp_0.3s_ease-out]",
         severityStyles[severity],
         className
@@ -48,7 +48,7 @@ export function ResultCard({
           {title}
         </p>
         <div className="flex items-baseline justify-center gap-1">
-          <span className={cn("text-5xl font-bold tracking-tight", valueColors[severity])}>
+          <span className={cn("text-5xl font-bold tracking-tight tabular-nums", valueColors[severity])}>
             {value}
           </span>
           {unit && (
