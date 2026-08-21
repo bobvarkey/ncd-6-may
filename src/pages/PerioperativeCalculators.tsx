@@ -1109,8 +1109,11 @@ const ASACalculator = ({ surgeryType }: { surgeryType?: string }) => {
 };
 
 // ─── Mallampati Score ───
-const MallampatiCalculator = () => {
-  const [selectedClass, setSelectedClass] = useState<string>("");
+const MallampatiCalculator = ({ clinicalFocus }: { clinicalFocus?: string }) => {
+  const [selectedClass, setSelectedClass] = useState<string>(() => {
+    if (clinicalFocus === 'airway') return 'III';
+    return '';
+  });
 
   return (
     <div className="space-y-4">
