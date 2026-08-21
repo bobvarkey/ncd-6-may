@@ -142,7 +142,7 @@ export function SectionCard({
         type="button"
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
-        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Refine the best-fit pop-up content for each Perioperative Calculator to list the exact criteria, required inputs, and how the output should be interpreted.`}
+        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Enhance the best-fit pop-up UI with clearer step-by-step guidance, including examples of typical scenarios and what to do if an input is missing.`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
