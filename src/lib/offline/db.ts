@@ -38,16 +38,18 @@ export interface QueueItem {
   error?: string;
 }
 
+export type PushResponse =
+  | { ok: true; rev: number; applied: boolean }
+  | { ok: false; conflict: true; remote: unknown; remoteRev: number }
+  | { ok: false; conflict?: false; error: string };
+
 export interface RemoteAdapter {
   /**
    * Applies one queued operation. Implementations must be safe to call twice
    * with the same opId (return `{ applied: false }` for a repeat).
    */
-  push(item: QueueItem): Promise<
-    | { ok: true; rev: number; applied: boolean }
-    | { ok: false; conflict: true; remote: unknown; remoteRev: number }
-    | { ok: false; conflict?: false; error: string }
-  >;
+  push(item: QueueItem): Promise<PushResponse>;
+
 }
 
 const RECORDS = "records";
