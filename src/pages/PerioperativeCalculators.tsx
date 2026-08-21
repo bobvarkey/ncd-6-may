@@ -893,8 +893,13 @@ const PerioperativeCalculators = () => {
 };
 
 // ─── RCRI Calculator ───
-const RCRICalculator = () => {
-  const [factors, setFactors] = useState<RCRIFactor[]>(RCRI_FACTORS);
+const RCRICalculator = ({ surgeryType }: { surgeryType?: string }) => {
+  const [factors, setFactors] = useState<RCRIFactor[]>(() => {
+    if (surgeryType === 'non-cardiac') {
+      return RCRI_FACTORS.map(f => f.id === 'high_risk_surg' ? { ...f, active: true } : f);
+    }
+    return RCRI_FACTORS;
+  });
 
   const toggleFactor = (id: string) => {
     setFactors(prev => prev.map(f => f.id === id ? { ...f, active: !f.active } : f));
