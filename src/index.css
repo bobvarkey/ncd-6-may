@@ -81,6 +81,17 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 0 0% 12%;
     --sidebar-ring: 14 100% 60%;
+
+    /* Text & link tokens (WCAG 2.2 AA on this surface) */
+    --surface: 0 0% 5%;
+    --surface-foreground: 0 0% 100%;
+    --text-secondary: 0 0% 82%;
+    --link: 200 90% 72%;
+    --link-hover: 200 95% 82%;
+    --focus: 14 100% 60%;
+
+    /* User text-size preference (Settings → Text size) */
+    --user-text-scale: 1;
   }
 
   /* ============================================================
@@ -133,6 +144,14 @@
     --sidebar-accent-foreground: 240 10% 10%;
     --sidebar-border: 240 6% 88%;
     --sidebar-ring: 14 95% 52%;
+
+    /* Text & link tokens — dark enough for AA on white */
+    --surface: 30 40% 98%;
+    --surface-foreground: 240 10% 10%;
+    --text-secondary: 240 8% 28%;
+    --link: 214 90% 38%;
+    --link-hover: 214 90% 30%;
+    --focus: 14 95% 42%;
   }
 
   * {
@@ -140,10 +159,10 @@
   }
   html {
     @apply bg-background;
-    font-size: 17.5px;
+    font-size: calc(17.5px * var(--user-text-scale, 1));
   }
   @media (min-width: 640px) {
-    html { font-size: 18px; }
+    html { font-size: calc(18px * var(--user-text-scale, 1)); }
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -303,6 +322,38 @@
 
   /* Tables inherit */
   thead, tbody, tfoot, tr, th, td { color: inherit; }
+
+  /* ============================================================
+     Accessibility: visible keyboard focus everywhere, readable
+     secondary text, and no clipping at larger text sizes.
+     ============================================================ */
+  :focus-visible {
+    outline: 2px solid hsl(var(--focus));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  a, button, [role="button"], [role="tab"], input, select, textarea, summary, [tabindex]:not([tabindex="-1"]) {
+    &:focus-visible {
+      outline: 2px solid hsl(var(--focus));
+      outline-offset: 2px;
+    }
+  }
+
+  /* Secondary / muted text keeps AA contrast in both themes */
+  .text-secondary { color: hsl(var(--text-secondary)); }
+
+  /* Inline links are distinguishable by more than colour */
+  .prose a, a.link {
+    color: hsl(var(--link));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose a:hover, a.link:hover { color: hsl(var(--link-hover)); }
+
+  /* Larger text-size preference must wrap, not clip */
+  h1, h2, h3, h4, h5, h6, p, li, label, button, a {
+    overflow-wrap: anywhere;
+  }
 }
 
 @layer components {
