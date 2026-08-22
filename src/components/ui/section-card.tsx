@@ -142,7 +142,7 @@ export function SectionCard({
         type="button"
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
-        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            reduce this and make it easier to fill`}
+        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            reduce the font size of \"Better decisions,\nbedside to desktop.\" to fit on 2-3 lines`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (

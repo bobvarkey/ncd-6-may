@@ -818,7 +818,7 @@ export default function Home() {
                 <span className="hero-badge hero-eyebrow inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium">
                   <Sparkles className="h-3 w-3" /> Clinical Decision Support
                 </span>
-                <h1 className="hero-title mt-5 text-4xl md:text-5xl font-bold tracking-tight leading-[1.05]">
+                <h1 className="hero-title mt-5 text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
                   Better decisions, <br className="hidden md:block" />bedside to desktop.
                 </h1>
                 <p className="hero-subtitle mt-4 text-base md:text-lg max-w-md leading-relaxed">
