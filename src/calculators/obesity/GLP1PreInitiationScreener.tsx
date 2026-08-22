@@ -330,6 +330,7 @@ export default function GLP1PreInitiationScreener() {
                   <Input className="h-8 text-xs" value={bp} onChange={e => setBp(e.target.value)} placeholder="130/80" />
                 </div>
               </div>
+            </div>
           )}
 
           {/* STEP 3: Plan & Summary */}
