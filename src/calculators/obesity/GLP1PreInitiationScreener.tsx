@@ -375,7 +375,7 @@ export default function GLP1PreInitiationScreener() {
               <ChevronLeft className="h-3.5 w-3.5 mr-1" /> Back
             </Button>
             {step < STEPS.length - 1 && (
-              <Button size="sm" className="h-8 text-xs" onClick={() => setStep(s => s + 1)}>
+              <Button size="sm" className="h-8 text-xs" onClick={() => setStep(s => s + 1)} disabled={!canContinue}>
                 Next <ChevronRight className="h-3.5 w-3.5 ml-1" />
               </Button>
             )}
