@@ -62,6 +62,7 @@ export default function GLP1PreInitiationScreener() {
   const [suicidal, setSuicidal] = useState(false);
   const [giDisease, setGiDisease] = useState("none_known");
   const [retinopathy, setRetinopathy] = useState("unknown");
+  const [naion, setNaion] = useState(false);
   const [sarcopeniaRisk, setSarcopeniaRisk] = useState("low");
 
   const [hba1c, setHba1c] = useState("");
@@ -95,6 +96,7 @@ export default function GLP1PreInitiationScreener() {
     if (pancreatitis) f.push({ id: "panc", severity: "high", message: "Prior pancreatitis: specialist review recommended." });
     if (giDisease === "severe_gastroparesis" || giDisease === "severe_gi_disease") f.push({ id: "gi", severity: "high", message: "Severe GI disease: obtain specialist assessment." });
     if (retinopathy === "proliferative_or_high_risk" || retinopathy === "unknown") f.push({ id: "retin", severity: "high", message: "Retinal review needed, especially if rapid HbA1c drop expected." });
+    if (naion) f.push({ id: "naion", severity: "high", message: "History of NAION: Increased risk of recurrence. Specialist ophthalmology review required before initiation." });
     if (insulin || secretagogue) f.push({ id: "hypo", severity: "high", message: "Hypoglycaemia risk: adjust insulin/secretagogue dose." });
     
     if (dpp4) f.push({ id: "dpp4", severity: "moderate", message: "Discontinue DPP-4 inhibitor (gliptin). Combined use provides no extra glycemic benefit (same pathway) and increases cost/side-effect risk." });
@@ -106,7 +108,7 @@ export default function GLP1PreInitiationScreener() {
 
   const status = useMemo(() => {
     if (flags.some((f) => f.severity === "critical")) return "Do not start";
-    if (flags.some((f) => ["panc", "gi", "retin"].includes(f.id))) return "Defer pending specialist review";
+    if (flags.some((f) => ["panc", "gi", "retin", "naion"].includes(f.id))) return "Defer pending specialist review";
     if (flags.some((f) => f.severity === "high" || f.severity === "moderate")) return "Eligible with clinical monitoring plan";
     return "Eligible to start (Routine)";
   }, [flags]);
@@ -248,6 +250,7 @@ export default function GLP1PreInitiationScreener() {
                   <Check label="Prior GLP-1 Hypersensitivity" checked={hypersensitivity} onChange={setHypersensitivity} />
                   <Check label="Type 1 Diabetes / DKA" checked={t1dOrDka} onChange={setT1dOrDka} />
                   <Check label="History of Pancreatitis" checked={pancreatitis} onChange={setPancreatitis} />
+                  <Check label="History of NAION" checked={naion} onChange={setNaion} />
                   <Check label="Active Suicidal Ideation" checked={suicidal} onChange={setSuicidal} />
                 </div>
               </div>
