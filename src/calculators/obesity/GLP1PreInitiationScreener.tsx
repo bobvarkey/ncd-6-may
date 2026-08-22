@@ -157,12 +157,21 @@ export default function GLP1PreInitiationScreener() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-[10px] text-muted-foreground font-medium">
-              <span>Step {step + 1}: {STEPS[step]}</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-[10px] text-muted-foreground font-medium mb-1">
+              <span>Step {step + 1} of {STEPS.length}: {STEPS[step]}</span>
               <span>{Math.round(((step + 1) / STEPS.length) * 100)}%</span>
             </div>
-            <Progress value={((step + 1) / STEPS.length) * 100} className="h-1.5" />
+            <div className="flex gap-1.5 mb-2">
+              {STEPS.map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                    i <= step ? "bg-primary" : "bg-muted"
+                  }`} 
+                />
+              ))}
+            </div>
           </div>
 
           {/* STEP 1: Patient & Indication */}
