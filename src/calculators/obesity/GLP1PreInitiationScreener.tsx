@@ -362,9 +362,17 @@ export default function GLP1PreInitiationScreener() {
 
               {naion && (
                 <div className="p-3 rounded-lg border border-warning/30 bg-warning/5 space-y-2">
-                  <div className="flex items-center gap-2 text-warning font-semibold text-xs text-amber-600 dark:text-amber-400">
-                    <AlertTriangle className="h-3.5 w-3.5" />
-                    NAION Safety Summary
+                  <div className="flex items-center justify-between text-warning font-semibold text-xs text-amber-600 dark:text-amber-400">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      NAION Safety Summary
+                    </div>
+                    <button 
+                      onClick={() => setStep(1)} 
+                      className="text-[10px] underline hover:text-amber-700 dark:hover:text-amber-300"
+                    >
+                      Edit Answers
+                    </button>
                   </div>
                   <div className="text-[11px] text-muted-foreground">
                     Patient has reported a history of NAION. Guideline-based next steps:
