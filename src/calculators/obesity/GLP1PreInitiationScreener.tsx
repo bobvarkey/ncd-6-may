@@ -127,6 +127,7 @@ export default function GLP1PreInitiationScreener() {
       flags.length ? flags.map(f => `- [${f.severity.toUpperCase()}] ${f.message}`).join("\n") : "- None identified",
       "",
       `Medication: ${agent} (Insulin: ${insulin ? "Yes" : "No"} | SU: ${secretagogue ? "Yes" : "No"})`,
+      `NAION Status: ${naion ? "Positive History (Specialist Review Required)" : "Negative History"}`,
       "",
       "COUNSELLING:",
       counselling.length ? counselling.map(c => `- ${c}`).join("\n") : "- None documented",
@@ -358,6 +359,28 @@ export default function GLP1PreInitiationScreener() {
                   </div>
                 </div>
               </div>
+
+              {naion && (
+                <div className="p-3 rounded-lg border border-warning/30 bg-warning/5 space-y-2">
+                  <div className="flex items-center gap-2 text-warning font-semibold text-xs text-amber-600 dark:text-amber-400">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    NAION Safety Summary
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">
+                    Patient has reported a history of NAION. Guideline-based next steps:
+                  </div>
+                  <div className="grid grid-cols-1 gap-1.5 mt-1">
+                    <div className="flex items-start gap-2 text-[10px] bg-background/50 p-1.5 rounded border border-border/40">
+                      <div className="h-1.5 w-1.5 rounded-full bg-danger mt-1 shrink-0" />
+                      <span>Obtain mandatory Ophthalmology clearance before initiating GLP-1 RA.</span>
+                    </div>
+                    <div className="flex items-start gap-2 text-[10px] bg-background/50 p-1.5 rounded border border-border/40">
+                      <div className="h-1.5 w-1.5 rounded-full bg-warning mt-1 shrink-0" />
+                      <span>Document detailed discussion regarding increased hazard ratio for recurrence.</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className={`p-3 rounded-lg border text-xs font-semibold flex items-center gap-2 ${
                 status === "Do not start" ? "bg-destructive/10 text-destructive border-destructive/20" :
