@@ -142,6 +142,18 @@ export default function GLP1PreInitiationScreener() {
     </label>
   );
 
+  const canContinue = useMemo(() => {
+    if (step === 0) {
+      return !!age && !!sex && !!weight && !!height && conditions.length > 0;
+    }
+    if (step === 1) {
+      // Basic check for mandatory labs/cautions logic could be added here if needed
+      // For now, requiring HbA1c and eGFR as minimal clinical safety data
+      return !!hba1c && !!egfr;
+    }
+    return true;
+  }, [step, age, sex, weight, height, conditions, hba1c, egfr]);
+
   return (
     <div className="space-y-4">
       <Card className="border-border/60">
