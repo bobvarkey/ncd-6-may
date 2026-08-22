@@ -249,9 +249,32 @@ export default function GLP1PreInitiationScreener() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Check label="MTC / MEN2 / Hypersensitivity" checked={mtc || men2 || hypersensitivity} onChange={v => { setMtc(v); setMen2(v); setHypersensitivity(v); }} />
                   <Check label="Type 1 Diabetes / DKA" checked={t1dOrDka} onChange={setT1dOrDka} />
-                  <Check label="History of Pancreatitis / NAION" checked={pancreatitis || naion} onChange={v => { setPancreatitis(v); setNaion(v); }} />
+                  <Check label="History of Pancreatitis" checked={pancreatitis} onChange={setPancreatitis} />
                   <Check label="Active Suicidal Ideation" checked={suicidal} onChange={setSuicidal} />
                 </div>
+              </div>
+
+              {/* Optic nerve / NAION — single streamlined group */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold">Optic nerve / NAION</Label>
+                <Check
+                  label="Prior NAION or optic nerve risk (crowded/anomalous disc, prior ischaemic optic event)"
+                  checked={naion}
+                  onChange={setNaion}
+                />
+                {naion && (
+                  <div className="p-3 rounded-lg border border-danger/20 bg-danger/5 space-y-2">
+                    <div className="flex items-center gap-2 text-danger font-semibold text-xs">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      NAION Safety Protocol
+                    </div>
+                    <ul className="text-[11px] space-y-1 text-muted-foreground list-disc pl-4">
+                      <li>Recent studies (e.g., JAMA Ophthalmol 2024) suggest an increased hazard ratio for NAION in patients prescribed Semaglutide.</li>
+                      <li><span className="font-semibold text-foreground">Specialist Review Required:</span> Defer initiation until cleared by Ophthalmology.</li>
+                      <li><span className="font-semibold text-foreground">Monitoring:</span> If initiated, patient must report any sudden visual changes immediately.</li>
+                    </ul>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -266,18 +289,20 @@ export default function GLP1PreInitiationScreener() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Retinopathy</Label>
-                  <Select value={retinopathy} onValueChange={setRetinopathy}>
-                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      <SelectItem value="non_proliferative">NPDR</SelectItem>
-                      <SelectItem value="proliferative_or_high_risk">PDR / High Risk</SelectItem>
-                      <SelectItem value="unknown">Unknown</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {(naion || conditions.includes("Type 2 diabetes")) && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Retinopathy</Label>
+                    <Select value={retinopathy} onValueChange={setRetinopathy}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        <SelectItem value="non_proliferative">NPDR</SelectItem>
+                        <SelectItem value="proliferative_or_high_risk">PDR / High Risk</SelectItem>
+                        <SelectItem value="unknown">Unknown</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
                 <div className="space-y-1.5">
                   <Label className="text-xs">Sarcopenia Risk</Label>
                   <Select value={sarcopeniaRisk} onValueChange={setSarcopeniaRisk}>
@@ -303,21 +328,8 @@ export default function GLP1PreInitiationScreener() {
                 <div className="space-y-1.5">
                   <Label className="text-xs">BP</Label>
                   <Input className="h-8 text-xs" value={bp} onChange={e => setBp(e.target.value)} placeholder="130/80" />
-              </div>
-              {naion && (
-                <div className="p-3 rounded-lg border border-danger/20 bg-danger/5 space-y-2">
-                  <div className="flex items-center gap-2 text-danger font-semibold text-xs">
-                    <AlertTriangle className="h-3.5 w-3.5" />
-                    NAION Safety Protocol
-                  </div>
-                  <ul className="text-[11px] space-y-1 text-muted-foreground list-disc pl-4">
-                    <li>Recent studies (e.g., JAMA Ophthalmol 2024) suggest an increased hazard ratio for NAION in patients prescribed Semaglutide.</li>
-                    <li><span className="font-semibold text-foreground">Specialist Review Required:</span> Defer initiation until cleared by Ophthalmology.</li>
-                    <li><span className="font-semibold text-foreground">Monitoring:</span> If initiated, patient must report any sudden visual changes immediately.</li>
-                  </ul>
                 </div>
-              )}
-            </div>
+              </div>
             </div>
           )}
 
