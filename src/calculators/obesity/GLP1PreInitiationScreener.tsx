@@ -304,7 +304,12 @@ export default function GLP1PreInitiationScreener() {
                   <div className="grid grid-cols-1 gap-2">
                     <Check label="Concomitant Insulin" checked={insulin} onChange={setInsulin} />
                     <Check label="Concomitant Secretagogue (SU)" checked={secretagogue} onChange={setSecretagogue} />
-                    <Check label="Concomitant DPP-4i" checked={dpp4} onChange={setDpp4} />
+                    <Check label="Concomitant DPP-4i (Gliptin)" checked={dpp4} onChange={setDpp4} />
+                    {dpp4 && (
+                      <div className="text-[10px] text-amber-600 dark:text-amber-400 font-medium px-2 py-1 bg-amber-50 dark:bg-amber-950/30 rounded border border-amber-200/50 dark:border-amber-900/50">
+                        Guideline advice: Stop DPP-4i. Dual use adds no benefit (shared pathway) but increases cost/risk.
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="space-y-1.5">
