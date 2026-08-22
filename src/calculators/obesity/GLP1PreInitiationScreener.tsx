@@ -247,11 +247,9 @@ export default function GLP1PreInitiationScreener() {
               <div className="space-y-2">
                 <Label className="text-xs font-semibold">Red Flags & Cautions</Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Check label="History of MTC / MEN2" checked={mtc || men2} onChange={v => { setMtc(v); setMen2(v); }} />
-                  <Check label="Prior GLP-1 Hypersensitivity" checked={hypersensitivity} onChange={setHypersensitivity} />
+                  <Check label="MTC / MEN2 / Hypersensitivity" checked={mtc || men2 || hypersensitivity} onChange={v => { setMtc(v); setMen2(v); setHypersensitivity(v); }} />
                   <Check label="Type 1 Diabetes / DKA" checked={t1dOrDka} onChange={setT1dOrDka} />
-                  <Check label="History of Pancreatitis" checked={pancreatitis} onChange={setPancreatitis} />
-                  <Check label="History of NAION" checked={naion} onChange={setNaion} />
+                  <Check label="History of Pancreatitis / NAION" checked={pancreatitis || naion} onChange={v => { setPancreatitis(v); setNaion(v); }} />
                   <Check label="Active Suicidal Ideation" checked={suicidal} onChange={setSuicidal} />
                 </div>
               </div>
