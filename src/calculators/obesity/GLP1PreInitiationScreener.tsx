@@ -334,10 +334,10 @@ export default function GLP1PreInitiationScreener() {
               <pre className="p-3 bg-muted/40 rounded-lg text-[10px] whitespace-pre-wrap border border-border/40 select-all">{report}</pre>
               
               <div className="flex gap-2">
-                <Button variant="outline" size="xs" className="h-8 text-[11px] flex-1" onClick={() => copyToClipboard(report)}>
+                <Button variant="outline" size="sm" className="h-8 text-[11px] flex-1" onClick={() => copyToClipboard(report)}>
                   <Copy className="h-3 w-3 mr-1.5" /> Copy Note
                 </Button>
-                <Button variant="outline" size="xs" className="h-8 text-[11px] flex-1" onClick={() => downloadTextFile("glp1-assessment.txt", report)}>
+                <Button variant="outline" size="sm" className="h-8 text-[11px] flex-1" onClick={() => downloadTextFile("glp1-assessment.txt", report)}>
                   <Download className="h-3 w-3 mr-1.5" /> Download
                 </Button>
               </div>
