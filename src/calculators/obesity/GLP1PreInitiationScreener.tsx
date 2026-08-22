@@ -97,7 +97,7 @@ export default function GLP1PreInitiationScreener() {
     if (retinopathy === "proliferative_or_high_risk" || retinopathy === "unknown") f.push({ id: "retin", severity: "high", message: "Retinal review needed, especially if rapid HbA1c drop expected." });
     if (insulin || secretagogue) f.push({ id: "hypo", severity: "high", message: "Hypoglycaemia risk: adjust insulin/secretagogue dose." });
     
-    if (dpp4) f.push({ id: "dpp4", severity: "moderate", message: "Avoid concurrent DPP-4 inhibitor." });
+    if (dpp4) f.push({ id: "dpp4", severity: "moderate", message: "Discontinue DPP-4 inhibitor (gliptin). Combined use provides no extra glycemic benefit (same pathway) and increases cost/side-effect risk." });
     if (sarcopeniaRisk === "high") f.push({ id: "sarco", severity: "moderate", message: "Sarcopenia risk: prioritise protein intake & resistance exercise." });
     if (egfr && parseFloat(egfr) < 30) f.push({ id: "renal", severity: "moderate", message: "eGFR <30: specialist guidance & close monitoring recommended." });
     
