@@ -304,8 +304,21 @@ export default function GLP1PreInitiationScreener() {
                 <div className="space-y-1.5">
                   <Label className="text-xs">BP</Label>
                   <Input className="h-8 text-xs" value={bp} onChange={e => setBp(e.target.value)} placeholder="130/80" />
-                </div>
               </div>
+              {naion && (
+                <div className="p-3 rounded-lg border border-danger/20 bg-danger/5 space-y-2">
+                  <div className="flex items-center gap-2 text-danger font-semibold text-xs">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    NAION Safety Protocol
+                  </div>
+                  <ul className="text-[11px] space-y-1 text-muted-foreground list-disc pl-4">
+                    <li>Recent studies (e.g., JAMA Ophthalmol 2024) suggest an increased hazard ratio for NAION in patients prescribed Semaglutide.</li>
+                    <li><span className="font-semibold text-foreground">Specialist Review Required:</span> Defer initiation until cleared by Ophthalmology.</li>
+                    <li><span className="font-semibold text-foreground">Monitoring:</span> If initiated, patient must report any sudden visual changes immediately.</li>
+                  </ul>
+                </div>
+              )}
+            </div>
             </div>
           )}
 
