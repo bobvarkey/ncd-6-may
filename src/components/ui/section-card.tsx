@@ -142,7 +142,7 @@ export function SectionCard({
         type="button"
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
-        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Verify the Home page hero text wraps to 2-3 lines on mobile and desktop breakpoints.\n\nTest the GLP-1 pre-initiation screener three-step wizard to ensure all required flags and referrals are captured correctly.\n\nAdjust mobile padding and spacing around the Home headline and SectionCard so the layout stays balanced without clipping.\n\nAdd a simple progress indicator to the GLP-1 screener steps so users know where they are and what comes next.`}
+        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Add client-side validation to ensure all required flags and referrals are captured before allowing me to move to the next GLP-1 screener step.`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
