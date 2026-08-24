@@ -1292,6 +1292,11 @@ export default function HypertensionTreatment() {
         </CardContent>
       </Card>
 
+      <TakeHomeMessage title="Workup Pearl" variant="warning" className="mb-4">
+        Secondary hypertension should be suspected in young patients, resistant cases, or when a sudden escape from previously stable control occurs. 
+        Always check electrolytes for primary aldosteronism.
+      </TakeHomeMessage>
+
       {/* Medication Dosing Tables */}
       <Card id="htn-section-medications" className="border-2 border-primary/20">
         <CardHeader className="pb-3">
