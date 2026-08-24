@@ -6,7 +6,7 @@ import ZoomableImage from "@/components/ZoomableImage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
 import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
-import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v2.jpg.asset.json";
+import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asset.json";
 
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 
