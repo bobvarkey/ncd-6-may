@@ -347,6 +347,10 @@ export const RENAL_DATA: DoseEntry[] = [
   },
 ];
 
+export const ALL_RENAL_DATA: DoseEntry[] = [...RENAL_DATA, ...ANTIBIOTICS_DATA, ...ANTICOAGULANTS_DATA, ...ADDITIONAL_MEDS_DATA];
+export { eGFRColumns, cellStyle, inferFrequency };
+
+
 
 
 const eGFRColumns = [
