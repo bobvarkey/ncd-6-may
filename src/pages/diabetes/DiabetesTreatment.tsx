@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import ImageLink from "@/components/ImageLink";
+import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 // Algorithm Step Component
 interface AlgorithmStepProps {
@@ -1490,6 +1491,15 @@ export default function DiabetesTreatment() {
       {activeTab === "checklist" && <ManagementChecklist />}
       {activeTab === "emergency" && <HyperglycemicEmergencySection />}
       {activeTab === "ckd" && <CKDSafeDrugs />}
+      <TakeHomeMessage title="Diabetes Management Pearls" variant="info">
+        →Metformin remains first-line unless contraindicated (eGFR &lt;30)
+
+        →SGLT2i preferred in HFrEF / CKD (eGFR ≥20) regardless of HbA1c
+
+        →GLP-1 RA preferred in high ASCVD risk or for weight management
+
+        →Early combination therapy prevents clinical inertia and preserves β-cell function
+      </TakeHomeMessage>
       
       <div className="flex justify-center py-4 border-t border-border/50">
         <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
