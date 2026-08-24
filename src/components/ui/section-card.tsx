@@ -145,7 +145,7 @@ export function SectionCard({
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            2nd image is not loading`}
+                                            Run an accessibility audit to confirm every infographic in the Vitamin D Clinical Guide and ImageGallery has proper alt text, captions, and source notes.`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
