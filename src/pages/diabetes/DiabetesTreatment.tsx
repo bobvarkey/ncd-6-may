@@ -1490,6 +1490,10 @@ export default function DiabetesTreatment() {
       {activeTab === "checklist" && <ManagementChecklist />}
       {activeTab === "emergency" && <HyperglycemicEmergencySection />}
       {activeTab === "ckd" && <CKDSafeDrugs />}
+      
+      <div className="flex justify-center py-4 border-t border-border/50">
+        <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+      </div>
     </div>
   );
 }
