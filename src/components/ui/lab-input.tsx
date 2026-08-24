@@ -109,8 +109,8 @@ export function LabInput({
   // Convert the canonical metric value to the currently displayed unit string.
   const displayValue = useMemo(() => {
     if (value === "" || value === null || value === undefined) return "";
-    const n = parseFloat(value);
-    if (isNaN(n)) return "";
+    const n = parseClinicalValue(value);
+    if (n === null) return "";
     if (activeIdx === 0) return value; // store-as-typed for metric
     const converted = unit.fromMetric(n);
     if (!isFinite(converted)) return "";
