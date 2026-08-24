@@ -76,7 +76,7 @@ export default function DstInterpretationPanel() {
           </label>
           <input
             id="dst-cortisol"
-            type="number"
+            type="text"
             inputMode="decimal"
             className="w-40 h-9 rounded-md border border-border bg-muted px-3 text-xs"
             placeholder={unit === "nmol" ? "e.g. 42" : "e.g. 1.5"}
@@ -102,7 +102,7 @@ export default function DstInterpretationPanel() {
           </label>
           <input
             id="dst-dexa"
-            type="number"
+            type="text"
             inputMode="decimal"
             className="w-40 h-9 rounded-md border border-border bg-muted px-3 text-xs"
             placeholder="e.g. 350"
