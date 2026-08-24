@@ -471,8 +471,6 @@ export default function Infections() {
 
         {tab === "serious" ? (
           <SeriousInfections />
-        ) : tab === "csdh" ? (
-          <CsdhRiskCalculator />
         ) : (
         <>
         <div className="rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-amber-900 flex gap-2">
