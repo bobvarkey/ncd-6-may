@@ -616,7 +616,7 @@ export default function Geriatrics() {
         Comprehensive approach to geriatric syndromes — screening algorithm, clinical assessment, and management of common disorders of aging.
       </p>
 
-      <Tabs defaultValue="overview" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="w-full flex-wrap">
           <TabsTrigger value="overview" className="flex-1 gap-2">
             <Info className="h-4 w-4" />
@@ -626,6 +626,10 @@ export default function Geriatrics() {
             <ClipboardList className="h-4 w-4" />
             Screening Algorithm
           </TabsTrigger>
+          <TabsTrigger value="fractures" className="flex-1 gap-2">
+            <Bone className="h-4 w-4" />
+            Fragility Fractures
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
@@ -634,6 +638,10 @@ export default function Geriatrics() {
 
         <TabsContent value="screening" className="mt-6">
           <GeriatricScreening />
+        </TabsContent>
+
+        <TabsContent value="fractures" className="mt-6">
+          <FragilityFractures />
         </TabsContent>
       </Tabs>
 
