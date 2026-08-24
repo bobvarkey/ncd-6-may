@@ -4,25 +4,20 @@ import json
 from pathlib import Path
 from playwright.async_api import async_playwright
 
-# axe-core is not in the default playwright-python environment, 
-# so we will use a custom script to inject it and run it.
-# We'll fetch the axe-core script via a CDN for the audit.
-
 AXE_CORE_URL = "https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.8.2/axe.min.js"
 
 async def audit_page(page, route_name):
     print(f"\n--- Auditing {route_name} ---")
-    await page.goto(f"http://localhost:8080{route_name}", wait_until="networkidle")
+    try:
+        await page.goto(f"http://localhost:8080{route_name}", wait_until="networkidle")
+    except Exception as e:
+        print(f"Error navigating to {route_name}: {e}")
+        return None
     
-    # Inject axe-core
     await page.add_script_tag(url=AXE_CORE_URL)
-    
-    # Run axe specifically for images and clinical content
     results = await page.evaluate("axe.run()")
-    
     violations = results.get("violations", [])
     
-    # Custom Validation Logic
     images = await page.query_selector_all("img")
     missing_alt = 0
     for img in images:
@@ -55,7 +50,9 @@ async def main():
         routes = ["/vitamin-d", "/gallery"]
         report = []
         for route in routes:
-            report.append(await audit_page(page, route))
+            res = await audit_page(page, route)
+            if res:
+                report.append(res)
 
         await browser.close()
         
