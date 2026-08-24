@@ -5,7 +5,7 @@ import {
   Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, Info,
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
-  Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors, Brain,
+  Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors, Brain, Bone,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
