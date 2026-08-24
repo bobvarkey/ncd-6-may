@@ -320,8 +320,8 @@ const PILL_INPUT =
 
 export default function Infections() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlTab = searchParams.get("tab") as "primary" | "serious" | "csdh" | null;
-  const [tab, setTab] = useState<"primary" | "serious" | "csdh">(urlTab ?? "primary");
+  const urlTab = searchParams.get("tab") as "primary" | "serious" | null;
+  const [tab, setTab] = useState<"primary" | "serious">(urlTab ?? "primary");
 
   useEffect(() => {
     if (urlTab) setTab(urlTab);
@@ -467,20 +467,10 @@ export default function Infections() {
           >
             <Hospital className="h-4 w-4" /> Serious & nosocomial
           </button>
-          <button
-            onClick={() => { setTab("csdh"); setSearchParams({ tab: "csdh" }); }}
-            className={`px-3 py-2 text-sm font-medium border-b-2 -mb-px inline-flex items-center gap-1.5 ${
-              tab === "csdh" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Brain className="h-4 w-4" /> cSDH Risk
-          </button>
         </div>
 
         {tab === "serious" ? (
           <SeriousInfections />
-        ) : tab === "csdh" ? (
-          <CsdhRiskCalculator />
         ) : (
         <>
         <div className="rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-amber-900 flex gap-2">

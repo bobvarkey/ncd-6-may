@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import AKIAKDMiniApp from "./AKIAKDMiniApp";
+import { useSearchParams } from "react-router-dom";
 import KDIGOStagingCalculator from "@/calculators/renal/KDIGOStagingCalculator";
 import MehranScoreCalculator from "@/calculators/renal/MehranScoreCalculator";
 import { ADDITIONAL_MEDS_DATA } from "@/calculators/diabetes/additional-meds-data";
@@ -979,6 +982,14 @@ function EgfrCalculator() {
 }
 
 const RenalDoseAdjustment = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlTab = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(urlTab || "dosing");
+
+  useEffect(() => {
+    if (urlTab) setActiveTab(urlTab);
+  }, [urlTab]);
+
   const [search, setSearch] = useState("");
   const mehranRef = useRef<HTMLDetailsElement>(null);
   const egfrRef = useRef<HTMLDetailsElement>(null);
@@ -1033,53 +1044,70 @@ const RenalDoseAdjustment = () => {
         description="eGFR-based dose adjustments across diabetes, cardiovascular and antibiotic classes, aligned with ADA 2026 and KDIGO."
         path="/renal-dosing"
       />
-      <div>
-        <h1 className="text-xl font-heading font-bold flex items-center gap-2">
-          <FlaskConical className="w-5 h-5 text-primary" />
-          Renal Dose Adjustment
-        </h1>
-        <p className="text-sm text-muted-foreground">eGFR-based dose modifications for diabetes medications (ADA 2026 + KDIGO)</p>
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="w-full mb-6">
+          <TabsTrigger value="dosing" className="flex-1 gap-2">
+            <Pill className="w-4 h-4" />
+            Dose Adjustment
+          </TabsTrigger>
+          <TabsTrigger value="calculators" className="flex-1 gap-2">
+            <Calculator className="w-4 h-4" />
+            Renal Calculators
+          </TabsTrigger>
+          <TabsTrigger value="aki" className="flex-1 gap-2">
+            <AlertTriangle className="w-4 h-4" />
+            AKI Criteria
+          </TabsTrigger>
+        </TabsList>
 
-      {/* AKI / AKD entry point (KDIGO 2026) */}
-      <a
-        href="/aki-akd"
-        className="flex items-center justify-between gap-3 rounded-lg border-2 border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 px-4 py-3 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <span aria-hidden="true" className="text-lg">⚠️</span>
+        <TabsContent value="dosing" className="space-y-5">
           <div>
-            <div className="text-sm font-semibold text-foreground">AKI / AKD Mini App</div>
-            <div className="text-xs text-muted-foreground">KDIGO 2026 detection, staging & next steps</div>
+            <h1 className="text-xl font-heading font-bold flex items-center gap-2">
+              <FlaskConical className="w-5 h-5 text-primary" />
+              Renal Dose Adjustment
+            </h1>
+            <p className="text-sm text-muted-foreground">eGFR-based dose modifications for medications (ADA 2026 + KDIGO)</p>
           </div>
-        </div>
-        <span className="text-xs font-medium text-amber-600">Open →</span>
-      </a>
 
+        </TabsContent>
+        <TabsContent value="calculators" className="space-y-5">
+          <div>
+            <h1 className="text-xl font-heading font-bold flex items-center gap-2">
+              <Calculator className="w-5 h-5 text-primary" />
+              Renal Calculators
+            </h1>
+            <p className="text-sm text-muted-foreground">eGFR, UACR, and CIN risk assessment tools</p>
+          </div>
 
-      {/* Mehran Score for Post-PCI CIN - Collapsible */}
-      <details ref={mehranRef} id="mehran" className="clinical-card p-0 overflow-hidden group">
-        <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
-          <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
-          <Calculator className="w-4 h-4 text-primary shrink-0" />
-          <span className="text-sm font-semibold">Mehran Score for Post-PCI Contrast Nephropathy</span>
-        </summary>
-        <div className="border-t border-border p-4">
-          <MehranScoreCalculator />
-        </div>
-      </details>
+          {/* Mehran Score for Post-PCI CIN - Collapsible */}
+          <details ref={mehranRef} id="mehran" className="clinical-card p-0 overflow-hidden group" open>
+            <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
+              <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
+              <Calculator className="w-4 h-4 text-primary shrink-0" />
+              <span className="text-sm font-semibold">Mehran Score for Post-PCI Contrast Nephropathy</span>
+            </summary>
+            <div className="border-t border-border p-4">
+              <MehranScoreCalculator />
+            </div>
+          </details>
 
-      {/* Full KDIGO Staging with heatmap (eGFR + UACR) - Collapsible */}
-      <details ref={egfrRef} id="egfr" className="clinical-card p-0 overflow-hidden group">
-        <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
-          <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
-          <FlaskConical className="w-4 h-4 text-primary shrink-0" />
-          <span className="text-sm font-semibold">eGFR + UACR Calculator</span>
-        </summary>
-        <div className="border-t border-border p-4">
-          <KDIGOStagingCalculator />
-        </div>
-      </details>
+          {/* Full KDIGO Staging with heatmap (eGFR + UACR) - Collapsible */}
+          <details ref={egfrRef} id="egfr" className="clinical-card p-0 overflow-hidden group" open>
+            <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
+              <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
+              <FlaskConical className="w-4 h-4 text-primary shrink-0" />
+              <span className="text-sm font-semibold">eGFR + UACR Calculator</span>
+            </summary>
+            <div className="border-t border-border p-4">
+              <KDIGOStagingCalculator />
+            </div>
+          </details>
+        </TabsContent>
+
+        <TabsContent value="aki" className="space-y-5">
+          <AKIAKDMiniApp />
+        </TabsContent>
+      </Tabs>
 
       {/* Formula Reference */}
       <details className="clinical-card p-3 group">
