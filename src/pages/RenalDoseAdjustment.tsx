@@ -1092,7 +1092,7 @@ const RenalDoseAdjustment = () => {
           </details>
 
           {/* Full KDIGO Staging with heatmap (eGFR + UACR) - Collapsible */}
-          <details ref={egfrRef} id="egfr" className="clinical-card p-0 overflow-hidden group" defaultOpen>
+          <details ref={egfrRef} id="egfr" className="clinical-card p-0 overflow-hidden group" open>
             <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
               <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
               <FlaskConical className="w-4 h-4 text-primary shrink-0" />
