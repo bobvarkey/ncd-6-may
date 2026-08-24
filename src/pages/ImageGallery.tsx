@@ -8,7 +8,7 @@ import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026
 
 import additionalOsteoporosisAlgorithm from "@/assets/fragility-fracture-management-guide.jpg.asset.json";
 import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
-import fragilityFractureFirstLine from "@/assets/fragility-fracture-first-line.jpg.asset.json";
+
 import fragilityFractureFirstLineV2 from "@/assets/fragility-fracture-first-line-v2.jpg.asset.json";
 
 
@@ -131,16 +131,6 @@ const IMAGE_CATALOG: ImageEntry[] = [
     label: "Osteoporosis Management & Fragility Fracture Prevention",
     category: "Endocrinology & Osteoporosis",
     description: "2026 update on clinical management approach for osteoporosis and fragility fracture prevention.",
-    sourcePages: [
-      { label: "Vitamin D", path: "/vitamin-d" }
-    ]
-  },
-  {
-    id: "fragility-fracture-first-line",
-    src: fragilityFractureFirstLine.url,
-    label: "Osteoporosis Fragility Fracture: First-Line Treatment Guide",
-    category: "Endocrinology & Osteoporosis",
-    description: "Comprehensive guide to first-line bisphosphonates (Alendronate, Risedronate, Zoledronic acid) and alternatives like Denosumab. Includes clinical situations, preferred options, and typical regimens for lower vs higher risk patients.",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" }
     ]
