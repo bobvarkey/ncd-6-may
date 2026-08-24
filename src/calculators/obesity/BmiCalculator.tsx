@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { Scale, Calculator, Info, ChevronDown, ChevronUp, Pill, Target, Activity, AlertCircle, BookOpen, RotateCcw, Home, InfoIcon, Heart, AlertTriangle, BrainCircuit, UtensilsCrossed, FlaskConical, Stethoscope, Syringe, ClipboardList } from "lucide-react";
+import { Scale, Calculator, Info, ChevronDown, ChevronUp, Pill, Target, Activity, AlertCircle, BookOpen, RotateCcw, Home, InfoIcon, Heart, AlertTriangle, BrainCircuit, UtensilsCrossed, FlaskConical, Stethoscope, Syringe, ClipboardList, ExternalLink, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import ImageLink from "@/components/ImageLink";
 import {
   ETHNICITY_GUIDELINES,
   getBmiCategory,
@@ -1905,6 +1906,18 @@ export default function BmiCalculator() {
           </Card>
         )}
       </main>
+
+      <div className="flex justify-center py-4 border-t border-border/50 max-w-2xl mx-auto px-4">
+        <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+      </div>
     </div>
   );
 }
+
+const ImageLinkWithPadding = ({ imageId, label }: { imageId: string; label: string }) => (
+  <div className="flex justify-center py-4 border-t border-border/50">
+    <ImageLink imageId={imageId} label={label} />
+  </div>
+);
+
+BmiCalculator.BottomLink = ImageLinkWithPadding;

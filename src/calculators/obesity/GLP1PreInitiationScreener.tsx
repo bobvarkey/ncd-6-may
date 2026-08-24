@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Syringe } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Syringe, ExternalLink, Image as ImageIcon } from "lucide-react";
 import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
+import ImageLink from "@/components/ImageLink";
 
 type Severity = "critical" | "high" | "moderate";
 type Flag = { id: string; severity: Severity; message: string };
@@ -439,6 +440,9 @@ export default function GLP1PreInitiationScreener() {
           </div>
         </CardContent>
       </Card>
+      <div className="flex justify-center py-4 border-t border-border/50">
+        <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+      </div>
     </div>
   );
 }

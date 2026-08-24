@@ -5,7 +5,7 @@ import {
   Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, Info,
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
-  Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors, Brain,
+  Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors, Brain, Bone,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
@@ -1011,9 +1011,16 @@ export default function Home() {
             to="/acid-base"
             accent="bg-orange-500"
           />
+          <DiseaseCard
+            title="Hypercortisolism (Cushing's)"
+            description="Structured screening for refractory Diabetes, HTN, Obesity, and Osteoporosis (Big 4)"
+            icon={<Scan className="h-5 w-5 text-purple-400" />}
+            to="/images?search=Structured%20Hypercortisolism%20Screen"
+            accent="bg-purple-500"
+          />
         </DiseaseGroup>
 
-        <DiseaseGroup title="Infections & Acute Care" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
+        <DiseaseGroup title="Infections, Geriatrics & Endocrine" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
           <DiseaseCard
             title="Infections"
             description="Common infections: UTI, pneumonia, cellulitis, antibiotic selection, duration of therapy"
@@ -1091,6 +1098,13 @@ export default function Home() {
             icon={<User className="h-5 w-5 text-sky-400" />}
             to="/geriatrics"
             accent="bg-sky-500"
+          />
+          <DiseaseCard
+            title="Fragility Fractures"
+            description="Risk assessment, prevention of secondary fractures, screening for underlying hypercortisolism"
+            icon={<Bone className="h-5 w-5 text-amber-400" />}
+            to="/geriatrics?tab=fractures"
+            accent="bg-amber-500"
           />
           <DiseaseCard
             title="Fatigue"

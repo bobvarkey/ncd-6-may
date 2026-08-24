@@ -2,7 +2,7 @@ import { FrequencyBadge } from "@/components/FrequencyBadge";
 import React, { useState } from "react";
 import { AbbrText } from "@/components/AbbreviationHover";
 import { Link } from "react-router-dom";
-import { Pill, Syringe, ChevronRight, ChevronDown, CheckCircle2, AlertTriangle, Heart, Activity, Scale, Brain, ArrowDown, FileText, BookOpen, Shield, Users, Stethoscope, Info, Footprints, Search, ClipboardList, RotateCcw, XCircle, AlertCircle, Clock } from "lucide-react";
+import { Pill, Syringe, ChevronRight, ChevronDown, CheckCircle2, AlertTriangle, Heart, Activity, Scale, Brain, ArrowDown, FileText, BookOpen, Shield, Users, Stethoscope, Info, Footprints, Search, ClipboardList, RotateCcw, XCircle, AlertCircle, Clock, ExternalLink, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -1490,6 +1490,10 @@ export default function DiabetesTreatment() {
       {activeTab === "checklist" && <ManagementChecklist />}
       {activeTab === "emergency" && <HyperglycemicEmergencySection />}
       {activeTab === "ckd" && <CKDSafeDrugs />}
+      
+      <div className="flex justify-center py-4 border-t border-border/50">
+        <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+      </div>
     </div>
   );
 }

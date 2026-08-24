@@ -1,3 +1,4 @@
+import { Scan } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -5,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink, Image as ImageIcon } from "lucide-react";
 import {
   Heart, Wine, Pill, Activity, Zap, Moon, TestTube, Stethoscope, FlaskConical,
   Droplets, Syringe,
 } from "lucide-react";
 import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
+import ImageLink from "@/components/ImageLink";
 
 // ── Reninoma Clinical Probability Evaluator ──
 function ReninomaEvaluator() {
@@ -336,6 +338,10 @@ export default function SecondaryHtnPage() {
 
             {/* Cushing's — 1 mg overnight DST interpretation */}
             <DstInterpretationPanel />
+            
+            <div className="flex justify-center py-2">
+              <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+            </div>
 
             {/* Reninoma — Clinical Probability Evaluator */}
             <ReninomaEvaluator />
