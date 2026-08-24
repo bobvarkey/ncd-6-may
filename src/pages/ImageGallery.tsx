@@ -6,6 +6,7 @@ import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
 import structuredHypercortisolism from "@/assets/structured-hypercortisolism-screen.jpg.asset.json";
 import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
 import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asset.json";
+import additionalOsteoporosisAlgorithm from "@/assets/file-5.png.asset.json";
 
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -116,6 +117,16 @@ const IMAGE_CATALOG: ImageEntry[] = [
     label: "Osteoporosis Treatment Approach (Extended)",
     category: "Endocrinology",
     description: "Supplemental 2026 approach for osteoporosis management and clinical decision support.",
+    sourcePages: [
+      { label: "Vitamin D", path: "/vitamin-d" }
+    ]
+  },
+  {
+    id: "osteoporosis-treatment-v4",
+    src: additionalOsteoporosisAlgorithm.url,
+    label: "Osteoporosis Management & Fragility Fracture Prevention",
+    category: "Endocrinology",
+    description: "2026 update on clinical management approach for osteoporosis and fragility fracture prevention.",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" }
     ]
