@@ -825,8 +825,8 @@ export default function UnifiedPrescriptionMiniApp() {
                 <div className="space-y-1.5">
                   <RangeOrExactField label="eGFR" unit="mL/min/1.73m²" fieldKey="egfr" value={inputs.egfr} onChange={(v) => set("egfr", v)} />
                   {inputs.egfr && (() => {
-                    const e = parseFloat(inputs.egfr);
-                    if (isNaN(e)) return null;
+                    const e = parseClinicalValue(inputs.egfr);
+                    if (e === null) return null;
                     let stage = "G1";
                     if (e < 15) stage = "G5";
                     else if (e < 30) stage = "G4";
