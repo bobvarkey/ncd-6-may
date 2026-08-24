@@ -767,7 +767,7 @@ export default function IronReplacementCalculator() {
                         </div>
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">Target Hb</p>
-                          <p className="font-bold text-base">{hasWeight ? liveTargetHb + " g/dL" : "—"}</p>
+                          <p className="font-bold text-base">{hasWeight ? roundClinical(liveTargetHb, 1) + " g/dL" : "—"}</p>
                         </div>
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">Ganzoni Deficit</p>
