@@ -1100,6 +1100,13 @@ export default function Home() {
             accent="bg-sky-500"
           />
           <DiseaseCard
+            title="Fragility Fractures"
+            description="Risk assessment, prevention of secondary fractures, screening for underlying hypercortisolism"
+            icon={<Bone className="h-5 w-5 text-amber-400" />}
+            to="/geriatrics?tab=fractures"
+            accent="bg-amber-500"
+          />
+          <DiseaseCard
             title="Fatigue"
             description="Approach to chronic fatigue: differential diagnosis, investigations, management strategies"
             icon={<Moon className="h-5 w-5 text-amber-400" />}
