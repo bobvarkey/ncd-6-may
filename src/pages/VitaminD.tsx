@@ -44,10 +44,10 @@ export default function VitaminD() {
         <TabsContent value="reference" className="mt-4">
           <Card className="border-border/60 overflow-hidden">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center gap-2">
+              <h2 className="text-lg flex items-center gap-2 font-bold px-6 py-4">
                 <Sun className="h-5 w-5 text-amber-400" />
                 Vitamin D Reference Chart
-              </CardTitle>
+              </h2>
             </CardHeader>
             <CardContent className="space-y-3">
               <ZoomableImage
@@ -55,11 +55,11 @@ export default function VitaminD() {
                 alt="Adult vitamin D deficiency treatment and monitoring protocol"
                 className="w-full rounded-lg border border-border/60"
               />
-              <p className="text-xs text-muted-foreground text-center">
+              <figcaption className="text-xs text-muted-foreground text-center">
                 <strong>Source:</strong> Adapted from Endocrine Society and local clinical protocols.
                 <br />
                 Adult Vitamin D Deficiency: Treatment & Monitoring Protocol — tap to zoom
-              </p>
+              </figcaption>
               <ImageLink imageId="vitamin-d" label="Open in image gallery →" />
             </CardContent>
           </Card>
@@ -68,10 +68,10 @@ export default function VitaminD() {
         <TabsContent value="osteoporosis" className="mt-4">
           <Card className="border-border/60 overflow-hidden">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center gap-2">
+              <h2 className="text-lg flex items-center gap-2 font-bold px-6 py-4">
                 <Bone className="h-5 w-5 text-amber-400" />
                 Osteoporosis Treatment Approach (2026)
-              </CardTitle>
+              </h2>
             </CardHeader>
             <CardContent className="space-y-3">
               <ZoomableImage
@@ -79,11 +79,11 @@ export default function VitaminD() {
                 alt="Which medication do I start? 2026 approach for osteoporosis: high vs very high fracture risk criteria and treatment sequencing"
                 className="w-full rounded-lg border border-border/60"
               />
-              <p className="text-xs text-muted-foreground text-center">
+              <figcaption className="text-xs text-muted-foreground text-center">
                 <strong>Source:</strong> Evidence-based 2026 sequencing for high vs. very-high fracture risk.
                 <br />
                 Osteoporosis Medication Selection Guide: High vs Very High Risk — tap to zoom
-              </p>
+              </figcaption>
               <ImageLink imageId="osteoporosis-treatment-approach" label="Open Algorithm 1 in gallery →" />
               <div className="pt-4 border-t border-border/40 mt-4">
                 <ZoomableImage
@@ -91,11 +91,11 @@ export default function VitaminD() {
                   alt="Additional Osteoporosis Treatment Approach infographic"
                   className="w-full rounded-lg border border-border/60"
                 />
-                <p className="text-xs text-muted-foreground text-center mt-2">
+                <figcaption className="text-xs text-muted-foreground text-center mt-2">
                   <strong>Source:</strong> 2026 Clinical Decision Support.
                   <br />
                   Osteoporosis Clinical Decision Support — tap to zoom
-                </p>
+                </figcaption>
                 <ImageLink imageId="osteoporosis-treatment-v2" label="Open Algorithm 2 in gallery →" />
               </div>
             </CardContent>
@@ -106,10 +106,10 @@ export default function VitaminD() {
       {/* Treatment Guide */}
       <Card className="border-border/60">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Sun className="h-5 w-5 text-amber-400" />
-            Vitamin D Deficiency Treatment (Adults)
-          </CardTitle>
+            <h2 className="text-lg flex items-center gap-2 font-bold">
+              <Sun className="h-5 w-5 text-amber-400" />
+              Vitamin D Deficiency Treatment (Adults)
+            </h2>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Severity table */}
