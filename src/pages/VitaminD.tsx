@@ -50,16 +50,18 @@ export default function VitaminD() {
               </h2>
             </CardHeader>
             <CardContent className="space-y-3">
-              <ZoomableImage
-                src={vitaminDProtocol.url}
-                alt="Adult vitamin D deficiency treatment and monitoring protocol"
-                className="w-full rounded-lg border border-border/60"
-              />
-              <figcaption className="text-xs text-muted-foreground text-center">
-                <strong>Source:</strong> Adapted from Endocrine Society and local clinical protocols.
-                <br />
-                Adult Vitamin D Deficiency: Treatment & Monitoring Protocol — tap to zoom
-              </figcaption>
+              <figure className="space-y-3">
+                <ZoomableImage
+                  src={vitaminDProtocol.url}
+                  alt="Adult vitamin D deficiency treatment and monitoring protocol"
+                  className="w-full rounded-lg border border-border/60"
+                />
+                <figcaption className="text-xs text-muted-foreground text-center">
+                  <strong>Source:</strong> Adapted from Endocrine Society and local clinical protocols.
+                  <br />
+                  Adult Vitamin D Deficiency: Treatment & Monitoring Protocol — tap to zoom
+                </figcaption>
+              </figure>
               <ImageLink imageId="vitamin-d" label="Open in image gallery →" />
             </CardContent>
           </Card>
@@ -74,16 +76,18 @@ export default function VitaminD() {
               </h2>
             </CardHeader>
             <CardContent className="space-y-3">
-              <ZoomableImage
-                src={osteoporosisTreatment.url}
-                alt="Which medication do I start? 2026 approach for osteoporosis: high vs very high fracture risk criteria and treatment sequencing"
-                className="w-full rounded-lg border border-border/60"
-              />
-              <figcaption className="text-xs text-muted-foreground text-center">
-                <strong>Source:</strong> Evidence-based 2026 sequencing for high vs. very-high fracture risk.
-                <br />
-                Osteoporosis Medication Selection Guide: High vs Very High Risk — tap to zoom
-              </figcaption>
+              <figure className="space-y-3">
+                <ZoomableImage
+                  src={osteoporosisTreatment.url}
+                  alt="Which medication do I start? 2026 approach for osteoporosis: high vs very high fracture risk criteria and treatment sequencing"
+                  className="w-full rounded-lg border border-border/60"
+                />
+                <figcaption className="text-xs text-muted-foreground text-center">
+                  <strong>Source:</strong> Evidence-based 2026 sequencing for high vs. very-high fracture risk.
+                  <br />
+                  Osteoporosis Medication Selection Guide: High vs Very High Risk — tap to zoom
+                </figcaption>
+              </figure>
               <ImageLink imageId="osteoporosis-treatment-approach" label="Open Algorithm 1 in gallery →" />
               <div className="pt-4 border-t border-border/40 mt-4">
                 <ZoomableImage
