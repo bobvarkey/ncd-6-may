@@ -149,7 +149,7 @@ export default function ImageGallery() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" role="none">
       <Seo
         title="Image Gallery — Clinical Algorithms & Pocket Cards"
         description="Zoomable clinical algorithms, mnemonics and pocket cards across diabetes, hypertension, lipids, renal, infections and geriatrics."
@@ -179,7 +179,7 @@ export default function ImageGallery() {
         </div>
       </div>
 
-      <main className="mx-auto w-full max-w-4xl px-4 py-6 space-y-6">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-6 space-y-6">
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
