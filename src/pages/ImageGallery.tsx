@@ -84,6 +84,18 @@ const IMAGE_CATALOG: ImageEntry[] = [
   // ─── Anemia / Hemolysis ───
   { id: "hemolytic-anemia-algorithm", src: "/images/hemolytic-anemia-algorithm.jpg", label: "Hemolytic Anemia Algorithm", category: "Anemia & Coagulation", description: "Diagnostic algorithm for hemolytic anemia — Coombs-negative workup", sourcePages: [{ label: "Anemia", path: "/anemia" }] },
   { id: "anemia-algorithm", src: "/images/anemia-algorithm.jpg", label: "Anemia Algorithm", category: "Anemia & Coagulation", description: "MCV-based diagnostic algorithm for anemia — microcytic, normocytic, and macrocytic classification", sourcePages: [{ label: "Anemia", path: "/anemia" }] },
+  { 
+    id: "structured-hypercortisolism-screen", 
+    src: "/src/assets/structured-hypercortisolism-screen.jpg.asset.json", 
+    label: "Structured Hypercortisolism Screen for Refractory Big 4", 
+    category: "Endocrinology", 
+    description: "Structured approach to hypercortisolism screening in refractory T2D, HTN, obesity, and osteoporosis (Big 4). Includes case identification, pre-screen checks (therapeutic steroids, etc.), 1-mg overnight DST interpretation, and confirmatory evaluation path.", 
+    sourcePages: [
+      { label: "Diabetes", path: "/diabetes/treatment" },
+      { label: "Secondary HTN", path: "/hypertension/assessment" },
+      { label: "Obesity", path: "/obesity" }
+    ] 
+  },
 ];
 
 const CATEGORIES = [...new Set(IMAGE_CATALOG.map((img) => img.category))];
