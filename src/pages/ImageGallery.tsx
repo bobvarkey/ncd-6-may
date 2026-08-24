@@ -3,6 +3,7 @@ import kdigoAkiAkd from "@/assets/kdigo-2026-aki-akd-guideline.png.asset.json";
 import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
 import acuteDiarrhoeaClassification from "@/assets/acute-diarrhoea-classification.jpg.asset.json";
 import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
+import structuredHypercortisolism from "@/assets/structured-hypercortisolism-screen.jpg.asset.json";
 
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
