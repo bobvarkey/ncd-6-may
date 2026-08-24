@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 
 /**
  * LabInput — colorful, unit-aware clinical input.
@@ -108,8 +109,8 @@ export function LabInput({
   // Convert the canonical metric value to the currently displayed unit string.
   const displayValue = useMemo(() => {
     if (value === "" || value === null || value === undefined) return "";
-    const n = parseFloat(value);
-    if (isNaN(n)) return "";
+    const n = parseClinicalValue(value);
+    if (n === null) return "";
     if (activeIdx === 0) return value; // store-as-typed for metric
     const converted = unit.fromMetric(n);
     if (!isFinite(converted)) return "";
@@ -126,13 +127,11 @@ export function LabInput({
       onChange("");
       return;
     }
-    const n = parseFloat(raw);
-    if (isNaN(n)) return;
+    const n = parseClinicalValue(raw);
+    if (n === null) return;
     const metric = activeIdx === 0 ? n : unit.toMetric(n);
-    // Round canonical to a sensible precision (3 sig figs for small, 1 dp otherwise).
-    const rounded =
-      Math.abs(metric) >= 10 ? metric.toFixed(1) : metric.toFixed(2);
-    onChange(parseFloat(rounded).toString());
+    const rounded = roundClinical(metric);
+    onChange(rounded.toString());
   };
 
   return (

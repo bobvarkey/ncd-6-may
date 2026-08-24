@@ -145,7 +145,7 @@ export function SectionCard({
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            The mobile numeric keypad for inputMode="decimal" and type="number" often omits the minus key, and any min={0} attribute also blocks negative entry. Find the inputs that likely need negative values and add thie minus sign to the mobile numeric keypad`}
+                                            Implement consistent parsing and rounding for calculator results after switching inputs to type="text" with inputMode="decimal".`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calculator, RotateCcw, ArrowLeftRight, AlertTriangle, Info, Copy, Download } from "lucide-react";
-import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
+import { copyToClipboard, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 
 type CreatinineUnit = "mgdl" | "umol";
 type Sex = "male" | "female" | null;
@@ -119,39 +119,40 @@ export default function KDIGOStagingCalculator() {
   useEffect(() => { localStorage.setItem("ncd_kdigo_uacr_unit", uacrUnit); }, [uacrUnit]);
 
   const toggleUnit = () => {
-    const crVal = parseFloat(creatinine);
-    if (!isNaN(crVal) && crVal > 0) {
-      if (unit === "mgdl") setCreatinine((crVal * 88.42).toFixed(0));
-      else setCreatinine((crVal * UMOL_TO_MGDL).toFixed(2));
+    const crVal = parseClinicalValue(creatinine);
+    if (crVal !== null && crVal > 0) {
+      if (unit === "mgdl") setCreatinine(roundClinical(crVal * 88.42, 0).toString());
+      else setCreatinine(roundClinical(crVal * UMOL_TO_MGDL, 2).toString());
     }
     setUnit((prev) => (prev === "mgdl" ? "umol" : "mgdl"));
     setErrors((p) => ({ ...p, creatinine: "" }));
   };
 
   const getCreatinineMgdl = (): number => {
-    const val = parseFloat(creatinine);
+    const val = parseClinicalValue(creatinine) || 0;
     return unit === "umol" ? val * UMOL_TO_MGDL : val;
   };
 
   const getUacrMgG = (): number => {
-    const val = parseFloat(uacr);
+    const val = parseClinicalValue(uacr) || 0;
     return uacrUnit === "mg_mmol" ? val * 10 : val;
   };
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    const crVal = parseFloat(creatinine);
+    const crVal = parseClinicalValue(creatinine);
     const maxCr = unit === "mgdl" ? 30 : 2652;
-    if (!creatinine.trim() || isNaN(crVal) || crVal <= 0 || crVal > maxCr) {
+    if (crVal === null || crVal <= 0 || crVal > maxCr) {
       newErrors.creatinine = unit === "mgdl" ? "Enter valid creatinine (0.1–30 mg/dL)" : "Enter valid creatinine (9–2652 µmol/L)";
     }
-    if (!age.trim() || isNaN(parseInt(age)) || parseInt(age) < 18 || parseInt(age) > 120) {
+    const ageVal = parseClinicalValue(age);
+    if (ageVal === null || ageVal < 18 || ageVal > 120) {
       newErrors.age = "Enter valid age (18–120)";
     }
     if (!sex) newErrors.sex = "Select sex";
     if (uacr.trim()) {
-      const uVal = parseFloat(uacr);
-      if (isNaN(uVal) || uVal < 0 || uVal > (uacrUnit === "mg_g" ? 5000 : 500)) {
+      const uVal = parseClinicalValue(uacr);
+      if (uVal === null || uVal < 0 || uVal > (uacrUnit === "mg_g" ? 5000 : 500)) {
         newErrors.uacr = uacrUnit === "mg_g" ? "Enter valid UACR (0–5000 mg/g)" : "Enter valid UACR (0–500 mg/mmol)";
       }
     }
@@ -191,7 +192,7 @@ export default function KDIGOStagingCalculator() {
       lines.push(`eGFR: ${gfr} mL/min/1.73m² (${gStage.stage}: ${gStage.label})`);
     }
     if (uacrMgG !== null && aStage) {
-      lines.push(`UACR: ${uacrMgG.toFixed(0)} mg/g (${aStage.stage}: ${aStage.label})`);
+      lines.push(`UACR: ${roundClinical(uacrMgG, 0)} mg/g (${aStage.stage}: ${aStage.label})`);
     }
     if (riskLevel !== null && gStage && aStage) {
       lines.push(`KDIGO Category: ${gStage.stage}${aStage.stage} (${RISK_LABELS[riskLevel]})`);
@@ -234,8 +235,8 @@ export default function KDIGOStagingCalculator() {
             </div>
             <Input
               id="kdigo-creatinine"
-              type="number"
-              step={unit === "mgdl" ? "0.01" : "1"}
+              type="text"
+              inputMode="decimal"
               min={unit === "mgdl" ? "0.1" : "9"}
               max={unit === "mgdl" ? "30" : "2652"}
               placeholder={unit === "mgdl" ? "e.g. 1.2" : "e.g. 106"}
@@ -251,8 +252,8 @@ export default function KDIGOStagingCalculator() {
             <Label htmlFor="kdigo-age" className="text-sm font-medium">Age (years)</Label>
             <Input
               id="kdigo-age"
-              type="number"
-              min="18" max="120"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 55"
               value={age}
               onChange={(e) => { setAge(e.target.value); if (errors.age) setErrors(p => ({ ...p, age: "" })); }}
@@ -292,9 +293,9 @@ export default function KDIGOStagingCalculator() {
               <button
                 type="button"
                 onClick={() => {
-                  const val = parseFloat(uacr);
-                  if (!isNaN(val) && val > 0) {
-                    setUacr(uacrUnit === "mg_g" ? (val / 10).toFixed(1) : (val * 10).toFixed(0));
+                  const val = parseClinicalValue(uacr);
+                  if (val !== null && val > 0) {
+                    setUacr(uacrUnit === "mg_g" ? roundClinical(val / 10, 1).toString() : roundClinical(val * 10, 0).toString());
                   }
                   setUacrUnit(prev => prev === "mg_g" ? "mg_mmol" : "mg_g");
                 }}
@@ -306,8 +307,8 @@ export default function KDIGOStagingCalculator() {
             </div>
             <Input
               id="kdigo-uacr"
-              type="number"
-              step="0.1"
+              type="text"
+              inputMode="decimal"
               min="0"
               max={uacrUnit === "mg_g" ? "5000" : "500"}
               placeholder={uacrUnit === "mg_g" ? "e.g. 30" : "e.g. 3"}
@@ -333,7 +334,7 @@ export default function KDIGOStagingCalculator() {
                 <div>
                   <p className="text-sm text-muted-foreground">Estimated GFR (CKD-EPI 2021)</p>
                   <p className="text-3xl font-bold text-foreground">
-                    {gfr} <span className="text-sm font-normal text-muted-foreground">mL/min/1.73m²</span>
+                    {roundClinical(gfr, 1)} <span className="text-sm font-normal text-muted-foreground">mL/min/1.73m²</span>
                   </p>
                 </div>
                 <div className="flex flex-col items-start sm:items-end gap-1">
@@ -352,7 +353,7 @@ export default function KDIGOStagingCalculator() {
                   <div>
                     <p className="text-sm text-muted-foreground">Urine Albumin-to-Creatinine Ratio</p>
                     <p className="text-3xl font-bold text-foreground">
-                      {uacrMgG.toFixed(0)} <span className="text-sm font-normal text-muted-foreground">mg/g</span>
+                      {roundClinical(uacrMgG, 0)} <span className="text-sm font-normal text-muted-foreground">mg/g</span>
                     </p>
                   </div>
                   <div className="flex flex-col items-start sm:items-end gap-1">
@@ -376,7 +377,7 @@ export default function KDIGOStagingCalculator() {
                   {gStage!.stage}{aStage!.stage} — {RISK_LABELS[riskLevel]}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Based on eGFR {gStage!.stage} ({gfr} mL/min/1.73m²) × UACR {aStage!.stage} ({uacrMgG.toFixed(0)} mg/g)
+                  Based on eGFR {gStage!.stage} ({roundClinical(gfr, 1)} mL/min/1.73m²) × UACR {aStage!.stage} ({roundClinical(uacrMgG, 0)} mg/g)
                 </p>
               </div>
             )}

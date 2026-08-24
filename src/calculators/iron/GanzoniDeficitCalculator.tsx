@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Info, Calculator, RotateCcw, Copy, Printer, Download, Syringe } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
+import { copyToClipboard, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +16,7 @@ export default function GanzoniDeficitCalculator() {
   const [targetHb, setTargetHb] = useState("14");
   const [ironStores, setIronStores] = useState("500");
 
-  const n = (s: string) => parseFloat(s) || 0;
+  const n = (s: string) => parseClinicalValue(s) || 0;
 
   const calculation = useMemo(() => {
     const w = n(weight);
@@ -121,7 +121,8 @@ Result:
             <Label htmlFor="ganzoni-weight">Body Weight (kg)</Label>
             <Input
               id="ganzoni-weight"
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 70"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
@@ -131,8 +132,8 @@ Result:
             <Label htmlFor="ganzoni-hb">Actual Hemoglobin (g/dL)</Label>
             <Input
               id="ganzoni-hb"
-              type="number"
-              step="0.1"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 8.5"
               value={hemoglobin}
               onChange={(e) => setHemoglobin(e.target.value)}
@@ -154,8 +155,8 @@ Result:
             </div>
             <Input
               id="ganzoni-target"
-              type="number"
-              step="0.1"
+              type="text"
+              inputMode="decimal"
               value={targetHb}
               onChange={(e) => setTargetHb(e.target.value)}
             />
@@ -176,7 +177,8 @@ Result:
             </div>
             <Input
               id="ganzoni-stores"
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={ironStores}
               onChange={(e) => setIronStores(e.target.value)}
             />

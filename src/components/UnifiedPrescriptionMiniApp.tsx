@@ -34,7 +34,7 @@ import {
   Upload,
   ChevronDown,
 } from "lucide-react";
-import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
+import { downloadTextFile, copyToClipboard, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 
 /* =====================================================================
  * Unified Prescription Mini App
@@ -549,9 +549,9 @@ export default function UnifiedPrescriptionMiniApp() {
 
   // Auto-calculate eGFR from creatinine + age + sex (CKD-EPI 2021)
   useEffect(() => {
-    const cr = parseFloat(inputs.creatinine);
-    const ageNum = parseFloat(inputs.age);
-    if (!isNaN(cr) && cr > 0 && !isNaN(ageNum) && ageNum > 0) {
+    const cr = parseClinicalValue(inputs.creatinine);
+    const ageNum = parseClinicalValue(inputs.age);
+    if (cr !== null && cr > 0 && ageNum !== null && ageNum > 0) {
       const gender = inputs.sex === "female" ? "F" : "M";
       const computed = calculateEGFR(cr, ageNum, gender);
       if (computed > 0 && String(computed) !== inputs.egfr) {
@@ -825,8 +825,8 @@ export default function UnifiedPrescriptionMiniApp() {
                 <div className="space-y-1.5">
                   <RangeOrExactField label="eGFR" unit="mL/min/1.73m²" fieldKey="egfr" value={inputs.egfr} onChange={(v) => set("egfr", v)} />
                   {inputs.egfr && (() => {
-                    const e = parseFloat(inputs.egfr);
-                    if (isNaN(e)) return null;
+                    const e = parseClinicalValue(inputs.egfr);
+                    if (e === null) return null;
                     let stage = "G1";
                     if (e < 15) stage = "G5";
                     else if (e < 30) stage = "G4";

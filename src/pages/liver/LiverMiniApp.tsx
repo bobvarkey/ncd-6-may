@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Copy, Printer, Activity, Settings2, ChevronDown, Download, ImageIcon, Table2 } from "lucide-react";
-import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
+import { downloadTextFile, copyToClipboard, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
 import ZoomableImage from "@/components/ZoomableImage";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
@@ -175,10 +175,10 @@ export default function LiverMiniApp() {
   const cutoffs = preset === "custom" ? customCutoffs : PRESETS[preset].cutoffs;
   const setCutoff = (k: keyof Cutoffs, v: string) => {
     setPreset("custom");
-    setCustomCutoffs(c => ({ ...c, [k]: parseFloat(v) || 0 }));
+    setCustomCutoffs(c => ({ ...c, [k]: parseClinicalValue(v) ?? 0 }));
   };
 
-  const n = (s: string) => parseFloat(s) || 0;
+  const n = (s: string) => parseClinicalValue(s) ?? 0;
 
   const fib4 = useMemo(() => classifyFIB4(n(age), n(ast), n(alt), n(plt), cutoffs), [age, ast, alt, plt, cutoffs]);
   const apri = useMemo(() => classifyAPRI(n(ast), n(astULN), n(plt), cutoffs), [ast, astULN, plt, cutoffs]);
@@ -638,7 +638,7 @@ export default function LiverMiniApp() {
             <RangeOrExact id="inr" label="INR" value={inr} onChange={setInr} ranges={RANGES.inr} />
             <div className="space-y-1.5 col-span-2">
               <Label className="text-xs">AST upper limit of normal (for APRI)</Label>
-              <Input type="number" className="h-9" value={astULN} onChange={e => setAstULN(e.target.value)} />
+              <Input type="text" inputMode="decimal" className="h-9" value={astULN} onChange={e => setAstULN(e.target.value)} />
             </div>
           </CardContent>
         </Card>
@@ -667,17 +667,17 @@ export default function LiverMiniApp() {
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">FIB-4 (primary)</div>
-              <div className="text-sm font-semibold mt-1">{isNaN(fib4.score) ? "—" : fib4.score.toFixed(2)}</div>
+              <div className="text-sm font-semibold mt-1">{isNaN(fib4.score) ? "—" : roundClinical(fib4.score, 2)}</div>
               <div className="mt-1">{riskBadge(fib4.risk)}</div>
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">APRI</div>
-              <div className="text-sm font-semibold mt-1">{isNaN(apri.score) ? "—" : apri.score.toFixed(2)}</div>
+              <div className="text-sm font-semibold mt-1">{isNaN(apri.score) ? "—" : roundClinical(apri.score, 2)}</div>
               <div className="mt-1">{riskBadge(apri.risk)}</div>
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">NAFLD FS</div>
-              <div className="text-sm font-semibold mt-1">{isNaN(nfs.score) ? "—" : nfs.score.toFixed(2)}</div>
+              <div className="text-sm font-semibold mt-1">{isNaN(nfs.score) ? "—" : roundClinical(nfs.score, 2)}</div>
               <div className="mt-1">{riskBadge(nfs.risk)}</div>
             </div>
           </div>

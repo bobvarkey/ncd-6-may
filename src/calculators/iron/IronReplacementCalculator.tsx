@@ -32,7 +32,7 @@ import {
   Download,
   Activity,
 } from "lucide-react";
-import { copyToClipboard, formatClinicalNote, downloadTextFile } from "@/lib/clinical-utils";
+import { copyToClipboard, formatClinicalNote, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
 
 // ── Types ──────────────────────────────────────────────────────
@@ -366,16 +366,17 @@ function IronParametersLive({
 }: {
   inputs: PatientInputs;
 }) {
-  const hb = parseFloat(inputs.hemoglobin);
-  const weight = parseFloat(inputs.weight);
-  const ferritin = parseFloat(inputs.ferritin);
+  const hb = parseClinicalValue(inputs.hemoglobin) ?? NaN;
+  const weight = parseClinicalValue(inputs.weight) ?? NaN;
+  const ferritin = parseClinicalValue(inputs.ferritin) ?? NaN;
 
   // TSAT — calculated from serum iron/TIBC or entered directly
   const tsatVal = (() => {
-    if (inputs.tsat && parseFloat(inputs.tsat) > 0) return parseFloat(inputs.tsat);
-    const si = parseFloat(inputs.serumIron);
-    const tibc = parseFloat(inputs.tibc);
-    if (!isNaN(si) && !isNaN(tibc) && tibc > 0) return (si / tibc) * 100;
+    const t = parseClinicalValue(inputs.tsat);
+    if (t !== null && t > 0) return t;
+    const si = parseClinicalValue(inputs.serumIron);
+    const tibc = parseClinicalValue(inputs.tibc);
+    if (si !== null && tibc !== null && tibc > 0) return (si / tibc) * 100;
     return null;
   })();
 
@@ -406,7 +407,7 @@ function IronParametersLive({
   if (!hasAny) return null; // Nothing to show yet
 
   const tsatDisplay = tsatVal !== null
-    ? `${tsatVal.toFixed(1)}%`
+    ? `${roundClinical(tsatVal, 1)}%`
     : null;
 
   return (
@@ -424,7 +425,7 @@ function IronParametersLive({
           <div className="rounded-lg bg-card border border-border/50 p-2.5">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Ferritin</div>
             <div className="text-sm font-semibold text-foreground font-mono">
-              {!isNaN(ferritin) ? `${ferritin.toFixed(1)} ng/mL` : "—"}
+              {!isNaN(ferritin) ? `${roundClinical(ferritin, 1)} ng/mL` : "—"}
             </div>
           </div>
 
@@ -440,7 +441,7 @@ function IronParametersLive({
           <div className="rounded-lg bg-card border border-border/50 p-2.5">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Target Hb</div>
             <div className="text-sm font-semibold text-foreground font-mono">
-              {targetHb !== null ? `${targetHb.toFixed(1)} g/dL` : "—"}
+              {targetHb !== null ? `${roundClinical(targetHb, 1)} g/dL` : "—"}
             </div>
             {!isNaN(weight) && (
               <div className="text-[10px] text-muted-foreground mt-0.5">
@@ -740,9 +741,9 @@ export default function IronReplacementCalculator() {
 
                 {/* Live Iron Parameters Summary — independent of clinical context */}
                 {(previewTSAT !== null || (hasHb && hasWeight)) && (() => {
-                  const w = parseFloat(inputs.weight);
-                  const hb = parseFloat(inputs.hemoglobin);
-                  const ferritinNum = parseFloat(inputs.ferritin);
+                  const w = parseClinicalValue(inputs.weight) ?? 0;
+                  const hb = parseClinicalValue(inputs.hemoglobin) ?? 0;
+                  const ferritinNum = parseClinicalValue(inputs.ferritin) ?? NaN;
                   const liveTargetHb = hasWeight && w >= 35 ? 14 : 13;
                   const liveStores = hasWeight ? (w >= 35 ? 500 : 15 * w) : null;
                   const liveDeficit = hasHb && hasWeight
@@ -758,15 +759,15 @@ export default function IronReplacementCalculator() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">TSAT</p>
-                          <p className="font-bold text-base">{previewTSAT !== null ? previewTSAT.toFixed(1) + "%" : "—"}</p>
+                          <p className="font-bold text-base">{previewTSAT !== null ? roundClinical(previewTSAT, 1) + "%" : "—"}</p>
                         </div>
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">Ferritin</p>
-                          <p className="font-bold text-base">{!isNaN(ferritinNum) ? ferritinNum + " ng/mL" : "—"}</p>
+                          <p className="font-bold text-base">{!isNaN(ferritinNum) ? roundClinical(ferritinNum, 1) + " ng/mL" : "—"}</p>
                         </div>
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">Target Hb</p>
-                          <p className="font-bold text-base">{hasWeight ? liveTargetHb + " g/dL" : "—"}</p>
+                          <p className="font-bold text-base">{hasWeight ? roundClinical(liveTargetHb, 1) + " g/dL" : "—"}</p>
                         </div>
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">Ganzoni Deficit</p>
