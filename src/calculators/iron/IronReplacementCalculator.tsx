@@ -741,9 +741,9 @@ export default function IronReplacementCalculator() {
 
                 {/* Live Iron Parameters Summary — independent of clinical context */}
                 {(previewTSAT !== null || (hasHb && hasWeight)) && (() => {
-                  const w = parseFloat(inputs.weight);
-                  const hb = parseFloat(inputs.hemoglobin);
-                  const ferritinNum = parseFloat(inputs.ferritin);
+                  const w = parseClinicalValue(inputs.weight) ?? 0;
+                  const hb = parseClinicalValue(inputs.hemoglobin) ?? 0;
+                  const ferritinNum = parseClinicalValue(inputs.ferritin) ?? NaN;
                   const liveTargetHb = hasWeight && w >= 35 ? 14 : 13;
                   const liveStores = hasWeight ? (w >= 35 ? 500 : 15 * w) : null;
                   const liveDeficit = hasHb && hasWeight
