@@ -121,7 +121,8 @@ Result:
             <Label htmlFor="ganzoni-weight">Body Weight (kg)</Label>
             <Input
               id="ganzoni-weight"
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 70"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
