@@ -425,7 +425,7 @@ function IronParametersLive({
           <div className="rounded-lg bg-card border border-border/50 p-2.5">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Ferritin</div>
             <div className="text-sm font-semibold text-foreground font-mono">
-              {!isNaN(ferritin) ? `${ferritin.toFixed(1)} ng/mL` : "—"}
+              {!isNaN(ferritin) ? `${roundClinical(ferritin, 1)} ng/mL` : "—"}
             </div>
           </div>
 
