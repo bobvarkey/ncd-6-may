@@ -126,16 +126,6 @@ const IMAGE_CATALOG: ImageEntry[] = [
     ]
   },
   {
-    id: "osteoporosis-treatment-v4",
-    src: additionalOsteoporosisAlgorithm.url,
-    label: "Osteoporosis Management & Fragility Fracture Prevention",
-    category: "Endocrinology & Osteoporosis",
-    description: "2026 update on clinical management approach for osteoporosis and fragility fracture prevention.",
-    sourcePages: [
-      { label: "Vitamin D", path: "/vitamin-d" }
-    ]
-  },
-  {
     id: "fragility-fracture-first-line-v2",
     src: fragilityFractureFirstLineV2.url,
     label: "Osteoporosis Fragility Fracture: First-Line Visual Guide",
