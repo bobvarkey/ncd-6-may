@@ -1069,7 +1069,7 @@ const RenalDoseAdjustment = () => {
             <p className="text-sm text-muted-foreground">eGFR-based dose modifications for medications (ADA 2026 + KDIGO)</p>
           </div>
 
-
+        </TabsContent>
         <TabsContent value="calculators" className="space-y-5">
           <div>
             <h1 className="text-xl font-heading font-bold flex items-center gap-2">
