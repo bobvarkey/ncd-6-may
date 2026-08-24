@@ -638,7 +638,7 @@ export default function LiverMiniApp() {
             <RangeOrExact id="inr" label="INR" value={inr} onChange={setInr} ranges={RANGES.inr} />
             <div className="space-y-1.5 col-span-2">
               <Label className="text-xs">AST upper limit of normal (for APRI)</Label>
-              <Input type="number" className="h-9" value={astULN} onChange={e => setAstULN(e.target.value)} />
+              <Input type="text" inputMode="decimal" className="h-9" value={astULN} onChange={e => setAstULN(e.target.value)} />
             </div>
           </CardContent>
         </Card>
