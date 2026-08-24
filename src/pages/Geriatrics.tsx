@@ -569,6 +569,10 @@ export default function Geriatrics() {
           <GeriatricScreening />
         </TabsContent>
       </Tabs>
+
+      <div className="flex justify-center py-4 border-t border-border/50">
+        <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+      </div>
     </div>
   );
 }
