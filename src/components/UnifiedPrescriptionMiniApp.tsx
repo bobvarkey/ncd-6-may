@@ -34,7 +34,7 @@ import {
   Upload,
   ChevronDown,
 } from "lucide-react";
-import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
+import { downloadTextFile, copyToClipboard, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 
 /* =====================================================================
  * Unified Prescription Mini App
