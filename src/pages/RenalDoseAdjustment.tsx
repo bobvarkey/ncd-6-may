@@ -10,6 +10,7 @@ import { useSearchParams } from "react-router-dom";
 import KDIGOStagingCalculator from "@/calculators/renal/KDIGOStagingCalculator";
 import MehranScoreCalculator from "@/calculators/renal/MehranScoreCalculator";
 import { ALL_RENAL_DATA, eGFRColumns, cellStyle, inferFrequency, type DoseEntry } from "@/calculators/diabetes/RenalDosing";
+import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 const RenalDoseAdjustment = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -75,6 +76,10 @@ const RenalDoseAdjustment = () => {
         </h1>
         <p className="text-sm text-muted-foreground">Unified platform for renal dosing, calculators, and AKI assessment.</p>
       </div>
+
+      <TakeHomeMessage title="Renal Safety Pearl" variant="caution">
+        Avoid dual RAAS blockade (ACEi + ARB) and monitor potassium closely when starting MRAs, especially if eGFR {"<"} 45.
+      </TakeHomeMessage>
 
       <Tabs value={activeTab} onValueChange={(t) => { setActiveTab(t); setSearchParams({ tab: t }); }} className="w-full">
         <TabsList className="w-full mb-6">

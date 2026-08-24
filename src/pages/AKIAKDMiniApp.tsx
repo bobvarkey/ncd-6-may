@@ -12,6 +12,7 @@ import Seo from "@/components/Seo";
 import { AlertTriangle, Activity, Download, Copy, Image, Printer } from "lucide-react";
 import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 type BaselineSource = "known" | "estimated" | "provisional" | "unknown";
 type BaselineMethod =
@@ -334,6 +335,10 @@ export default function AKIAKDMiniApp() {
             View KDIGO 2026 guideline
           </a>
         </div>
+
+        <TakeHomeMessage title="AKI Detection Pearl" variant="warning">
+          KDIGO 2026 emphasizes the importance of baseline-aware detection. Even a small SCr rise of 0.3 mg/dL in 48h qualifies as AKI and warrants immediate review of nephrotoxic medications.
+        </TakeHomeMessage>
 
         {/* Baseline */}
         <Card>

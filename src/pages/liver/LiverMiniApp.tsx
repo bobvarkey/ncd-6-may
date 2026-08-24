@@ -14,6 +14,7 @@ import ZoomableImage from "@/components/ZoomableImage";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 import MasldWorkup from "@/pages/liver/MasldWorkup";
 import MasldRiskCalculator from "@/pages/liver/MasldRiskCalculator";
+import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 
 // --- Range dropdown helper ---
@@ -321,6 +322,11 @@ export default function LiverMiniApp() {
           </CardDescription>
         </CardHeader>
       </Card>
+
+      <TakeHomeMessage title="Liver Triage Pearl" variant="key-point">
+        FIB-4 is the most validated primary care triage tool. 
+        Always adjust for age (≥65y threshold is 2.0) and confirm indeterminate results with a second-line test like FibroScan or ELF.
+      </TakeHomeMessage>
 
       {/* MASH / MetALD / Pure ALD diagnostic comparison table */}
       <Collapsible open={showMashTable} onOpenChange={setShowMashTable}>
