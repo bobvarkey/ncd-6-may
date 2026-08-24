@@ -19,6 +19,7 @@ import {
   XCircle,
   ArrowRight, Heart, Activity,
 } from 'lucide-react';
+import { TakeHomeMessage } from "@/components/ui/take-home-message";
 import {
   Dialog,
   DialogContent,
@@ -1224,6 +1225,18 @@ export default function Anticoagulants() {
                   </div>
                 </div>
               </div>
+
+              <TakeHomeMessage>
+                →AF → Apixaban 5 mg BID is often the default choice
+
+                →DVT/PE → Apixaban or Rivaroxaban preferred
+
+                →Mechanical valve or APS → Warfarin only
+
+                →Unprovoked recurrent VTE → Consider lifelong anticoagulation after bleeding risk assessment
+
+                →Always balance thrombosis risk against bleeding risk (HAS-BLED, renal function, age, prior hemorrhage)
+              </TakeHomeMessage>
             </>
           )}
         </div>

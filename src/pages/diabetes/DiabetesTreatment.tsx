@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import ImageLink from "@/components/ImageLink";
+import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 // Algorithm Step Component
 interface AlgorithmStepProps {

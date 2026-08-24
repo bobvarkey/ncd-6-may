@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 import ImageLink from "@/components/ImageLink";
+import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 // ── Reninoma Clinical Probability Evaluator ──
 function ReninomaEvaluator() {
