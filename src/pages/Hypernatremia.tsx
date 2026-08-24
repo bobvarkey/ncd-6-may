@@ -271,9 +271,9 @@ export default function Hypernatremia() {
 
   // ── Auto-analyze step 1 ──
   const analyzeHypernatremia = () => {
-    const na = parseFloat(serumNa);
-    const osm = parseFloat(serumOsm);
-    if (isNaN(na) || isNaN(osm)) {
+    const na = parseClinicalValue(serumNa);
+    const osm = parseClinicalValue(serumOsm);
+    if (na === null || osm === null) {
       toast.error("Enter valid serum Na⁺ and osmolality values");
       return;
     }
@@ -294,9 +294,9 @@ export default function Hypernatremia() {
 
   // ── Analyze urine studies ──
   const analyzeUrine = () => {
-    const uOsm = parseFloat(urineOsm);
-    const uNa = parseFloat(urineNa);
-    if (isNaN(uOsm) || isNaN(uNa)) {
+    const uOsm = parseClinicalValue(urineOsm);
+    const uNa = parseClinicalValue(urineNa);
+    if (uOsm === null || uNa === null) {
       toast.error("Enter valid urine osmolality and urine sodium");
       return;
     }
