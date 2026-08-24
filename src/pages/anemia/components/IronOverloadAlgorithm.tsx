@@ -77,7 +77,7 @@ function RangeOrExact({
           <SelectContent>{ranges.map(r => <SelectItem key={r.label} value={String(r.value)}>{r.label}</SelectItem>)}</SelectContent>
         </Select>
       ) : (
-        <Input id={id} type="number" inputMode="decimal" className="h-9" value={value} onChange={e => onChange(e.target.value)} />
+        <Input id={id} type="text" inputMode="decimal" className="h-9" value={value} onChange={e => onChange(e.target.value)} />
       )}
     </div>
   );
