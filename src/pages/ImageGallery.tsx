@@ -87,7 +87,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
   { id: "anemia-algorithm", src: "/images/anemia-algorithm.jpg", label: "Anemia Algorithm", category: "Anemia & Coagulation", description: "MCV-based diagnostic algorithm for anemia — microcytic, normocytic, and macrocytic classification", sourcePages: [{ label: "Anemia", path: "/anemia" }] },
   { 
     id: "structured-hypercortisolism-screen", 
-    src: "/src/assets/structured-hypercortisolism-screen.jpg.asset.json", 
+    src: structuredHypercortisolism.url, 
     label: "Structured Hypercortisolism Screen for Refractory Big 4", 
     category: "Endocrinology", 
     description: "Structured approach to hypercortisolism screening in refractory T2D, HTN, obesity, and osteoporosis (Big 4). Includes case identification, pre-screen checks (therapeutic steroids, etc.), 1-mg overnight DST interpretation, and confirmatory evaluation path.", 
