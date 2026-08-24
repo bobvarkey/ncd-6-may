@@ -337,6 +337,10 @@ export default function SecondaryHtnPage() {
 
             {/* Cushing's — 1 mg overnight DST interpretation */}
             <DstInterpretationPanel />
+            
+            <div className="flex justify-center py-2">
+              <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+            </div>
 
             {/* Reninoma — Clinical Probability Evaluator */}
             <ReninomaEvaluator />
