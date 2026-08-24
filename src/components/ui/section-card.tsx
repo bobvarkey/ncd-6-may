@@ -145,11 +145,7 @@ export function SectionCard({
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Apply the take-home message component styling across all clinical modules so every screen uses consistent formatting.
-
-Implement message variants (e.g., warning, caution, key point) with distinct colors while keeping the same layout and typography.
-
-Add the take-home message component to each clinical module so the styling is consistent everywhere.`}
+                                            Verify that the TakeHomeMessage component is applied across every clinical module in my app, not just the ones already updated.`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
