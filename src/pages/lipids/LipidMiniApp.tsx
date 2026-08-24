@@ -596,7 +596,7 @@ function RangeField({
           </SelectContent>
         </Select>
       ) : (
-        <Input type="number" inputMode="decimal" step="0.1" className="h-9 text-xs" value={value} onChange={e => onChange(e.target.value)} placeholder="Enter exact value" />
+        <Input type="text" inputMode="decimal" step="0.1" className="h-9 text-xs" value={value} onChange={e => onChange(e.target.value)} placeholder="Enter exact value" />
       )}
     </div>
   );

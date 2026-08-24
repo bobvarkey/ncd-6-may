@@ -312,7 +312,7 @@ function RangeOrExact({
         </Select>
       ) : (
         <Input
-          id={id} type="number" inputMode="decimal" step="0.1" min="0"
+          id={id} type="text" inputMode="decimal" step="0.1"
           placeholder={`e.g. ${opts.length ? opts[Math.floor(opts.length / 2)].mid : ""}`}
           value={value} onChange={(e) => onChange(e.target.value)}
           className="h-9"

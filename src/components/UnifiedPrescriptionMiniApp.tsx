@@ -278,7 +278,7 @@ function RangeOrExactField({
         </Select>
       ) : (
         <Input
-          type="number"
+          type="text"
           inputMode="decimal"
           value={value}
           onChange={(e) => onChange(e.target.value)}

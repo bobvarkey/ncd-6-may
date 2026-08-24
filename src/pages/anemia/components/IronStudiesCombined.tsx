@@ -164,7 +164,7 @@ function RangeOrExact({
           <SelectContent>{ranges.map(r => <SelectItem key={r.label} value={String(r.value)}>{r.label}</SelectItem>)}</SelectContent>
         </Select>
       ) : mode === "exact" ? (
-        <Input id={id} type="number" inputMode="decimal" className={cn("h-9", validation && "border-amber-500/50")} value={value} onChange={e => onChange(e.target.value)} />
+        <Input id={id} type="text" inputMode="decimal" className={cn("h-9", validation && "border-amber-500/50")} value={value} onChange={e => onChange(e.target.value)} />
       ) : (
         <div className="flex items-center gap-3 h-9">
           <Slider
@@ -178,7 +178,7 @@ function RangeOrExact({
             className="flex-1"
           />
           <Input
-            type="number"
+            type="text"
             inputMode="decimal"
             aria-label={`${label} value`}
             className={cn("h-9 w-20 shrink-0 text-center", validation && "border-amber-500/50")}

@@ -137,10 +137,8 @@ function NumField({
       </Label>
       <Input
         id={id}
-        type="number"
+        type="text"
         inputMode="decimal"
-        min={min}
-        max={max}
         step={step}
         value={value}
         onChange={(e) => onChange(e.target.value)}
