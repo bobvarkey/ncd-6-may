@@ -4,6 +4,7 @@ import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
 import acuteDiarrhoeaClassification from "@/assets/acute-diarrhoea-classification.jpg.asset.json";
 import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
 import structuredHypercortisolism from "@/assets/structured-hypercortisolism-screen.jpg.asset.json";
+import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
 
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -96,6 +97,17 @@ const IMAGE_CATALOG: ImageEntry[] = [
       { label: "Secondary HTN", path: "/hypertension/assessment" },
       { label: "Obesity", path: "/obesity" }
     ] 
+  },
+  {
+    id: "osteoporosis-treatment-approach",
+    src: osteoporosisTreatment.url,
+    label: "Osteoporosis Treatment Approach (2026)",
+    category: "Endocrinology",
+    description: "2026 update on osteoporosis medication sequencing: Anabolic-first strategy in very high-risk patients vs antiresorptive-first in high-risk patients. Outcome risk reductions for vertebral, clinical, and hip fractures.",
+    sourcePages: [
+      { label: "Vitamin D", path: "/vitamin-d" },
+      { label: "Geriatrics", path: "/geriatrics?tab=fractures" }
+    ]
   },
 ];
 
