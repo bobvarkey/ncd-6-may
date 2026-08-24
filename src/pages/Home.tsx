@@ -973,9 +973,9 @@ export default function Home() {
           />
           <DiseaseCard
             title="AKI Criteria"
-            description="Acute Kidney Injury staging — KDIGO 2012 &amp; RIFLE criteria with interactive calculator, Cr ratio, urine output, management recommendations"
+            description="Acute Kidney Injury staging — KDIGO 2012 & RIFLE criteria with interactive calculator, Cr ratio, urine output, management recommendations"
             icon={<Activity className="h-5 w-5 text-red-400" />}
-            to="/aki-criteria"
+            to="/renal-dosing?tab=aki"
             accent="bg-red-500"
             badge="AKI"
           />
