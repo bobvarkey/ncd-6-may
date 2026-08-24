@@ -155,8 +155,8 @@ Result:
             </div>
             <Input
               id="ganzoni-target"
-              type="number"
-              step="0.1"
+              type="text"
+              inputMode="decimal"
               value={targetHb}
               onChange={(e) => setTargetHb(e.target.value)}
             />
