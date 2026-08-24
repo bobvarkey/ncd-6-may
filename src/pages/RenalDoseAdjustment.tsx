@@ -1033,13 +1033,31 @@ const RenalDoseAdjustment = () => {
         description="eGFR-based dose adjustments across diabetes, cardiovascular and antibiotic classes, aligned with ADA 2026 and KDIGO."
         path="/renal-dosing"
       />
-      <div>
-        <h1 className="text-xl font-heading font-bold flex items-center gap-2">
-          <FlaskConical className="w-5 h-5 text-primary" />
-          Renal Dose Adjustment
-        </h1>
-        <p className="text-sm text-muted-foreground">eGFR-based dose modifications for diabetes medications (ADA 2026 + KDIGO)</p>
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="w-full mb-6">
+          <TabsTrigger value="dosing" className="flex-1 gap-2">
+            <Pill className="w-4 h-4" />
+            Dose Adjustment
+          </TabsTrigger>
+          <TabsTrigger value="calculators" className="flex-1 gap-2">
+            <Calculator className="w-4 h-4" />
+            Renal Calculators
+          </TabsTrigger>
+          <TabsTrigger value="aki" className="flex-1 gap-2">
+            <AlertTriangle className="w-4 h-4" />
+            AKI Criteria
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="dosing" className="space-y-5">
+          <div>
+            <h1 className="text-xl font-heading font-bold flex items-center gap-2">
+              <FlaskConical className="w-5 h-5 text-primary" />
+              Renal Dose Adjustment
+            </h1>
+            <p className="text-sm text-muted-foreground">eGFR-based dose modifications for medications (ADA 2026 + KDIGO)</p>
+          </div>
+
 
       {/* AKI / AKD entry point (KDIGO 2026) */}
       <a
