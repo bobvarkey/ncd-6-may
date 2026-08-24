@@ -9,6 +9,7 @@ import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asse
 import additionalOsteoporosisAlgorithm from "@/assets/file-5.png.asset.json";
 import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
 import fragilityFractureFirstLine from "@/assets/fragility-fracture-first-line.jpg.asset.json";
+import fragilityFractureFirstLineV2 from "@/assets/fragility-fracture-first-line-v2.jpg.asset.json";
 
 
 import { useState } from "react";
@@ -150,6 +151,16 @@ const IMAGE_CATALOG: ImageEntry[] = [
     label: "Osteoporosis Fragility Fracture: First-Line Treatment Guide",
     category: "Endocrinology & Osteoporosis",
     description: "Comprehensive guide to first-line bisphosphonates (Alendronate, Risedronate, Zoledronic acid) and alternatives like Denosumab. Includes clinical situations, preferred options, and typical regimens for lower vs higher risk patients.",
+    sourcePages: [
+      { label: "Vitamin D", path: "/vitamin-d" }
+    ]
+  },
+  {
+    id: "fragility-fracture-first-line-v2",
+    src: fragilityFractureFirstLineV2.url,
+    label: "Osteoporosis Fragility Fracture: First-Line Visual Guide",
+    category: "Endocrinology & Osteoporosis",
+    description: "Visual clinical guide for first-line osteoporosis treatment (Bisphosphonates). Includes clinical situation matching (ambulant vs dysphagia vs poor adherence), treatment selection (Alendronate, Risedronate, Zoledronic acid, Denosumab), and route/risk categorization.",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" }
     ]
