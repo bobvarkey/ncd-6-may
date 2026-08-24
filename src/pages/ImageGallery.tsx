@@ -5,7 +5,7 @@ import acuteDiarrhoeaClassification from "@/assets/acute-diarrhoea-classificatio
 import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
 import structuredHypercortisolism from "@/assets/structured-hypercortisolism-screen.jpg.asset.json";
 import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
-import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asset.json";
+
 import additionalOsteoporosisAlgorithm from "@/assets/fragility-fracture-management-guide.jpg.asset.json";
 import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
 import fragilityFractureFirstLine from "@/assets/fragility-fracture-first-line.jpg.asset.json";
