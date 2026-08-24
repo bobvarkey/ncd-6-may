@@ -16,7 +16,7 @@ export default function GanzoniDeficitCalculator() {
   const [targetHb, setTargetHb] = useState("14");
   const [ironStores, setIronStores] = useState("500");
 
-  const n = (s: string) => parseFloat(s) || 0;
+  const n = (s: string) => parseClinicalValue(s) || 0;
 
   const calculation = useMemo(() => {
     const w = n(weight);
