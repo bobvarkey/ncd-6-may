@@ -132,8 +132,8 @@ Result:
             <Label htmlFor="ganzoni-hb">Actual Hemoglobin (g/dL)</Label>
             <Input
               id="ganzoni-hb"
-              type="number"
-              step="0.1"
+              type="text"
+              inputMode="decimal"
               placeholder="e.g. 8.5"
               value={hemoglobin}
               onChange={(e) => setHemoglobin(e.target.value)}
