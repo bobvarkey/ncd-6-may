@@ -242,8 +242,8 @@ export default function Hyperkalemia() {
   const [expanded, setExpanded] = useState<string | null>("step1");
 
   // ── Derived ──
-  const kVal = parseFloat(serumK || "0");
-  const kRepeatVal = parseFloat(repeatK || "0");
+  const kVal = parseClinicalValue(serumK) ?? 0;
+  const kRepeatVal = parseClinicalValue(repeatK) ?? 0;
   const trueHyperkalemia = kVal > 5.5 && kRepeatVal > 5.5;
   const emergencyNeeded =
     severity === "severe" ||
