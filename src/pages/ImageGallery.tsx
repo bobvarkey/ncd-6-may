@@ -95,7 +95,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
     id: "structured-hypercortisolism-screen", 
     src: structuredHypercortisolism.url, 
     label: "Structured Hypercortisolism Screen for Refractory Big 4", 
-    category: "Endocrinology", 
+    category: "Endocrinology & Osteoporosis", 
     description: "Structured approach to hypercortisolism screening in refractory T2D, HTN, obesity, and osteoporosis (Big 4). Includes case identification, pre-screen checks (therapeutic steroids, etc.), 1-mg overnight DST interpretation, and confirmatory evaluation path.", 
     sourcePages: [
       { label: "Diabetes", path: "/diabetes/treatment" },
@@ -107,7 +107,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
     id: "osteoporosis-treatment-approach",
     src: osteoporosisTreatment.url,
     label: "Osteoporosis Treatment Approach (2026)",
-    category: "Endocrinology",
+    category: "Endocrinology & Osteoporosis",
     description: "2026 update on osteoporosis medication sequencing: Anabolic-first strategy in very high-risk patients vs antiresorptive-first in high-risk patients. Source: Consensus clinical update 2026.",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" },
@@ -118,7 +118,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
     id: "osteoporosis-treatment-v2",
     src: osteoporosisTreatmentV2.url,
     label: "Osteoporosis Treatment Approach (Extended)",
-    category: "Endocrinology",
+    category: "Endocrinology & Osteoporosis",
     description: "Supplemental 2026 approach for osteoporosis management and clinical decision support.",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" }
@@ -128,7 +128,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
     id: "bisphosphonates-criteria",
     src: bisphosphonatesCriteria.url,
     label: "Clinical Criteria for Initiating Bisphosphonates",
-    category: "Endocrinology",
+    category: "Endocrinology & Osteoporosis",
     description: "Specific diagnostic thresholds for bisphosphonate therapy across primary osteoporosis, glucocorticoid-induced osteoporosis, and oncology-specific criteria. Includes mandatory clinical prerequisites (renal function, metabolic status, esophageal health).",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" }
@@ -138,7 +138,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
     id: "osteoporosis-treatment-v4",
     src: additionalOsteoporosisAlgorithm.url,
     label: "Osteoporosis Management & Fragility Fracture Prevention",
-    category: "Endocrinology",
+    category: "Endocrinology & Osteoporosis",
     description: "2026 update on clinical management approach for osteoporosis and fragility fracture prevention.",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" }
@@ -148,7 +148,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
     id: "fragility-fracture-first-line",
     src: fragilityFractureFirstLine.url,
     label: "Osteoporosis Fragility Fracture: First-Line Treatment Guide",
-    category: "Endocrinology",
+    category: "Endocrinology & Osteoporosis",
     description: "Comprehensive guide to first-line bisphosphonates (Alendronate, Risedronate, Zoledronic acid) and alternatives like Denosumab. Includes clinical situations, preferred options, and typical regimens for lower vs higher risk patients.",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" }
