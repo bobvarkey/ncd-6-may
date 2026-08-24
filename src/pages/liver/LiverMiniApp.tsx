@@ -672,7 +672,7 @@ export default function LiverMiniApp() {
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">APRI</div>
-              <div className="text-sm font-semibold mt-1">{isNaN(apri.score) ? "—" : apri.score.toFixed(2)}</div>
+              <div className="text-sm font-semibold mt-1">{isNaN(apri.score) ? "—" : roundClinical(apri.score, 2)}</div>
               <div className="mt-1">{riskBadge(apri.risk)}</div>
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
