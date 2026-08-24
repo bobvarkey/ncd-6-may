@@ -10,6 +10,7 @@ import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asse
 import additionalOsteoporosisAlgorithm from "@/assets/file-5.png.asset.json";
 import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
 import fragilityFractureFirstLine from "@/assets/fragility-fracture-first-line.jpg.asset.json";
+import fragilityFractureFirstLineV2 from "@/assets/fragility-fracture-first-line-v2.jpg.asset.json";
 
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 
@@ -143,6 +144,19 @@ export default function VitaminD() {
                   Osteoporosis Fragility Fracture: First-Line Treatment Guide — tap to zoom
                 </figcaption>
                 <ImageLink imageId="fragility-fracture-first-line" label="Open First-Line Guide in gallery →" />
+              </figure>
+              <figure className="pt-4 border-t border-border/40 mt-4 space-y-2">
+                <ZoomableImage
+                  src={fragilityFractureFirstLineV2.url}
+                  alt="Osteoporosis Fragility Fracture: First-Line Treatment Guide (Visual Infographic)"
+                  className="w-full rounded-lg border border-border/60"
+                />
+                <figcaption className="text-xs text-muted-foreground text-center mt-2">
+                  <strong>Source:</strong> 2026 Clinical Consensus — First-Line DESTROYER BLOCKERS (Bisphosphonates).
+                  <br />
+                  First-Line Osteoporosis Treatment Guide & Selection Criteria — tap to zoom
+                </figcaption>
+                <ImageLink imageId="fragility-fracture-first-line-v2" label="Open Visual Guide in gallery →" />
               </figure>
             </CardContent>
           </Card>
