@@ -320,8 +320,8 @@ const PILL_INPUT =
 
 export default function Infections() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlTab = searchParams.get("tab") as "primary" | "serious" | "csdh" | null;
-  const [tab, setTab] = useState<"primary" | "serious" | "csdh">(urlTab ?? "primary");
+  const urlTab = searchParams.get("tab") as "primary" | "serious" | null;
+  const [tab, setTab] = useState<"primary" | "serious">(urlTab ?? "primary");
 
   useEffect(() => {
     if (urlTab) setTab(urlTab);
