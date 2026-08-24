@@ -763,7 +763,7 @@ export default function IronReplacementCalculator() {
                         </div>
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">Ferritin</p>
-                          <p className="font-bold text-base">{!isNaN(ferritinNum) ? ferritinNum + " ng/mL" : "—"}</p>
+                          <p className="font-bold text-base">{!isNaN(ferritinNum) ? roundClinical(ferritinNum, 1) + " ng/mL" : "—"}</p>
                         </div>
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">Target Hb</p>
