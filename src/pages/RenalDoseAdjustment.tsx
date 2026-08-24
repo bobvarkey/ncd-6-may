@@ -1044,15 +1044,26 @@ const RenalDoseAdjustment = () => {
         description="eGFR-based dose adjustments across diabetes, cardiovascular and antibiotic classes, aligned with ADA 2026 and KDIGO."
         path="/renal-dosing"
       />
+      
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-heading font-bold flex items-center gap-2">
+          <Filter className="w-6 h-6 text-primary" />
+          Renal Tools
+        </h1>
+        <p className="text-sm text-muted-foreground">Unified platform for renal dosing, calculators, and AKI assessment.</p>
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="w-full mb-6">
           <TabsTrigger value="dosing" className="flex-1 gap-2">
             <Pill className="w-4 h-4" />
-            Dose Adjustment
+            <span className="hidden sm:inline">Dose Adjustment</span>
+            <span className="sm:hidden">Dosing</span>
           </TabsTrigger>
           <TabsTrigger value="calculators" className="flex-1 gap-2">
             <Calculator className="w-4 h-4" />
-            Renal Calculators
+            <span className="hidden sm:inline">Renal Calculators</span>
+            <span className="sm:hidden">Calculators</span>
           </TabsTrigger>
           <TabsTrigger value="aki" className="flex-1 gap-2">
             <AlertTriangle className="w-4 h-4" />
@@ -1061,53 +1072,36 @@ const RenalDoseAdjustment = () => {
         </TabsList>
 
         <TabsContent value="dosing" className="space-y-5">
-          <div>
-            <h1 className="text-xl font-heading font-bold flex items-center gap-2">
-              <FlaskConical className="w-5 h-5 text-primary" />
-              Renal Dose Adjustment
-            </h1>
-            <p className="text-sm text-muted-foreground">eGFR-based dose modifications for medications (ADA 2026 + KDIGO)</p>
-          </div>
-
-        </TabsContent>
-        <TabsContent value="calculators" className="space-y-5">
-          <div>
-            <h1 className="text-xl font-heading font-bold flex items-center gap-2">
-              <Calculator className="w-5 h-5 text-primary" />
-              Renal Calculators
-            </h1>
-            <p className="text-sm text-muted-foreground">eGFR, UACR, and CIN risk assessment tools</p>
-          </div>
-
-          {/* Mehran Score for Post-PCI CIN - Collapsible */}
-          <details ref={mehranRef} id="mehran" className="clinical-card p-0 overflow-hidden group" open>
-            <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
+          {/* Drug Dosing Section — master wrapper moved inside tab */}
+          <details className="clinical-card p-0 overflow-hidden group" defaultChecked>
+            <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors sticky top-0 bg-card z-10">
               <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
-              <Calculator className="w-4 h-4 text-primary shrink-0" />
-              <span className="text-sm font-semibold">Mehran Score for Post-PCI Contrast Nephropathy</span>
+              <Pill className="w-4 h-4 text-primary shrink-0" />
+              <span className="text-sm font-semibold">Drug Dosing Tables</span>
+              <span className="text-[11px] text-muted-foreground ml-auto">{ALL_RENAL_DATA.length} drugs</span>
             </summary>
-            <div className="border-t border-border p-4">
-              <MehranScoreCalculator />
-            </div>
-          </details>
+            <div className="border-t border-border p-4 space-y-4">
+              {/* Legend */}
+              <div className="flex flex-wrap gap-4 text-xs">
+                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-destructive/20 border border-destructive/30" /> Contraindicated / Avoid</span>
+                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-warning/20 border border-warning/30" /> Dose adjustment required</span>
+                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-muted border border-border" /> Limited data</span>
+                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-background border border-border" /> No adjustment</span>
+              </div>
 
-          {/* Full KDIGO Staging with heatmap (eGFR + UACR) - Collapsible */}
-          <details ref={egfrRef} id="egfr" className="clinical-card p-0 overflow-hidden group" open>
-            <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
-              <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
-              <FlaskConical className="w-4 h-4 text-primary shrink-0" />
-              <span className="text-sm font-semibold">eGFR + UACR Calculator</span>
-            </summary>
-            <div className="border-t border-border p-4">
-              <KDIGOStagingCalculator />
-            </div>
-          </details>
-        </TabsContent>
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search drug or class..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
 
-        <TabsContent value="aki" className="space-y-5">
-          <AKIAKDMiniApp />
-        </TabsContent>
-      </Tabs>
+              {/* Search Results and Tables Logic (handled below) */}
+
 
       {/* Formula Reference */}
       <details className="clinical-card p-3 group">
