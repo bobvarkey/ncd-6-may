@@ -23,7 +23,10 @@ import {
   CheckCircle2,
   XCircle,
   AlertCircle,
+  ExternalLink,
+  Image as ImageIcon
 } from "lucide-react";
+import ImageLink from "@/components/ImageLink";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 // ── Risk Flag Checklist ──
