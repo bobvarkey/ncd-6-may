@@ -9,7 +9,7 @@ import AKIAKDMiniApp from "./AKIAKDMiniApp";
 import { useSearchParams } from "react-router-dom";
 import KDIGOStagingCalculator from "@/calculators/renal/KDIGOStagingCalculator";
 import MehranScoreCalculator from "@/calculators/renal/MehranScoreCalculator";
-import { ALL_RENAL_DATA, eGFRColumns, cellStyle } from "@/calculators/diabetes/renal-data";
+import { ALL_RENAL_DATA, eGFRColumns, cellStyle, inferFrequency } from "@/calculators/diabetes/RenalDosing";
 
 const RenalDoseAdjustment = () => {
   const [searchParams, setSearchParams] = useSearchParams();
