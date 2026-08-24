@@ -964,20 +964,12 @@ export default function Home() {
             accent="bg-emerald-500"
           />
           <DiseaseCard
-            title="Renal / CKD"
-            description="CKD staging (KDIGO), eGFR calculator, renal dose adjustment for 200+ drugs, UACR interpretation"
+            title="Renal Tools"
+            description="CKD/AKI staging, renal calculators (eGFR, UACR, Mehran), and dose adjustments for 200+ medications"
             icon={<Filter className="h-5 w-5 text-amber-400" />}
             to="/renal-dosing"
             accent="bg-amber-500"
             badge="KDIGO"
-          />
-          <DiseaseCard
-            title="AKI Criteria"
-            description="Acute Kidney Injury staging — KDIGO 2012 & RIFLE criteria with interactive calculator, Cr ratio, urine output, management recommendations"
-            icon={<Activity className="h-5 w-5 text-red-400" />}
-            to="/renal-dosing?tab=aki"
-            accent="bg-red-500"
-            badge="AKI"
           />
           <DiseaseCard
             title="COPD / Respiratory"
