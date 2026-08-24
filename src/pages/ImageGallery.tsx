@@ -68,7 +68,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
   { id: "hrt-algorithm", src: "/images/hrt-algorithm.png", label: "HRT Algorithm", category: "Women's Health", description: "Hormone replacement therapy algorithm", sourcePages: [{ label: "Women Health", path: "/women-health" }] },
 
   // ─── Other ───
-  { id: "vitamin-d", src: vitaminDProtocol.url, label: "Vitamin D Treatment & Monitoring Protocol", category: "Other", description: "Adult vitamin D deficiency: 25(OH)D classification, loading and maintenance dosing, monitoring, exclusions and safety rules", sourcePages: [{ label: "Vitamin D", path: "/vitamin-d" }] },
+  { id: "vitamin-d", src: vitaminDProtocol.url, label: "Vitamin D Treatment & Monitoring Protocol", category: "Other", description: "Comprehensive protocol for vitamin D assessment and management. Includes loading doses (e.g., 60k IU weekly) and maintenance strategies. Source: Clinical Consensus Guidelines.", sourcePages: [{ label: "Vitamin D", path: "/vitamin-d" }] },
   { id: "fatigue-flowchart", src: "/fatigue-flowchart.jpg", label: "Fatigue Flowchart", category: "Other", description: "Fatigue evaluation flowchart", sourcePages: [{ label: "Fatigue", path: "/fatigue" }] },
   { id: "anticoagulation-cheatsheet", src: "/anticoagulation-cheatsheet.jpg", label: "Anticoagulation Cheatsheet", category: "Other", description: "Anticoagulation quick reference", sourcePages: [{ label: "Liver Mini App", path: "/liver" }] },
   { id: "doctor-monitors", src: "/doctor-monitors.jpg", label: "Doctor Monitors", category: "Other", description: "Landing page hero image", sourcePages: [{ label: "Landing Page", path: "/" }] },
@@ -104,7 +104,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
     src: osteoporosisTreatment.url,
     label: "Osteoporosis Treatment Approach (2026)",
     category: "Endocrinology",
-    description: "2026 update on osteoporosis medication sequencing: Anabolic-first strategy in very high-risk patients vs antiresorptive-first in high-risk patients. Outcome risk reductions for vertebral, clinical, and hip fractures.",
+    description: "2026 update on osteoporosis medication sequencing: Anabolic-first strategy in very high-risk patients vs antiresorptive-first in high-risk patients. Source: Consensus clinical update 2026.",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" },
       { label: "Geriatrics", path: "/geriatrics?tab=fractures" }

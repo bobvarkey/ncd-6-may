@@ -56,7 +56,9 @@ export default function VitaminD() {
                 className="w-full rounded-lg border border-border/60"
               />
               <p className="text-xs text-muted-foreground text-center">
-                Adult Vitamin D Deficiency: Treatment &amp; Monitoring Protocol — tap to zoom
+                <strong>Source:</strong> Adapted from Endocrine Society and local clinical protocols.
+                <br />
+                Adult Vitamin D Deficiency: Treatment & Monitoring Protocol — tap to zoom
               </p>
               <ImageLink imageId="vitamin-d" label="Open in image gallery →" />
             </CardContent>
@@ -78,6 +80,8 @@ export default function VitaminD() {
                 className="w-full rounded-lg border border-border/60"
               />
               <p className="text-xs text-muted-foreground text-center">
+                <strong>Source:</strong> Evidence-based 2026 sequencing for high vs. very-high fracture risk.
+                <br />
                 Osteoporosis Medication Selection Guide: High vs Very High Risk — tap to zoom
               </p>
               <ImageLink imageId="osteoporosis-treatment-approach" label="Open Algorithm 1 in gallery →" />
@@ -88,6 +92,8 @@ export default function VitaminD() {
                   className="w-full rounded-lg border border-border/60"
                 />
                 <p className="text-xs text-muted-foreground text-center mt-2">
+                  <strong>Source:</strong> 2026 Clinical Decision Support.
+                  <br />
                   Osteoporosis Clinical Decision Support — tap to zoom
                 </p>
                 <ImageLink imageId="osteoporosis-treatment-v2" label="Open Algorithm 2 in gallery →" />
