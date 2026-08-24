@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import AKIAKDMiniApp from "./renal/AKIAKDMiniApp";
+import AKIAKDMiniApp from "./AKIAKDMiniApp";
 import { useSearchParams } from "react-router-dom";
 import KDIGOStagingCalculator from "@/calculators/renal/KDIGOStagingCalculator";
 import MehranScoreCalculator from "@/calculators/renal/MehranScoreCalculator";
