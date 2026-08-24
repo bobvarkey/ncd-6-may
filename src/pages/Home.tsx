@@ -1011,6 +1011,13 @@ export default function Home() {
             to="/acid-base"
             accent="bg-orange-500"
           />
+          <DiseaseCard
+            title="Hypercortisolism (Cushing's)"
+            description="Structured screening for refractory Diabetes, HTN, Obesity, and Osteoporosis (Big 4)"
+            icon={<Scan className="h-5 w-5 text-purple-400" />}
+            to="/images?search=Structured%20Hypercortisolism%20Screen"
+            accent="bg-purple-500"
+          />
         </DiseaseGroup>
 
         <DiseaseGroup title="Infections & Acute Care" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
