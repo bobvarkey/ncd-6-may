@@ -189,7 +189,7 @@ export function LabInput({
       >
         <span className={cn("w-1 shrink-0", t.bar)} aria-hidden />
         <input
-          type="number"
+          type="text"
           inputMode="decimal"
           step={step}
           disabled={disabled}
