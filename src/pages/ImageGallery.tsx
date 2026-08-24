@@ -136,16 +136,6 @@ const IMAGE_CATALOG: ImageEntry[] = [
     ]
   },
   {
-    id: "fragility-fracture-first-line",
-    src: fragilityFractureFirstLine.url,
-    label: "Osteoporosis Fragility Fracture: First-Line Treatment Guide",
-    category: "Endocrinology & Osteoporosis",
-    description: "Comprehensive guide to first-line bisphosphonates (Alendronate, Risedronate, Zoledronic acid) and alternatives like Denosumab. Includes clinical situations, preferred options, and typical regimens for lower vs higher risk patients.",
-    sourcePages: [
-      { label: "Vitamin D", path: "/vitamin-d" }
-    ]
-  },
-  {
     id: "fragility-fracture-first-line-v2",
     src: fragilityFractureFirstLineV2.url,
     label: "Osteoporosis Fragility Fracture: First-Line Visual Guide",

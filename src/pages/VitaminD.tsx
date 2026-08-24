@@ -121,19 +121,6 @@ export default function VitaminD() {
               </figure>
               <figure className="pt-4 border-t border-border/40 mt-4 space-y-2">
                 <ZoomableImage
-                  src={fragilityFractureFirstLine.url}
-                  alt="Osteoporosis Fragility Fracture: First-Line Treatment Guide"
-                  className="w-full rounded-lg border border-border/60"
-                />
-                <figcaption className="text-xs text-muted-foreground text-center mt-2">
-                  <strong>Source:</strong> 2026 Clinical Treatment Sequencing — First-Line Choices.
-                  <br />
-                  Osteoporosis Fragility Fracture: First-Line Treatment Guide — tap to zoom
-                </figcaption>
-                <ImageLink imageId="fragility-fracture-first-line" label="Open First-Line Guide in gallery →" />
-              </figure>
-              <figure className="pt-4 border-t border-border/40 mt-4 space-y-2">
-                <ZoomableImage
                   src={fragilityFractureFirstLineV2.url}
                   alt="Osteoporosis Fragility Fracture: First-Line Treatment Guide (Visual Infographic)"
                   className="w-full rounded-lg border border-border/60"

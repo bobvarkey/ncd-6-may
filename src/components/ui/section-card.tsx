@@ -145,7 +145,7 @@ export function SectionCard({
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            the images for "additional osteoporosis treatment approach" and "clinical guide for osteoporosis management" are missing. Remove the placeholdr for "additional osteoporosis treatment approach"  and use this image for "clinical guide for osteoporosis management"`}
+                                            this image is duplicated. Remove one of them`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
