@@ -8,6 +8,7 @@ import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
 import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
 import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asset.json";
 import additionalOsteoporosisAlgorithm from "@/assets/file-5.png.asset.json";
+import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
 
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 
@@ -115,6 +116,19 @@ export default function VitaminD() {
                   Osteoporosis Management & Fragility Fracture Prevention — tap to zoom
                 </figcaption>
                 <ImageLink imageId="osteoporosis-treatment-v4" label="Open Algorithm 3 in gallery →" />
+              </figure>
+              <figure className="pt-4 border-t border-border/40 mt-4 space-y-2">
+                <ZoomableImage
+                  src={bisphosphonatesCriteria.url}
+                  alt="Exact clinical criteria for initiating bisphosphonates"
+                  className="w-full rounded-lg border border-border/60"
+                />
+                <figcaption className="text-xs text-muted-foreground text-center mt-2">
+                  <strong>Source:</strong> ACP, BHOF, ACR Clinical Guidelines.
+                  <br />
+                  Exact Clinical Criteria for Initiating Bisphosphonates — tap to zoom
+                </figcaption>
+                <ImageLink imageId="bisphosphonates-criteria" label="Open Bisphosphonates Criteria in gallery →" />
               </figure>
             </CardContent>
           </Card>
