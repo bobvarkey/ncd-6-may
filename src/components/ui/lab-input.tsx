@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 
 /**
  * LabInput — colorful, unit-aware clinical input.
