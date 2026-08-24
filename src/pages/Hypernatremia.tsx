@@ -11,7 +11,7 @@ import {
   Download, Clock, ShieldAlert, ChevronRight, ChevronDown,
   Calculator, Thermometer,
 } from "lucide-react";
-import { downloadTextFile } from "@/lib/clinical-utils";
+import { downloadTextFile, parseClinicalValue } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 
 // ══════════════════════════════════════════════
