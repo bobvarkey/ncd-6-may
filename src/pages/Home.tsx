@@ -1020,7 +1020,7 @@ export default function Home() {
           />
         </DiseaseGroup>
 
-        <DiseaseGroup title="Infections & Acute Care" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
+        <DiseaseGroup title="Infections, Geriatrics & Endocrine" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
           <DiseaseCard
             title="Infections"
             description="Common infections: UTI, pneumonia, cellulitis, antibiotic selection, duration of therapy"

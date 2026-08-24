@@ -1909,3 +1909,11 @@ export default function BmiCalculator() {
     </div>
   );
 }
+
+const ImageLinkWithPadding = ({ imageId, label }: { imageId: string; label: string }) => (
+  <div className="flex justify-center py-4 border-t border-border/50">
+    <ImageLink imageId={imageId} label={label} />
+  </div>
+);
+
+BmiCalculator.BottomLink = ImageLinkWithPadding;
