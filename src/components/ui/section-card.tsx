@@ -145,7 +145,7 @@ export function SectionCard({
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Verify the new osteoporosis infographic has correct alt text, captions, and source notes across the Vitamin D Clinical Guide and Image Gallery pages. Use this image`}
+                                            the images for "additional osteoporosis treatment approach" and "clinical guide for osteoporosis management" are missing. Remove the placeholdr for "additional osteoporosis treatment approach"  and use this image for "clinical guide for osteoporosis management"`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (

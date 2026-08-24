@@ -6,7 +6,7 @@ import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
 import structuredHypercortisolism from "@/assets/structured-hypercortisolism-screen.jpg.asset.json";
 import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
 import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asset.json";
-import additionalOsteoporosisAlgorithm from "@/assets/file-5.png.asset.json";
+import additionalOsteoporosisAlgorithm from "@/assets/fragility-fracture-management-guide.jpg.asset.json";
 import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
 import fragilityFractureFirstLine from "@/assets/fragility-fracture-first-line.jpg.asset.json";
 import fragilityFractureFirstLineV2 from "@/assets/fragility-fracture-first-line-v2.jpg.asset.json";
@@ -113,16 +113,6 @@ const IMAGE_CATALOG: ImageEntry[] = [
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" },
       { label: "Geriatrics", path: "/geriatrics?tab=fractures" }
-    ]
-  },
-  {
-    id: "osteoporosis-treatment-v2",
-    src: osteoporosisTreatmentV2.url,
-    label: "Osteoporosis Treatment Approach (Extended)",
-    category: "Endocrinology & Osteoporosis",
-    description: "Supplemental 2026 approach for osteoporosis management and clinical decision support.",
-    sourcePages: [
-      { label: "Vitamin D", path: "/vitamin-d" }
     ]
   },
   {

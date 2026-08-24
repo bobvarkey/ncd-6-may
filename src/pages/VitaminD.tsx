@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
 import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
 import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asset.json";
-import additionalOsteoporosisAlgorithm from "@/assets/file-5.png.asset.json";
+import additionalOsteoporosisAlgorithm from "@/assets/fragility-fracture-management-guide.jpg.asset.json";
 import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
 import fragilityFractureFirstLine from "@/assets/fragility-fracture-first-line.jpg.asset.json";
 import fragilityFractureFirstLineV2 from "@/assets/fragility-fracture-first-line-v2.jpg.asset.json";
@@ -93,19 +93,6 @@ export default function VitaminD() {
                 </figcaption>
               </figure>
               <ImageLink imageId="osteoporosis-treatment-approach" label="Open Algorithm 1 in gallery →" />
-              <figure className="pt-4 border-t border-border/40 mt-4 space-y-2">
-                <ZoomableImage
-                  src={osteoporosisTreatmentV2.url}
-                  alt="Additional Osteoporosis Treatment Approach infographic"
-                  className="w-full rounded-lg border border-border/60"
-                />
-                <figcaption className="text-xs text-muted-foreground text-center mt-2">
-                  <strong>Source:</strong> 2026 Clinical Decision Support.
-                  <br />
-                  Osteoporosis Clinical Decision Support — tap to zoom
-                </figcaption>
-                <ImageLink imageId="osteoporosis-treatment-v2" label="Open Algorithm 2 in gallery →" />
-              </figure>
               <figure className="pt-4 border-t border-border/40 mt-4 space-y-2">
                 <ZoomableImage
                   src={additionalOsteoporosisAlgorithm.url}
