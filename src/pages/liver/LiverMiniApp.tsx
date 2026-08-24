@@ -175,10 +175,10 @@ export default function LiverMiniApp() {
   const cutoffs = preset === "custom" ? customCutoffs : PRESETS[preset].cutoffs;
   const setCutoff = (k: keyof Cutoffs, v: string) => {
     setPreset("custom");
-    setCustomCutoffs(c => ({ ...c, [k]: parseFloat(v) || 0 }));
+    setCustomCutoffs(c => ({ ...c, [k]: parseClinicalValue(v) ?? 0 }));
   };
 
-  const n = (s: string) => parseFloat(s) || 0;
+  const n = (s: string) => parseClinicalValue(s) ?? 0;
 
   const fib4 = useMemo(() => classifyFIB4(n(age), n(ast), n(alt), n(plt), cutoffs), [age, ast, alt, plt, cutoffs]);
   const apri = useMemo(() => classifyAPRI(n(ast), n(astULN), n(plt), cutoffs), [ast, astULN, plt, cutoffs]);
