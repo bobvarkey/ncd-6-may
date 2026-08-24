@@ -12,7 +12,7 @@ import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalcu
 
 export default function VitaminD() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
       {/* Header */}
       <div className="text-center space-y-3">
         <Badge variant="outline" className="text-sm px-4 py-1 border-amber-400/40 text-amber-400">
@@ -217,6 +217,6 @@ export default function VitaminD() {
           </p>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }
