@@ -145,7 +145,9 @@ export function SectionCard({
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Add this image to Vitamin D clinical guide under a subtab of Bone/ Osteoporosis treatment`}
+                                            add this image also
+
+Add the Osteoporosis Treatment Approach infographic under the Bone/Osteoporosis treatment subtab within the Vitamin D Clinical Guide.`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (

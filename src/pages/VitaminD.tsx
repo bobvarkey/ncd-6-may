@@ -6,6 +6,7 @@ import ZoomableImage from "@/components/ZoomableImage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
 import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
+import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v2.jpg.asset.json";
 
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 
@@ -79,7 +80,18 @@ export default function VitaminD() {
               <p className="text-xs text-muted-foreground text-center">
                 Osteoporosis Medication Selection Guide: High vs Very High Risk — tap to zoom
               </p>
-              <ImageLink imageId="osteoporosis-treatment-approach" label="Open in image gallery →" />
+              <ImageLink imageId="osteoporosis-treatment-approach" label="Open Algorithm 1 in gallery →" />
+              <div className="pt-4 border-t border-border/40 mt-4">
+                <ZoomableImage
+                  src={osteoporosisTreatmentV2.url}
+                  alt="Additional Osteoporosis Treatment Approach infographic"
+                  className="w-full rounded-lg border border-border/60"
+                />
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  Osteoporosis Clinical Decision Support — tap to zoom
+                </p>
+                <ImageLink imageId="osteoporosis-treatment-v2" label="Open Algorithm 2 in gallery →" />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
