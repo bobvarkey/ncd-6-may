@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink, Image as ImageIcon } from "lucide-react";
 import {
   Heart, Wine, Pill, Activity, Zap, Moon, TestTube, Stethoscope, FlaskConical,
   Droplets, Syringe,
 } from "lucide-react";
 import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
+import ImageLink from "@/components/ImageLink";
 
 // ── Reninoma Clinical Probability Evaluator ──
 function ReninomaEvaluator() {
