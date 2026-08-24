@@ -303,16 +303,6 @@ const CONDITIONS: ConditionDef[] = [
     severityEscalation: "Septic, urinary retention, immunocompromised, post-procedure → admit for IV (ceftriaxone or pip-tazo).",
     redFlags: ["Sepsis / hemodynamic instability", "Urinary retention", "Prostatic abscess", "Failure after 48–72 h"],
   },
-  {
-    id: "csdh",
-    label: "Chronic Subdural Hematoma (cSDH)",
-    category: "Neurosurgery",
-    needsAbx: () => ({ needed: false, rationale: "Medical condition, not an infection. Requires neurosurgical assessment for risk stratification." }),
-    firstLine: [],
-    pregnancy: { safe: [], avoid: [] },
-    severityEscalation: "Increasing midline shift, worsening GCS, or new focal deficits → immediate neurosurgical consult.",
-    redFlags: ["Worsening GCS", "New pupillary changes", "Rapidly progressive focal deficit", "Increasing midline shift"],
-  },
 ];
 
 const PILL_INPUT =
