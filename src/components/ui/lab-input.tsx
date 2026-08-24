@@ -127,13 +127,11 @@ export function LabInput({
       onChange("");
       return;
     }
-    const n = parseFloat(raw);
-    if (isNaN(n)) return;
+    const n = parseClinicalValue(raw);
+    if (n === null) return;
     const metric = activeIdx === 0 ? n : unit.toMetric(n);
-    // Round canonical to a sensible precision (3 sig figs for small, 1 dp otherwise).
-    const rounded =
-      Math.abs(metric) >= 10 ? metric.toFixed(1) : metric.toFixed(2);
-    onChange(parseFloat(rounded).toString());
+    const rounded = roundClinical(metric);
+    onChange(rounded.toString());
   };
 
   return (
