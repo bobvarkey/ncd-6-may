@@ -737,6 +737,10 @@ export default function GLP1ObesityAlgorithm() {
           </div>
         )}
       </main>
+
+      <div className="flex justify-center py-4 border-t border-border/50 max-w-4xl mx-auto px-4">
+        <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+      </div>
     </div>
   );
 }
