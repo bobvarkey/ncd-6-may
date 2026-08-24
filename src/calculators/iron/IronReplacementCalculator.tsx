@@ -366,16 +366,17 @@ function IronParametersLive({
 }: {
   inputs: PatientInputs;
 }) {
-  const hb = parseFloat(inputs.hemoglobin);
-  const weight = parseFloat(inputs.weight);
-  const ferritin = parseFloat(inputs.ferritin);
+  const hb = parseClinicalValue(inputs.hemoglobin) ?? NaN;
+  const weight = parseClinicalValue(inputs.weight) ?? NaN;
+  const ferritin = parseClinicalValue(inputs.ferritin) ?? NaN;
 
   // TSAT — calculated from serum iron/TIBC or entered directly
   const tsatVal = (() => {
-    if (inputs.tsat && parseFloat(inputs.tsat) > 0) return parseFloat(inputs.tsat);
-    const si = parseFloat(inputs.serumIron);
-    const tibc = parseFloat(inputs.tibc);
-    if (!isNaN(si) && !isNaN(tibc) && tibc > 0) return (si / tibc) * 100;
+    const t = parseClinicalValue(inputs.tsat);
+    if (t !== null && t > 0) return t;
+    const si = parseClinicalValue(inputs.serumIron);
+    const tibc = parseClinicalValue(inputs.tibc);
+    if (si !== null && tibc !== null && tibc > 0) return (si / tibc) * 100;
     return null;
   })();
 
