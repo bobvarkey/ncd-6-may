@@ -9,6 +9,7 @@ import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026
 import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asset.json";
 import additionalOsteoporosisAlgorithm from "@/assets/file-5.png.asset.json";
 import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
+import fragilityFractureFirstLine from "@/assets/fragility-fracture-first-line.jpg.asset.json";
 
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 
@@ -129,6 +130,19 @@ export default function VitaminD() {
                   Exact Clinical Criteria for Initiating Bisphosphonates — tap to zoom
                 </figcaption>
                 <ImageLink imageId="bisphosphonates-criteria" label="Open Bisphosphonates Criteria in gallery →" />
+              </figure>
+              <figure className="pt-4 border-t border-border/40 mt-4 space-y-2">
+                <ZoomableImage
+                  src={fragilityFractureFirstLine.url}
+                  alt="Osteoporosis Fragility Fracture: First-Line Treatment Guide"
+                  className="w-full rounded-lg border border-border/60"
+                />
+                <figcaption className="text-xs text-muted-foreground text-center mt-2">
+                  <strong>Source:</strong> 2026 Clinical Treatment Sequencing — First-Line Choices.
+                  <br />
+                  Osteoporosis Fragility Fracture: First-Line Treatment Guide — tap to zoom
+                </figcaption>
+                <ImageLink imageId="fragility-fracture-first-line" label="Open First-Line Guide in gallery →" />
               </figure>
             </CardContent>
           </Card>
