@@ -106,7 +106,7 @@ export default function VitaminD() {
       {/* Treatment Guide */}
       <Card className="border-border/60">
         <CardHeader className="pb-3">
-            <h2 className="text-lg flex items-center gap-2 font-bold">
+            <h2 className="text-lg flex items-center gap-2 font-bold px-6 py-4">
               <Sun className="h-5 w-5 text-amber-400" />
               Vitamin D Deficiency Treatment (Adults)
             </h2>
