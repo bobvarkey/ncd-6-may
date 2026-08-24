@@ -45,7 +45,8 @@ const RenalDoseAdjustment = () => {
     if (!acc[drug.drugClass]) acc[drug.drugClass] = [];
     acc[drug.drugClass].push(drug);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {} as Record<string, DoseEntry[]>);
+
 
   const filteredGroups = Object.entries(groupedByClass)
     .map(([drugClass, drugs]) => {
