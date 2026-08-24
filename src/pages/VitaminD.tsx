@@ -9,7 +9,7 @@ import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026
 
 import additionalOsteoporosisAlgorithm from "@/assets/fragility-fracture-management-guide.jpg.asset.json";
 import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
-import fragilityFractureFirstLine from "@/assets/fragility-fracture-first-line.jpg.asset.json";
+
 import fragilityFractureFirstLineV2 from "@/assets/fragility-fracture-first-line-v2.jpg.asset.json";
 
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
