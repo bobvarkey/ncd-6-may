@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Syringe } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Syringe, ExternalLink, Image as ImageIcon } from "lucide-react";
 import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
+import ImageLink from "@/components/ImageLink";
 
 type Severity = "critical" | "high" | "moderate";
 type Flag = { id: string; severity: Severity; message: string };
