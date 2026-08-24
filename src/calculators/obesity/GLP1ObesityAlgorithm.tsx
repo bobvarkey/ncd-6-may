@@ -28,7 +28,10 @@ import {
   Target,
   Swords,
   Brain,
+  ExternalLink,
+  Image as ImageIcon
 } from "lucide-react";
+import ImageLink from "@/components/ImageLink";
 
 interface GLP1Drug {
   name: string;
