@@ -677,7 +677,7 @@ export default function LiverMiniApp() {
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">NAFLD FS</div>
-              <div className="text-sm font-semibold mt-1">{isNaN(nfs.score) ? "—" : nfs.score.toFixed(2)}</div>
+              <div className="text-sm font-semibold mt-1">{isNaN(nfs.score) ? "—" : roundClinical(nfs.score, 2)}</div>
               <div className="mt-1">{riskBadge(nfs.risk)}</div>
             </div>
           </div>
