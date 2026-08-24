@@ -106,6 +106,22 @@ export const unitConversions = {
   },
 };
 
+/** Safe numeric parsing for text inputs */
+export function parseClinicalValue(val: string): number | null {
+  if (!val || val.trim() === "") return null;
+  const n = parseFloat(val.replace(/[^0-9.-]/g, ""));
+  return isNaN(n) ? null : n;
+}
+
+/** Round to clinical standard (1 or 2 decimal places depending on magnitude) */
+export function roundClinical(val: number, precisionOverride?: number): number {
+  if (precisionOverride !== undefined) return Number(val.toFixed(precisionOverride));
+  const abs = Math.abs(val);
+  if (abs >= 100) return Math.round(val);
+  if (abs >= 10) return Number(val.toFixed(1));
+  return Number(val.toFixed(2));
+}
+
 // Preferred unit system stored in localStorage
 export function usePreferredUnits() {
   const [units, setUnits] = useLocalStorage<"us" | "metric" | "si">("ncd_preferred_units", "metric");
