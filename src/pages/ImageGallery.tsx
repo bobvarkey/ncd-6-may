@@ -7,6 +7,8 @@ import structuredHypercortisolism from "@/assets/structured-hypercortisolism-scr
 import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
 import osteoporosisTreatmentV2 from "@/assets/osteoporosis-treatment-v3.jpg.asset.json";
 import additionalOsteoporosisAlgorithm from "@/assets/file-5.png.asset.json";
+import bisphosphonatesCriteria from "@/assets/bisphosphonates-criteria.png.asset.json";
+
 
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -117,6 +119,16 @@ const IMAGE_CATALOG: ImageEntry[] = [
     label: "Osteoporosis Treatment Approach (Extended)",
     category: "Endocrinology",
     description: "Supplemental 2026 approach for osteoporosis management and clinical decision support.",
+    sourcePages: [
+      { label: "Vitamin D", path: "/vitamin-d" }
+    ]
+  },
+  {
+    id: "bisphosphonates-criteria",
+    src: bisphosphonatesCriteria.url,
+    label: "Clinical Criteria for Initiating Bisphosphonates",
+    category: "Endocrinology",
+    description: "Specific diagnostic thresholds for bisphosphonate therapy across primary osteoporosis, glucocorticoid-induced osteoporosis, and oncology-specific criteria. Includes mandatory clinical prerequisites (renal function, metabolic status, esophageal health).",
     sourcePages: [
       { label: "Vitamin D", path: "/vitamin-d" }
     ]
