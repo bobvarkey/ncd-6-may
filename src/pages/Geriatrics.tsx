@@ -534,8 +534,75 @@ function GeriatricScreening() {
   );
 }
 
+function FragilityFractures() {
+  return (
+    <div className="space-y-6">
+      <Card className="border-border/60">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Bone className="h-5 w-5 text-amber-400" />
+            Fragility Fractures & Metabolic Bone Disease
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+            <h4 className="text-sm font-semibold mb-2">Clinical Context</h4>
+            <p className="text-sm text-muted-foreground">
+              Fragility fractures (fractures resulting from low-energy trauma, such as a fall from standing height) are a hallmark of osteoporosis and increased bone fragility. 
+              In patients with multiple fractures or those with unexpected severity, screening for secondary causes is essential.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-lg border border-border bg-card">
+              <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                <Search className="h-4 w-4 text-primary" />
+                Initial Evaluation
+              </h4>
+              <ul className="text-xs text-muted-foreground space-y-2">
+                <li>• Bone Mineral Density (DEXA) — spine and hip</li>
+                <li>• FRAX Score calculation</li>
+                <li>• Vertebral Fracture Assessment (VFA)</li>
+                <li>• Lab workup: Vitamin D, Calcium, PTH, Thyroid, eGFR</li>
+              </ul>
+            </div>
+            <div className="p-4 rounded-lg border border-warning/20 bg-warning/5">
+              <h4 className="text-sm font-semibold mb-2 flex items-center gap-2 text-warning">
+                <AlertTriangle className="h-4 w-4" />
+                Secondary Causes Screening
+              </h4>
+              <p className="text-xs text-muted-foreground mb-3">
+                If Z-score &lt; -2.0 or recurrent fractures despite therapy, evaluate for:
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-2">
+                <li>• <strong>Hypercortisolism (Cushing's)</strong> — Structured screen recommended</li>
+                <li>• Multiple Myeloma (SPEP/UPEP)</li>
+                <li>• Celiac disease</li>
+                <li>• Hyperparathyroidism</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex justify-center py-2">
+            <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 // ── Main Page ──
 export default function Geriatrics() {
+  const [activeTab, setActiveTab] = useState("overview");
+
+  // Handle URL tab param if needed
+  useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab === "fractures") setActiveTab("fractures");
+  });
+
   return (
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex items-center gap-2">
