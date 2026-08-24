@@ -407,7 +407,7 @@ function IronParametersLive({
   if (!hasAny) return null; // Nothing to show yet
 
   const tsatDisplay = tsatVal !== null
-    ? `${tsatVal.toFixed(1)}%`
+    ? `${roundClinical(tsatVal, 1)}%`
     : null;
 
   return (
