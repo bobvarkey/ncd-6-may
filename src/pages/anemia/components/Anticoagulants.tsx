@@ -393,6 +393,47 @@ export default function Anticoagulants() {
         </div>
       </div>
 
+      {/* Practical Take-Home Messages Box */}
+      <div className="rounded-xl border-2 border-primary bg-primary/10 p-5 shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <Activity className="h-5 w-5 text-primary" />
+          <h3 className="text-base font-bold text-primary">Practical Take-Home Messages</h3>
+        </div>
+        <div className="space-y-3">
+          <div className="flex items-start gap-2">
+            <span className="text-primary font-bold">→</span>
+            <p className="text-sm font-bold text-foreground">
+              AF → Apixaban 5 mg BID is often the default choice
+            </p>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-primary font-bold">→</span>
+            <p className="text-sm font-bold text-foreground">
+              DVT/PE → Apixaban or Rivaroxaban preferred
+            </p>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-primary font-bold">→</span>
+            <p className="text-sm font-bold text-foreground">
+              Mechanical valve or APS → Warfarin only
+            </p>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-primary font-bold">→</span>
+            <p className="text-sm font-bold text-foreground">
+              Unprovoked recurrent VTE → Consider lifelong anticoagulation after bleeding risk assessment
+            </p>
+          </div>
+          <div className="flex items-start gap-2 pt-1 border-t border-primary/20">
+            <span className="text-primary font-bold">→</span>
+            <p className="text-sm font-bold text-foreground">
+              Always balance thrombosis risk against bleeding risk (HAS-BLED, renal function, age, prior hemorrhage)
+            </p>
+          </div>
+        </div>
+      </div>
+
+
       {/* Infographic */}
       <div className="border border-border rounded-xl overflow-hidden bg-card">
         <button
