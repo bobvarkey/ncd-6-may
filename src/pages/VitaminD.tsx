@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sun } from "lucide-react";
+import { Sun, Bone } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import ZoomableImage from "@/components/ZoomableImage";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import vitaminDProtocol from "@/assets/vitamin-d-protocol.png.asset.json";
+import osteoporosisTreatment from "@/assets/osteoporosis-treatment-approach-2026.jpg.asset.json";
 
 import VitaminDDosingCalculator from "@/calculators/vitamind/VitaminDDosingCalculator";
 
@@ -25,28 +27,63 @@ export default function VitaminD() {
       {/* Interactive Dosing Calculator */}
       <VitaminDDosingCalculator />
 
-      {/* Reference Image */}
-      <Card className="border-border/60 overflow-hidden">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Sun className="h-5 w-5 text-amber-400" />
-            Vitamin D Reference Chart
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <ZoomableImage
-            src={vitaminDProtocol.url}
-            alt="Adult vitamin D deficiency treatment and monitoring protocol: 25(OH)D classification bands with loading doses, retest intervals, maintenance dosing, exclusions, and safety rules"
-            className="w-full rounded-lg border border-border/60"
-          />
-          <p className="text-xs text-muted-foreground text-center">
-            Adult Vitamin D Deficiency: Treatment &amp; Monitoring Protocol — tap to zoom
-          </p>
+      {/* Reference Sections */}
+      <Tabs defaultValue="reference" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="reference" className="flex items-center gap-2">
+            <Sun className="h-4 w-4" />
+            Vitamin D Protocol
+          </TabsTrigger>
+          <TabsTrigger value="osteoporosis" className="flex items-center gap-2">
+            <Bone className="h-4 w-4" />
+            Osteoporosis Treatment
+          </TabsTrigger>
+        </TabsList>
 
-          <ImageLink imageId="vitamin-d" label="Open in image gallery →" />
-        </CardContent>
+        <TabsContent value="reference" className="mt-4">
+          <Card className="border-border/60 overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Sun className="h-5 w-5 text-amber-400" />
+                Vitamin D Reference Chart
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <ZoomableImage
+                src={vitaminDProtocol.url}
+                alt="Adult vitamin D deficiency treatment and monitoring protocol"
+                className="w-full rounded-lg border border-border/60"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                Adult Vitamin D Deficiency: Treatment &amp; Monitoring Protocol — tap to zoom
+              </p>
+              <ImageLink imageId="vitamin-d" label="Open in image gallery →" />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      </Card>
+        <TabsContent value="osteoporosis" className="mt-4">
+          <Card className="border-border/60 overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Bone className="h-5 w-5 text-amber-400" />
+                Osteoporosis Treatment Approach (2026)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <ZoomableImage
+                src={osteoporosisTreatment.url}
+                alt="Which medication do I start? 2026 approach for osteoporosis: high vs very high fracture risk criteria and treatment sequencing"
+                className="w-full rounded-lg border border-border/60"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                Osteoporosis Medication Selection Guide: High vs Very High Risk — tap to zoom
+              </p>
+              <ImageLink imageId="osteoporosis-treatment-approach" label="Open in image gallery →" />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Treatment Guide */}
       <Card className="border-border/60">
