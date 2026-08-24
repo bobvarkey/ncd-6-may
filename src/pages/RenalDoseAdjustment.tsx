@@ -982,6 +982,14 @@ function EgfrCalculator() {
 }
 
 const RenalDoseAdjustment = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlTab = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(urlTab || "dosing");
+
+  useEffect(() => {
+    if (urlTab) setActiveTab(urlTab);
+  }, [urlTab]);
+
   const [search, setSearch] = useState("");
   const mehranRef = useRef<HTMLDetailsElement>(null);
   const egfrRef = useRef<HTMLDetailsElement>(null);
