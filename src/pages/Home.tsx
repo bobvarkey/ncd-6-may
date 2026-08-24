@@ -914,10 +914,10 @@ export default function Home() {
         </section>
 
         {/* ── Disease Condition Grid ── */}
-        <DiseaseGroup title="Metabolic & Cardiovascular" icon={<Heart className="h-3.5 w-3.5 text-rose-400" />}>
+        <DiseaseGroup title="Cardiometabolic & Renal" icon={<Heart className="h-3.5 w-3.5 text-rose-400" />}>
           <DiseaseCard
             title="Diabetes"
-            description="ADA 2026 guidelines: diagnosis, treatment algorithms, medication guide, insulin therapy, DKA/HHS management"
+            description="ADA 2026: Dx, algorithms, medication guide, insulin, DKA/HHS"
             icon={<Droplets className="h-5 w-5 text-red-400" />}
             to="/diabetes"
             accent="bg-red-500"
@@ -925,178 +925,112 @@ export default function Home() {
           />
           <DiseaseCard
             title="Hypertension"
-            description="ESC/ESH 2024: BP classification, treatment algorithms, medication guide, secondary HTN workup"
+            description="ESC/ESH 2024: BP class, algorithms, meds, secondary HTN workup"
             icon={<Heart className="h-5 w-5 text-orange-400" />}
             to="/hypertension"
             accent="bg-orange-500"
             badge="ESC"
           />
           <DiseaseCard
-            title="Lipids / Dyslipidemia"
-            description="LAI 2023 / ACC-AHA: lipid panel interpretation, ASCVD risk calculator, statin therapy, treatment targets"
-            icon={<Droplet className="h-5 w-5 text-blue-400" />}
-            to="/lipids"
-            accent="bg-blue-500"
-            badge="LAI"
-          />
-          <DiseaseCard
-            title="Body weight issues"
-            description="BMI calculator (Indian cutoffs), GLP-1 algorithm, waist-height ratio, weight management guidelines"
-            icon={<Weight className="h-5 w-5 text-violet-400" />}
-            to="/obesity/bmi-calculator"
-            accent="bg-violet-500"
-          />
-        </DiseaseGroup>
-
-        <DiseaseGroup title="Organ Systems" icon={<Dna className="h-3.5 w-3.5 text-emerald-400" />}>
-          <DiseaseCard
-            title="Liver Disease"
-            description="NAFLD/MASLD management, compensated & decompensated cirrhosis, medication adjustments in liver disease"
-            icon={<Dna className="h-5 w-5 text-lime-400" />}
-            to="/liver"
-            accent="bg-lime-500"
-          />
-          <DiseaseCard
-            title="Thyroid Disorders"
-            description="Hypothyroidism, hyperthyroidism, thyroid nodules, TSH/FT4/FT3 interpretation, medication dosing"
-            icon={<Microscope className="h-5 w-5 text-emerald-400" />}
-            to="/thyroid"
-            accent="bg-emerald-500"
-          />
-          <DiseaseCard
             title="Renal Tools"
-            description="CKD/AKI staging, renal calculators (eGFR, UACR, Mehran), and dose adjustments for 200+ medications"
+            description="CKD/AKI staging, eGFR, UACR, Mehran Score, and renal dosing adjustment"
             icon={<Filter className="h-5 w-5 text-amber-400" />}
             to="/renal-dosing"
             accent="bg-amber-500"
             badge="KDIGO"
           />
           <DiseaseCard
+            title="Lipids"
+            description="LAI 2023 / ACC-AHA: ASCVD risk, statins, targets"
+            icon={<Droplet className="h-5 w-5 text-blue-400" />}
+            to="/lipids"
+            accent="bg-blue-500"
+            badge="LAI"
+          />
+          <DiseaseCard
+            title="Obesity"
+            description="BMI (Indian), GLP-1 algorithm, waist-height ratio"
+            icon={<Weight className="h-5 w-5 text-violet-400" />}
+            to="/obesity/bmi-calculator"
+            accent="bg-violet-500"
+          />
+        </DiseaseGroup>
+
+        <DiseaseGroup title="Specialty Medicine" icon={<Dna className="h-3.5 w-3.5 text-emerald-400" />}>
+          <DiseaseCard
+            title="Liver Disease"
+            description="NAFLD/MASLD, cirrhosis, medication adjustments"
+            icon={<Dna className="h-5 w-5 text-lime-400" />}
+            to="/liver"
+            accent="bg-lime-500"
+          />
+          <DiseaseCard
+            title="Thyroid"
+            description="TSH/FT4 interpretation, nodules, medication dosing"
+            icon={<Microscope className="h-5 w-5 text-emerald-400" />}
+            to="/thyroid"
+            accent="bg-emerald-500"
+          />
+          <DiseaseCard
             title="COPD / Respiratory"
-            description="GOLD guidelines: COPD assessment, spirometry interpretation, inhaler therapy, asthma-COPD overlap"
+            description="GOLD: assessment, spirometry, inhalers"
             icon={<AirVent className="h-5 w-5 text-cyan-400" />}
             to="/respiratory"
             accent="bg-cyan-500"
             badge="GOLD"
           />
-        </DiseaseGroup>
-
-        <DiseaseGroup title="Blood & Electrolytes" icon={<Droplet className="h-3.5 w-3.5 text-sky-400" />}>
           <DiseaseCard
-            title="Anemia & Blood Disorders"
-            description="Anemia evaluator, iron parameters, thrombocytopenia, bleeding/clotting disorders, ESR interpretation"
-            icon={<Droplet className="h-5 w-5 text-sky-400" />}
+            title="Blood & Electrolytes"
+            description="Anemia, iron, thrombocytopenia, electrolytes, acid-base"
+            icon={<Zap className="h-5 w-5 text-sky-400" />}
             to="/anemia"
             accent="bg-sky-500"
           />
           <DiseaseCard
-            title="Electrolyte Disturbances"
-            description="Hyponatremia, hypernatremia, hyperkalemia, hypokalemia, calcium, magnesium, phosphate disorders"
-            icon={<Zap className="h-5 w-5 text-cyan-400" />}
-            to="/electrolytes"
-            accent="bg-cyan-500"
-          />
-          <DiseaseCard
-            title="Acid-Base Disorders"
-            description="ABG interpretation, Winter's formula, anion gap, delta-delta, metabolic alkalosis algorithm"
-            icon={<FlaskConical className="h-5 w-5 text-orange-400" />}
-            to="/acid-base"
-            accent="bg-orange-500"
-          />
-          <DiseaseCard
-            title="Hypercortisolism (Cushing's)"
-            description="Structured screening for refractory Diabetes, HTN, Obesity, and Osteoporosis (Big 4)"
+            title="Hypercortisolism"
+            description="Structured Cushing's screen for refractory metabolic disease"
             icon={<Scan className="h-5 w-5 text-purple-400" />}
             to="/images?search=Structured%20Hypercortisolism%20Screen"
             accent="bg-purple-500"
           />
         </DiseaseGroup>
 
-        <DiseaseGroup title="Infections, Geriatrics & Endocrine" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
+        <DiseaseGroup title="Infections & General Medicine" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
           <DiseaseCard
             title="Infections"
-            description="Common infections: UTI, pneumonia, cellulitis, antibiotic selection, duration of therapy"
+            description="UTI, pneumonia, cellulitis, serious/nosocomial protocols"
             icon={<Bug className="h-5 w-5 text-rose-400" />}
             to="/infections"
             accent="bg-rose-500"
           />
           <DiseaseCard
-            title="Diarrhoea & Constipation"
-            description="Assessment, rehydration therapy, empiric antibiotics, when to refer, WHO guidelines"
+            title="GI & Diarrhoea"
+            description="Acute diarrhoea, food poisoning, Constipation, rehydration"
             icon={<UtensilsCrossed className="h-5 w-5 text-amber-400" />}
             to="/acute-diarrhoea"
             accent="bg-amber-500"
           />
           <DiseaseCard
-            title="Food Poisoning"
-            description="Common pathogens, symptom-based management, when to culture, supportive care guidelines"
-            icon={<UtensilsCrossed className="h-5 w-5 text-amber-400" />}
-            to="/food-poisoning"
-            accent="bg-amber-500"
-          />
-          <DiseaseCard
-            title="PEP (Post-Exposure Prophylaxis)"
-            description="HIV, HBV, HCV, tetanus, rabies PEP protocols, exposure risk assessment, follow-up testing"
-            icon={<Shield className="h-5 w-5 text-amber-400" />}
-            to="/pep"
-            accent="bg-amber-500"
-            badge="WHO"
-          />
-        </DiseaseGroup>
-
-        <DiseaseGroup title="Women's Health" icon={<Stethoscope className="h-3.5 w-3.5 text-pink-400" />}>
-          <DiseaseCard
-            title="PMOS / PCOS"
-            description="Polyendocrine Metabolic Ovarian Syndrome: Rotterdam criteria, metabolic workup, treatment algorithm"
-            icon={<Stethoscope className="h-5 w-5 text-rose-400" />}
-            to="/women-health?tab=pmos"
-            accent="bg-rose-500"
-          />
-          <DiseaseCard
-            title="HRT Algorithm"
-            description="Hormone replacement therapy: indications, regimens, monitoring, risk-benefit assessment"
-            icon={<Heart className="h-5 w-5 text-pink-400" />}
-            to="/women-health?tab=hrt"
+            title="Women's Health"
+            description="PCOS (Rotterdam), HRT algorithm"
+            icon={<Stethoscope className="h-5 w-5 text-pink-400" />}
+            to="/women-health"
             accent="bg-pink-500"
           />
-        </DiseaseGroup>
-
-        <DiseaseGroup title="Preventive & General" icon={<Shield className="h-3.5 w-3.5 text-emerald-400" />}>
           <DiseaseCard
-            title="Adult Vaccinations"
-            description="CDC/ACIP schedule: influenza, pneumococcal, shingles, Tdap, HPV, COVID-19, travel vaccines"
-            icon={<Syringe className="h-5 w-5 text-emerald-400" />}
-            to="/adult-vaccinations"
-            accent="bg-emerald-500"
-            badge="ACIP"
-          />
-          <DiseaseCard
-            title="Vitamin D"
-            description="Vitamin D deficiency assessment, supplementation guidelines, interpretation of 25-OH-D levels"
-            icon={<Sun className="h-5 w-5 text-amber-400" />}
-            to="/vitamin-d"
-            accent="bg-amber-500"
-          />
-          <DiseaseCard
-            title="Geriatrics"
-            description="Geriatric syndromes, rapid screening algorithm, frailty assessment, multidisciplinary management"
+            title="Geriatrics & Preventive"
+            description="Frailty, fragile fractures, adult vaccinations, Vitamin D, fatigue"
             icon={<User className="h-5 w-5 text-sky-400" />}
             to="/geriatrics"
             accent="bg-sky-500"
           />
           <DiseaseCard
-            title="Fragility Fractures"
-            description="Risk assessment, prevention of secondary fractures, screening for underlying hypercortisolism"
-            icon={<Bone className="h-5 w-5 text-amber-400" />}
-            to="/geriatrics?tab=fractures"
+            title="PEP"
+            description="Post-Exposure Prophylaxis (HIV, HBV, HCV, Rabies)"
+            icon={<Shield className="h-5 w-5 text-amber-400" />}
+            to="/pep"
             accent="bg-amber-500"
-          />
-          <DiseaseCard
-            title="Fatigue"
-            description="Approach to chronic fatigue: differential diagnosis, investigations, management strategies"
-            icon={<Moon className="h-5 w-5 text-amber-400" />}
-            to="/fatigue"
-            accent="bg-amber-500"
+            badge="WHO"
           />
         </DiseaseGroup>
 
