@@ -10,7 +10,7 @@ import {
   HeartPulse, Brain, Syringe, Activity, Copy,
   Download, Clock, ShieldAlert, ChevronRight, ChevronDown, Search,
 } from "lucide-react";
-import { downloadTextFile } from "@/lib/clinical-utils";
+import { downloadTextFile, parseClinicalValue } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 
 // ══════════════════════════════════════════════
