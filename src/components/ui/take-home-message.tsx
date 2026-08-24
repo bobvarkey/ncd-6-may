@@ -1,99 +1,76 @@
-import React from "react";
-import { Info, AlertTriangle, AlertCircle, Lightbulb, CheckCircle2 } from "lucide-react";
+import { Info, AlertTriangle, Lightbulb, CheckCircle2, AlertCircle, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type MessageVariant = "info" | "warning" | "caution" | "key-point" | "success";
+export type TakeHomeVariant = "info" | "warning" | "caution" | "key-point" | "success";
 
 interface TakeHomeMessageProps {
-  title?: string;
+  title: string;
   children: React.ReactNode;
-  variant?: MessageVariant;
+  variant?: TakeHomeVariant;
   className?: string;
 }
 
-const variantStyles: Record<MessageVariant, {
-  container: string;
-  icon: React.ElementType;
+const variantConfig: Record<TakeHomeVariant, { 
+  container: string; 
+  icon: LucideIcon; 
   iconColor: string;
   titleColor: string;
 }> = {
   info: {
-    container: "bg-blue-50/50 border-blue-200 dark:bg-blue-900/10 dark:border-blue-800/50",
+    container: "bg-primary/5 border-primary/20",
     icon: Info,
-    iconColor: "text-blue-600 dark:text-blue-400",
-    titleColor: "text-blue-900 dark:text-blue-300",
+    iconColor: "text-primary",
+    titleColor: "text-primary",
   },
   warning: {
-    container: "bg-red-50/50 border-red-200 dark:bg-red-900/10 dark:border-red-800/50",
+    container: "bg-destructive/5 border-destructive/20",
     icon: AlertCircle,
-    iconColor: "text-red-600 dark:text-red-400",
-    titleColor: "text-red-900 dark:text-red-300",
+    iconColor: "text-destructive",
+    titleColor: "text-destructive",
   },
   caution: {
-    container: "bg-amber-50/50 border-amber-200 dark:bg-amber-900/10 dark:border-amber-800/50",
+    container: "bg-warning/5 border-warning/20",
     icon: AlertTriangle,
-    iconColor: "text-amber-600 dark:text-amber-400",
-    titleColor: "text-amber-900 dark:text-amber-300",
+    iconColor: "text-warning",
+    titleColor: "text-warning",
   },
   "key-point": {
-    container: "bg-indigo-50/50 border-indigo-200 dark:bg-indigo-900/10 dark:border-indigo-800/50",
+    container: "bg-indigo-500/5 border-indigo-500/20",
     icon: Lightbulb,
-    iconColor: "text-indigo-600 dark:text-indigo-400",
-    titleColor: "text-indigo-900 dark:text-indigo-300",
+    iconColor: "text-indigo-500",
+    titleColor: "text-indigo-500",
   },
   success: {
-    container: "bg-emerald-50/50 border-emerald-200 dark:bg-emerald-900/10 dark:border-emerald-800/50",
+    container: "bg-emerald-500/5 border-emerald-500/20",
     icon: CheckCircle2,
-    iconColor: "text-emerald-600 dark:text-emerald-400",
-    titleColor: "text-emerald-900 dark:text-emerald-300",
+    iconColor: "text-emerald-500",
+    titleColor: "text-emerald-500",
   },
 };
 
-export function TakeHomeMessage({
-  title = "Practical Take-Home Messages",
-  children,
-  variant = "key-point",
-  className,
+export function TakeHomeMessage({ 
+  title, 
+  children, 
+  variant = "info",
+  className 
 }: TakeHomeMessageProps) {
-  const styles = variantStyles[variant];
-  const Icon = styles.icon;
+  const config = variantConfig[variant];
+  const Icon = config.icon;
 
   return (
-    <div
-      className={cn(
-        "my-6 rounded-xl border p-5 transition-all duration-200 shadow-sm",
-        styles.container,
-        className
-      )}
-    >
-      <div className="flex items-start gap-4">
-        <div className={cn("mt-1 shrink-0", styles.iconColor)}>
-          <Icon className="h-6 w-6" />
-        </div>
-        <div className="space-y-2">
-          {title && (
-            <h3 className={cn("font-heading text-lg font-bold leading-none tracking-tight", styles.titleColor)}>
-              {title}
-            </h3>
-          )}
-          <div className="text-sm leading-relaxed text-foreground/90 font-medium">
-            {typeof children === "string" ? (
-              <div className="space-y-2">
-                {children.split("\n\n").map((paragraph, i) => (
-                  <p key={i} className="flex items-start gap-2">
-                    {paragraph.startsWith("→") ? (
-                      paragraph
-                    ) : (
-                      paragraph
-                    )}
-                  </p>
-                ))}
-              </div>
-            ) : (
-              children
-            )}
-          </div>
-        </div>
+    <div className={cn(
+      "p-4 rounded-xl border animate-in fade-in slide-in-from-top-2 duration-300", 
+      config.container,
+      className
+    )}>
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className={cn("h-5 w-5", config.iconColor)} />
+        <h3 className={cn("font-display font-bold text-sm uppercase tracking-wider", config.titleColor)}>
+          {title}
+        </h3>
+      </div>
+      <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line">
+        {children}
       </div>
     </div>
   );

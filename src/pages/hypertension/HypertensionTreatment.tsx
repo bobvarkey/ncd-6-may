@@ -18,6 +18,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
+import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 // Category colors for hypertension (orange theme)
 const categoryColors = {
@@ -1290,6 +1291,11 @@ export default function HypertensionTreatment() {
           </div>
         </CardContent>
       </Card>
+
+      <TakeHomeMessage title="Workup Pearl" variant="warning" className="mb-4">
+        Secondary hypertension should be suspected in young patients, resistant cases, or when a sudden escape from previously stable control occurs. 
+        Always check electrolytes for primary aldosteronism.
+      </TakeHomeMessage>
 
       {/* Medication Dosing Tables */}
       <Card id="htn-section-medications" className="border-2 border-primary/20">

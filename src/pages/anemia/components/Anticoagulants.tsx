@@ -1226,7 +1226,7 @@ export default function Anticoagulants() {
                 </div>
               </div>
 
-              <TakeHomeMessage>
+              <TakeHomeMessage title="Practical Take-Home Messages" variant="key-point">
                 →AF → Apixaban 5 mg BID is often the default choice
 
                 →DVT/PE → Apixaban or Rivaroxaban preferred
