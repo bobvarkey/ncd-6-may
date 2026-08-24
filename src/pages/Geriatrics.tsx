@@ -645,6 +645,16 @@ export default function Geriatrics() {
         </TabsContent>
       </Tabs>
 
+      <TakeHomeMessage title="Geriatric Care Principles" variant="key-point">
+        →Prioritize "What Matters Most" to the patient in complex multimorbidity
+
+        →Review medications at every visit; avoid/deprescribe high-risk meds (Beers Criteria)
+
+        →Early identification of frailty helps tailor surgical and medical interventions
+
+        →Screen for cognitive changes if there is functional decline or poor adherence
+      </TakeHomeMessage>
+
       <div className="flex justify-center py-4 border-t border-border/50">
         <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
       </div>

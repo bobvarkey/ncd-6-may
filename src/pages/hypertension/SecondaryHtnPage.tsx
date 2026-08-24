@@ -416,6 +416,15 @@ export default function SecondaryHtnPage() {
             </div>
           </TabsContent>
         </Tabs>
+        <TakeHomeMessage title="Secondary HTN Key Points" variant="warning">
+          →Consider secondary causes in young patients (&lt;40) or resistant HTN (≥3 meds)
+
+          →Sudden worsening of previously stable BP suggests renovascular disease
+
+          →Unprovoked hypokalemia is a strong red flag for Primary Aldosteronism
+
+          →Screen for OSA in patients with nocturnal dipping loss or resistant HTN
+        </TakeHomeMessage>
       </div>
     </div>
   );
