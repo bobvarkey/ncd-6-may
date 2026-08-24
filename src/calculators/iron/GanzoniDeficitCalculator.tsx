@@ -177,7 +177,8 @@ Result:
             </div>
             <Input
               id="ganzoni-stores"
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={ironStores}
               onChange={(e) => setIronStores(e.target.value)}
             />
