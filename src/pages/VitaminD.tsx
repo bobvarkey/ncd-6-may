@@ -89,7 +89,7 @@ export default function VitaminD() {
                 </figcaption>
               </figure>
               <ImageLink imageId="osteoporosis-treatment-approach" label="Open Algorithm 1 in gallery →" />
-              <div className="pt-4 border-t border-border/40 mt-4">
+              <figure className="pt-4 border-t border-border/40 mt-4 space-y-2">
                 <ZoomableImage
                   src={osteoporosisTreatmentV2.url}
                   alt="Additional Osteoporosis Treatment Approach infographic"
@@ -101,7 +101,7 @@ export default function VitaminD() {
                   Osteoporosis Clinical Decision Support — tap to zoom
                 </figcaption>
                 <ImageLink imageId="osteoporosis-treatment-v2" label="Open Algorithm 2 in gallery →" />
-              </div>
+              </figure>
             </CardContent>
           </Card>
         </TabsContent>
