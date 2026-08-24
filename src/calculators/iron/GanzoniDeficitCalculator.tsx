@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Info, Calculator, RotateCcw, Copy, Printer, Download, Syringe } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
+import { copyToClipboard, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
