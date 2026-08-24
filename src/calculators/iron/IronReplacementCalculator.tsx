@@ -441,7 +441,7 @@ function IronParametersLive({
           <div className="rounded-lg bg-card border border-border/50 p-2.5">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Target Hb</div>
             <div className="text-sm font-semibold text-foreground font-mono">
-              {targetHb !== null ? `${targetHb.toFixed(1)} g/dL` : "—"}
+              {targetHb !== null ? `${roundClinical(targetHb, 1)} g/dL` : "—"}
             </div>
             {!isNaN(weight) && (
               <div className="text-[10px] text-muted-foreground mt-0.5">
