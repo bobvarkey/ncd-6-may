@@ -759,7 +759,7 @@ export default function IronReplacementCalculator() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">TSAT</p>
-                          <p className="font-bold text-base">{previewTSAT !== null ? previewTSAT.toFixed(1) + "%" : "—"}</p>
+                          <p className="font-bold text-base">{previewTSAT !== null ? roundClinical(previewTSAT, 1) + "%" : "—"}</p>
                         </div>
                         <div className="rounded-lg bg-background/60 p-2">
                           <p className="text-xs text-muted-foreground">Ferritin</p>
