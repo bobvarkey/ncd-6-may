@@ -32,7 +32,7 @@ import {
   Download,
   Activity,
 } from "lucide-react";
-import { copyToClipboard, formatClinicalNote, downloadTextFile } from "@/lib/clinical-utils";
+import { copyToClipboard, formatClinicalNote, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
 
 // ── Types ──────────────────────────────────────────────────────
