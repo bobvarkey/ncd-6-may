@@ -146,7 +146,13 @@ export function SectionCard({
 
                                         
                                             
-                                            improve the search glossary, add MACS and missing terms so that the whole app is  searchable`}
+                                            Add MACS and the missing adrenal-insight terms to the search glossary so users can find all relevant content.
+
+Implement full app search so glossary terms search across every section, not just the glossary area.
+
+Add a glossary definition sidebar that shows definitions and related terms when a search match is clicked.
+
+Improve search by adding synonym and abbreviation matching (e.g., MACS, DST, HU, pheo) to increase hit rates.`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
