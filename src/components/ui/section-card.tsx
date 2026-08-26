@@ -145,7 +145,47 @@ export function SectionCard({
         title="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Add site-wide search that indexes glossary terms and section content across the entire app."
+                                            add this to secondary hypertension and diabetes; add this to adrenal lesions
+
+Adrenal incidentaloma workup: assess malignancy + biochemical activity.
+
+Malignancy risk ↑ if >4 cm and/or HU ≥10; consider surgical referral.
+
+HU ≥10 lesions warrant pheochromocytoma eval with plasma metanephrines.
+
+Hypertension or hypokalemia + lipid-rich lesion → screen for hyperaldosteronism.
+
+MACS dx = 1 mg overnight dexamethasone suppression; cortisol >1.8 µg/dL suggests MACS.
+
+User: WHAT are the biochemical tests to order
+
+User: what is MACS
+
+AI: MACS in an adrenal incidentaloma is low‑grade, ACTH‑independent cortisol excess without overt Cushing syndrome, diagnosed biochemically using a 1‑mg overnight dexamethasone suppression test.
+
+Definition and clinical context
+
+Mild autonomous cortisol secretion (MACS) refers to inappropriate, chronic cortisol production by an adrenal adenoma that does not produce the classic stigmata of overt Cushing syndrome but is associated with cardiometabolic comorbidities (HTN, diabetes, obesity, fractures).
+
+Biochemical identification
+
+Primary test: 1‑mg overnight DST
+
+- Give 1 mg dexamethasone at 23:00, measure serum cortisol at 08:00–09:00.
+
+- In normal HPA physiology, cortisol suppresses to ≤1.8 µg/dL (50 nmol/L).
+
+- In adrenal incidentaloma, cortisol >1.8 µg/dL after 1 mg DST defines MACS when overt Cushing syndrome is absent.
+
+Baseline biochemical tests: DST for MACS, plasma aldosterone–renin ratio when hypertensive or hypokalemic, and plasma free or 24‑h urinary fractionated metanephrines for pheochromocytoma.
+
+Longitudinal follow‑up may include selective repeat biochemical testing when clinically indicated or when surgery is being considered.
+
+References:
+
+1. Adrenal incidentaloma guidelines.
+
+2. Dexamethasone suppression test background."
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
