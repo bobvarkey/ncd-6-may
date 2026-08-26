@@ -142,12 +142,7 @@ export function SectionCard({
         type="button"
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
-        title="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-                                        
-                                            
-                                            Add MACS interpretation to the secondary hypertension section in the underlying clinical content data.
-
-Implement site-wide search that indexes glossary terms and section content and returns ranked results.
+        title="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Fix the JSX/TypeScript build errors in src/components/ui/section-card.tsx and ensure the project compiles.\n\nAdd a CI step that runs TypeScript typechecking and linting so JSX syntax errors are caught early.\n\nUpdate section-card.tsx to safely render user-provided display strings without breaking JSX parsing.\n\nRun build diagnostics for this project to pinpoint the exact syntax error in section-card.tsx."
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         <Download className="h-3.5 w-3.5" />
