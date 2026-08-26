@@ -145,27 +145,9 @@ export function SectionCard({
         title="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Add MACS interpretation content to the 1 mg overnight DST entry in my app.
+                                            Add MACS interpretation to the secondary hypertension section in the underlying clinical content data.
 
-Implement a collapsible (accordion) section for the reninoma workup protocol in my app.
-
-Add site-wide glossary search that supports abbreviation and synonym matching for terms like MACS, DST, and HU.
-
-Highlight matching glossary terms directly inside the search results to make them easier to scan.
-        className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
-      >
-        {copied ? (
-          <Check className="h-3.5 w-3.5 text-emerald-500" />
-        ) : (
-          <Copy className="h-3.5 w-3.5" />
-        )}
-        <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
-      </button>
-      <button
-        type="button"
-        onClick={handleDownload}
-        aria-label={`Download ${title} as text file`}
-        title="Download as .txt"
+Implement site-wide search that indexes glossary terms and section content and returns ranked results.
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         <Download className="h-3.5 w-3.5" />
