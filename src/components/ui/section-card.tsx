@@ -142,25 +142,17 @@ export function SectionCard({
         type="button"
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
-        title="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            PUt MACS as a cause of secondary hypertension and add this to MACS;{
-  &quot;topic&quot;: &quot;Adrenal Incidentaloma Workup&quot;,
-  &quot;overview&quot;: &quot;Assess malignancy risk + biochemical activity for every adrenal incidentaloma.&quot;,
-  &quot;malignancy_assessment&quot;: {
-    &quot;high_risk_features&quot;: [&quot;Size > 4 cm&quot;, &quot;Unenhanced CT attenuation ≥ 10 HU&quot;],
-    &quot;recommendation&quot;: &quot;Consider surgical referral if size > 4 cm and/or HU ≥ 10&quot;
-  },
-  &quot;biochemical_evaluation&quot;: {
-    &quot;mandatory_tests&quot;: [
-      {&quot;condition&quot;: &quot;All adrenal incidentalomas&quot;, &quot;test&quot;: &quot;1-mg overnight dexamethasone suppression test (DST)&quot;, &quot;protocol&quot;: &quot;1 mg dexamethasone at 23:00 → serum cortisol at 08:00–09:00&quot;, &quot;interpretation&quot;: {&quot;normal&quot;: &quot;Cortisol ≤ 1.8 µg/dL (≤ 50 nmol/L)&quot;, &quot;MACS&quot;: &quot;Cortisol > 1.8 µg/dL (> 50 nmol/L) without overt Cushing syndrome&quot;}},
-      {&quot;condition&quot;: &quot;HU ≥ 10 or any lesion with high malignancy concern&quot;, &quot;test&quot;: &quot;Plasma free metanephrines (or 24-h urinary fractionated metanephrines)&quot;, &quot;purpose&quot;: &quot;Rule out pheochromocytoma&quot;},
-      {&quot;condition&quot;: &quot;Hypertension and/or hypokalemia + lipid-rich lesion&quot;, &quot;test&quot;: &quot;Plasma aldosterone-renin ratio (ARR)&quot;, &quot;purpose&quot;: &quot;Screen for primary aldosteronism&quot;}
-    ],
-    &quot;not_preferred_for_MACS&quot;: [&quot;24-h urinary free cortisol&quot;, &quot;Late-night salivary cortisol&quot;]
-  },
-  &quot;MACS&quot;: {&quot;full_name&quot;: &quot;Mild Autonomous Cortisol Secretion&quot;, &quot;definition&quot;: &quot;Low-grade, ACTH-independent cortisol excess from an adrenal adenoma without classic stigmata of overt Cushing syndrome.&quot;, &quot;diagnostic_criteria&quot;: {&quot;source&quot;: &quot;2023 ESE/ENSAT guidelines&quot;, &quot;criterion&quot;: &quot;Post 1-mg DST serum cortisol > 1.8 µg/dL (> 50 nmol/L) in a patient with adrenal incidentaloma and no overt Cushing features&quot;}, &quot;associated_comorbidities&quot;: [&quot;Hypertension&quot;, &quot;Type 2 diabetes&quot;, &quot;Obesity&quot;, &quot;Vertebral fractures&quot;], &quot;notes&quot;: [&quot;Confirm ACTH independence (suppressed/low morning ACTH)&quot;, &quot;Repeat DST if results will influence management decisions (e.g., adrenalectomy)&quot;, &quot;Account for confounders (estrogen, CYP3A4 inducers/inhibitors, severe illness, etc.)&quot;]},
-  &quot;follow_up&quot;: {&quot;non_resected_lesions&quot;: &quot;Annual biochemical reassessment for up to 5 years&quot;, &quot;tests&quot;: [&quot;1-mg DST (cortisol autonomy)&quot;, &quot;ARR (if hypertensive/hypokalemic)&quot;, &quot;Plasma or urinary metanephrines&quot;]},
-  &quot;glossary_terms&quot;: [{&quot;term&quot;: &quot;MACS&quot;, &quot;synonyms&quot;: [&quot;Mild Autonomous Cortisol Secretion&quot;, &quot;subclinical Cushing&quot;, &quot;subclinical hypercortisolism&quot;], &quot;definition&quot;: &quot;Low-grade ACTH-independent cortisol excess without overt Cushing syndrome, diagnosed by 1-mg DST cortisol > 1.8 µg/dL&quot;}, {&quot;term&quot;: &quot;DST&quot;, &quot;synonyms&quot;: [&quot;Dexamethasone Suppression Test&quot;, &quot;1-mg overnight DST&quot;], &quot;definition&quot;: &quot;1 mg dexamethasone at 23:00, serum cortisol measured next morning at 08:00–09:00&quot;}, {&quot;term&quot;: &quot;HU&quot;, &quot;synonyms&quot;: [&quot;Hounsfield Units&quot;], &quot;definition&quot;: &quot;CT attenuation measurement; ≥ 10 HU increases malignancy concern and prompts pheochromocytoma evaluation&quot;}, {&quot;term&quot;: &quot;ARR&quot;, &quot;synonyms&quot;: [&quot;Aldosterone-Renin Ratio&quot;], &quot;definition&quot;: &quot;Screening test for primary aldosteronism&quot;}]
-}"
+        title={`Copy ${title} to clipboard`}
+        className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
+      >
+        {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+        <span className="hidden sm:inline">Copy</span>
+      </button>
+      <button
+        type="button"
+        onClick={handleDownload}
+        aria-label={`Download ${title} as text file`}
+        title={`Download ${title} as text file`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         <Download className="h-3.5 w-3.5" />
