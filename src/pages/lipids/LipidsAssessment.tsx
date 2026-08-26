@@ -91,31 +91,45 @@ const MODIFIER_GROUPS = [
 // ─── Classification engine ───
 function classifyLAI(
   checked: Record<string, boolean>,
-  age: number, ldl: number
+  age: number, ldl: number,
+  southAsian?: boolean,
+  hasDiabetes?: boolean
 ): { cat: "EHR" | "VHR" | "HR" | "MOD" | "LOW"; sub: "A" | "B" | "C" | ""; label: string } {
   const h = (id: string) => !!checked[id];
+  const sa = !!southAsian;
+  const dm = !!hasDiabetes;
 
   const hasASCVD = h("ascvd_cad") || h("ascvd_cva") || h("ascvd_pad");
   const hasDMTOD = h("dmtod_retinopathy") || h("dmtod_nephropathy") || h("dmtod_neuropathy");
   const hasCKD = h("ckd_3b") || h("ckd_4") || h("ckd_albuminuria");
   const hasFH = h("fh_clinical") || h("fh_genetic") || h("fh_xanthoma");
 
-  const hrfCount = ["hrf_lpa", "hrf_apob", "hrf_mets", "hrf_cac", "hrf_nafld", "hrf_extreme"].filter(k => h(k)).length;
+  // LAI 2023: South Asian ethnicity is an independent risk enhancer (~2× ASCVD risk)
+  // and lowers LDL-C thresholds for classification by ~30 mg/dL.
+  const ldlVhr = sa ? 160 : 190;
+  const ldlHr = sa ? 130 : 160;
+  const ldlMod = sa ? 100 : 130;
+
+  const hrfCount = ["hrf_lpa", "hrf_apob", "hrf_mets", "hrf_cac", "hrf_nafld", "hrf_extreme"].filter(k => h(k)).length + (sa ? 1 : 0);
   const enhCount = ["enh_fhx", "enh_hscrp", "enh_lpa_minor", "enh_autoimmune", "enh_hiv", "enh_pcos"].filter(k => h(k)).length;
 
   if (hasASCVD) {
+    // LAI 2023: South Asian with ASCVD is automatically EHR-A even without other high-risk features
     if (hrfCount >= 2) return { cat: "EHR", sub: "C", label: "Extreme High Risk C" };
     if (hrfCount === 1 || (h("ascvd_cad") && (h("ascvd_cva") || h("ascvd_pad")))) return { cat: "EHR", sub: "B", label: "Extreme High Risk B" };
+    if (sa) return { cat: "EHR", sub: "B", label: "Extreme High Risk B (South Asian)" };
     return { cat: "EHR", sub: "A", label: "Extreme High Risk A" };
   }
   if (hasDMTOD && (hrfCount >= 1 || enhCount >= 2)) return { cat: "VHR", sub: "C", label: "Very High Risk C" };
   if (hasDMTOD) return { cat: "VHR", sub: "B", label: "Very High Risk B" };
-  if (hasCKD || hasFH || ldl >= 190) return { cat: "VHR", sub: "C", label: "Very High Risk C" };
+  if (hasCKD || hasFH || ldl >= ldlVhr) return { cat: "VHR", sub: "C", label: "Very High Risk C" };
+  if (sa && dm) return { cat: "VHR", sub: "B", label: "Very High Risk B (South Asian + Diabetes)" };
   if (enhCount >= 3) return { cat: "HR", sub: "", label: "High Risk" };
   if (h("enh_fhx") && (enhCount >= 2 || hrfCount >= 1)) return { cat: "HR", sub: "", label: "High Risk" };
   if (age >= 40 && (enhCount >= 2 || hrfCount >= 1)) return { cat: "HR", sub: "", label: "High Risk" };
   if (age >= 40 && enhCount >= 1) return { cat: "MOD", sub: "", label: "Moderate Risk" };
-  if (ldl >= 130) return { cat: "MOD", sub: "", label: "Moderate Risk" };
+  if (ldl >= ldlHr) return { cat: "HR", sub: "", label: "High Risk" };
+  if (ldl >= ldlMod) return { cat: "MOD", sub: "", label: "Moderate Risk" };
   return { cat: "LOW", sub: "", label: "Low Risk" };
 }
 
@@ -192,6 +206,9 @@ export default function LipidsAssessment({ onClassificationChange, onNavigateToT
   const [diabetes, setDiabetes] = useState(false);
   const [smoking, setSmoking] = useState(false);
 
+  // South Asian ethnicity (LAI 2023 risk enhancer)
+  const [southAsian, setSouthAsian] = useState(false);
+
   // Checked state for risk modifiers
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const toggle = (id: string) => setChecked(p => ({ ...p, [id]: !p[id] }));
@@ -219,7 +236,7 @@ export default function LipidsAssessment({ onClassificationChange, onNavigateToT
   const b = parseFloat(bmi) || 0;
   const e = parseFloat(egfr) || 0;
 
-  const classification = classifyLAI(checked, a, l);
+  const classification = classifyLAI(checked, a, l, southAsian, diabetes);
   const key = classification.cat + (classification.sub ? "-" + classification.sub : "");
   const details = BUCKET_DETAILS[key] || BUCKET_DETAILS["LOW"];
   const rec = TREATMENT_RECS[key] || TREATMENT_RECS["LOW"];
@@ -260,7 +277,10 @@ export default function LipidsAssessment({ onClassificationChange, onNavigateToT
     ldlTarget: details.ldl, nonHdlTarget: details.nonHdl, apoBTarget: details.apoB,
     intensity: details.intensity, drug: details.drug,
     ldlCurrent: l, atTarget,
-    riskFactors: Object.entries(checked).filter(([, v]) => v).map(([k]) => k),
+    riskFactors: [
+      ...(southAsian ? ["South Asian ethnicity"] : []),
+      ...Object.entries(checked).filter(([, v]) => v).map(([k]) => k),
+    ],
   };
 
   useEffect(() => {
@@ -282,6 +302,7 @@ export default function LipidsAssessment({ onClassificationChange, onNavigateToT
       ...(preventResult?.valid ? [`PREVENT 10-yr: ${preventResult.riskPct}% (${preventResult.category})`] : []),
       "",
       "ACTIVE MODIFIERS:",
+      ...(southAsian ? ["  ✓ South Asian ethnicity (LAI 2023 risk enhancer)"] : []),
       ...(active.length ? active.map(a => `  ✓ ${a.label}`) : ["  (none)"]),
     ];
     return lines.join("\n");
@@ -333,6 +354,24 @@ export default function LipidsAssessment({ onClassificationChange, onNavigateToT
           Toggle modifiers and see the classification update live.
           {totalChecked > 0 && <span className="ml-1 font-semibold">({totalChecked} selected)</span>}
         </p>
+
+        {/* ─── Ethnicity (South Asian) ─── */}
+        <label className={cn("mb-3 flex cursor-pointer items-start gap-2.5 rounded-md border border-border bg-muted/30 px-3 py-2.5 transition-colors", southAsian ? "bg-danger/5 ring-1 ring-danger/30" : "hover:bg-muted/50")}>
+          <Checkbox checked={southAsian} onCheckedChange={(v) => setSouthAsian(!!v)} className="mt-0.5" />
+          <div>
+            <span className="text-sm text-foreground font-medium">South Asian ethnicity (Indian subcontinent)</span>
+            <p className="text-xs text-muted-foreground">LAI 2023 independent risk enhancer — ~2× ASCVD risk at the same LDL level. Lowers LDL-C thresholds for classification by ~30 mg/dL and upgrades risk (e.g. South Asian + diabetes → VHR).</p>
+          </div>
+        </label>
+        {southAsian && (
+          <div className="mb-3 rounded-lg border border-danger/30 bg-danger/5 p-3 text-xs text-foreground space-y-1">
+            <p className="font-semibold">LAI 2023 — South Asian Risk Modifier applied:</p>
+            <p>• LDL-C thresholds lowered: VHR ≥160, HR ≥130, MOD ≥100 mg/dL (vs ≥190/≥160/≥130)</p>
+            <p>• South Asian + Diabetes → Very High Risk (V2)</p>
+            <p>• South Asian with established ASCVD → automatically Extreme High Risk (E2)</p>
+          </div>
+        )}
+
         <div className="space-y-2">
           {MODIFIER_GROUPS.map(group => {
             const count = modifierCounts[group.title];

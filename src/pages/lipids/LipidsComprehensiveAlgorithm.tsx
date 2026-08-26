@@ -14,6 +14,8 @@ import {
   TrendingUp,
   ShieldCheck,
   Info,
+  Copy,
+  Check,
 } from "lucide-react";
 
 const ALGORITHM = {
@@ -189,6 +191,50 @@ const PHENOTYPE_ICONS: Record<string, React.ReactNode> = {
 };
 
 export default function LipidsComprehensiveAlgorithm() {
+  const [copied, setCopied] = React.useState(false);
+
+  const buildAlgorithmText = () => {
+    const lines: string[] = [];
+    lines.push(ALGORITHM.algorithm_name);
+    lines.push(`v${ALGORITHM.version}`);
+    lines.push(ALGORITHM.purpose);
+    lines.push("");
+    for (const step of ALGORITHM.workflow) {
+      lines.push(`STEP ${step.step}: ${step.title}`);
+      if ("tests" in step && step.tests) {
+        lines.push("  Tests: " + (step.tests as string[]).join(", "));
+      }
+      if ("targets" in step && step.targets) {
+        for (const [marker, target] of Object.entries(step.targets as Record<string, string>)) {
+          lines.push(`  ${marker}: ${target}`);
+        }
+      }
+      if ("decision_tree" in step && step.decision_tree) {
+        for (const p of step.decision_tree as typeof ALGORITHM.workflow[2]["decision_tree"]) {
+          lines.push(`  - If: ${p.if} → ${p.diagnosis}`);
+          for (const m of p.management) lines.push(`      • ${m}`);
+        }
+      }
+      if ("evaluate" in step && step.evaluate) {
+        for (const c of step.evaluate as typeof ALGORITHM.workflow[3]["evaluate"]) {
+          lines.push(`  - ${c.driver}: ${c.tests.join(", ")}`);
+        }
+      }
+      lines.push("");
+    }
+    return lines.join("\n");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(buildAlgorithmText());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -211,6 +257,14 @@ export default function LipidsComprehensiveAlgorithm() {
         <p className="text-sm text-muted-foreground leading-relaxed">
           {ALGORITHM.purpose}
         </p>
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted/40"
+        >
+          {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? "Copied" : "Copy Algorithm"}
+        </button>
       </Card>
 
       {/* Workflow Steps */}

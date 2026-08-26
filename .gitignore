@@ -27,3 +27,6 @@ dist-ssr
 # Combined repo specifics
 The-Big-Four-NCD-app/
 .vercel
+
+# Build artifacts
+*.tsbuildinfo
