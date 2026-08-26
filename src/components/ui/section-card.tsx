@@ -142,14 +142,10 @@ export function SectionCard({
         type="button"
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
-        title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+        title="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Implement site-wide search so glossary terms are searchable across every section of my app.
-
-Add synonym and abbreviation matching (like MACS, DST, HU, pheo) to improve search hit rates.
-
-Add highlighting for matching terms in search results to make it easier to spot relevant glossary entries.`}
+                                            Add site-wide search that indexes glossary terms and section content across the entire app."
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
