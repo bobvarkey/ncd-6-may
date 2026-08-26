@@ -378,7 +378,7 @@ export function GlobalMedSearch() {
           ) : (
             <ul className="py-1">
               {results.map((item, idx) => (
-                <li key={item.type === 'medication' ? `${item.drug}-${item.drugClass}` : item.id}>
+                <li key={item.type === 'medication' ? `${item.drug}-${item.drugClass}` : item.type === 'topic' ? item.id : item.term}>
                   {item.type === 'medication' ? (
                     <button
                       type="button"

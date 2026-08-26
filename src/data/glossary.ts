@@ -64,6 +64,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   OSA: { term: "OSA", full: "Obstructive Sleep Apnea" },
   RVS: { term: "RVS", full: "Renal Vein Sampling" },
   JG: { term: "JG", full: "Juxtaglomerular", description: "Refers to the renin-producing cells of the kidney." },
+  CFS: { term: "CFS", full: "Clinical Frailty Scale", description: "9-point Rockwood scale classifying frailty by function and dependence.", synonyms: ["Rockwood Clinical Frailty Scale"] },
 };
 
 export function lookupGlossary(term: string): GlossaryEntry | undefined {

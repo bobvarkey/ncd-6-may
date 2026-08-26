@@ -29,6 +29,7 @@ import {
 import ImageLink from "@/components/ImageLink";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
+import { ClinicalFrailtyScale } from "@/components/ClinicalFrailtyScale";
 
 // ── Risk Flag Checklist ──
 const RISK_FLAGS = [
@@ -602,6 +603,7 @@ export default function Geriatrics() {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
     if (tab === "fractures") setActiveTab("fractures");
+    if (tab === "frailty") setActiveTab("frailty");
   });
 
   return (
@@ -627,6 +629,10 @@ export default function Geriatrics() {
             <ClipboardList className="h-4 w-4" />
             Screening Algorithm
           </TabsTrigger>
+          <TabsTrigger value="frailty" className="flex-1 gap-2">
+            <Activity className="h-4 w-4" />
+            Frailty Scale
+          </TabsTrigger>
           <TabsTrigger value="fractures" className="flex-1 gap-2">
             <Bone className="h-4 w-4" />
             Fragility Fractures
@@ -639,6 +645,10 @@ export default function Geriatrics() {
 
         <TabsContent value="screening" className="mt-6">
           <GeriatricScreening />
+        </TabsContent>
+
+        <TabsContent value="frailty" className="mt-6">
+          <ClinicalFrailtyScale />
         </TabsContent>
 
         <TabsContent value="fractures" className="mt-6">
