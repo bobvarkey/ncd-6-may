@@ -146,7 +146,7 @@ export function SectionCard({
 
                                         
                                             
-                                            Implement full app search so glossary terms search across every section, not just the glossary area.`}
+                                            even now,  many topics including MACS is not searchable in the searchbar`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
