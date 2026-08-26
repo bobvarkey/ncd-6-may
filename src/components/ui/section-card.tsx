@@ -145,7 +145,69 @@ export function SectionCard({
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Implement automatic reordering so the Vitamin D protocol and Osteoporosis treatment sections appear at the top of the page.`}
+                                            add this to adrenal lesions in secondary hypertension;Adrenal incidentaloma workup: assess malignancy + biochemical activity.
+
+Malignancy risk ↑ if >4 cm and/or HU ≥10; consider surgical referral.
+
+HU ≥10 lesions warrant pheochromocytoma eval with plasma metanephrines.
+
+Hypertension or hypokalemia + lipid-rich lesion → screen for hyperaldosteronism.
+
+MACS dx = 1 mg overnight dexamethasone suppression; cortisol >1.8 µg/dL suggests MACS (Mild Autonomous Cortisol Secretion (MACS)—formerly called subclinical Cushing's syndrome—is a common hormonal condition where a benign adrenal tumor (adenoma) produces low levels of cortisol independently of the body's normal control mechanisms) User: WHAT are the biochemical tests to order
+
+AI: For a patient with an Adrenal Incidentaloma, baseline and follow‑up biochemical testing focus on cortisol autonomy, primary aldosteronism, and pheochromocytoma.
+
+ Baseline biochemical tests
+
+1. Hypercortisolism / MACS
+
+   - 1‑mg overnight dexamethasone suppression test (DST): 1 mg dexamethasone at 23:00, 08:00 serum cortisol next morning.  
+
+   - A post‑DST cortisol >1.8 µg/dL (>50 nmol/L) without overt Cushing signs is consistent with mild autonomous cortisol secretion (MACS).12  
+
+   - 24‑h urine cortisol or late‑night salivary cortisol are not preferred for MACS screening in adrenal incidentalomas.2  
+
+   - Alternative sampling: post‑DST salivary cortisone correlates strongly with serum cortisol and can substitute when venepuncture/hospital attendance is an issue.3
+
+2. Primary aldosteronism (if hypertensive and/or hypokalemic)
+
+   - Plasma aldosterone–renin ratio (ARR) as the screening test.145  
+
+3. Pheochromocytoma
+
+   - Plasma free metanephrines (metanephrine, normetanephrine) or  
+
+   - 24‑h urinary fractionated metanephrines ± catecholamines.156  
+
+ Longitudinal follow‑up biochemical tests
+
+- For nonresected adrenal incidentalomas, guidelines support annual biochemical reassessment for up to 5 years with:  
+
+  - DST for cortisol autonomy,  
+
+  - ARR in hypertensive/hypokalemic patients,  
+
+  - Plasma or urinary metanephrines for pheochromocytoma,41  
+
+  - with more selective repeat DST (e.g., borderline MACS or if surgery is being considered).7
+
+Would you like a one‑page order set (baseline and yearly labs) you can paste into your EHR?
+
+References:
+
+1. 1Adrenal incidentaloma : guidelines : guidelines summary. - https://emedicine.medscape.com/article/116587-guidelines#g1
+
+2. 2Adrenal Incidentalomas: When to Worry and What to Test. - https://www.medscape.com/viewarticle/adrenal-incidentalomas-when-worry-and-what-test-2026a1000r3r
+
+3. 3The Utility of Salivary Cortisone in the Overnight Dexamethasone Suppression Test in Adrenal Incidentalomas. - https://pubmed.ncbi.nlm.nih.gov/37155577/
+
+4. 4Adrenal incidentaloma : treatment & management : long-term monitoring. - https://emedicine.medscape.com/article/116587-treatment#d9
+
+5. 5Adrenal carcinoma : workup : laboratory studies. - https://emedicine.medscape.com/article/276264-workup#c4
+
+6. 6Pheochromocytoma and Paraganglioma Treatment - https://www.cancer.gov/types/pheochromocytoma/hp/pheochromocytoma-treatment-pdq#_1
+
+7. 7Adrenal Incidentalomas: Repeat Testing May Inform Management. - https://www.medscape.com/viewarticle/adrenal-incidentalomas-repeat-testing-may-inform-management-`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
