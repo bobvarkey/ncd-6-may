@@ -145,9 +145,7 @@ export function SectionCard({
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            Improve search by adding synonym and abbreviation matching (e.g., MACS, DST, HU, pheo) to increase hit rates.
-
-Implement full app search so glossary terms are searchable across every section, not just the glossary area.`}
+                                            Implement full app search so my glossary terms and section content are searchable across every section.`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
