@@ -369,6 +369,84 @@ export default function SecondaryHtnPage() {
                 </div>
               </div>
             </div>
+
+            {/* ── Adrenal Incidentaloma Workup ── */}
+            <div className="p-3 rounded-lg border bg-amber-500/5 border-amber-500/20">
+              <h4 className="text-sm font-semibold mb-2">🩺 Adrenal Incidentaloma Workup</h4>
+              <p className="text-xs text-muted-foreground mb-3">Assess malignancy risk + biochemical activity for every adrenal incidentaloma.</p>
+
+              <div className="space-y-3 text-xs">
+                {/* Malignancy assessment */}
+                <div className="p-2 rounded bg-rose-500/5 border border-rose-500/20">
+                  <strong className="text-rose-600">⚠️ Malignancy Assessment</strong>
+                  <ul className="mt-1 list-disc pl-4 space-y-0.5">
+                    <li><strong>High-risk features:</strong> Size &gt; 4 cm; Unenhanced CT attenuation ≥ 10 HU</li>
+                    <li><strong>Recommendation:</strong> Consider surgical referral if size &gt; 4 cm and/or HU ≥ 10</li>
+                  </ul>
+                </div>
+
+                {/* Biochemical evaluation */}
+                <div className="p-2 rounded bg-sky-500/5 border border-sky-500/20">
+                  <strong className="text-sky-600">🧪 Biochemical Evaluation — Mandatory Tests</strong>
+                  <div className="mt-1 space-y-2">
+                    <div className="p-2 rounded bg-background/60 border">
+                      <strong>1. All adrenal incidentalomas → 1-mg overnight DST</strong>
+                      <div className="mt-0.5 text-muted-foreground">1 mg dexamethasone at 23:00 → serum cortisol at 08:00–09:00</div>
+                      <ul className="mt-1 list-disc pl-4">
+                        <li><strong>Normal:</strong> Cortisol ≤ 1.8 µg/dL (≤ 50 nmol/L)</li>
+                        <li><strong>MACS:</strong> Cortisol &gt; 1.8 µg/dL (&gt; 50 nmol/L) without overt Cushing syndrome</li>
+                      </ul>
+                    </div>
+                    <div className="p-2 rounded bg-background/60 border">
+                      <strong>2. HU ≥ 10 or high malignancy concern → Plasma free metanephrines</strong>
+                      <div className="mt-0.5 text-muted-foreground">(or 24-h urinary fractionated metanephrines) — rule out pheochromocytoma</div>
+                    </div>
+                    <div className="p-2 rounded bg-background/60 border">
+                      <strong>3. Hypertension and/or hypokalemia + lipid-rich lesion → Plasma ARR</strong>
+                      <div className="mt-0.5 text-muted-foreground">Screen for primary aldosteronism</div>
+                    </div>
+                  </div>
+                  <div className="mt-2 p-2 rounded bg-amber-500/10 border border-amber-500/30">
+                    <strong>Not preferred for MACS:</strong> 24-h urinary free cortisol; late-night salivary cortisol
+                  </div>
+                </div>
+
+                {/* MACS */}
+                <div className="p-2 rounded bg-violet-500/5 border border-violet-500/20">
+                  <strong className="text-violet-600">MACS — Mild Autonomous Cortisol Secretion</strong>
+                  <p className="mt-1 text-muted-foreground">Low-grade, ACTH-independent cortisol excess from an adrenal adenoma without classic stigmata of overt Cushing syndrome.</p>
+                  <div className="mt-1"><strong>Diagnostic criterion (2023 ESE/ENSAT):</strong> post 1-mg DST serum cortisol &gt; 1.8 µg/dL (&gt; 50 nmol/L) in a patient with adrenal incidentaloma and no overt Cushing features.</div>
+                  <div className="mt-1"><strong>Associated comorbidities:</strong> Hypertension, Type 2 diabetes, Obesity, Vertebral fractures</div>
+                  <ul className="mt-1 list-disc pl-4 text-muted-foreground">
+                    <li>Confirm ACTH independence (suppressed/low morning ACTH)</li>
+                    <li>Repeat DST if results will influence management decisions (e.g., adrenalectomy)</li>
+                    <li>Account for confounders (estrogen, CYP3A4 inducers/inhibitors, severe illness, etc.)</li>
+                  </ul>
+                </div>
+
+                {/* Follow-up */}
+                <div className="p-2 rounded bg-emerald-500/5 border border-emerald-500/20">
+                  <strong className="text-emerald-600">📅 Follow-up (non-resected lesions)</strong>
+                  <div className="mt-1">Annual biochemical reassessment for up to 5 years.</div>
+                  <ul className="mt-1 list-disc pl-4">
+                    <li>1-mg DST (cortisol autonomy)</li>
+                    <li>ARR (if hypertensive/hypokalemic)</li>
+                    <li>Plasma or urinary metanephrines</li>
+                  </ul>
+                </div>
+
+                {/* Glossary */}
+                <div className="p-2 rounded bg-gray-500/5 border border-gray-500/20">
+                  <strong>📖 Glossary</strong>
+                  <ul className="mt-1 list-disc pl-4 space-y-0.5">
+                    <li><strong>MACS</strong> (Mild Autonomous Cortisol Secretion, subclinical Cushing, subclinical hypercortisolism) — low-grade ACTH-independent cortisol excess without overt Cushing, diagnosed by 1-mg DST cortisol &gt; 1.8 µg/dL</li>
+                    <li><strong>DST</strong> (Dexamethasone Suppression Test, 1-mg overnight DST) — 1 mg dexamethasone at 23:00, serum cortisol next morning 08:00–09:00</li>
+                    <li><strong>HU</strong> (Hounsfield Units) — CT attenuation; ≥ 10 HU increases malignancy concern and prompts pheochromocytoma evaluation</li>
+                    <li><strong>ARR</strong> (Aldosterone-Renin Ratio) — screening test for primary aldosteronism</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="tips" className="space-y-3 pt-4">
