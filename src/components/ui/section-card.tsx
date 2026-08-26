@@ -145,7 +145,7 @@ export function SectionCard({
         title="'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            1. add MACS interpretation to 1 mg overnight DST , 2. Make reninoma workup protocol collapsible"
+                                            add MACS to secondary hypertension"
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
