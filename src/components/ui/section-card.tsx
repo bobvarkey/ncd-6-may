@@ -143,15 +143,10 @@ export function SectionCard({
         onClick={handleCopy}
         aria-label={`Copy ${title} to clipboard`}
         title={`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+
                                         
                                             
-                                            Add an automatic de-duplication check when building the Image Gallery so duplicate images can’t be added again.
-
-Add an admin-friendly way for me to edit the command-string display text and other section copy without touching code.
-
-Add copy-to-clipboard buttons so I can quickly copy each section’s command text and paste it into my notes or EHR.
-
-`}
+                                            improve the search glossary, add MACS and missing terms so that the whole app is  searchable`}
         className={`flex items-center gap-1 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs font-medium ${t.title} hover:bg-background transition-colors`}
       >
         {copied ? (
