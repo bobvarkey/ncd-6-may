@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TestTube, CheckCircle2, AlertTriangle } from "lucide-react";
+import { GlossaryTerm } from "@/components/GlossaryTerm";
 
 /**
  * 1 mg overnight DST interpretation panel.
@@ -40,13 +41,13 @@ export default function DstInterpretationPanel() {
             ? {
                 label:
                   dexaAdequate === true
-                    ? "True non-suppression — proceed with Cushing's workup"
-                    : "Non-suppressed — possible hypercortisolism",
+                    ? "True non-suppression — compatible with MACS"
+                    : "Non-suppressed — possible MACS",
                 note:
                   (dexaAdequate === true
                     ? "Dexamethasone level confirms adequate exposure (>200 ng/dL), so non-suppression is genuine. "
                     : "Check serum dexamethasone to confirm adequate exposure. ") +
-                  "Confirm with a second test (late-night salivary cortisol ×2 or 24 h urine free cortisol). Exclude false positives: estrogens/OCP, CYP3A4 inducers, poor adherence, pregnancy, severe obesity, depression, alcohol.",
+                  "A morning cortisol of 51–138 nmol/L (1.9–5 µg/dL) after a 1-mg overnight DST is compatible with Mild Autonomous Cortisol Secretion (MACS), formerly called subclinical Cushing's syndrome. Confirm ACTH independence and review confounders before management decisions.",
                 tone: "text-warning border-amber-500/30 bg-warning/10",
                 ok: false,
               }
@@ -62,7 +63,7 @@ export default function DstInterpretationPanel() {
     <div className="p-4 rounded-lg border-2 border-purple-500/30 bg-purple-500/5">
       <h4 className="text-sm font-semibold flex items-center gap-2 mb-1">
         <TestTube className="h-4 w-4 text-purple-500" />
-        1 mg Overnight DST — Interpretation
+        1 mg Overnight <GlossaryTerm term="DST">DST</GlossaryTerm> — Interpretation
       </h4>
       <p className="text-xs text-muted-foreground mb-3">
         1 mg dexamethasone at 23:00 → serum cortisol at 08:00. <strong>Threshold: ≤50 nmol/L (1.8 µg/dL) rules out Cushing's.</strong>{" "}
@@ -121,36 +122,43 @@ export default function DstInterpretationPanel() {
         </p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs mb-3">
-        <div className="p-2 rounded border border-emerald-500/30 bg-emerald-500/5">
-          <strong>≤50 nmol/L (≤1.8 µg/dL)</strong> — suppressed, rules out
-        </div>
-        <div className="p-2 rounded border border-amber-500/30 bg-amber-500/5">
-          <strong>51–138 nmol/L (1.9–5 µg/dL)</strong> — non-suppressed, confirm
-        </div>
-        <div className="p-2 rounded border border-red-500/30 bg-red-500/5">
-          <strong>&gt;138 nmol/L (&gt;5 µg/dL)</strong> — Cushing's likely
-        </div>
+      <div className="space-y-2 text-xs mb-3">
+        <details className="rounded border border-emerald-500/30 bg-emerald-500/5 p-2" open>
+          <summary className="cursor-pointer font-semibold">Suppressed: ≤50 nmol/L (≤1.8 µg/dL)</summary>
+          <p className="mt-1 text-muted-foreground">Adequate suppression effectively rules out Cushing syndrome unless clinical suspicion remains high.</p>
+        </details>
+        <details className="rounded border border-amber-500/30 bg-amber-500/5" open>
+          <summary className="cursor-pointer p-2 font-semibold">Non-suppressed: 51–138 nmol/L (1.9–5 µg/dL) — compatible with <GlossaryTerm term="MACS">MACS</GlossaryTerm></summary>
+          <p className="px-2 pb-2 text-muted-foreground">This range is compatible with Mild Autonomous Cortisol Secretion (formerly subclinical Cushing's syndrome), particularly when dexamethasone exposure is adequate. Confirm ACTH independence and consider repeat DST if management will change.</p>
+        </details>
+        <details className="rounded border border-red-500/30 bg-red-500/5">
+          <summary className="cursor-pointer p-2 font-semibold">Markedly non-suppressed: &gt;138 nmol/L (&gt;5 µg/dL)</summary>
+          <p className="px-2 pb-2 text-muted-foreground">Cushing syndrome is more likely; proceed with confirmatory testing, ACTH assessment, and endocrinology referral.</p>
+        </details>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3">
-        <div className="p-3 rounded border border-purple-500/30 bg-background/50">
-          <p className="font-semibold mb-1">Protocol (DST + dexamethasone level)</p>
+        <details className="p-3 rounded border border-purple-500/30 bg-background/50" open>
+          <summary className="cursor-pointer font-semibold mb-1">Purpose and protocol</summary>
           <ul className="space-y-1 text-muted-foreground list-disc pl-4">
             <li>Night before: <strong>1 mg dexamethasone orally 23:00–midnight</strong>.</li>
             <li>Next morning 08:00–09:00: draw <strong>serum cortisol AND serum dexamethasone</strong> from the same sample (or paired tubes).</li>
             <li>A dexamethasone level confirms adequate drug exposure and reduces false positives.</li>
           </ul>
-        </div>
-        <div className="p-3 rounded border border-purple-500/30 bg-background/50">
-          <p className="font-semibold mb-1">Serum dexamethasone reference (lab-dependent)</p>
+        </details>
+        <details className="p-3 rounded border border-purple-500/30 bg-background/50">
+          <summary className="cursor-pointer font-semibold mb-1">Dexamethasone interpretation</summary>
           <ul className="space-y-1 text-muted-foreground list-disc pl-4">
             <li>Baseline (no dexamethasone): <strong>&lt;20–30 ng/dL</strong>.</li>
             <li>08:00 after 1 mg overnight: usually <strong>≥100–180 ng/dL</strong> (some labs quote 180–550 ng/dL).</li>
             <li>08:00 after 8 mg overnight: usually <strong>&gt;800 ng/dL</strong>.</li>
             <li>Adequacy cutoff used here: <strong>&gt;200 ng/dL (4.5 nmol/L)</strong>; some labs accept &gt;100 ng/dL after 1 mg.</li>
           </ul>
-        </div>
+        </details>
+        <details className="sm:col-span-2 p-3 rounded border border-sky-500/30 bg-sky-500/5">
+          <summary className="cursor-pointer font-semibold mb-1">Follow-up for non-resected adrenal lesions</summary>
+          <p className="text-muted-foreground">Review annually for up to 5 years with repeat 1-mg DST for cortisol autonomy, ARR when hypertensive or hypokalemic, and plasma or urinary metanephrines as clinically indicated.</p>
+        </details>
       </div>
 
       <div className="p-3 rounded border border-amber-500/30 bg-amber-500/5 text-xs mb-3">

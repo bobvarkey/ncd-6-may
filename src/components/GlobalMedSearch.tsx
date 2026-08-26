@@ -6,6 +6,7 @@ import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import { ANTICOAGULANTS_DATA } from "@/calculators/diabetes/anticoagulants-data";
 import { ADDITIONAL_MEDS_DATA } from "@/calculators/diabetes/additional-meds-data";
 import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMedicationGuide";
+import { GLOSSARY } from "@/data/glossary";
 
 // Normalize HTN meds into the same shape used by the search (drug/drugClass/normalDose).
 const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
@@ -98,6 +99,7 @@ const CLINICAL_TOPICS = [
   { id: "primary-aldosteronism", label: "Primary Aldosteronism", path: "/hypertension/secondary-htn", keywords: ["aldosteronism", "conn syndrome", "arr", "aldosterone renin ratio", "hypokalemia", "adrenal"] },
   { id: "pheochromocytoma", label: "Pheochromocytoma", path: "/hypertension/secondary-htn", keywords: ["pheochromocytoma", "metanephrines", "catecholamine", "adrenal tumor"] },
   { id: "cushings", label: "Cushing's Syndrome", path: "/hypertension/secondary-htn", keywords: ["cushing", "cortisol", "dexamethasone suppression", "acth", "pituitary adrenal"] },
+  { id: "macs", label: "MACS (Mild Autonomous Cortisol Secretion)", path: "/hypertension/secondary-htn", keywords: ["macs", "mild autonomous cortisol secretion", "subclinical cushing", "subclinical hypercortisolism", "dst", "cortisol", "adrenal incidentaloma"] },
   { id: "sleep-apnea", label: "Sleep Apnea Screening", path: "/hypertension/secondary-htn", keywords: ["sleep apnea", "osa", "polysomnography", "cpap", "snoring"] },
   { id: "renal-artery-stenosis", label: "Renal Artery Stenosis", path: "/hypertension/secondary-htn", keywords: ["renal artery stenosis", "ras", "fibromuscular dysplasia", "atherosclerotic"] },
   { id: "secondary-htn", label: "Secondary Hypertension", path: "/hypertension/secondary-htn", keywords: ["secondary hypertension", "secondary cause", "endocrine hypertension"] },
@@ -236,17 +238,33 @@ export function GlobalMedSearch() {
       .map(m => ({ type: 'medication' as const, ...m }));
 
     const topicResults = CLINICAL_TOPICS
-      .filter(
-        (t) =>
-          t.label.toLowerCase().includes(term) ||
-          t.keywords?.some(k => k.includes(term))
-      )
+      .map((t) => ({
+        ...t,
+        score: t.label.toLowerCase() === term ? 100 : t.label.toLowerCase().startsWith(term) ? 75 : t.label.toLowerCase().includes(term) ? 50 : t.keywords?.some(k => k.toLowerCase().includes(term)) ? 25 : 0,
+      }))
+      .filter((t) => t.score > 0)
+      .sort((a, b) => b.score - a.score)
       .slice(0, 5)
       .map(t => ({ type: 'topic' as const, ...t }));
 
-    // Interleave results: medications first, then topics
-    return [...medResults, ...topicResults].slice(0, 8);
+    const glossaryResults = Object.values(GLOSSARY)
+      .map((entry) => {
+        const haystack = [entry.term, entry.full, entry.description ?? "", ...(entry.synonyms ?? [])].join(" ").toLowerCase();
+        return { type: "glossary" as const, ...entry, score: entry.term.toLowerCase() === term ? 100 : haystack.includes(term) ? 40 : 0 };
+      })
+      .filter((entry) => entry.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+
+    return [...medResults, ...topicResults, ...glossaryResults].slice(0, 10);
   }, [q]);
+
+  function HighlightedText({ text }: { text: string }) {
+    const term = q.trim();
+    if (!term) return <>{text}</>;
+    const parts = text.split(new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "ig"));
+    return <>{parts.map((part, index) => part.toLowerCase() === term.toLowerCase() ? <mark key={index} className="rounded bg-primary/20 px-0.5 text-foreground">{part}</mark> : part)}</>;
+  }
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -387,7 +405,7 @@ export function GlobalMedSearch() {
                         )}
                       </div>
                     </button>
-                  ) : (
+                  ) : item.type === 'topic' ? (
                     <button
                       type="button"
                       onClick={() => {
@@ -401,15 +419,28 @@ export function GlobalMedSearch() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline justify-between gap-2">
                           <span className="font-semibold text-sm text-foreground truncate">
-                            {item.label}
+                            <HighlightedText text={item.label} />
                           </span>
                           <span className="text-xs uppercase tracking-wide text-blue-500 shrink-0">
                             Topic
                           </span>
                         </div>
-                        <div className="text-xs text-muted-foreground truncate">
-                          {item.keywords?.slice(0, 3).join(", ")}
+                        <div className="text-xs text-muted-foreground truncate">{item.keywords?.slice(0, 3).join(", ")}</div>
+                      </div>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => { setOpen(false); setQ(""); navigate(`/glossary#${encodeURIComponent(item.term)}`); }}
+                      className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-muted/60 transition-colors"
+                    >
+                      <FileText className="mt-0.5 h-4 w-4 text-emerald-500 shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="font-semibold text-sm text-foreground truncate"><HighlightedText text={item.term} /></span>
+                          <span className="text-xs uppercase tracking-wide text-emerald-600 shrink-0">Glossary</span>
                         </div>
+                        <div className="text-xs text-muted-foreground truncate"><HighlightedText text={item.full} /></div>
                       </div>
                     </button>
                   )}

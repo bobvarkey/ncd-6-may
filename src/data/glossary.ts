@@ -5,6 +5,7 @@ export interface GlossaryEntry {
   term: string;
   full: string;
   description?: string;
+  synonyms?: string[];
 }
 
 export const GLOSSARY: Record<string, GlossaryEntry> = {
@@ -37,6 +38,32 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   LAI: { term: "LAI", full: "Lipid Association of India" },
   ADA: { term: "ADA", full: "American Diabetes Association" },
   MDR: { term: "MDR", full: "Multi-Drug Resistant" },
+  MACS: {
+    term: "MACS",
+    full: "Mild Autonomous Cortisol Secretion",
+    description: "Post-DST cortisol above 1.8 µg/dL (50 nmol/L) without overt Cushing syndrome.",
+    synonyms: ["Subclinical Cushing's syndrome", "Subclinical hypercortisolism"],
+  },
+  DST: {
+    term: "DST",
+    full: "Dexamethasone Suppression Test",
+    description: "1 mg dexamethasone at 23:00 followed by morning serum cortisol measurement.",
+    synonyms: ["1-mg overnight DST"],
+  },
+  HU: {
+    term: "HU",
+    full: "Hounsfield Units",
+    description: "CT attenuation measurement used in adrenal lesion assessment.",
+  },
+  ARR: {
+    term: "ARR",
+    full: "Aldosterone-Renin Ratio",
+    description: "Screening test for primary aldosteronism.",
+  },
+  ACTH: { term: "ACTH", full: "Adrenocorticotropic Hormone", description: "Morning ACTH helps confirm whether cortisol excess is ACTH-independent." },
+  OSA: { term: "OSA", full: "Obstructive Sleep Apnea" },
+  RVS: { term: "RVS", full: "Renal Vein Sampling" },
+  JG: { term: "JG", full: "Juxtaglomerular", description: "Refers to the renin-producing cells of the kidney." },
 };
 
 export function lookupGlossary(term: string): GlossaryEntry | undefined {

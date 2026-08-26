@@ -29,6 +29,8 @@ const SEARCH_ITEMS: SearchItem[] = [
   { id: "primary-aldosteronism", label: "Primary Aldosteronism Workup", category: "calculator", path: "/hypertension/secondary-htn", keywords: ["aldosteronism", "conn", "arr", "aldosterone", "renin ratio", "hypokalemia", "adrenal"] },
   { id: "pheochromocytoma", label: "Pheochromocytoma Workup", category: "calculator", path: "/hypertension/secondary-htn", keywords: ["pheochromocytoma", "metanephrines", "adrenal tumor", "catecholamine", "paraganglioma"] },
   { id: "cushings", label: "Cushing's Syndrome Workup", category: "calculator", path: "/hypertension/secondary-htn", keywords: ["cushing", "cortisol", "dexamethasone", "adrenal", "pituitary"] },
+  { id: "macs", label: "MACS (Mild Autonomous Cortisol Secretion)", category: "page", path: "/hypertension/secondary-htn", keywords: ["macs", "mild autonomous cortisol secretion", "subclinical cushing", "subclinical hypercortisolism", "dst", "cortisol"] },
+  { id: "glossary", label: "Clinical Glossary", category: "page", path: "/glossary", keywords: ["glossary", "definitions", "synonyms", "acronyms", "macs", "dst"] },
   { id: "sleep-apnea", label: "Sleep Apnea Screening", category: "calculator", path: "/hypertension/secondary-htn", keywords: ["sleep apnea", "osa", "polysomnography", "cpap", "snoring"] },
   { id: "ascvd", label: "ASCVD Risk Calculator", category: "calculator", path: "/lipids/ascvd-risk", keywords: ["cardiovascular", "heart risk", "heart score", "ascvd"] },
   { id: "obesity-bmi", label: "BMI Calculator", category: "calculator", path: "/obesity/bmi-calculator", keywords: ["weight", "bmi", "body mass index"] },

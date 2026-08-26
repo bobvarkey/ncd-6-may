@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Home, Droplets, Heart, Droplet, Dna, Microscope, Weight, AirVent, Moon, Bug, UtensilsCrossed, Shield, Syringe, Zap, Bandage, Timer, Thermometer, Flame, Bone, Gem, Sun, Stethoscope, Filter, Search, User, Image, Pill, Activity, Eye, Calculator } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home, Droplets, Heart, Droplet, Dna, Microscope, Weight, AirVent, Moon, Bug, UtensilsCrossed, Shield, Syringe, Zap, Bandage, Timer, Thermometer, Flame, Bone, Gem, Sun, Stethoscope, Filter, Search, User, Image, Pill, Activity, Eye, Calculator, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const bloodSubItems: { tab: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
@@ -151,6 +151,7 @@ const navItems: NavItem[] = [
 ];
 
 const imageItem: NavItem = { path: "/images", label: "Images", icon: Image, active: "bg-purple-500/10 text-purple-400 border-purple-500/30", emoji: "🖼️" };
+const glossaryItem: NavItem = { path: "/glossary", label: "Clinical Glossary", icon: BookOpen, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "📖" };
 
 // Section separator helper
 function SectionLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
@@ -292,6 +293,20 @@ export function TabNavigation() {
             >
               {imageItem.emoji && <span className="text-base">{imageItem.emoji}</span>}
               {!collapsed && <span className="truncate">{imageItem.label}</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              to={glossaryItem.path}
+              title={glossaryItem.label}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                currentPath === glossaryItem.path ? glossaryItem.active : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+              aria-current={currentPath === glossaryItem.path ? "page" : undefined}
+            >
+              <glossaryItem.icon className="h-4 w-4 shrink-0" />
+              {!collapsed && <span className="truncate">{glossaryItem.label}</span>}
             </Link>
           </li>
           {/* Miscellaneous section */}

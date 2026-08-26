@@ -195,6 +195,17 @@ const evaluationItems: EvaluationItem[] = [
     category: 'endocrine'
   },
   {
+    id: 'macs',
+    condition: "MACS (Mild Autonomous Cortisol Secretion)",
+    tests: [
+      '1-mg overnight DST — cortisol > 1.8 µg/dL (> 50 nmol/L) without overt Cushing features',
+      'Confirm ACTH independence with a low or suppressed morning ACTH',
+      'Repeat DST if the result will influence management (e.g., adrenalectomy)',
+    ],
+    icon: <TestTube className="h-5 w-5" />,
+    category: 'endocrine'
+  },
+  {
     id: 'pheochromocytoma',
     condition: 'Pheochromocytoma',
     tests: ['Plasma metanephrines', '24h urinary metanephrines', 'Adrenal CT/MRI', 'Genetic testing'],
@@ -353,7 +364,7 @@ export default function SecondaryHtnPage() {
               <h4 className="text-sm font-semibold mb-2">🔬 Common Secondary Causes</h4>
               <div className="grid gap-2 text-xs">
                 <div className="p-2 rounded bg-purple-500/5 border border-purple-500/20">
-                  <strong>Endocrine:</strong> Primary aldosteronism, Cushing's, pheochromocytoma, thyroid disease, hyperparathyroidism, <strong>Reninoma</strong>
+                  <strong>Endocrine:</strong> Primary aldosteronism, Cushing's, <strong>MACS (Mild Autonomous Cortisol Secretion; formerly subclinical Cushing's syndrome)</strong>, pheochromocytoma, thyroid disease, hyperparathyroidism, <strong>Reninoma</strong>
                 </div>
                 <div className="p-2 rounded bg-blue-500/5 border border-blue-500/20">
                   <strong>Renal:</strong> Renovascular disease (RAS), renal artery stenosis, chronic kidney disease, polycystic kidney

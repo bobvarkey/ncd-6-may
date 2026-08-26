@@ -114,6 +114,7 @@ const HypertensionTab = lazyWithModuleRetry(() => import("@/pages/hypertension/H
 const HypertensionTreatment = lazyWithModuleRetry(() => import("@/pages/hypertension/HypertensionTreatment"));
 const HypertensionClinicalCards = lazyWithModuleRetry(() => import("@/pages/hypertension/HypertensionClinicalCards"));
 const SecondaryHtnPage = lazyWithModuleRetry(() => import("@/pages/hypertension/SecondaryHtnPage"));
+const GlossaryPage = lazyWithModuleRetry(() => import("@/pages/GlossaryPage"));
 const MRASelectionAlgorithm = lazyWithModuleRetry(() => import("@/pages/hypertension/MRASelectionAlgorithm"));
 const LipidsAssessment = lazyWithModuleRetry(() => import("@/pages/lipids/LipidsAssessment"));
 const LipidsOverview = lazyWithModuleRetry(() => import("@/pages/lipids/LipidsOverview"));
@@ -309,6 +310,7 @@ const App = () => {
 
           {/* Main App — unified interface */}
           <Route path="/home" element={<><TabNavigation /><Home /></>} />
+          <Route path="/glossary" element={<><TabNavigation /><GlossaryPage /></>} />
           <Route path="/settings" element={<><TabNavigation /><Settings /></>} />
           <Route path="/diabetes" element={<><TabNavigation /><Diabetes /></>} />
           <Route path="/hypertension" element={<><TabNavigation /><Hypertension /></>} />
