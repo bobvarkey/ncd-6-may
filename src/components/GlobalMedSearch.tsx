@@ -112,9 +112,8 @@ const CLINICAL_TOPICS = [
   { id: "lipids-treatment", label: "Lipids Treatment", path: "/lipids/treatment", keywords: ["lipids treatment", "statin", "ezetimibe", "pcsk9", "lipid lowering"] },
   { id: "statins", label: "Statin Therapy", path: "/lipids", keywords: ["statins", "atorvastatin", "rosuvastatin", "simvastatin", "cholesterol"] },
   { id: "familial-hypercholesterolemia", label: "Familial Hypercholesterolemia", path: "/lipids", keywords: ["familial hypercholesterolemia", "fh", "ldl", "atherosclerosis"] },
-  { id: "lipid-panel", label: "Lipid Panel Analysis", path: "/lipid-panel", keywords: ["lipid panel", "lipid profile", "cholesterol panel"] },
   { id: "ascvd-risk", label: "ASCVD Risk Calculator", path: "/ascvd-risk", keywords: ["ascvd", "cardiovascular risk", "heart risk", "pooled cohort"] },
-  { id: "lipid-risk-mini", label: "Lipid Risk Mini", path: "/lipid-risk-mini", keywords: ["lipid risk", "cholesterol risk", "quick risk"] },
+  { id: "lipid-panel", label: "Lipid Panel Analysis", path: "/lipid-panel", keywords: ["lipid panel", "lipid profile", "cholesterol panel"] },
 
   // ── Liver ──
   { id: "liver", label: "Liver Overview", path: "/liver", keywords: ["liver", "hepatic", "lft", "liver enzymes", "alt", "ast"] },

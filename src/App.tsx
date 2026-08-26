@@ -127,7 +127,6 @@ const SlidingScaleInsulinCalc = lazyWithModuleRetry(() => import("@/calculators/
 const DiabetesMedicationAlgorithmCalc = lazyWithModuleRetry(() => import("@/calculators/diabetes/DiabetesMedicationAlgorithm"));
 const AscvdEmrCalc = lazyWithModuleRetry(() => import("@/calculators/lipids/AscvdRisk"));
 const LipidPanelCalc = lazyWithModuleRetry(() => import("@/calculators/lipids/LipidPanel"));
-const LipidRiskMiniCalc = lazyWithModuleRetry(() => import("@/calculators/lipids/LipidRiskMini"));
 const GfrCalculatorCalc = lazyWithModuleRetry(() => import("@/calculators/htn/GfrCalculator"));
 const DrugInteractionCheckerCalc = lazyWithModuleRetry(() => import("@/calculators/htn/DrugInteractions"));
 const AntihypertensiveTreatmentAlgorithmCalc = lazyWithModuleRetry(() => import("@/calculators/htn/AntihypertensiveTreatmentAlgorithm"));
@@ -349,7 +348,6 @@ const App = () => {
           <Route path="/diabetes/medication-algorithm" element={<><TabNavigation /><DiabetesMedicationAlgorithmCalc /></>} />
           <Route path="/lipid-panel" element={<><TabNavigation /><LipidPanelCalc /></>} />
           <Route path="/ascvd-risk" element={<><TabNavigation /><AscvdEmrCalc /></>} />
-          <Route path="/lipid-risk-mini" element={<><TabNavigation /><LipidRiskMiniCalc /></>} />
           <Route path="/gfr-calculator" element={<><TabNavigation /><GfrCalculatorCalc /></>} />
           <Route path="/drug-interactions" element={<><TabNavigation /><DrugInteractionCheckerCalc /></>} />
           <Route path="/htn/treatment-algorithm" element={<><TabNavigation /><AntihypertensiveTreatmentAlgorithmCalc /></>} />
