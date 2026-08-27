@@ -116,7 +116,7 @@ export default function LipidsTab() {
     </div>
   );
 
-  const sectionOrder = ["assessment", "mini", "treatment", "overview", "algorithm"];
+  const sectionOrder = ["mini", "assessment", "treatment", "overview", "algorithm"];
 
   const sections = [
     {
