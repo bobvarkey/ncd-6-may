@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Info, RotateCcw, Activity, User } from "lucide-react";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
+import ZoomableImage from "@/components/ZoomableImage";
 import frailtyScaleAsset from "@/assets/clinical-frailty-scale.png.asset.json";
 
 interface CfsCategory {
@@ -217,10 +218,11 @@ export function ClinicalFrailtyScale() {
         </CardHeader>
         <CardContent>
           <figure className="rounded-lg border border-border bg-card p-2">
-            <img
+            <ZoomableImage
               src={frailtyScaleAsset.url}
               alt="Clinical Frailty Scale 9-point diagram from Rockwood et al. 2005, showing silhouettes for very fit through terminally ill categories"
-              className="w-full rounded-md"
+              className="w-full rounded-md cursor-zoom-in"
+              wrapperClassName="w-full"
               loading="lazy"
             />
             <figcaption className="text-xs text-center text-muted-foreground mt-2">
