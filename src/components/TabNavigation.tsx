@@ -180,6 +180,14 @@ export function TabNavigation() {
     typeof window !== "undefined" ? window.innerWidth < 768 : false
   );
 
+  // Auto-collapse the sidebar on mobile whenever a section is selected, so
+  // the content gets full width. Desktop stays expanded for easy browsing.
+  const handleNavClick = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setCollapsed(true);
+    }
+  };
+
   useEffect(() => {
     document.body.classList.add("has-tab-navigation");
     return () => document.body.classList.remove("has-tab-navigation");
@@ -202,7 +210,7 @@ export function TabNavigation() {
     <aside
       className={cn(
         "fixed top-12 left-0 z-50 h-[calc(100vh-3rem)] clay-sidebar flex flex-col transition-[width] duration-200 ease-out",
-        collapsed ? "w-14" : "w-56"
+        collapsed ? "w-11 md:w-14" : "w-56"
       )}
       aria-label="Primary"
     >
@@ -235,6 +243,7 @@ export function TabNavigation() {
                 <Link
                   to={item.path}
                   title={item.label}
+                  onClick={handleNavClick}
                   className={cn(
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",
@@ -262,6 +271,7 @@ export function TabNavigation() {
                 <Link
                   to={item.path}
                   title={item.label}
+                  onClick={handleNavClick}
                   className={cn(
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",
@@ -282,6 +292,7 @@ export function TabNavigation() {
             <Link
               to={imageItem.path}
               title={imageItem.label}
+              onClick={handleNavClick}
               className={cn(
                 "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                 collapsed && "justify-center",
@@ -299,6 +310,7 @@ export function TabNavigation() {
             <Link
               to={glossaryItem.path}
               title={glossaryItem.label}
+              onClick={handleNavClick}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                 currentPath === glossaryItem.path ? glossaryItem.active : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -318,6 +330,7 @@ export function TabNavigation() {
                 <Link
                   to={item.path}
                   title={item.label}
+                  onClick={handleNavClick}
                   className={cn(
                     "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
                     collapsed && "justify-center",

@@ -86,7 +86,7 @@ function GeriatricsOverview() {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm">
-            Geriatric syndromes are multifactorial health conditions common in older adults, resulting from the interaction of aging, disease, and environmental stressors.
+            Multifactorial health conditions common in older adults, from the interplay of aging, disease, and environmental stressors.
           </p>
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary" className="text-xs">Frailty</Badge>
@@ -184,15 +184,15 @@ function GeriatricsOverview() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
               <p className="text-sm font-semibold text-blue-400 mb-2">Coordinated Care</p>
-              <p className="text-xs text-muted-foreground">Primary care, specialists, nurses, and social workers working together</p>
+              <p className="text-xs text-muted-foreground">Primary care, specialists, nurses, social workers</p>
             </div>
             <div className="p-3 rounded-lg bg-green-500/5 border border-green-500/20">
               <p className="text-sm font-semibold text-green-400 mb-2">Goal-Oriented Care</p>
-              <p className="text-xs text-muted-foreground">Focused on function, independence, and quality of life</p>
+              <p className="text-xs text-muted-foreground">Function, independence, quality of life</p>
             </div>
             <div className="p-3 rounded-lg bg-purple-500/5 border border-purple-500/20">
               <p className="text-sm font-semibold text-purple-400 mb-2">Lifestyle Interventions</p>
-              <p className="text-xs text-muted-foreground">Exercise, nutrition, and environmental modification</p>
+              <p className="text-xs text-muted-foreground">Exercise, nutrition, environment</p>
             </div>
           </div>
         </CardContent>
@@ -209,10 +209,10 @@ function GeriatricsOverview() {
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { title: "Regular Screenings", desc: "Preventive health check-ups and early detection" },
-              { title: "Social Engagement", desc: "Community activity and social connections" },
+              { title: "Regular Screenings", desc: "Preventive check-ups and early detection" },
+              { title: "Social Engagement", desc: "Community activity and connections" },
               { title: "Adaptive Strategies", desc: "Assistive devices and cognitive aids" },
-              { title: "Advance Care Planning", desc: "Goals of care, advance directives, surrogate decision-makers" },
+              { title: "Advance Care Planning", desc: "Goals of care, advance directives" },
             ].map((item) => (
               <div key={item.title} className="flex items-start gap-2 p-3 rounded-lg bg-muted/20 border border-border/50">
                 <CheckCircle2 className="h-4 w-4 text-teal-400 mt-0.5 shrink-0" />
@@ -275,11 +275,11 @@ function GeriatricScreening() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <ClipboardList className="h-6 w-6 text-primary" />
+        <ClipboardList className="h-6 w-6 text-primary shrink-0" />
         <h2 className="text-xl font-bold">Rapid Geriatric Screening Algorithm</h2>
       </div>
       <p className="text-muted-foreground">
-        For older adults in primary care, internal medicine, neurology, or hospital follow-up settings.
+        For older adults in primary care, internal medicine, neurology, or hospital follow-up.
       </p>
 
       {/* Entry Criteria */}
@@ -302,7 +302,7 @@ function GeriatricScreening() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
-            Check any risk flags present. If any are positive, proceed to focused geriatric screen.
+            Check risk flags present. If any positive, proceed to focused screen.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {RISK_FLAGS.map((flag) => (
@@ -444,7 +444,7 @@ function GeriatricScreening() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              Check any of the following that apply — these require urgent medical assessment:
+              Check any that apply — these require urgent medical assessment:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {URGENT_FLAGS.map((flag) => (
@@ -550,8 +550,7 @@ function FragilityFractures() {
           <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
             <h4 className="text-sm font-semibold mb-2">Clinical Context</h4>
             <p className="text-sm text-muted-foreground">
-              Fragility fractures (fractures resulting from low-energy trauma, such as a fall from standing height) are a hallmark of osteoporosis and increased bone fragility. 
-              In patients with multiple fractures or those with unexpected severity, screening for secondary causes is essential.
+              Low-energy fractures (e.g. fall from standing height) suggest osteoporosis and bone fragility. Screen for secondary causes with multiple or unusually severe fractures.
             </p>
           </div>
 
@@ -569,12 +568,12 @@ function FragilityFractures() {
               </ul>
             </div>
             <div className="p-4 rounded-lg border border-warning/20 bg-warning/5">
-              <h4 className="text-sm font-semibold mb-2 flex items-center gap-2 text-warning">
+              <p className="text-sm font-semibold mb-2 flex items-center gap-2 text-warning">
                 <AlertTriangle className="h-4 w-4" />
-                Secondary Causes Screening
-              </h4>
+                Secondary Causes
+              </p>
               <p className="text-xs text-muted-foreground mb-3">
-                If Z-score &lt; -2.0 or recurrent fractures despite therapy, evaluate for:
+                If Z-score &lt; -2.0 or recurrent fractures despite therapy:
               </p>
               <ul className="text-xs text-muted-foreground space-y-2">
                 <li>• <strong>Hypercortisolism (Cushing's)</strong> — Structured screen recommended</li>
@@ -607,20 +606,20 @@ export default function Geriatrics() {
   });
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex items-center gap-2">
-        <User className="h-6 w-6 text-primary" />
+    <div className="space-y-6 p-4 md:p-6 max-w-4xl">
+      <div className="flex items-center gap-2 flex-wrap">
+        <User className="h-6 w-6 text-primary shrink-0" />
         <h1 className="text-2xl font-bold">Geriatrics</h1>
         <Badge variant="outline" className="text-xs">
           Geriatric Syndromes
         </Badge>
       </div>
-      <p className="text-muted-foreground">
-        Comprehensive approach to geriatric syndromes — screening algorithm, clinical assessment, and management of common disorders of aging.
+      <p className="text-muted-foreground max-w-3xl">
+        Screening algorithm, clinical assessment, and management of common disorders of aging.
       </p>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full flex-wrap">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full min-w-0">
+        <TabsList className="w-full flex-wrap min-w-0">
           <TabsTrigger value="overview" className="flex-1 gap-2">
             <Info className="h-4 w-4" />
             Overview

@@ -192,6 +192,24 @@
     margin-left: 3.5rem;
     max-width: calc(100vw - 3.5rem);
   }
+
+  /* Mobile-friendly: collapsed rail overlays instead of reserving layout width,
+     so content gets the full viewport on small screens. Expand (tap the chevron)
+     to reveal the full nav, which still overlays content. */
+  @media (max-width: 639px) {
+    body.has-tab-navigation #root > div:not([role="region"]),
+    body.has-tab-navigation #root > main,
+    body.has-tab-navigation #root > section {
+      margin-left: 0;
+      max-width: 100vw;
+    }
+    body.has-tab-navigation.tab-navigation-collapsed #root > div:not([role="region"]),
+    body.has-tab-navigation.tab-navigation-collapsed #root > main,
+    body.has-tab-navigation.tab-navigation-collapsed #root > section {
+      margin-left: 0;
+      max-width: 100vw;
+    }
+  }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', system-ui, sans-serif;
   }
