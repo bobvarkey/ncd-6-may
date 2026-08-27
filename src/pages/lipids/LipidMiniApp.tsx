@@ -203,6 +203,8 @@ const LAI_MODIFIER_GROUPS = [
       { id: "ascvd_cad", label: "Coronary artery disease", qualifier: "Prior MI, CABG, PCI, or ≥50% stenosis" },
       { id: "ascvd_cva", label: "Cerebrovascular disease", qualifier: "Ischemic stroke, TIA, carotid revascularization" },
       { id: "ascvd_pad", label: "Peripheral arterial disease", qualifier: "ABI <0.9, claudication, prior revascularization" },
+      { id: "ascvd_polyvascular", label: "Polyvascular disease", qualifier: "ASCVD in ≥2 vascular beds (e.g. CAD + PAD, CAD + CVA) → EHR-B" },
+      { id: "ascvd_recurrent_lowldl", label: "Recurrent events despite low LDL", qualifier: "Recurrent/progressive ASCVD event on therapy with LDL ~30 mg/dL → EHR-C" },
     ],
   },
   {
@@ -269,6 +271,8 @@ function classifyLAI(
   const dm = !!hasDiabetes;
 
   const hasASCVD = h("ascvd_cad") || h("ascvd_cva") || h("ascvd_pad");
+  const hasPolyvascular = h("ascvd_polyvascular");
+  const hasRecurrentLowLdl = h("ascvd_recurrent_lowldl");
   const hasDMTOD = h("dmtod_retinopathy") || h("dmtod_nephropathy") || h("dmtod_neuropathy");
   const hasCKD = h("ckd_3b") || h("ckd_4") || h("ckd_albuminuria");
   const hasFH = h("fh_clinical") || h("fh_genetic") || h("fh_xanthoma");
@@ -281,8 +285,8 @@ function classifyLAI(
   const enhCount = ["enh_fhx", "enh_hscrp", "enh_lpa_minor", "enh_autoimmune", "enh_hiv", "enh_pcos"].filter(k => h(k)).length;
 
   if (hasASCVD) {
-    if (hrfCount >= 2) return { cat: "EHR", sub: "C", label: "Extreme High Risk C" };
-    if (hrfCount === 1 || (h("ascvd_cad") && (h("ascvd_cva") || h("ascvd_pad")))) return { cat: "EHR", sub: "B", label: "Extreme High Risk B" };
+    if (hasRecurrentLowLdl || hrfCount >= 2) return { cat: "EHR", sub: "C", label: "Extreme High Risk C" };
+    if (hasPolyvascular || hrfCount === 1 || (h("ascvd_cad") && (h("ascvd_cva") || h("ascvd_pad")))) return { cat: "EHR", sub: "B", label: "Extreme High Risk B" };
     if (sa) return { cat: "EHR", sub: "B", label: "Extreme High Risk B (South Asian)" };
     return { cat: "EHR", sub: "A", label: "Extreme High Risk A" };
   }
