@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { SectionCard } from "@/components/ui/section-card";
 import {
   Select,
@@ -12,6 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
 import {
   Activity,
@@ -28,8 +34,15 @@ import {
   Download,
   Heart,
   Info,
+  ChevronDown,
+  Dna,
+  Scale,
+  TrendingUp,
+  BookOpen,
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
+import { cn } from "@/lib/utils";
+import { calculatePrevent, type PreventResult } from "@/lib/prevent";
 import {
   Dialog,
   DialogContent,
@@ -178,6 +191,162 @@ const TARGETS: Record<
     apoB: "—",
   },
 };
+
+/* ============================================================
+   LAI 2023 Risk Modifier Groups (from LipidsAssessment)
+   ============================================================ */
+const LAI_MODIFIER_GROUPS = [
+  {
+    title: "Established ASCVD",
+    icon: <Heart className="h-4 w-4" />,
+    items: [
+      { id: "ascvd_cad", label: "Coronary artery disease", qualifier: "Prior MI, CABG, PCI, or ≥50% stenosis" },
+      { id: "ascvd_cva", label: "Cerebrovascular disease", qualifier: "Ischemic stroke, TIA, carotid revascularization" },
+      { id: "ascvd_pad", label: "Peripheral arterial disease", qualifier: "ABI <0.9, claudication, prior revascularization" },
+    ],
+  },
+  {
+    title: "Diabetes with Target Organ Damage",
+    icon: <Dna className="h-4 w-4" />,
+    items: [
+      { id: "dmtod_retinopathy", label: "Diabetic retinopathy", qualifier: "Microaneurysms, hemorrhages on fundoscopy" },
+      { id: "dmtod_nephropathy", label: "Diabetic nephropathy", qualifier: "UACR ≥30 mg/g or eGFR <60" },
+      { id: "dmtod_neuropathy", label: "Diabetic neuropathy", qualifier: "Peripheral/autonomic neuropathy" },
+    ],
+  },
+  {
+    title: "Chronic Kidney Disease",
+    icon: <Scale className="h-4 w-4" />,
+    items: [
+      { id: "ckd_3b", label: "Stage 3B (eGFR 30-44)", qualifier: "Moderately-to-severely decreased" },
+      { id: "ckd_4", label: "Stage 4 (eGFR 15-29)", qualifier: "Severely decreased" },
+      { id: "ckd_albuminuria", label: "Albuminuria (UACR ≥30 mg/g)", qualifier: "Kidney damage marker" },
+    ],
+  },
+  {
+    title: "Familial Hypercholesterolemia",
+    icon: <Dna className="h-4 w-4" />,
+    items: [
+      { id: "fh_clinical", label: "Clinical FH (DLCN ≥6)", qualifier: "Definite FH by criteria" },
+      { id: "fh_genetic", label: "Pathogenic FH mutation", qualifier: "LDLR, APOB, PCSK9 mutation" },
+      { id: "fh_xanthoma", label: "Tendon xanthomas", qualifier: "Physical exam finding" },
+    ],
+  },
+  {
+    title: "High-Risk Features (EHR Reclassification)",
+    icon: <AlertTriangle className="h-4 w-4" />,
+    items: [
+      { id: "hrf_lpa", label: "Lp(a) ≥50 mg/dL", qualifier: "Major Lp(a) elevation" },
+      { id: "hrf_apob", label: "ApoB >130 mg/dL", qualifier: "Highly atherogenic particle burden" },
+      { id: "hrf_mets", label: "Metabolic syndrome", qualifier: "≥3 MetS criteria" },
+      { id: "hrf_cac", label: "CAC ≥100 AU or ≥75th %ile", qualifier: "High plaque burden" },
+      { id: "hrf_nafld", label: "NAFLD with fibrosis (Stage 2/3)", qualifier: "Advanced fatty liver" },
+      { id: "hrf_extreme", label: "Extreme single risk factor", qualifier: "Smoking >1ppd or BP >180/110" },
+    ],
+  },
+  {
+    title: "Risk-Enhancing Factors",
+    icon: <Stethoscope className="h-4 w-4" />,
+    items: [
+      { id: "enh_fhx", label: "Premature ASCVD in 1st-degree relative", qualifier: "Male <55y / Female <65y" },
+      { id: "enh_hscrp", label: "hs-CRP ≥2 mg/L", qualifier: "Inflammatory marker" },
+      { id: "enh_lpa_minor", label: "Lp(a) 20-49 mg/dL", qualifier: "Minor elevation" },
+      { id: "enh_autoimmune", label: "RA / Psoriasis / Spondyloarthropathy", qualifier: "Chronic inflammatory condition" },
+      { id: "enh_hiv", label: "HIV infection", qualifier: "Viral inflammatory risk" },
+      { id: "enh_pcos", label: "Premature menopause / PMOS / Pre-eclampsia", qualifier: "Women-specific" },
+    ],
+  },
+];
+
+function classifyLAI(
+  checked: Record<string, boolean>,
+  age: number, ldl: number,
+  southAsian?: boolean,
+  hasDiabetes?: boolean
+): { cat: "EHR" | "VHR" | "HR" | "MOD" | "LOW"; sub: "A" | "B" | "C" | ""; label: string } {
+  const h = (id: string) => !!checked[id];
+  const sa = !!southAsian;
+  const dm = !!hasDiabetes;
+
+  const hasASCVD = h("ascvd_cad") || h("ascvd_cva") || h("ascvd_pad");
+  const hasDMTOD = h("dmtod_retinopathy") || h("dmtod_nephropathy") || h("dmtod_neuropathy");
+  const hasCKD = h("ckd_3b") || h("ckd_4") || h("ckd_albuminuria");
+  const hasFH = h("fh_clinical") || h("fh_genetic") || h("fh_xanthoma");
+
+  const ldlVhr = sa ? 160 : 190;
+  const ldlHr = sa ? 130 : 160;
+  const ldlMod = sa ? 100 : 130;
+
+  const hrfCount = ["hrf_lpa", "hrf_apob", "hrf_mets", "hrf_cac", "hrf_nafld", "hrf_extreme"].filter(k => h(k)).length + (sa ? 1 : 0);
+  const enhCount = ["enh_fhx", "enh_hscrp", "enh_lpa_minor", "enh_autoimmune", "enh_hiv", "enh_pcos"].filter(k => h(k)).length;
+
+  if (hasASCVD) {
+    if (hrfCount >= 2) return { cat: "EHR", sub: "C", label: "Extreme High Risk C" };
+    if (hrfCount === 1 || (h("ascvd_cad") && (h("ascvd_cva") || h("ascvd_pad")))) return { cat: "EHR", sub: "B", label: "Extreme High Risk B" };
+    if (sa) return { cat: "EHR", sub: "B", label: "Extreme High Risk B (South Asian)" };
+    return { cat: "EHR", sub: "A", label: "Extreme High Risk A" };
+  }
+  if (hasDMTOD && (hrfCount >= 1 || enhCount >= 2)) return { cat: "VHR", sub: "C", label: "Very High Risk C" };
+  if (hasDMTOD) return { cat: "VHR", sub: "B", label: "Very High Risk B" };
+  if (hasCKD || hasFH || ldl >= ldlVhr) return { cat: "VHR", sub: "C", label: "Very High Risk C" };
+  if (sa && dm) return { cat: "VHR", sub: "B", label: "Very High Risk B (South Asian + Diabetes)" };
+  if (enhCount >= 3) return { cat: "HR", sub: "", label: "High Risk" };
+  if (h("enh_fhx") && (enhCount >= 2 || hrfCount >= 1)) return { cat: "HR", sub: "", label: "High Risk" };
+  if (age >= 40 && (enhCount >= 2 || hrfCount >= 1)) return { cat: "HR", sub: "", label: "High Risk" };
+  if (age >= 40 && enhCount >= 1) return { cat: "MOD", sub: "", label: "Moderate Risk" };
+  if (ldl >= ldlHr) return { cat: "HR", sub: "", label: "High Risk" };
+  if (ldl >= ldlMod) return { cat: "MOD", sub: "", label: "Moderate Risk" };
+  return { cat: "LOW", sub: "", label: "Low Risk" };
+}
+
+const LAI_BUCKET_DETAILS: Record<string, { ldl: string; nonHdl: string; apoB: string; intensity: string; drug: string }> = {
+  "EHR-A": { ldl: "< 50", nonHdl: "< 80", apoB: "< 65", intensity: "High-Intensity Statin", drug: "Atorva 40-80 / Rosuva 20-40 + Ezetimibe ± PCSK9i" },
+  "EHR-B": { ldl: "≤ 30", nonHdl: "≤ 60", apoB: "< 50", intensity: "High-Intensity Statin + Add-on", drug: "Atorva 40-80 / Rosuva 20-40 + Ezetimibe + PCSK9i" },
+  "EHR-C": { ldl: "10-15", nonHdl: "40-45", apoB: "—", intensity: "Maximal Therapy", drug: "Max statin + Ezetimibe + PCSK9i + Bempedoic acid" },
+  "VHR-A": { ldl: "< 50", nonHdl: "< 80", apoB: "< 65", intensity: "High-Intensity Statin", drug: "Atorva 40-80 / Rosuva 20-40 ± Ezetimibe" },
+  "VHR-B": { ldl: "< 50", nonHdl: "< 80", apoB: "< 65", intensity: "High-Intensity Statin + Add-on", drug: "Atorva 40-80 / Rosuva 20-40 + Ezetimibe" },
+  "VHR-C": { ldl: "< 50", nonHdl: "< 80", apoB: "< 65", intensity: "Maximal Therapy", drug: "Max statin + Ezetimibe ± PCSK9i" },
+  "HR":    { ldl: "< 70", nonHdl: "< 100", apoB: "< 80", intensity: "High-Intensity Statin", drug: "Atorva 20-40 / Rosuva 10-20" },
+  "MOD":   { ldl: "< 100", nonHdl: "< 130", apoB: "< 90", intensity: "Moderate-Intensity Statin", drug: "Atorva 10-20 / Rosuva 5-10" },
+  "LOW":   { ldl: "< 100", nonHdl: "< 130", apoB: "< 90", intensity: "Lifestyle", drug: "No pharmacotherapy indicated" },
+};
+
+const LAI_TREATMENT_RECS: Record<string, { title: string; drug: string; rationale: string; followUp: string; alternative: string }> = {
+  "EHR-A": { title: "High-Intensity Statin + Ezetimibe", drug: "Atorvastatin 40-80 mg OD or Rosuvastatin 20-40 mg OD + Ezetimibe 10 mg OD", rationale: "ASCVD alone or with minor risk features. Dual therapy achieves ~55-65% LDL reduction, targeting <50 mg/dL.", followUp: "Recheck lipids at 6 weeks. If LDL >50, add PCSK9i.", alternative: "If intolerant: Rosuvastatin 5-10 mg + Ezetimibe + Bempedoic acid 180 mg OD" },
+  "EHR-B": { title: "Maximal Lipid-Lowering", drug: "Atorvastatin 80 mg OD + Ezetimibe 10 mg OD + PCSK9i (Evolocumab 140 mg SC q2w)", rationale: "ASCVD + ≥1 high-risk feature or polyvascular disease. Triple therapy needed for target ≤30 mg/dL.", followUp: "LDL at 4 weeks. Consider Bempedoic acid if PCSK9i not tolerated.", alternative: "Rosuvastatin 40 mg + Ezetimibe + Inclisiran 284 mg SC" },
+  "EHR-C": { title: "Ultra-Maximal Therapy", drug: "Max statin + Ezetimibe + PCSK9i + Bempedoic acid 180 mg OD", rationale: "Recurrent/progressive events despite therapy. Targeting LDL 10-15 mg/dL.", followUp: "Monthly monitoring. Consider Lp(a) apheresis if LDL at goal but events persist.", alternative: "Add Colchicine 0.5 mg OD for anti-inflammatory benefit" },
+  "VHR-A": { title: "High-Intensity Statin", drug: "Atorvastatin 40-80 mg OD or Rosuvastatin 20-40 mg OD", rationale: "Very high risk equivalent. Statin alone may suffice; add Ezetimibe if not at target <50.", followUp: "Lipids at 6-8 weeks. Add Ezetimibe if LDL >50.", alternative: "If statin-intolerant: Bempedoic acid 180 mg OD + Ezetimibe" },
+  "VHR-B": { title: "High-Intensity Statin + Ezetimibe", drug: "Atorvastatin 40-80 mg OD + Ezetimibe 10 mg OD", rationale: "DM with TOD — combination therapy indicated from the start.", followUp: "Lipids at 6 weeks. Consider PCSK9i if LDL >50.", alternative: "Rosuvastatin 20-40 mg + Ezetimibe" },
+  "VHR-C": { title: "Maximal Therapy (Triple)", drug: "Max tolerated statin + Ezetimibe ± PCSK9i", rationale: "CKD 3B-4, FH, or LDL ≥190. Triple therapy often needed.", followUp: "Lipids at 4-6 weeks. Add PCSK9i early if >1 high-risk feature.", alternative: "Consider Inclisiran 284 mg SC (6-monthly dosing)" },
+  "HR": { title: "High-Intensity Statin", drug: "Atorvastatin 20-40 mg OD or Rosuvastatin 10-20 mg OD", rationale: "Multiple risk factors or diabetes alone. Target LDL <70 mg/dL.", followUp: "Lipids at 12 weeks. Intensify if not at target.", alternative: "Moderate statin + Ezetimibe if high-dose not tolerated" },
+  "MOD": { title: "Moderate-Intensity Statin", drug: "Atorvastatin 10-20 mg OD or Rosuvastatin 5-10 mg OD", rationale: "Intermediate risk. Moderate statin expected to achieve <100 mg/dL.", followUp: "Recheck lipids at 12 weeks. Escalate if not at target.", alternative: "Lifestyle modification (3-month trial) if LDL 100-129" },
+  "LOW": { title: "Lifestyle Modification", drug: "No pharmacotherapy indicated", rationale: "Low risk. Target LDL <100 mg/dL. Diet, exercise, and periodic surveillance.", followUp: "Recheck lipids in 6-12 months.", alternative: "Consider statin if CAC >0 or Lp(a) ≥50 on shared decision-making" },
+};
+
+/* ============================================================
+   AHA Recommendation engine (2018 ACC/AHA + PREVENT)
+   ============================================================ */
+function ahaRec(
+  preventPct: number | null,
+  hasDiabetes: boolean,
+  ldl: number
+): { intensity: string; target: string; note: string } {
+  // Diabetes → statin always
+  if (hasDiabetes) {
+    if (ldl >= 190 || preventPct !== null && preventPct >= 20) {
+      return { intensity: "High-intensity statin", target: "< 70 mg/dL (≥50% reduction)", note: "Diabetes + high ASCVD risk: high-intensity statin (atorva 40-80 / rosuva 20-40)." };
+    }
+    return { intensity: "Moderate-to-high-intensity statin", target: "< 70 mg/dL", note: "Diabetes: at least moderate-intensity statin regardless of 10-yr risk; target LDL < 70." };
+  }
+  if (preventPct === null) {
+    if (ldl >= 190) return { intensity: "High-intensity statin", target: "≥50% reduction (no lower bound)", note: "LDL ≥190 (likely FH): high-intensity statin regardless of risk." };
+    return { intensity: "Shared decision", target: "—", note: "Enter age 30-79 + TC/HDL/SBP/BMI/eGFR to compute AHA PREVENT 10-yr risk." };
+  }
+  if (preventPct >= 20) return { intensity: "High-intensity statin", target: "< 70 mg/dL", note: "PREVENT 10-yr ≥20% (high): high-intensity statin (atorva 40-80 / rosuva 20-40)." };
+  if (preventPct >= 7.5) return { intensity: "Moderate-to-high-intensity statin", target: "< 100 mg/dL (consider < 70)", note: "PREVENT 10-yr 7.5-19.9% (intermediate): moderate-to-high statin; consider risk enhancers." };
+  if (preventPct >= 5) return { intensity: "Moderate-intensity statin (selective)", target: "< 100 mg/dL", note: "PREVENT 10-yr 5-7.4% (borderline): moderate statin if risk enhancers present." };
+  return { intensity: "Lifestyle first", target: "< 100 mg/dL", note: "PREVENT 10-yr <5% (low): lifestyle; statin only with risk enhancers." };
+}
 
 function countMajorRF(i: Inputs): number {
   let n = 0;
@@ -669,7 +838,59 @@ export default function LipidMiniApp() {
   const set = <K extends keyof Inputs>(k: K, v: Inputs[K]) =>
     setI((p) => ({ ...p, [k]: v }));
 
+  // ── LAI Risk Modifier group checkboxes (full LAI 2023 groups) ──
+  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const toggleChecked = (id: string) =>
+    setChecked((p) => ({ ...p, [id]: !p[id] }));
+  const modifierCounts = useMemo(() => {
+    const r: Record<string, number> = {};
+    for (const g of LAI_MODIFIER_GROUPS)
+      r[g.title] = g.items.filter((it) => checked[it.id]).length;
+    return r;
+  }, [checked]);
+  const totalChecked = Object.values(checked).filter(Boolean).length;
 
+  // ── AHA PREVENT 10-year inputs ──
+  const [age, setAge] = useState("");
+  const [sex, setSex] = useState("male");
+  const [tcInput, setTcInput] = useState("");
+  const [hdlInput, setHdlInput] = useState("");
+  const [sbpInput, setSbpInput] = useState("");
+  const [bmiInput, setBmiInput] = useState("");
+  const [egfrInput, setEgfrInput] = useState("");
+  const [bpMed, setBpMed] = useState(false);
+  const [onStatin, setOnStatin] = useState(false);
+  const [smoking, setSmoking] = useState(false);
+  const [diabetes, setDiabetes] = useState(false);
+
+  const a = parseInt(age) || 0;
+  const l = parseFloat(i.ldl) || 0;
+  const h = parseFloat(hdlInput) || 0;
+  const tc = parseFloat(tcInput) || 0;
+  const sb = parseFloat(sbpInput) || 0;
+  const b = parseFloat(bmiInput) || 0;
+  const e = parseFloat(egfrInput) || 0;
+
+  const [preventResult, setPreventResult] = useState<PreventResult | null>(null);
+  useEffect(() => {
+    if (a >= 30 && a <= 79 && tc > 0 && h > 0 && sb > 0 && b > 0 && e > 0) {
+      setPreventResult(calculatePrevent({
+        age: a, sex: sex as "male" | "female",
+        totalChol: tc, hdl: h, sbp: sb, bmi: b, egfr: e,
+        bpMed, statin: onStatin, diabetes, smoking,
+      }));
+    } else {
+      setPreventResult(null);
+    }
+  }, [a, sex, tc, h, sb, b, e, bpMed, onStatin, diabetes, smoking]);
+
+  // ── LAI classification (full modifier groups) ──
+  const laiClass = classifyLAI(checked, a, l, i.southAsian, diabetes);
+  const laiKey = laiClass.cat + (laiClass.sub ? "-" + laiClass.sub : "");
+  const laiDetails = LAI_BUCKET_DETAILS[laiKey] || LAI_BUCKET_DETAILS["LOW"];
+  const laiRec = LAI_TREATMENT_RECS[laiKey] || LAI_TREATMENT_RECS["LOW"];
+  const preventPct = preventResult?.valid ? parseFloat(preventResult.riskPct) : null;
+  const aha = ahaRec(preventPct, diabetes, l);
 
   const result = useMemo(() => buildResult(i), [i]);
   const showLabs = i.scenario !== "";
@@ -1226,12 +1447,126 @@ export default function LipidMiniApp() {
         )}
 
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setI(EMPTY)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setI(EMPTY);
+              setChecked({});
+              setPreventResult(null);
+              setAge(""); setTcInput(""); setHdlInput(""); setSbpInput("");
+              setBmiInput(""); setEgfrInput("");
+            }}
+          >
             <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
             Reset
           </Button>
         </div>
       </SectionCard>
+
+      {/* LAI 2023 Risk Modifier Groups — full modifier set */}
+      {i.scenario !== "" && (
+        <SectionCard
+          title="LAI 2023 Risk Modifiers"
+          icon={<BookOpen className="h-4 w-4" />}
+          tone="danger"
+          badge={
+            totalChecked > 0 ? (
+              <Badge variant="secondary" className="text-xs">{totalChecked} selected</Badge>
+            ) : undefined
+          }
+        >
+          <p className="text-xs text-muted-foreground mb-3">
+            Select applicable LAI 2023 risk modifiers for full risk classification.
+          </p>
+          <div className="space-y-2">
+            {LAI_MODIFIER_GROUPS.map((group) => {
+              const count = modifierCounts[group.title];
+              return (
+                <Collapsible key={group.title} defaultOpen={count > 0}>
+                  <CollapsibleTrigger asChild>
+                    <button className="flex w-full items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-2.5 hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-foreground">{group.title}</span>
+                        {count > 0 && <Badge variant="secondary" className="text-xs">{count}/{group.items.length}</Badge>}
+                      </div>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-1 border-x border-b border-border rounded-b-lg bg-card p-3">
+                    {group.items.map((item) => (
+                      <label key={item.id} className={cn("flex cursor-pointer items-start gap-2.5 rounded-md px-3 py-2 transition-colors", checked[item.id] ? "bg-danger/5 ring-1 ring-danger/20" : "hover:bg-muted/50")}>
+                        <Checkbox checked={!!checked[item.id]} onCheckedChange={() => toggleChecked(item.id)} className="mt-0.5" />
+                        <div>
+                          <span className="text-sm text-foreground font-medium">{item.label}</span>
+                          <p className="text-xs text-muted-foreground">{item.qualifier}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
+          </div>
+
+          {laiClass && totalChecked > 0 && (
+            <div className="mt-4 rounded-lg border p-3 border-warning/30 bg-warning/5">
+              <p className="text-xs font-semibold text-warning mb-1">LAI 2023 Classification</p>
+              <p className="text-sm font-bold text-foreground">
+                {laiClass.cat}{laiClass.sub ? `-${laiClass.sub}` : ""} — {laiClass.label}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">LDL target {laiDetails.ldl} mg/dL · {laiRec.drug}</p>
+            </div>
+          )}
+        </SectionCard>
+      )}
+
+      {/* AHA PREVENT 10-year risk + AHA recommendation */}
+      {i.scenario !== "" && (
+        <SectionCard
+          title="AHA PREVENT 10-Year Risk"
+          icon={<TrendingUp className="h-4 w-4" />}
+          tone="primary"
+        >
+          <p className="text-xs text-muted-foreground mb-3">
+            Age 30–79, TC, HDL, SBP, BMI, eGFR required.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div><Label className="text-xs">Age</Label><Input type="number" value={age} onChange={(e) => setAge(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">Sex</Label>
+              <Select value={sex} onValueChange={setSex}>
+                <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div><Label className="text-xs">Total Chol</Label><Input type="number" value={tcInput} onChange={(e) => setTcInput(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">HDL</Label><Input type="number" value={hdlInput} onChange={(e) => setHdlInput(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">SBP</Label><Input type="number" value={sbpInput} onChange={(e) => setSbpInput(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">BMI</Label><Input type="number" step="0.1" value={bmiInput} onChange={(e) => setBmiInput(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">eGFR</Label><Input type="number" value={egfrInput} onChange={(e) => setEgfrInput(e.target.value)} className="h-9 text-xs" /></div>
+          </div>
+          <div className="flex flex-wrap gap-3 mt-2">
+            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={bpMed} onChange={(e) => setBpMed(e.target.checked)} className="rounded" /> BP Meds</label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={onStatin} onChange={(e) => setOnStatin(e.target.checked)} className="rounded" /> On Statin</label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={diabetes} onChange={(e) => setDiabetes(e.target.checked)} className="rounded" /> Diabetes</label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={smoking} onChange={(e) => setSmoking(e.target.checked)} className="rounded" /> Smoker</label>
+          </div>
+          {preventResult?.valid ? (
+            <div className="mt-3 p-3 rounded-lg border border-primary/30 bg-primary/5">
+              <span className="font-semibold text-lg">{preventResult.riskPct}%</span>
+              <span className="ml-2 text-xs font-semibold">({preventResult.category}) 10-yr ASCVD</span>
+              <p className="text-xs text-muted-foreground mt-1">{aha.note}</p>
+            </div>
+          ) : (
+            <div className="mt-3 text-xs text-muted-foreground">
+              {preventResult?.warnings?.length ? preventResult.warnings.join("; ") : "Enter values to compute AHA PREVENT risk."}
+            </div>
+          )}
+        </SectionCard>
+      )}
 
       {/* Result */}
       {result && (
@@ -1282,6 +1617,44 @@ export default function LipidMiniApp() {
                 <p className="text-sm font-bold text-foreground mt-0.5">{result.apoBTarget}</p>
               </Card>
             </div>
+
+            {/* Dual AHA + LAI recommendations */}
+            {(totalChecked > 0 || preventResult?.valid) && (
+              <div className="rounded-xl border border-border overflow-hidden">
+                <div className="px-4 py-2 bg-muted/40 border-b border-border flex items-center gap-2">
+                  <Info className="h-4 w-4 text-primary" />
+                  <p className="text-xs font-bold text-foreground">Guideline comparison</p>
+                </div>
+                <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border">
+                  {/* AHA */}
+                  <div className={cn("p-4 space-y-1.5", !i.southAsian && "bg-primary/[0.04]")}>
+                    <div className="flex items-center gap-1.5">
+                      <TrendingUp className="h-3.5 w-3.5 text-primary" />
+                      <p className="text-xs font-bold text-primary">ACC/AHA {!i.southAsian && <span className="ml-1 text-[10px] font-semibold text-muted-foreground">(preferred)</span>}</p>
+                    </div>
+                    <p className="text-sm font-semibold text-foreground">{aha.intensity}</p>
+                    <p className="text-xs text-muted-foreground">LDL target: {aha.target}</p>
+                    <p className="text-xs text-muted-foreground">{aha.note}</p>
+                  </div>
+                  {/* LAI */}
+                  <div className={cn("p-4 space-y-1.5", i.southAsian && "bg-warning/[0.06]")}>
+                    <div className="flex items-center gap-1.5">
+                      <BookOpen className="h-3.5 w-3.5 text-warning" />
+                      <p className="text-xs font-bold text-warning">LAI 2023 {i.southAsian && <span className="ml-1 text-[10px] font-semibold text-muted-foreground">(preferred)</span>}</p>
+                    </div>
+                    {totalChecked > 0 ? (
+                      <>
+                        <p className="text-sm font-semibold text-foreground">{laiRec.title}</p>
+                        <p className="text-xs text-muted-foreground">LDL target: {laiDetails.ldl} mg/dL</p>
+                        <p className="text-xs text-muted-foreground">{laiRec.drug}</p>
+                      </>
+                    ) : (
+                      <p className="text-xs text-muted-foreground">Select LAI risk modifiers above to generate the LAI plan.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div>
               <div className="flex items-center gap-2 mb-1.5">
