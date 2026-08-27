@@ -138,8 +138,17 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
     setDragging(false);
   }, []);
 
-  // Touch panning
+  // Touch panning + pinch zoom
+  const pinchRef = useRef<{ startDist: number; startZoom: number } | null>(null);
+
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const [a, b] = [e.touches[0], e.touches[1]];
+      const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      pinchRef.current = { startDist: dist, startZoom: zoom };
+      setDragging(false);
+      return;
+    }
     if (zoom <= 1) return;
     const touch = e.touches[0];
     setDragging(true);
@@ -147,6 +156,15 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
   }, [zoom, position]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchRef.current) {
+      const [a, b] = [e.touches[0], e.touches[1]];
+      const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      const ratio = dist / pinchRef.current.startDist;
+      const next = Math.min(Math.max(pinchRef.current.startZoom * ratio, 1), 10);
+      setZoom(next);
+      setPosition((pos) => clampPosition(pos, next));
+      return;
+    }
     if (!dragging || zoom <= 1) return;
     const touch = e.touches[0];
     setPosition(
@@ -161,6 +179,7 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
   }, [dragging, zoom, dragStart, clampPosition]);
 
   const handleTouchEnd = useCallback(() => {
+    pinchRef.current = null;
     setDragging(false);
   }, []);
 
