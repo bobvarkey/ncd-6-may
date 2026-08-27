@@ -1469,11 +1469,10 @@ export default function LipidMiniApp() {
       </SectionCard>
 
       {/* LAI 2023 Risk Modifier Groups — full modifier set */}
-      {i.scenario !== "" && (
-        <SectionCard
-          title="LAI 2023 Risk Modifiers"
-          icon={<BookOpen className="h-4 w-4" />}
-          tone="danger"
+      <SectionCard
+        title="LAI 2023 Risk Modifiers"
+        icon={<BookOpen className="h-4 w-4" />}
+        tone="danger"
           badge={
             totalChecked > 0 ? (
               <Badge variant="secondary" className="text-xs">{totalChecked} selected</Badge>
@@ -1487,7 +1486,7 @@ export default function LipidMiniApp() {
             {LAI_MODIFIER_GROUPS.map((group) => {
               const count = modifierCounts[group.title];
               return (
-                <Collapsible key={group.title} defaultOpen={count > 0}>
+                <Collapsible key={group.title} defaultOpen={count > 0 || group.title === "Established ASCVD"}>
                   <CollapsibleTrigger asChild>
                     <button className="flex w-full items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-2.5 hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-2">
@@ -1523,7 +1522,6 @@ export default function LipidMiniApp() {
             </div>
           )}
         </SectionCard>
-      )}
 
       {/* AHA PREVENT 10-year risk + AHA recommendation */}
       {i.scenario !== "" && (
