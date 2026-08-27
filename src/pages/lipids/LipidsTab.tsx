@@ -116,7 +116,7 @@ export default function LipidsTab() {
     </div>
   );
 
-  const sectionOrder = ["assessment", "treatment", "overview", "algorithm"];
+  const sectionOrder = ["assessment", "mini", "treatment", "overview", "algorithm"];
 
   const sections = [
     {
@@ -125,6 +125,13 @@ export default function LipidsTab() {
       icon: <Calculator />,
       description: "LAI 2023 risk stratification with primary and secondary prevention calculator",
       component: <LipidsAssessment onClassificationChange={setLaiResult} onNavigateToTreatment={() => scrollToSection("treatment")} />,
+    },
+    {
+      id: "mini",
+      title: "Lipid Management App & LAI Risk Modifiers",
+      icon: <Sparkles />,
+      description: "Scenario-based management with combined LAI 2023 risk modifiers and AHA PREVENT",
+      component: <LipidMiniApp />,
     },
     {
       id: "treatment",
@@ -183,11 +190,6 @@ export default function LipidsTab() {
               </Badge>
             )}
           </div>
-        </div>
-
-        {/* Mini-App pinned to top */}
-        <div className="mb-6">
-          <LipidMiniApp />
         </div>
 
         {/* Quick Navigation Tabs — sticky at top */}
