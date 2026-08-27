@@ -1466,19 +1466,14 @@ export default function LipidMiniApp() {
             Reset
           </Button>
         </div>
-      </SectionCard>
 
-      {/* LAI 2023 Risk Modifier Groups — full modifier set */}
-      <SectionCard
-        title="LAI 2023 Risk Modifiers"
-        icon={<BookOpen className="h-4 w-4" />}
-        tone="danger"
-          badge={
-            totalChecked > 0 ? (
-              <Badge variant="secondary" className="text-xs">{totalChecked} selected</Badge>
-            ) : undefined
-          }
-        >
+        {/* LAI 2023 Risk Modifier Groups — full modifier set */}
+        <div className="mt-2">
+          <div className="flex items-center gap-2 mb-2">
+            <BookOpen className="h-4 w-4 text-danger" />
+            <p className="text-sm font-semibold text-foreground">LAI 2023 Risk Modifiers</p>
+            {totalChecked > 0 && <Badge variant="secondary" className="text-xs">{totalChecked} selected</Badge>}
+          </div>
           <p className="text-xs text-muted-foreground mb-3">
             Select applicable LAI 2023 risk modifiers for full risk classification.
           </p>
@@ -1521,7 +1516,8 @@ export default function LipidMiniApp() {
               <p className="text-xs text-muted-foreground mt-1">LDL target {laiDetails.ldl} mg/dL · {laiRec.drug}</p>
             </div>
           )}
-        </SectionCard>
+        </div>
+      </SectionCard>
 
       {/* AHA PREVENT 10-year risk + AHA recommendation */}
       {i.scenario !== "" && (
