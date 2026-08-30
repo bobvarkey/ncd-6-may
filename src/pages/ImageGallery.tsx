@@ -92,6 +92,8 @@ const IMAGE_CATALOG: ImageEntry[] = [
   // ─── Anemia / Hemolysis ───
   { id: "hemolytic-anemia-algorithm", src: "/images/hemolytic-anemia-algorithm.jpg", label: "Hemolytic Anemia Algorithm", category: "Anemia & Coagulation", description: "Diagnostic algorithm for hemolytic anemia — Coombs-negative workup", sourcePages: [{ label: "Anemia", path: "/anemia" }] },
   { id: "anemia-algorithm", src: "/images/anemia-algorithm.jpg", label: "Anemia Algorithm", category: "Anemia & Coagulation", description: "MCV-based diagnostic algorithm for anemia — microcytic, normocytic, and macrocytic classification", sourcePages: [{ label: "Anemia", path: "/anemia" }] },
+  { id: "essential-thrombocythemia-algorithm", src: "/images/essential-thrombocythemia-algorithm.jpg", label: "Essential Thrombocythemia Algorithm", category: "Anemia & Coagulation", description: "IPSET-thrombosis risk stratification and treatment algorithm for essential thrombocythemia", sourcePages: [{ label: "Anemia", path: "/anemia" }] },
+  { id: "polycythemia-vera-algorithm", src: "/images/polycythemia-vera-algorithm.jpg", label: "Polycythemia Vera Algorithm", category: "Anemia & Coagulation", description: "Risk-stratified treatment algorithm for polycythemia vera — phlebotomy, aspirin, and cytoreductive therapy", sourcePages: [{ label: "Anemia", path: "/anemia" }] },
   { 
     id: "structured-hypercortisolism-screen", 
     src: structuredHypercortisolism.url, 
