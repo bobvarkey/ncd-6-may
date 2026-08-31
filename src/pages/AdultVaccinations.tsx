@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -391,7 +391,7 @@ function formatAgeRange(age_min: number, age_max: number | null): string {
 type SiteInjection = {
   site: string;
   icon: string;
-  injections: { name: string; note?: string }[];
+  injections: { name: string; note?: string; details?: string[] }[];
 };
 
 type Visit = {
@@ -401,7 +401,7 @@ type Visit = {
   note?: string;
 };
 
-const COADMIN_VISITS: Visit[] = [
+const COADMIN6_VISITS: Visit[] = [
   {
     label: "Visit 1",
     timing: "Day 0 — Initial Doses",
@@ -471,26 +471,200 @@ const COADMIN_VISITS: Visit[] = [
   },
 ];
 
+const COADMIN8_VISITS: Visit[] = [
+  {
+    label: "Visit 1",
+    timing: "Day 0 — Initial Doses",
+    note: undefined,
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Influenza", note: "1 dose" },
+          { name: "COVID-19 vaccine", note: "Current season/product/age-appropriate dose" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Shingrix", note: "Dose 1 of 2" },
+          { name: "Tdap/Td", note: "1 dose if indicated" },
+        ],
+      },
+      {
+        site: "Left thigh (vastus lateralis)",
+        icon: "🦵",
+        injections: [
+          { name: "PCV20", note: "1 dose if indicated" },
+          { name: "Hepatitis A", note: "Dose 1 of 2" },
+        ],
+      },
+      {
+        site: "Right thigh (vastus lateralis)",
+        icon: "🦵",
+        injections: [
+          { name: "Hepatitis B", note: "Dose 1" },
+          { name: "RSV vaccine", note: "1 dose if eligible" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Visit 2",
+    timing: "Month 1–2",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          {
+            name: "Shingrix",
+            note: "Dose 2 of 2",
+            details: [
+              "Routine interval: 2–6 months after Dose 1",
+              "If immunocompromised or immunosuppression is imminent: Dose 2 may be given 1–2 months after Dose 1",
+            ],
+          },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          {
+            name: "Hepatitis B",
+            note: "Dose 2",
+            details: ["Completes the series only if using 2-dose Heplisav-B"],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Visit 3",
+    timing: "Month 6",
+    note: "Completes the long-term protection series.",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [{ name: "Hepatitis A", note: "Dose 2 of 2" }],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          {
+            name: "Hepatitis B",
+            note: "Dose 3",
+            details: [
+              "Required only for a 3-dose Hepatitis B product/schedule",
+              "Examples: Engerix-B or Recombivax HB",
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const COADMIN8_IMPORTANT: string[] = [
+  "RSV vaccine is generally a one-time dose for eligible adults, not an annual vaccine.",
+  "COVID-19 dose number and timing must follow the current age-, product-, and immunocompromise-specific seasonal recommendations.",
+  "If eight same-day injections are impractical or unacceptable, prioritize time-sensitive vaccination and schedule a near-term follow-up for the remainder.",
+];
+
+const COADMIN8_CAVEATS: { title: string; text: string }[] = [
+  {
+    title: "RSV eligibility",
+    text: "Confirm age, pregnancy status, underlying risk factors, and current local/national policy before giving it. In the US, RSV vaccination is recommended based on age/risk or pregnancy timing; it is not universal for every adult.",
+  },
+  {
+    title: "PCV20",
+    text: "Usually completes the pneumococcal conjugate vaccination requirement in eligible adults, but verify past PCV13/PCV15/PPSV23 history.",
+  },
+  {
+    title: "Hepatitis B",
+    text: "Do not combine a Heplisav-B 2-dose schedule with an assumed 3-dose schedule; document the exact product and follow its interval rules.",
+  },
+  {
+    title: "Reactogenicity",
+    text: "Co-administration is permitted, but counsel that fever, fatigue, injection-site pain, myalgia, and malaise may be more noticeable when several reactogenic vaccines are given together. If the patient has limited tolerance or therapy timing permits, spacing non-urgent doses is reasonable.",
+  },
+  {
+    title: "Immunosuppression",
+    text: "Ideally administer vaccines before immunosuppressive therapy when possible, but do not unnecessarily delay indicated therapy; coordinate with the treating specialty.",
+  },
+];
+
+const COADMIN_SCHEDULES: { key: "6" | "8"; label: string; titleNote: string; description: ReactNode; visits: Visit[] }[] = [
+  {
+    key: "8",
+    label: "8-vaccine schedule",
+    titleNote: "Including Influenza, COVID-19, RSV, PCV20, Tdap/Td, Hepatitis A, Hepatitis B, and Shingrix",
+    description: (
+      <>
+        All listed vaccines are <strong>non-live</strong> and may be administered during the same visit when indicated.
+        Use separate injection sites and document each vaccine's precise anatomic site, manufacturer, lot number, route,
+        and date. Separate injections within the same muscle by <strong>≥2.5 cm (1 inch)</strong>.
+      </>
+    ),
+    visits: COADMIN8_VISITS,
+  },
+  {
+    key: "6",
+    label: "6-vaccine schedule",
+    titleNote: "(Including Hepatitis A)",
+    description: (
+      <>
+        All six vaccines — Influenza, PCV20, Tdap/DPT, Hepatitis A, Hepatitis B, and Shingrix — are{" "}
+        <strong>non-live</strong>. They can be safely administered on the same day using different injection sites.
+        This schedule distributes injections across both arms and both thighs on Day 0 to avoid overloading individual limbs.
+      </>
+    ),
+    visits: COADMIN6_VISITS,
+  },
+];
+
 function CoAdministrationSchedule() {
+  const [scheduleKey, setScheduleKey] = useState<"6" | "8">("8");
+  const schedule = COADMIN_SCHEDULES.find((s) => s.key === scheduleKey) ?? COADMIN_SCHEDULES[0];
+
   return (
     <Card className="border-primary/40 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <Syringe className="h-5 w-5 text-primary" />
-          <CardTitle className="text-lg">
-            Co-Administration Schedule &amp; Sites <span className="text-muted-foreground font-normal">(Including Hepatitis A)</span>
-          </CardTitle>
+          <CardTitle className="text-lg">Co-Administration Schedule &amp; Sites</CardTitle>
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+          {COADMIN_SCHEDULES.map((s) => (
+            <button
+              key={s.key}
+              type="button"
+              onClick={() => setScheduleKey(s.key)}
+              aria-pressed={scheduleKey === s.key}
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                scheduleKey === s.key
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
         </div>
         <CardDescription>
-          All six vaccines — Influenza, PCV20, Tdap/DPT, Hepatitis A, Hepatitis B, and Shingrix — are{" "}
-          <strong>non-live</strong>. They can be safely administered on the same day using different injection sites.
-          This schedule distributes injections across both arms and both thighs on Day 0 to avoid overloading individual limbs.
+          <span className="block font-medium text-foreground">{schedule.titleNote}</span>
+          {schedule.description}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Visit timeline */}
         <div className="space-y-3">
-          {COADMIN_VISITS.map((visit, vi) => (
+          {schedule.visits.map((visit) => (
             <div key={visit.label} className="rounded-xl border border-border/60 bg-background/60 overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 border-b border-border/40">
                 <Badge className="bg-primary text-primary-foreground">{visit.label}</Badge>
@@ -511,6 +685,15 @@ function CoAdministrationSchedule() {
                             <span>
                               <span className="font-medium text-foreground">{inj.name}</span>
                               {inj.note && <span className="text-muted-foreground"> — {inj.note}</span>}
+                              {inj.details && (
+                                <ul className="mt-0.5 space-y-0.5 list-disc pl-4">
+                                  {inj.details.map((d) => (
+                                    <li key={d} className="text-muted-foreground">
+                                      {d}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
                             </span>
                           </li>
                         ))}
@@ -525,6 +708,35 @@ function CoAdministrationSchedule() {
             </div>
           ))}
         </div>
+
+        {/* Important notes (8-vaccine schedule) */}
+        {scheduleKey === "8" && (
+          <div className="p-3 rounded-lg bg-primary/10 border border-primary/30">
+            <h4 className="text-sm font-semibold text-foreground mb-1.5 flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-primary" />
+              Important
+            </h4>
+            <ul className="space-y-1 text-xs text-muted-foreground list-disc pl-4">
+              {COADMIN8_IMPORTANT.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Practical caveats (8-vaccine schedule) */}
+        {scheduleKey === "8" && (
+          <div className="p-3 rounded-lg bg-secondary/40 border border-border/40">
+            <h4 className="text-sm font-semibold text-foreground mb-1.5">Practical caveats</h4>
+            <ul className="space-y-1.5 text-xs text-muted-foreground list-disc pl-4">
+              {COADMIN8_CAVEATS.map((c) => (
+                <li key={c.title}>
+                  <strong className="text-foreground">{c.title}:</strong> {c.text}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Immunosuppression safety check */}
         <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
