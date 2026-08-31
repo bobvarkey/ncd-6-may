@@ -117,7 +117,7 @@ function classifyLAI(
     // LAI 2023: South Asian with ASCVD is automatically EHR-A even without other high-risk features
     if (hrfCount >= 2) return { cat: "EHR", sub: "C", label: "Extreme High Risk C" };
     if (hrfCount === 1 || (h("ascvd_cad") && (h("ascvd_cva") || h("ascvd_pad")))) return { cat: "EHR", sub: "B", label: "Extreme High Risk B" };
-    if (sa) return { cat: "EHR", sub: "B", label: "Extreme High Risk B (South Asian)" };
+    if (sa) return { cat: "EHR", sub: "A", label: "Extreme High Risk A (South Asian)" };
     return { cat: "EHR", sub: "A", label: "Extreme High Risk A" };
   }
   if (hasDMTOD && (hrfCount >= 1 || enhCount >= 2)) return { cat: "VHR", sub: "C", label: "Very High Risk C" };
