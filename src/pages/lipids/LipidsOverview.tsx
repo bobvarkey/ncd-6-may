@@ -510,6 +510,98 @@ export default function LipidsOverview() {
         </p>
       </Card>
 
+      {/* Familial Hypercholesterolemia (FH) Diagnosis Section */}
+      <Card className="border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-500/5 to-purple-500/5 p-5">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500/20 to-purple-500/20 backdrop-blur-md border border-fuchsia-500/30">
+            <Dna className="h-5 w-5 text-fuchsia-500" />
+          </div>
+          <div>
+            <h3 className="font-display text-lg font-bold text-foreground">
+              Familial Hypercholesterolemia (FH) — Diagnosis
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              When to suspect, confirm, and cascade-screen for FH
+            </p>
+          </div>
+        </div>
+
+        {/* Suspect FH thresholds */}
+        <div className="rounded-lg border border-fuchsia-500/20 bg-fuchsia-500/5 p-4 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-400 mb-2">
+            Suspect FH
+          </p>
+          <div className="space-y-1.5 text-sm text-foreground leading-relaxed">
+            <p>
+              • <strong>Adults:</strong> LDL-C ≥190 mg/dL
+            </p>
+            <p>
+              • <strong>Children:</strong> LDL-C ≥150–160 mg/dL
+            </p>
+          </div>
+        </div>
+
+        {/* Strong clues */}
+        <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-2">
+            Strong Clues
+          </p>
+          <div className="space-y-1.5 text-sm text-foreground leading-relaxed">
+            <p>
+              • <strong>Premature ASCVD</strong> (male &lt;55y / female &lt;65y)
+            </p>
+            <p>
+              • <strong>Family history</strong> of premature ASCVD or high cholesterol
+            </p>
+            <p>
+              • <strong>Xanthomas</strong> (tendon) / <strong>corneal arcus</strong> (young)
+            </p>
+          </div>
+        </div>
+
+        {/* Very high LDL → heterozygous vs homozygous */}
+        <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-4 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400 mb-2">
+            Very High LDL-C (≥330–400 mg/dL)
+          </p>
+          <p className="text-sm text-foreground leading-relaxed">
+            Suspect <strong>heterozygous vs homozygous FH</strong> — homozygous FH
+            presents with extreme LDL-C, cutaneous xanthomas in childhood, and
+            aortic valve disease; it requires urgent specialist referral and
+            often apheresis.
+          </p>
+        </div>
+
+        {/* Exclude secondary causes */}
+        <div className="rounded-lg border border-sky-500/20 bg-sky-500/5 p-4 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2">
+            Exclude Secondary Causes
+          </p>
+          <p className="text-sm text-foreground leading-relaxed">
+            Before diagnosing FH, exclude secondary hypercholesterolemia with a
+            basic <strong>diabetes / thyroid / liver / renal</strong> workup
+            (fasting glucose/HbA1c, TSH, LFTs, renal function).
+          </p>
+        </div>
+
+        {/* Genetic testing */}
+        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">
+            Genetic Testing
+          </p>
+          <div className="space-y-1.5 text-sm text-foreground leading-relaxed">
+            <p>
+              • Confirms the variant (LDLR, APOB, PCSK9) and enables{" "}
+              <strong>cascade screening</strong> of at-risk relatives.
+            </p>
+            <p>
+              • <strong>Negative test ≠ excludes FH</strong> — a clinical
+              diagnosis (e.g., DLCN ≥6) still warrants treatment.
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {/* ApoB Section */}
       <Card className="border-border bg-card p-5">
         <div className="flex items-center gap-3 mb-4">
