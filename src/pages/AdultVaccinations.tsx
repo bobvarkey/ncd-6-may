@@ -475,7 +475,7 @@ const COADMIN8_VISITS: Visit[] = [
   {
     label: "Visit 1",
     timing: "Day 0 — Initial Doses",
-    note: "All listed vaccines are non-live and may be administered during the same visit when indicated. Use separate injection sites and document each vaccine's precise anatomic site, manufacturer, lot number, route, and date. Separate injections within the same muscle by ≥2.5 cm (1 inch).",
+    note: undefined,
     sites: [
       {
         site: "Left deltoid",
