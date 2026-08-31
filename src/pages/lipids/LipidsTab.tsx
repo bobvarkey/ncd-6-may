@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { BookOpen, Calculator, Pill, ArrowLeft, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { BookOpen, ArrowLeft, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import LipidsOverview from "./LipidsOverview";
-import LipidsAssessment from "./LipidsAssessment";
-import LipidsTreatment from "./LipidsTreatment";
 import LipidMiniApp from "./LipidMiniApp";
 import LipidsComprehensiveAlgorithm from "./LipidsComprehensiveAlgorithm";
 
@@ -80,10 +77,8 @@ const Section = ({ id, title, icon, description, isOpen, onToggle, children }: S
 
 export default function LipidsTab() {
   const navigate = useNavigate();
-  const [laiResult, setLaiResult] = useState<LAIResult | null>(null);
-  const [egfr, setEgfr] = useState<string>("");
 
-  const [openSections, setOpenSections] = useState<Set<string>>(new Set(["assessment", "treatment", "overview"]));
+  const [openSections, setOpenSections] = useState<Set<string>>(new Set(["mini", "overview"]));
 
   const toggleSection = (id: string) => {
     setOpenSections(prev => {
@@ -116,39 +111,15 @@ export default function LipidsTab() {
     </div>
   );
 
-  const sectionOrder = ["assessment", "mini", "treatment", "overview", "algorithm"];
+  const sectionOrder = ["mini", "overview", "algorithm"];
 
   const sections = [
-    {
-      id: "assessment",
-      title: "Risk Assessment",
-      icon: <Calculator />,
-      description: "LAI 2023 risk stratification with primary and secondary prevention calculator",
-      component: <LipidsAssessment onClassificationChange={setLaiResult} onNavigateToTreatment={() => scrollToSection("treatment")} />,
-    },
     {
       id: "mini",
       title: "Lipid Management App & LAI Risk Modifiers",
       icon: <Sparkles />,
       description: "Scenario-based management with combined LAI 2023 risk modifiers and AHA PREVENT",
       component: <LipidMiniApp />,
-    },
-    {
-      id: "treatment",
-      title: "Treatment & Rx",
-      icon: <Pill />,
-      description: "Drug selection, escalation protocols, and target-based management",
-      component: laiResult ? (
-        <LipidsTreatment laiResult={laiResult} onBackToAssessment={() => scrollToSection("assessment")} />
-      ) : (
-        <div className="p-12 text-center border rounded-xl border-dashed border-muted-foreground/30">
-          <Calculator className="h-8 w-8 mx-auto text-muted-foreground/50 mb-3" />
-          <p className="text-muted-foreground">Complete the Risk Assessment section first to generate treatment recommendations.</p>
-          <Button variant="outline" className="mt-4" onClick={() => scrollToSection("assessment")}>
-            Go to Risk Assessment
-          </Button>
-        </div>
-      ),
     },
     {
       id: "overview",
@@ -184,11 +155,6 @@ export default function LipidsTab() {
             <p className="text-muted-foreground">
               Comprehensive lipid assessment and treatment with ACC/AHA and LAI 2023 guidelines
             </p>
-            {laiResult && (
-              <Badge variant="outline" className={`mt-1 ${laiResult.cat === "EHR" ? "bg-destructive/100/10 text-destructive border-red-500/30" : laiResult.cat === "VHR" ? "bg-warning/100/10 text-orange-600 border-warning/30" : laiResult.cat === "HR" ? "bg-warning/100/10 text-warning border-amber-500/30" : "bg-success/100/10 text-success border-green-500/30"}`}>
-                {laiResult.cat}{laiResult.sub && `-${laiResult.sub}`} — Target LDL {laiResult.ldlTarget}
-              </Badge>
-            )}
           </div>
         </div>
 
