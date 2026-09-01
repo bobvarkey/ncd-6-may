@@ -717,6 +717,20 @@ const COADMIN_SCHEDULES: { key: CoAdminScheduleKey; label: string; titleNote: st
     visits: COADMIN8_VISITS,
   },
   {
+    key: "2visit",
+    label: "2-visit, 8-vaccine schedule",
+    titleNote: "Two-visit co-administration by injection site (Options A & B)",
+    description: (
+      <>
+        All eight vaccines — Influenza, COVID-19, RSV, PCV20, Tdap/Td, Hepatitis A, Hepatitis B, and Shingrix — are{" "}
+        <strong>non-live</strong> and can be co-administered. Use a separate injection site for each vaccine; if two
+        vaccines are administered in the same deltoid, separate them by <strong>≥2.5 cm (1 inch)</strong> and document
+        the exact site. Shingrix dose 2 and the Hepatitis A/B series completions still follow their standard intervals
+        after these two visits.
+      </>
+    ),
+  },
+  {
     key: "6",
     label: "6-vaccine schedule",
     titleNote: "(Including Hepatitis A)",
