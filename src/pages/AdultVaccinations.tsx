@@ -746,8 +746,13 @@ const COADMIN_SCHEDULES: { key: CoAdminScheduleKey; label: string; titleNote: st
 ];
 
 function CoAdministrationSchedule() {
-  const [scheduleKey, setScheduleKey] = useState<"6" | "8">("8");
+  const [scheduleKey, setScheduleKey] = useState<CoAdminScheduleKey>("8");
+  const [twoVisitOption, setTwoVisitOption] = useState<"A" | "B">("A");
   const schedule = COADMIN_SCHEDULES.find((s) => s.key === scheduleKey) ?? COADMIN_SCHEDULES[0];
+  const visits =
+    scheduleKey === "2visit"
+      ? (COADMIN2VISIT_OPTIONS.find((o) => o.key === twoVisitOption) ?? COADMIN2VISIT_OPTIONS[0]).visits
+      : (schedule.visits ?? []);
 
   return (
     <Card className="border-primary/40 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden">
