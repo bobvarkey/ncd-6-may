@@ -599,7 +599,110 @@ const COADMIN8_CAVEATS: { title: string; text: string }[] = [
   },
 ];
 
-const COADMIN_SCHEDULES: { key: "6" | "8"; label: string; titleNote: string; description: ReactNode; visits: Visit[] }[] = [
+const COADMIN2VISIT_A_VISITS: Visit[] = [
+  {
+    label: "Visit 1",
+    timing: "Day 0 — Respiratory/PCV Priority",
+    note: "Option A — respiratory/PCV priority. Use a separate injection site for each vaccine; if two vaccines share the same deltoid, separate by ≥2.5 cm (1 inch) and document the exact site.",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Influenza", note: "1 dose" },
+          { name: "COVID-19 vaccine", note: "Current indicated dose" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "RSV vaccine", note: "One dose if eligible" },
+          { name: "PCV20", note: "One dose if indicated" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Visit 2",
+    timing: "Day 7–14",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Shingrix", note: "Dose 1 of 2" },
+          { name: "Tdap/Td", note: "One dose if indicated" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Hepatitis A", note: "Dose 1 of 2" },
+          { name: "Hepatitis B", note: "Dose 1" },
+        ],
+      },
+    ],
+  },
+];
+
+const COADMIN2VISIT_B_VISITS: Visit[] = [
+  {
+    label: "Visit 1",
+    timing: "Day 0 — Influenza/COVID/PCV/Tetanus Priority",
+    note: "Option B — influenza/COVID/PCV/tetanus priority. Use a separate injection site for each vaccine; if two vaccines share the same deltoid, separate by ≥2.5 cm (1 inch) and document the exact site.",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Influenza", note: "1 dose" },
+          { name: "COVID-19 vaccine", note: "Current indicated dose" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "PCV20", note: "One dose if indicated" },
+          { name: "Tdap/Td", note: "One dose if indicated" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Visit 2",
+    timing: "Day 7–14",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "RSV vaccine", note: "One dose if eligible" },
+          { name: "Shingrix", note: "Dose 1 of 2" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Hepatitis A", note: "Dose 1 of 2" },
+          { name: "Hepatitis B", note: "Dose 1" },
+        ],
+      },
+    ],
+  },
+];
+
+const COADMIN2VISIT_OPTIONS: { key: "A" | "B"; label: string; visits: Visit[] }[] = [
+  { key: "A", label: "Option A — Respiratory/PCV priority", visits: COADMIN2VISIT_A_VISITS },
+  { key: "B", label: "Option B — Influenza/COVID/PCV/Tetanus priority", visits: COADMIN2VISIT_B_VISITS },
+];
+
+type CoAdminScheduleKey = "6" | "8" | "2visit";
+
+const COADMIN_SCHEDULES: { key: CoAdminScheduleKey; label: string; titleNote: string; description: ReactNode; visits?: Visit[] }[] = [
   {
     key: "8",
     label: "8-vaccine schedule",
@@ -612,6 +715,20 @@ const COADMIN_SCHEDULES: { key: "6" | "8"; label: string; titleNote: string; des
       </>
     ),
     visits: COADMIN8_VISITS,
+  },
+  {
+    key: "2visit",
+    label: "2-visit, 8-vaccine schedule",
+    titleNote: "Two-visit co-administration by injection site (Options A & B)",
+    description: (
+      <>
+        All eight vaccines — Influenza, COVID-19, RSV, PCV20, Tdap/Td, Hepatitis A, Hepatitis B, and Shingrix — are{" "}
+        <strong>non-live</strong> and can be co-administered. Use a separate injection site for each vaccine; if two
+        vaccines are administered in the same deltoid, separate them by <strong>≥2.5 cm (1 inch)</strong> and document
+        the exact site. Shingrix dose 2 and the Hepatitis A/B series completions still follow their standard intervals
+        after these two visits.
+      </>
+    ),
   },
   {
     key: "6",
@@ -629,8 +746,13 @@ const COADMIN_SCHEDULES: { key: "6" | "8"; label: string; titleNote: string; des
 ];
 
 function CoAdministrationSchedule() {
-  const [scheduleKey, setScheduleKey] = useState<"6" | "8">("8");
+  const [scheduleKey, setScheduleKey] = useState<CoAdminScheduleKey>("8");
+  const [twoVisitOption, setTwoVisitOption] = useState<"A" | "B">("A");
   const schedule = COADMIN_SCHEDULES.find((s) => s.key === scheduleKey) ?? COADMIN_SCHEDULES[0];
+  const visits =
+    scheduleKey === "2visit"
+      ? (COADMIN2VISIT_OPTIONS.find((o) => o.key === twoVisitOption) ?? COADMIN2VISIT_OPTIONS[0]).visits
+      : (schedule.visits ?? []);
 
   return (
     <Card className="border-primary/40 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden">
@@ -662,9 +784,29 @@ function CoAdministrationSchedule() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Option A/B sub-toggle (2-visit schedule) */}
+        {scheduleKey === "2visit" && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {COADMIN2VISIT_OPTIONS.map((o) => (
+              <button
+                key={o.key}
+                type="button"
+                onClick={() => setTwoVisitOption(o.key)}
+                aria-pressed={twoVisitOption === o.key}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  twoVisitOption === o.key
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        )}
         {/* Visit timeline */}
         <div className="space-y-3">
-          {schedule.visits.map((visit) => (
+          {visits.map((visit) => (
             <div key={visit.label} className="rounded-xl border border-border/60 bg-background/60 overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 border-b border-border/40">
                 <Badge className="bg-primary text-primary-foreground">{visit.label}</Badge>
