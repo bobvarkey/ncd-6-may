@@ -599,7 +599,110 @@ const COADMIN8_CAVEATS: { title: string; text: string }[] = [
   },
 ];
 
-const COADMIN_SCHEDULES: { key: "6" | "8"; label: string; titleNote: string; description: ReactNode; visits: Visit[] }[] = [
+const COADMIN2VISIT_A_VISITS: Visit[] = [
+  {
+    label: "Visit 1",
+    timing: "Day 0 — Respiratory/PCV Priority",
+    note: "Option A — respiratory/PCV priority. Use a separate injection site for each vaccine; if two vaccines share the same deltoid, separate by ≥2.5 cm (1 inch) and document the exact site.",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Influenza", note: "1 dose" },
+          { name: "COVID-19 vaccine", note: "Current indicated dose" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "RSV vaccine", note: "One dose if eligible" },
+          { name: "PCV20", note: "One dose if indicated" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Visit 2",
+    timing: "Day 7–14",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Shingrix", note: "Dose 1 of 2" },
+          { name: "Tdap/Td", note: "One dose if indicated" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Hepatitis A", note: "Dose 1 of 2" },
+          { name: "Hepatitis B", note: "Dose 1" },
+        ],
+      },
+    ],
+  },
+];
+
+const COADMIN2VISIT_B_VISITS: Visit[] = [
+  {
+    label: "Visit 1",
+    timing: "Day 0 — Influenza/COVID/PCV/Tetanus Priority",
+    note: "Option B — influenza/COVID/PCV/tetanus priority. Use a separate injection site for each vaccine; if two vaccines share the same deltoid, separate by ≥2.5 cm (1 inch) and document the exact site.",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Influenza", note: "1 dose" },
+          { name: "COVID-19 vaccine", note: "Current indicated dose" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "PCV20", note: "One dose if indicated" },
+          { name: "Tdap/Td", note: "One dose if indicated" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Visit 2",
+    timing: "Day 7–14",
+    sites: [
+      {
+        site: "Left deltoid",
+        icon: "💪",
+        injections: [
+          { name: "RSV vaccine", note: "One dose if eligible" },
+          { name: "Shingrix", note: "Dose 1 of 2" },
+        ],
+      },
+      {
+        site: "Right deltoid",
+        icon: "💪",
+        injections: [
+          { name: "Hepatitis A", note: "Dose 1 of 2" },
+          { name: "Hepatitis B", note: "Dose 1" },
+        ],
+      },
+    ],
+  },
+];
+
+const COADMIN2VISIT_OPTIONS: { key: "A" | "B"; label: string; visits: Visit[] }[] = [
+  { key: "A", label: "Option A — Respiratory/PCV priority", visits: COADMIN2VISIT_A_VISITS },
+  { key: "B", label: "Option B — Influenza/COVID/PCV/Tetanus priority", visits: COADMIN2VISIT_B_VISITS },
+];
+
+type CoAdminScheduleKey = "6" | "8" | "2visit";
+
+const COADMIN_SCHEDULES: { key: CoAdminScheduleKey; label: string; titleNote: string; description: ReactNode; visits?: Visit[] }[] = [
   {
     key: "8",
     label: "8-vaccine schedule",
