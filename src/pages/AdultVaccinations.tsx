@@ -784,9 +784,29 @@ function CoAdministrationSchedule() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Option A/B sub-toggle (2-visit schedule) */}
+        {scheduleKey === "2visit" && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {COADMIN2VISIT_OPTIONS.map((o) => (
+              <button
+                key={o.key}
+                type="button"
+                onClick={() => setTwoVisitOption(o.key)}
+                aria-pressed={twoVisitOption === o.key}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  twoVisitOption === o.key
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        )}
         {/* Visit timeline */}
         <div className="space-y-3">
-          {schedule.visits.map((visit) => (
+          {visits.map((visit) => (
             <div key={visit.label} className="rounded-xl border border-border/60 bg-background/60 overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 border-b border-border/40">
                 <Badge className="bg-primary text-primary-foreground">{visit.label}</Badge>
