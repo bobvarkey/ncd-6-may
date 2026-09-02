@@ -344,6 +344,8 @@ const App = () => {
           <Route path="/acid-base" element={<><TabNavigation /><AcidBaseDisorders /></>} />
           <Route path="/metabolic-alkalosis" element={<Navigate to="/acid-base?tab=metabolic-alkalosis" replace />} />
           <Route path="/geriatrics" element={<><TabNavigation /><Geriatrics /></>} />
+          <Route path="/frailty-calculator" element={<><TabNavigation /><FrailtyCalculator /></>} />
+          <Route path="/vaccine-calculator" element={<><TabNavigation /><VaccineCalculator /></>} />
           <Route path="/respiratory" element={<><TabNavigation /><RespiratoryPage /></>} />
           <Route path="/respiratory/simple" element={<Navigate to="/respiratory" replace />} />
           <Route path="/respiratory/moderate" element={<Navigate to="/respiratory" replace />} />
