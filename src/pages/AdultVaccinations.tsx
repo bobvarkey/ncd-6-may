@@ -866,6 +866,41 @@ function CoAdministrationSchedule() {
           </div>
         )}
 
+        {/* Follow-up schedule (2-visit schedule) */}
+        {scheduleKey === "2visit" && (
+          <div className="p-3 rounded-lg bg-primary/10 border border-primary/30">
+            <h4 className="text-sm font-semibold text-foreground mb-1.5 flex items-center gap-2">
+              <Syringe className="h-4 w-4 text-primary" />
+              Follow-up after Visit 2 — {twoVisitOption === "A" ? "Option A" : "Option B"}
+            </h4>
+            <ul className="space-y-1.5 text-xs text-muted-foreground list-disc pl-4">
+              <li>
+                <strong className="text-foreground">Shingrix dose 2:</strong> 2–6 months after dose 1 (given at Visit{" "}
+                2). If immunocompromised, shorten to 1–2 months. Same deltoid site documentation applies.
+              </li>
+              <li>
+                <strong className="text-foreground">Hepatitis A dose 2:</strong> 6–12 months after dose 1 (given at
+                Visit 2).
+              </li>
+              <li>
+                <strong className="text-foreground">Hepatitis B completion:</strong> product-specific — Heplisav-B 0 and
+                1 month (2 doses); conventional recombinant vaccines 0, 1 and 6 months (3 doses). Count Visit 2 as month
+                0.
+              </li>
+              <li>
+                <strong className="text-foreground">RSV vaccine:</strong> one-time dose only — given at{" "}
+                {twoVisitOption === "A" ? "Visit 1" : "Visit 2"} if eligible (age ≥75, or 50–74 with risk conditions per
+                current recommendation). No revaccination is currently advised.
+              </li>
+              <li>
+                <strong className="text-foreground">Influenza:</strong> annual; <strong>COVID-19</strong> per current
+                seasonal recommendation. <strong>PCV20</strong> and <strong>Tdap/Td</strong> need no further doses in
+                this series (Td booster every 10 years).
+              </li>
+            </ul>
+          </div>
+        )}
+
         {/* Practical caveats (8-vaccine schedule) */}
         {scheduleKey === "8" && (
           <div className="p-3 rounded-lg bg-secondary/40 border border-border/40">
