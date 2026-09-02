@@ -185,6 +185,8 @@ const AKIAKDMiniApp = lazyWithModuleRetry(() => import("@/pages/AKIAKDMiniApp"))
 const AcidBaseDisorders = lazyWithModuleRetry(() => import("@/pages/AcidBaseDisorders"));
 const MetabolicAlkalosis = lazyWithModuleRetry(() => import("@/pages/MetabolicAlkalosis"));
 const Geriatrics = lazyWithModuleRetry(() => import("@/pages/Geriatrics"));
+const FrailtyCalculator = lazyWithModuleRetry(() => import("@/pages/FrailtyCalculator"));
+const VaccineCalculator = lazyWithModuleRetry(() => import("@/pages/VaccineCalculator"));
 const Electrolytes = lazyWithModuleRetry(() => import("@/pages/Electrolytes"));
 const Hyponatremia = lazyWithModuleRetry(() => import("@/pages/Hyponatremia"));
 const Hypernatremia = lazyWithModuleRetry(() => import("@/pages/Hypernatremia"));
