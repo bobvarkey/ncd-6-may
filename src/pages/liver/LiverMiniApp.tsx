@@ -14,7 +14,6 @@ import ZoomableImage from "@/components/ZoomableImage";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 import MasldWorkup from "@/pages/liver/MasldWorkup";
 import MasldRiskCalculator from "@/pages/liver/MasldRiskCalculator";
-import LiverScores from "@/pages/liver/LiverScores";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 
@@ -147,6 +146,8 @@ export default function LiverMiniApp() {
   const [alb, setAlb] = useState("");
   const [plt, setPlt] = useState("");
   const [inr, setInr] = useState("");
+  const [creatinine, setCreatinine] = useState("");
+  const [sodium, setSodium] = useState("");
   const [astULN, setAstULN] = useState("40");
 
   // Context
@@ -156,6 +157,7 @@ export default function LiverMiniApp() {
   const [meds, setMeds] = useState(false);
   const [pregnant, setPregnant] = useState(false);
   const [jaundice, setJaundice] = useState(false);
+  const [ascites, setAscites] = useState(false);
   const [encephalopathy, setEncephalopathy] = useState(false);
 
   // Viral hepatitis
@@ -188,6 +190,27 @@ export default function LiverMiniApp() {
 
   const pattern = useMemo(() => patternFromLFTs(n(ast), n(alt), n(alp)), [ast, alt, alp]);
   const alcohol = useMemo(() => alcoholTier(sex, n(drinksWk)), [sex, drinksWk]);
+  const meld = useMemo(() => {
+    if (!bili || !inr || !creatinine || !sodium || !alb || !sex) return NaN;
+    const bilirubin = Math.max(1, n(bili));
+    const normalizedInr = Math.max(1, n(inr));
+    const cr = Math.min(3, Math.max(1, n(creatinine)));
+    const na = Math.min(137, Math.max(125, n(sodium)));
+    const albumin = Math.min(3.5, Math.max(1.5, n(alb)));
+    return Math.max(6, Math.min(40, Math.round(
+      1.33 * (sex === "female" ? 1 : 0) + 4.56 * Math.log(bilirubin)
+      + 0.82 * (137 - na) - 0.24 * (137 - na) * Math.log(bilirubin)
+      + 9.09 * Math.log(normalizedInr) + 11.14 * Math.log(cr)
+      + 1.85 * (3.5 - albumin) - 1.83 * (3.5 - albumin) * Math.log(cr) + 6,
+    )));
+  }, [bili, inr, creatinine, sodium, alb, sex]);
+  const childPugh = useMemo(() => {
+    if (!bili || !alb || !inr) return NaN;
+    const bilirubinPoints = n(bili) < 2 ? 1 : n(bili) <= 3 ? 2 : 3;
+    const albuminPoints = n(alb) > 3.5 ? 1 : n(alb) >= 2.8 ? 2 : 3;
+    const inrPoints = n(inr) < 1.7 ? 1 : n(inr) <= 2.3 ? 2 : 3;
+    return bilirubinPoints + albuminPoints + inrPoints + (ascites ? 3 : 1) + (encephalopathy ? 3 : 1);
+  }, [bili, alb, inr, ascites, encephalopathy]);
 
   const redFlags = useMemo(() => {
     const flags: string[] = [];
@@ -276,6 +299,7 @@ export default function LiverMiniApp() {
       "LABS",
       `  AST ${ast || "—"} / ALT ${alt || "—"} / ALP ${alp || "—"} / GGT ${ggt || "—"}`,
       `  Bilirubin ${bili || "—"} / Albumin ${alb || "—"} / Platelets ${plt || "—"} / INR ${inr || "—"}`,
+      `  Creatinine ${creatinine || "—"} / Sodium ${sodium || "—"}`,
       "",
       `PATTERN: ${pattern.toUpperCase()}`,
       "",
@@ -283,6 +307,8 @@ export default function LiverMiniApp() {
       `  FIB-4:  ${isNaN(fib4.score) ? "n/a" : fib4.score.toFixed(2)}  (${fib4.risk ?? "n/a"})`,
       `  APRI:   ${isNaN(apri.score) ? "n/a" : apri.score.toFixed(2)}  (${apri.risk ?? "n/a"})`,
       `  NFS:    ${isNaN(nfs.score)  ? "n/a" : nfs.score.toFixed(2)}  (${nfs.risk ?? "n/a"})`,
+      `  MELD 3.0: ${isNaN(meld) ? "n/a" : meld}`,
+      `  Child-Pugh: ${isNaN(childPugh) ? "n/a" : `${childPugh} (${childPugh <= 6 ? "A" : childPugh <= 9 ? "B" : "C"})`}`,
       "",
       redFlags.length ? "RED FLAGS\n" + redFlags.map(f => "  • " + f).join("\n") + "\n" : "",
       "MANAGEMENT PATHWAY",
@@ -328,6 +354,14 @@ export default function LiverMiniApp() {
         FIB-4 is the most validated primary care triage tool. 
         Always adjust for age (≥65y threshold is 2.0) and confirm indeterminate results with a second-line test like FibroScan or ELF.
       </TakeHomeMessage>
+
+      <Card className="border-primary/40">
+        <CardHeader className="py-3">
+          <CardTitle className="text-sm">LFT Pattern</CardTitle>
+          <CardDescription className="text-xs">Automatically classified from AST, ALT and ALP values below.</CardDescription>
+        </CardHeader>
+        <CardContent><Badge variant="outline" className="capitalize">{pattern}</Badge></CardContent>
+      </Card>
 
       {/* MASH / MetALD / Pure ALD diagnostic comparison table */}
       <Collapsible open={showMashTable} onOpenChange={setShowMashTable}>
@@ -447,9 +481,6 @@ export default function LiverMiniApp() {
 
       {/* MASLD fibrosis risk calculator */}
       <MasldRiskCalculator />
-
-      {/* Liver disease severity scores */}
-      <LiverScores />
 
       {/* MASLD investigations, diagnosis, management */}
       <MasldWorkup />
@@ -617,6 +648,7 @@ export default function LiverMiniApp() {
                 ["meds","On hepatotoxic medications", meds, setMeds],
                 ["pregnant","Pregnant", pregnant, setPregnant],
                 ["jaundice","Clinical jaundice", jaundice, setJaundice],
+                ["ascites","Ascites", ascites, setAscites],
                 ["encephalopathy","Encephalopathy / asterixis", encephalopathy, setEncephalopathy],
               ].map(([id, label, val, setter]: any) => (
                 <label key={id} className="flex items-center gap-2 text-xs cursor-pointer">
@@ -640,6 +672,14 @@ export default function LiverMiniApp() {
             <RangeOrExact id="alb" label="Albumin" unit="g/dL" value={alb} onChange={setAlb} ranges={RANGES.albumin} />
             <RangeOrExact id="plt" label="Platelets" unit="×10⁹/L" value={plt} onChange={setPlt} ranges={RANGES.platelets} />
             <RangeOrExact id="inr" label="INR" value={inr} onChange={setInr} ranges={RANGES.inr} />
+            <div className="space-y-1.5">
+              <Label className="text-xs">Creatinine (mg/dL)</Label>
+              <Input type="text" inputMode="decimal" className="h-9" value={creatinine} onChange={e => setCreatinine(e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Sodium (mmol/L)</Label>
+              <Input type="text" inputMode="decimal" className="h-9" value={sodium} onChange={e => setSodium(e.target.value)} />
+            </div>
             <div className="space-y-1.5 col-span-2">
               <Label className="text-xs">AST upper limit of normal (for APRI)</Label>
               <Input type="text" inputMode="decimal" className="h-9" value={astULN} onChange={e => setAstULN(e.target.value)} />
@@ -664,7 +704,7 @@ export default function LiverMiniApp() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-3">
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">LFT pattern</div>
               <div className="text-sm font-semibold mt-1 capitalize">{pattern}</div>
@@ -683,6 +723,14 @@ export default function LiverMiniApp() {
               <div className="text-xs uppercase text-muted-foreground">NAFLD FS</div>
               <div className="text-sm font-semibold mt-1">{isNaN(nfs.score) ? "—" : roundClinical(nfs.score, 2)}</div>
               <div className="mt-1">{riskBadge(nfs.risk)}</div>
+            </div>
+            <div className="p-3 rounded-lg border bg-card/60">
+              <div className="text-xs uppercase text-muted-foreground">MELD 3.0</div>
+              <div className="text-sm font-semibold mt-1">{isNaN(meld) ? "—" : meld}</div>
+            </div>
+            <div className="p-3 rounded-lg border bg-card/60">
+              <div className="text-xs uppercase text-muted-foreground">Child-Pugh</div>
+              <div className="text-sm font-semibold mt-1">{isNaN(childPugh) ? "—" : `${childPugh} (${childPugh <= 6 ? "A" : childPugh <= 9 ? "B" : "C"})`}</div>
             </div>
           </div>
 
