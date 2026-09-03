@@ -140,6 +140,7 @@ const navItems: NavItem[] = [
   { path: "/anemia",                  label: "Blood",     icon: Droplet, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "🩸" },
   { path: "/fatigue",                label: "Fatigue",   icon: Moon, active: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30", emoji: "😴" },
   { path: "/infections",             label: "Infections", icon: Bug, active: "bg-rose-500/10 text-rose-400 border-rose-500/30", emoji: "🦠" },
+  { path: "/diabetic-foot-scoring",  label: "Diabetic Foot Infection", icon: Activity, active: "bg-rose-500/10 text-rose-400 border-rose-500/30", emoji: "🦶" },
   { path: "/acute-diarrhoea",        label: "Diarrhoea and constipation", icon: UtensilsCrossed, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "💩" },
   { path: "/food-poisoning",        label: "Food Poisoning", icon: UtensilsCrossed, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🤢" },
   { path: "/pep",                   label: "Post exposure prophylaxis (PEP)",icon: Shield, active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", emoji: "💉" },

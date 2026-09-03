@@ -204,6 +204,7 @@ const Type1TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type1T
 const Type2TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type2TreatmentAlgorithm"));
 
 const PerioperativeCalculators = lazyWithModuleRetry(() => import("@/pages/PerioperativeCalculators"));
+const DiabeticFootScoring = lazyWithModuleRetry(() => import("@/pages/DiabeticFootScoring"));
 const DevTools = lazyWithModuleRetry(() => import("@/pages/dev/DevTools"));
 
 const queryClient = new QueryClient();
@@ -382,6 +383,7 @@ const App = () => {
           <Route path="/pcos" element={<Navigate to="/women-health?tab=pmos" replace />} />
           <Route path="/women-health" element={<><TabNavigation /><WomenHealth /></>} />
           <Route path="/infections" element={<><TabNavigation /><Infections /></>} />
+          <Route path="/diabetic-foot-scoring" element={<><TabNavigation /><DiabeticFootScoring /></>} />
           <Route path="/acute-diarrhoea" element={<><TabNavigation /><AcuteDiarrhoeaPage /></>} />
           <Route path="/food-poisoning" element={<><TabNavigation /><FoodPoisoningPage /></>} />
           <Route path="/pep" element={<><TabNavigation /><PEP /></>} />
