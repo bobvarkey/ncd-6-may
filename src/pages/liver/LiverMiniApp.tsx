@@ -14,6 +14,7 @@ import ZoomableImage from "@/components/ZoomableImage";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 import MasldWorkup from "@/pages/liver/MasldWorkup";
 import MasldRiskCalculator from "@/pages/liver/MasldRiskCalculator";
+import LiverScores from "@/pages/liver/LiverScores";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
 
@@ -446,6 +447,9 @@ export default function LiverMiniApp() {
 
       {/* MASLD fibrosis risk calculator */}
       <MasldRiskCalculator />
+
+      {/* Liver disease severity scores */}
+      <LiverScores />
 
       {/* MASLD investigations, diagnosis, management */}
       <MasldWorkup />
