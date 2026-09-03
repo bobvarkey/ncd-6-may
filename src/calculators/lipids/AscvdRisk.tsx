@@ -217,7 +217,7 @@ const RISK_ITEMS: RiskItem[] = [
   // ── Advanced Risk Enhancers ──
   {
     id: "metSyn", name: "Metabolic Syndrome",
-    description: "Cluster of ≥3: abdominal obesity, ↑TG, ↓HDL, ↑BP, ↑fasting glucose. Multiplies ASCVD risk.",
+    description: "At least 3 of 5: increased waist circumference, TG ≥150 mg/dL or treatment, low HDL-C, BP ≥130/85 mmHg or treatment, and fasting glucose ≥100 mg/dL or treatment. Multiplies ASCVD risk.",
     category: "enhancer", active: false,
     subitems: [
       { name: "Waist circumference", description: ">102 cm men, >88 cm women (>90/>80 South Asian)" },
@@ -241,12 +241,12 @@ const RISK_ITEMS: RiskItem[] = [
   },
   {
     id: "prematureMeno", name: "Premature Menopause",
-    description: "Menopause before age 40 (natural) or 45 (surgical) — loss of estrogen protection.",
+    description: "Premature ovarian insufficiency or menopause before age 40 (natural), or surgical/iatrogenic menopause before age 45 — loss of estrogen protection.",
     category: "enhancer", active: false,
     subitems: [
-      { name: "Natural menopause before age 40", description: "Premature ovarian insufficiency increases ASCVD risk" },
-      { name: "Surgical menopause before age 45", description: "Bilateral oophorectomy without HRT" },
-      { name: "Iatrogenic (chemo/radiation)", description: "Treatment-induced ovarian failure" },
+      { name: "Natural menopause before age 40", description: "Premature ovarian insufficiency; menopause before 40 increases ASCVD risk" },
+      { name: "Surgical menopause before age 45", description: "Bilateral oophorectomy or other surgery causing menopause before 45" },
+      { name: "Iatrogenic menopause before age 45", description: "Chemotherapy, pelvic radiation, or other treatment-induced ovarian failure" },
     ],
   },
   {

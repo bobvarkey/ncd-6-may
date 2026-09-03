@@ -240,7 +240,7 @@ const LAI_MODIFIER_GROUPS = [
     items: [
       { id: "hrf_lpa", label: "Lp(a) ≥50 mg/dL", qualifier: "Major Lp(a) elevation" },
       { id: "hrf_apob", label: "ApoB >130 mg/dL", qualifier: "Highly atherogenic particle burden" },
-      { id: "hrf_mets", label: "Metabolic syndrome", qualifier: "≥3 MetS criteria" },
+      { id: "hrf_mets", label: "Metabolic syndrome", qualifier: "≥3 of 5: increased waist, TG ≥150, low HDL-C, BP ≥130/85/on treatment, or fasting glucose ≥100/on treatment" },
       { id: "hrf_cac", label: "CAC ≥100 AU or ≥75th %ile", qualifier: "High plaque burden" },
       { id: "hrf_nafld", label: "NAFLD with fibrosis (Stage 2/3)", qualifier: "Advanced fatty liver" },
       { id: "hrf_extreme", label: "Extreme single risk factor", qualifier: "Smoking >1ppd or BP >180/110" },
@@ -255,7 +255,7 @@ const LAI_MODIFIER_GROUPS = [
       { id: "enh_lpa_minor", label: "Lp(a) 20-49 mg/dL", qualifier: "Minor elevation" },
       { id: "enh_autoimmune", label: "RA / Psoriasis / Spondyloarthropathy", qualifier: "Chronic inflammatory condition" },
       { id: "enh_hiv", label: "HIV infection", qualifier: "Viral inflammatory risk" },
-      { id: "enh_pcos", label: "Premature menopause / PMOS / Pre-eclampsia", qualifier: "Women-specific" },
+      { id: "enh_pcos", label: "Premature menopause / PMOS / Pre-eclampsia", qualifier: "Premature menopause: natural ovarian failure before age 40; surgical/iatrogenic menopause before age 45" },
     ],
   },
 ];
