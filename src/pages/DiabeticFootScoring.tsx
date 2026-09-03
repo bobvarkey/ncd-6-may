@@ -23,9 +23,19 @@ const SIRS_OPTIONS = [
   "WBC >12,000, <4,000, or >10% bands",
 ];
 
+const WAGNER_GRADES = [
+  { grade: 0, title: "High-risk foot / pre-ulcer", description: "Skin is not broken; no ulcer is present.", tone: "border-sky-500/40 bg-sky-500/10" },
+  { grade: 1, title: "Superficial ulcer", description: "Skin-level open sore without deeper involvement.", tone: "border-blue-500/40 bg-blue-500/10" },
+  { grade: 2, title: "Deep ulcer", description: "May reach tendon or joint capsule.", tone: "border-cyan-500/40 bg-cyan-500/10" },
+  { grade: 3, title: "Deep ulcer with abscess or bone involvement", description: "Deep infection, abscess, osteomyelitis, or joint involvement.", tone: "border-orange-500/40 bg-orange-500/10" },
+  { grade: 4, title: "Forefoot gangrene", description: "Dead tissue (gangrene) in part of the foot.", tone: "border-red-500/40 bg-red-500/10" },
+  { grade: 5, title: "Whole-foot gangrene", description: "Extensive gangrene involving the whole foot; medical emergency.", tone: "border-rose-700/50 bg-rose-700/10" },
+];
+
 type Extent = "none" | "up-to-2" | "over-2";
 
 export default function DiabeticFootScoring() {
+  const [wagnerGrade, setWagnerGrade] = useState(0);
   const [localFindings, setLocalFindings] = useState<string[]>([]);
   const [extent, setExtent] = useState<Extent>("none");
   const [deepInvolvement, setDeepInvolvement] = useState(false);
@@ -79,6 +89,7 @@ export default function DiabeticFootScoring() {
     setSirs([]);
     setPerfusion("");
     setSensation("");
+    setWagnerGrade(0);
   };
 
   const toggle = (value: string, values: string[], setter: (next: string[]) => void) =>
@@ -119,6 +130,24 @@ export default function DiabeticFootScoring() {
 
           <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Wagner diabetic ulcer grade</CardTitle>
+                  <CardDescription>Classify the deepest ulcer or tissue loss present. Grades 0–1 are the best opportunity to prevent serious complications.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <RadioGroup value={String(wagnerGrade)} onValueChange={(value) => setWagnerGrade(Number(value))} className="grid gap-3 sm:grid-cols-2">
+                    {WAGNER_GRADES.map((item) => (
+                      <label key={item.grade} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors hover:bg-muted/50 ${item.tone}`}>
+                        <RadioGroupItem value={String(item.grade)} className="mt-1" />
+                        <span className="text-sm"><strong>Grade {item.grade}: {item.title}</strong><span className="mt-1 block text-muted-foreground">{item.description}</span></span>
+                      </label>
+                    ))}
+                  </RadioGroup>
+                  <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-200">Do not try to stage a diabetic foot ulcer at home if the wound is worsening.</p>
+                </CardContent>
+              </Card>
+
               <Card>
                 <CardHeader>
                   <CardTitle>1. Local infection findings</CardTitle>
@@ -194,6 +223,16 @@ export default function DiabeticFootScoring() {
                   <div className="rounded-lg bg-background/50 p-3 text-sm"><strong>Suggested next step:</strong> {result.action}</div>
                   <div className="text-xs text-current/75">Local findings: {localFindings.length} · SIRS criteria: {sirs.length}</div>
                 </CardContent>
+              </Card>
+              <Card className={`mt-4 border-2 ${WAGNER_GRADES[wagnerGrade].tone}`}>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between gap-3">
+                    <span>Wagner grade {wagnerGrade}</span>
+                    <span className="text-3xl font-heading font-bold">{wagnerGrade}</span>
+                  </CardTitle>
+                  <CardDescription className="text-current/80">{WAGNER_GRADES[wagnerGrade].title}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-sm">{WAGNER_GRADES[wagnerGrade].description}</CardContent>
               </Card>
               <div className="mt-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm">
                 <div className="mb-2 flex items-center gap-2 font-semibold text-amber-300"><AlertTriangle className="h-4 w-4" /> Safety note</div>
