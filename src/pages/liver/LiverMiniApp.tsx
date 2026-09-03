@@ -210,6 +210,14 @@ export default function LiverMiniApp() {
     const inrPoints = n(inr) < 1.7 ? 1 : n(inr) <= 2.3 ? 2 : 3;
     return bilirubinPoints + albuminPoints + inrPoints + (ascites ? 3 : 1) + (encephalopathy ? 3 : 1);
   }, [bili, alb, inr, ascites, encephalopathy]);
+  const scoreExplanations = [
+    ["LFT pattern", "Shows whether injury is predominantly hepatocellular, cholestatic, mixed, or normal; it guides the next diagnostic tests."],
+    ["FIB-4", "Primary-care estimate of advanced fibrosis risk using age, AST, ALT, and platelets. Low results help rule out advanced fibrosis; high results warrant secondary testing or referral."],
+    ["APRI", "AST-to-platelet index used as a simple fibrosis and cirrhosis triage tool, especially when elastography is unavailable."],
+    ["NAFLD FS", "Metabolic fibrosis estimate using age, BMI, glucose status, platelets, albumin, and AST/ALT. It supports—not replaces—FIB-4 and specialist assessment."],
+    ["MELD 3.0", "Severity score for advanced liver disease based on bilirubin, INR, creatinine, sodium, albumin, and sex; higher values indicate greater short-term mortality and transplant urgency."],
+    ["Child-Pugh", "Classifies chronic liver disease compensation from bilirubin, albumin, INR, ascites, and encephalopathy: A (5–6), B (7–9), or C (10–15)."],
+  ] as const;
 
   const redFlags = useMemo(() => {
     const flags: string[] = [];
@@ -308,6 +316,9 @@ export default function LiverMiniApp() {
       `  NFS:    ${isNaN(nfs.score)  ? "n/a" : nfs.score.toFixed(2)}  (${nfs.risk ?? "n/a"})`,
       `  MELD 3.0: ${isNaN(meld) ? "n/a" : meld}`,
       `  Child-Pugh: ${isNaN(childPugh) ? "n/a" : `${childPugh} (${childPugh <= 6 ? "A" : childPugh <= 9 ? "B" : "C"})`}`,
+      "",
+      "SCORE SIGNIFICANCE",
+      ...scoreExplanations.map(([name, explanation]) => `  ${name}: ${explanation}`),
       "",
       redFlags.length ? "RED FLAGS\n" + redFlags.map(f => "  • " + f).join("\n") + "\n" : "",
       "MANAGEMENT PATHWAY",
@@ -704,29 +715,35 @@ export default function LiverMiniApp() {
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">LFT pattern</div>
               <div className="text-sm font-semibold mt-1 capitalize">{pattern}</div>
+              <div className="text-xs text-muted-foreground mt-1">{scoreExplanations[0][1]}</div>
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">FIB-4 (primary)</div>
               <div className="text-sm font-semibold mt-1">{isNaN(fib4.score) ? "—" : roundClinical(fib4.score, 2)}</div>
               <div className="mt-1">{riskBadge(fib4.risk)}</div>
+              <div className="text-xs text-muted-foreground mt-1">{scoreExplanations[1][1]}</div>
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">APRI</div>
               <div className="text-sm font-semibold mt-1">{isNaN(apri.score) ? "—" : roundClinical(apri.score, 2)}</div>
               <div className="mt-1">{riskBadge(apri.risk)}</div>
+              <div className="text-xs text-muted-foreground mt-1">{scoreExplanations[2][1]}</div>
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">NAFLD FS</div>
               <div className="text-sm font-semibold mt-1">{isNaN(nfs.score) ? "—" : roundClinical(nfs.score, 2)}</div>
               <div className="mt-1">{riskBadge(nfs.risk)}</div>
+              <div className="text-xs text-muted-foreground mt-1">{scoreExplanations[3][1]}</div>
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">MELD 3.0</div>
               <div className="text-sm font-semibold mt-1">{isNaN(meld) ? "—" : meld}</div>
+              <div className="text-xs text-muted-foreground mt-1">{scoreExplanations[4][1]}</div>
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">Child-Pugh</div>
               <div className="text-sm font-semibold mt-1">{isNaN(childPugh) ? "—" : `${childPugh} (${childPugh <= 6 ? "A" : childPugh <= 9 ? "B" : "C"})`}</div>
+              <div className="text-xs text-muted-foreground mt-1">{scoreExplanations[5][1]}</div>
             </div>
           </div>
 
