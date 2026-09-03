@@ -45,7 +45,7 @@ export default function DiabeticFootScoring() {
         action: "Urgent assessment, sepsis management, and surgical/vascular review may be required.",
       };
     }
-    if (infectionPresent && (extent === "over-2" || deepInvolvement)) {
+    if (extent === "over-2" || deepInvolvement) {
       return {
         grade: 3,
         severity: "Moderate",
