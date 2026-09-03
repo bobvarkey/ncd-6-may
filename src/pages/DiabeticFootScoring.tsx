@@ -54,7 +54,7 @@ export default function DiabeticFootScoring() {
         action: "Assess depth, obtain appropriate cultures/imaging, and arrange timely specialist review.",
       };
     }
-    if (localFindings.length >= 2 && extent !== "over-2" && !deepInvolvement) {
+    if (localFindings.length >= 2 && !deepInvolvement) {
       return {
         grade: 2,
         severity: "Mild",
