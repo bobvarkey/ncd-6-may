@@ -244,14 +244,6 @@ const RenalDoseAdjustment = () => {
         </TabsContent>
 
         <TabsContent value="calculators" className="space-y-5">
-          <details ref={mehranRef} id="mehran" className="clinical-card p-0 overflow-hidden group" open>
-            <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
-              <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
-              <Calculator className="w-4 h-4 text-primary shrink-0" />
-              <span className="text-sm font-semibold">Mehran Score for Post-PCI Contrast Nephropathy</span>
-            </summary>
-            <div className="border-t border-border p-4"><MehranScoreCalculator /></div>
-          </details>
           <details ref={egfrRef} id="egfr" className="clinical-card p-0 overflow-hidden group" open>
             <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
               <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
@@ -259,6 +251,14 @@ const RenalDoseAdjustment = () => {
               <span className="text-sm font-semibold">eGFR + UACR Calculator</span>
             </summary>
             <div className="border-t border-border p-4"><KDIGOStagingCalculator /></div>
+          </details>
+          <details ref={mehranRef} id="mehran" className="clinical-card p-0 overflow-hidden group" open>
+            <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer select-none list-none hover:bg-muted/30 transition-colors">
+              <ChevronDown className="w-4 h-4 text-primary shrink-0 group-open:rotate-0 -rotate-90 transition-transform" />
+              <Calculator className="w-4 h-4 text-primary shrink-0" />
+              <span className="text-sm font-semibold">Mehran Score for Post-PCI Contrast Nephropathy</span>
+            </summary>
+            <div className="border-t border-border p-4"><MehranScoreCalculator /></div>
           </details>
         </TabsContent>
 

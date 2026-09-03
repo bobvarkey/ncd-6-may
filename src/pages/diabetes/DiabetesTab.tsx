@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Syringe, BookOpen, Stethoscope, Pill, ChevronDown, ChevronUp, UtensilsCrossed, Search, Printer, X } from "lucide-react";
+import { Syringe, BookOpen, Stethoscope, Pill, Footprints, ChevronDown, ChevronUp, UtensilsCrossed, Search, Printer, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import DiabetesOverview from "./DiabetesOverview";
 import DiabetesAssessment from "./DiabetesAssessment";
 import DiabetesTreatment from "./DiabetesTreatment";
+import DiabeticFootScoring from "../DiabeticFootScoring";
 
 interface SectionProps {
   id: string;
@@ -117,9 +118,30 @@ export default function DiabetesTab() {
       keywords: "pathophysiology diagnosis criteria prediabetes type 1 type 2 education overview risk classification",
       component: <DiabetesOverview />,
     },
+    {
+      id: "diabetic-foot",
+      title: "Diabetic Foot",
+      icon: <Footprints />,
+      description: "Wagner ulcer grading and IDSA/PEDIS diabetic foot infection scoring",
+      keywords: "diabetic foot ulcer wound Wagner grade gangrene infection IDSA PEDIS perfusion neuropathy",
+      component: (
+        <div className="space-y-6">
+          <div className="rounded-xl border border-border bg-muted/20 p-4">
+            <h3 className="mb-2 font-semibold">Diabetic foot reference</h3>
+            <img
+              src="https://github.com/user-attachments/assets/1df01a28-c1c1-415c-af9c-94cd0f85b7db"
+              alt="Diabetic foot assessment reference"
+              className="max-h-[34rem] w-full rounded-lg object-contain"
+              loading="lazy"
+            />
+          </div>
+          <DiabeticFootScoring />
+        </div>
+      ),
+    },
   ];
 
-  const sectionOrder = ["assessment", "treatment", "overview"];
+  const sectionOrder = ["assessment", "treatment", "overview", "diabetic-foot"];
   const orderedSections = sectionOrder.map(id => sections.find(s => s.id === id)!).filter(Boolean);
 
   // Search filtering
