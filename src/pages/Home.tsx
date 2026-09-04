@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
+import LabScoreCalculator from "@/components/LabScoreCalculator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -793,6 +794,9 @@ export default function Home() {
 
         {/* Image Upload + Analyzer — prominent at top */}
         <ImageUploadAnalyzer />
+
+        {/* Lab Values → Auto-Calculate Scores */}
+        <LabScoreCalculator />
 
         {/* ── Tabbed topic navigation ── */}
         <Tabs defaultValue="quick-actions">
