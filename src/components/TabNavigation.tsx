@@ -10,6 +10,7 @@ const bloodSubItems: { tab: string; label: string; icon: React.ComponentType<{ c
   { tab: "iron", label: "Iron Parameters", icon: Syringe },
   { tab: "ganzoni", label: "Ganzoni Deficit", icon: Calculator },
   { tab: "esr", label: "ESR", icon: Timer },
+  { tab: "erythrocytosis", label: "Erythrocytosis / PV", icon: Droplet },
 
   { tab: "anticoagulants", label: "Anticoagulants", icon: Pill },
 ];

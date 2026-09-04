@@ -16,17 +16,18 @@ import ThrombocytopeniaEvaluator from './anemia/components/ThrombocytopeniaEvalu
 import BleedingClottingEvaluator from './anemia/components/BleedingClottingEvaluator';
 import ESRInterpretation from './anemia/components/ESRInterpretation';
 import Anticoagulants from './anemia/components/Anticoagulants';
+import Erythrocytosis from './anemia/components/Erythrocytosis';
 import { Microscope, AlertTriangle } from 'lucide-react';
 import TestSuggestionAlgorithm from './anemia/components/TestSuggestionAlgorithm';
 
 const EMPTY_CBC: CBCValues = { hgb: '', rbc: '', mcv: '', mch: '', mchc: '', rdw: '', hct: '' };
 
-type Tab = 'anemia' | 'thrombocytopenia' | 'bleeding-clotting' | 'iron' | 'ganzoni' | 'esr' | 'anticoagulants';
+type Tab = 'anemia' | 'thrombocytopenia' | 'bleeding-clotting' | 'iron' | 'ganzoni' | 'esr' | 'anticoagulants' | 'erythrocytosis';
 
 export default function Anemia() {
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs: Tab[] = ['anemia', 'thrombocytopenia', 'bleeding-clotting', 'iron', 'ganzoni', 'esr', 'anticoagulants'];
+  const validTabs: Tab[] = ['anemia', 'thrombocytopenia', 'bleeding-clotting', 'iron', 'ganzoni', 'esr', 'anticoagulants', 'erythrocytosis'];
   const activeTab: Tab = validTabs.includes(tabParam as Tab) ? (tabParam as Tab) : 'anemia';
   const [cbc, setCbc] = useState<CBCValues>(() => {
     try { const s = localStorage.getItem('ncd_anemia_cbc'); return s ? JSON.parse(s) : EMPTY_CBC; } catch { return EMPTY_CBC; }
@@ -247,6 +248,8 @@ export default function Anemia() {
           <ESRInterpretation />
         ) : activeTab === 'anticoagulants' ? (
           <Anticoagulants />
+        ) : activeTab === 'erythrocytosis' ? (
+          <Erythrocytosis />
         ) : (
           <ThrombocytopeniaEvaluator />
         )}
