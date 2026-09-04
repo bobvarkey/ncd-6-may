@@ -794,139 +794,167 @@ export default function Home() {
         {/* Image Upload + Analyzer — prominent at top */}
         <ImageUploadAnalyzer />
 
-        {/* Quick Actions — top of page */}
-        <section>
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Calculator className="h-5 w-5 text-primary" />
-            Quick Actions
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {quickActions.map((action) => (
-              <QuickAction key={action.title} {...action} />
-            ))}
-          </div>
-        </section>
+        {/* ── Tabbed topic navigation ── */}
+        <Tabs defaultValue="quick-actions">
+          <TabsList className="w-full flex flex-wrap justify-start gap-1 overflow-x-auto">
+            <TabsTrigger value="quick-actions" className="flex-1 min-w-[120px]">
+              <Calculator className="h-4 w-4 mr-1.5" /> Quick Actions
+            </TabsTrigger>
+            <TabsTrigger value="cardiometabolic" className="flex-1 min-w-[140px]">
+              <Heart className="h-4 w-4 mr-1.5" /> Cardiometabolic & Renal
+            </TabsTrigger>
+            <TabsTrigger value="specialty" className="flex-1 min-w-[120px]">
+              <Dna className="h-4 w-4 mr-1.5" /> Specialty Medicine
+            </TabsTrigger>
+            <TabsTrigger value="infections" className="flex-1 min-w-[140px]">
+              <Bug className="h-4 w-4 mr-1.5" /> Infections & General
+            </TabsTrigger>
+          </TabsList>
 
-        {/* ── Disease Condition Grid ── */}
-        <DiseaseGroup title="Cardiometabolic & Renal" icon={<Heart className="h-3.5 w-3.5 text-rose-400" />}>
-          <DiseaseCard
-            title="Diabetes"
-            description="ADA 2026: Dx, algorithms, medication guide, insulin, DKA/HHS"
-            icon={<Droplets className="h-5 w-5 text-red-400" />}
-            to="/diabetes"
-            accent="bg-red-500"
-            badge="ADA"
-          />
-          <DiseaseCard
-            title="Hypertension"
-            description="ESC/ESH 2024: BP class, algorithms, meds, secondary HTN workup"
-            icon={<Heart className="h-5 w-5 text-orange-400" />}
-            to="/hypertension"
-            accent="bg-orange-500"
-            badge="ESC"
-          />
-          <DiseaseCard
-            title="Renal Tools"
-            description="CKD/AKI staging, eGFR, UACR, Mehran Score, and renal dosing adjustment"
-            icon={<Filter className="h-5 w-5 text-amber-400" />}
-            to="/renal-dosing"
-            accent="bg-amber-500"
-            badge="KDIGO"
-          />
-          <DiseaseCard
-            title="Lipids"
-            description="LAI 2023 / ACC-AHA: ASCVD risk, statins, targets"
-            icon={<Droplet className="h-5 w-5 text-blue-400" />}
-            to="/lipids"
-            accent="bg-blue-500"
-            badge="LAI"
-          />
-          <DiseaseCard
-            title="Obesity"
-            description="BMI (Indian), GLP-1 algorithm, waist-height ratio"
-            icon={<Weight className="h-5 w-5 text-violet-400" />}
-            to="/obesity/bmi-calculator"
-            accent="bg-violet-500"
-          />
-        </DiseaseGroup>
+          {/* Quick Actions tab */}
+          <TabsContent value="quick-actions" className="space-y-6 mt-4">
+            <section>
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Calculator className="h-5 w-5 text-primary" />
+                Quick Actions
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {quickActions.map((action) => (
+                  <QuickAction key={action.title} {...action} />
+                ))}
+              </div>
+            </section>
+          </TabsContent>
 
-        <DiseaseGroup title="Specialty Medicine" icon={<Dna className="h-3.5 w-3.5 text-emerald-400" />}>
-          <DiseaseCard
-            title="Liver Disease"
-            description="NAFLD/MASLD, cirrhosis, medication adjustments"
-            icon={<Dna className="h-5 w-5 text-lime-400" />}
-            to="/liver"
-            accent="bg-lime-500"
-          />
-          <DiseaseCard
-            title="Thyroid"
-            description="TSH/FT4 interpretation, nodules, medication dosing"
-            icon={<Microscope className="h-5 w-5 text-emerald-400" />}
-            to="/thyroid"
-            accent="bg-emerald-500"
-          />
-          <DiseaseCard
-            title="COPD / Respiratory"
-            description="GOLD: assessment, spirometry, inhalers"
-            icon={<AirVent className="h-5 w-5 text-cyan-400" />}
-            to="/respiratory"
-            accent="bg-cyan-500"
-            badge="GOLD"
-          />
-          <DiseaseCard
-            title="Blood & Electrolytes"
-            description="Anemia, iron, thrombocytopenia, electrolytes, acid-base"
-            icon={<Zap className="h-5 w-5 text-sky-400" />}
-            to="/anemia"
-            accent="bg-sky-500"
-          />
-          <DiseaseCard
-            title="Hypercortisolism"
-            description="Structured Cushing's screen for refractory metabolic disease"
-            icon={<Scan className="h-5 w-5 text-purple-400" />}
-            to="/images?search=Structured%20Hypercortisolism%20Screen"
-            accent="bg-purple-500"
-          />
-        </DiseaseGroup>
+          {/* Cardiometabolic & Renal tab */}
+          <TabsContent value="cardiometabolic" className="mt-4">
+            <DiseaseGroup title="Cardiometabolic & Renal" icon={<Heart className="h-3.5 w-3.5 text-rose-400" />}>
+              <DiseaseCard
+                title="Diabetes"
+                description="ADA 2026: Dx, algorithms, medication guide, insulin, DKA/HHS"
+                icon={<Droplets className="h-5 w-5 text-red-400" />}
+                to="/diabetes"
+                accent="bg-red-500"
+                badge="ADA"
+              />
+              <DiseaseCard
+                title="Hypertension"
+                description="ESC/ESH 2024: BP class, algorithms, meds, secondary HTN workup"
+                icon={<Heart className="h-5 w-5 text-orange-400" />}
+                to="/hypertension"
+                accent="bg-orange-500"
+                badge="ESC"
+              />
+              <DiseaseCard
+                title="Renal Tools"
+                description="CKD/AKI staging, eGFR, UACR, Mehran Score, and renal dosing adjustment"
+                icon={<Filter className="h-5 w-5 text-amber-400" />}
+                to="/renal-dosing"
+                accent="bg-amber-500"
+                badge="KDIGO"
+              />
+              <DiseaseCard
+                title="Lipids"
+                description="LAI 2023 / ACC-AHA: ASCVD risk, statins, targets"
+                icon={<Droplet className="h-5 w-5 text-blue-400" />}
+                to="/lipids"
+                accent="bg-blue-500"
+                badge="LAI"
+              />
+              <DiseaseCard
+                title="Obesity"
+                description="BMI (Indian), GLP-1 algorithm, waist-height ratio"
+                icon={<Weight className="h-5 w-5 text-violet-400" />}
+                to="/obesity/bmi-calculator"
+                accent="bg-violet-500"
+              />
+            </DiseaseGroup>
+          </TabsContent>
 
-        <DiseaseGroup title="Infections & General Medicine" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
-          <DiseaseCard
-            title="Infections"
-            description="UTI, pneumonia, cellulitis, serious/nosocomial protocols"
-            icon={<Bug className="h-5 w-5 text-rose-400" />}
-            to="/infections"
-            accent="bg-rose-500"
-          />
-          <DiseaseCard
-            title="GI & Diarrhoea"
-            description="Acute diarrhoea, food poisoning, Constipation, rehydration"
-            icon={<UtensilsCrossed className="h-5 w-5 text-amber-400" />}
-            to="/acute-diarrhoea"
-            accent="bg-amber-500"
-          />
-          <DiseaseCard
-            title="Women's Health"
-            description="PCOS (Rotterdam), HRT algorithm"
-            icon={<Stethoscope className="h-5 w-5 text-pink-400" />}
-            to="/women-health"
-            accent="bg-pink-500"
-          />
-          <DiseaseCard
-            title="Geriatrics & Preventive"
-            description="Frailty, fragile fractures, adult vaccinations, Vitamin D, fatigue"
-            icon={<User className="h-5 w-5 text-sky-400" />}
-            to="/geriatrics"
-            accent="bg-sky-500"
-          />
-          <DiseaseCard
-            title="PEP"
-            description="Post-Exposure Prophylaxis (HIV, HBV, HCV, Rabies)"
-            icon={<Shield className="h-5 w-5 text-amber-400" />}
-            to="/pep"
-            accent="bg-amber-500"
-            badge="WHO"
-          />
-        </DiseaseGroup>
+          {/* Specialty Medicine tab */}
+          <TabsContent value="specialty" className="mt-4">
+            <DiseaseGroup title="Specialty Medicine" icon={<Dna className="h-3.5 w-3.5 text-emerald-400" />}>
+              <DiseaseCard
+                title="Liver Disease"
+                description="NAFLD/MASLD, cirrhosis, medication adjustments"
+                icon={<Dna className="h-5 w-5 text-lime-400" />}
+                to="/liver"
+                accent="bg-lime-500"
+              />
+              <DiseaseCard
+                title="Thyroid"
+                description="TSH/FT4 interpretation, nodules, medication dosing"
+                icon={<Microscope className="h-5 w-5 text-emerald-400" />}
+                to="/thyroid"
+                accent="bg-emerald-500"
+              />
+              <DiseaseCard
+                title="COPD / Respiratory"
+                description="GOLD: assessment, spirometry, inhalers"
+                icon={<AirVent className="h-5 w-5 text-cyan-400" />}
+                to="/respiratory"
+                accent="bg-cyan-500"
+                badge="GOLD"
+              />
+              <DiseaseCard
+                title="Blood & Electrolytes"
+                description="Anemia, iron, thrombocytopenia, electrolytes, acid-base"
+                icon={<Zap className="h-5 w-5 text-sky-400" />}
+                to="/anemia"
+                accent="bg-sky-500"
+              />
+              <DiseaseCard
+                title="Hypercortisolism"
+                description="Structured Cushing's screen for refractory metabolic disease"
+                icon={<Scan className="h-5 w-5 text-purple-400" />}
+                to="/images?search=Structured%20Hypercortisolism%20Screen"
+                accent="bg-purple-500"
+              />
+            </DiseaseGroup>
+          </TabsContent>
+
+          {/* Infections & General tab */}
+          <TabsContent value="infections" className="mt-4">
+            <DiseaseGroup title="Infections & General Medicine" icon={<Bug className="h-3.5 w-3.5 text-rose-400" />}>
+              <DiseaseCard
+                title="Infections"
+                description="UTI, pneumonia, cellulitis, serious/nosocomial protocols"
+                icon={<Bug className="h-5 w-5 text-rose-400" />}
+                to="/infections"
+                accent="bg-rose-500"
+              />
+              <DiseaseCard
+                title="GI & Diarrhoea"
+                description="Acute diarrhoea, food poisoning, Constipation, rehydration"
+                icon={<UtensilsCrossed className="h-5 w-5 text-amber-400" />}
+                to="/acute-diarrhoea"
+                accent="bg-amber-500"
+              />
+              <DiseaseCard
+                title="Women's Health"
+                description="PCOS (Rotterdam), HRT algorithm"
+                icon={<Stethoscope className="h-5 w-5 text-pink-400" />}
+                to="/women-health"
+                accent="bg-pink-500"
+              />
+              <DiseaseCard
+                title="Geriatrics & Preventive"
+                description="Frailty, fragile fractures, adult vaccinations, Vitamin D, fatigue"
+                icon={<User className="h-5 w-5 text-sky-400" />}
+                to="/geriatrics"
+                accent="bg-sky-500"
+              />
+              <DiseaseCard
+                title="PEP"
+                description="Post-Exposure Prophylaxis (HIV, HBV, HCV, Rabies)"
+                icon={<Shield className="h-5 w-5 text-amber-400" />}
+                to="/pep"
+                accent="bg-amber-500"
+                badge="WHO"
+              />
+            </DiseaseGroup>
+          </TabsContent>
+        </Tabs>
 
         {/* Quick Actions */}
         <section className="pt-4 border-t border-border">
