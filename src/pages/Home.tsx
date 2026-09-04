@@ -662,17 +662,6 @@ const QUICK_ACCESS = [
   { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator },
 ] as const;
 
-// Static hero data — module-level so it never recreates per render.
-const HERO_GUIDELINES = ["ADA 2026", "ESC/ESH 2024", "LAI 2023", "KDIGO", "GINA/GOLD"] as const;
-
-const HERO_CTAS = [
-  { to: "/diabetes",     label: "Diabetes",      Icon: Droplets, primary: true  },
-  { to: "/hypertension", label: "Hypertension",  Icon: Heart,    primary: false },
-  { to: "/lipids",       label: "Lipids",        Icon: Droplet,  primary: false },
-  { to: "/renal-dosing", label: "Renal Dosing",  Icon: Filter,   primary: false },
-  { to: "/images",       label: "Image Gallery", Icon: Scan,     primary: false },
-] as const;
-
 function QuickAccessPanel() {
   return (
     <section aria-labelledby="quick-access-heading" className="rounded-2xl border bg-card p-4 md:p-5">
@@ -797,76 +786,6 @@ export default function Home() {
       <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
       }} />
-
-      {/* Hero Section — Sunset Blaze */}
-      <header className="relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 pt-8 pb-10">
-          <div
-            className="relative rounded-3xl overflow-hidden shadow-2xl"
-            style={{
-              background: "linear-gradient(120deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%)",
-            }}
-          >
-            <div className="grid md:grid-cols-2 gap-0 items-stretch">
-              {/* Copy */}
-              <div className="relative z-10 p-8 md:p-12">
-                <span className="hero-badge hero-eyebrow inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium">
-                  <Sparkles className="h-3 w-3" /> Clinical Decision Support
-                </span>
-                <h1 className="hero-title mt-5 text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] max-w-[12ch] sm:max-w-none">
-                  Better decisions, <br className="hidden sm:block" />bedside to desktop.
-                </h1>
-                <p className="hero-subtitle mt-4 text-base md:text-lg max-w-md leading-relaxed">
-                  Evidence-based scores, treatment algorithms, and prescribing guidance for chronic disease — right where you see the patient.
-                </p>
-                <div className="mt-6 flex flex-wrap gap-2 text-[11px] font-medium">
-                  {HERO_GUIDELINES.map((g) => (
-                    <span key={g} className="hero-badge px-2.5 py-1 rounded-full">
-                      {g}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Primary CTA */}
-                <div className="mt-7 flex flex-wrap items-center gap-3">
-                  <Link
-                    to="/diabetes"
-                    className="hero-link-primary inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-base shadow-xl shadow-black/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all"
-                  >
-                    <Stethoscope className="h-5 w-5" /> Start clinical assessment
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    to="/images"
-                    className="hero-link inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/15 border border-white/40 font-semibold text-sm backdrop-blur hover:bg-white/25 hover:-translate-y-0.5 transition-all"
-                  >
-                    Browse image gallery
-                  </Link>
-                </div>
-
-                {/* Secondary quick links */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {HERO_CTAS.filter(c => !c.primary).map(({ to, label, Icon }) => (
-                    <Link
-                      key={to}
-                      to={to}
-                      className="hero-link inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/30 font-medium text-xs backdrop-blur hover:bg-white/20 transition-all"
-                    >
-                      <Icon className="h-3.5 w-3.5" /> {label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Hero image removed */}
-            </div>
-
-            {/* Soft glow accents */}
-            <div className="pointer-events-none absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/20 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-20 right-10 w-72 h-72 rounded-full bg-[#6c5ce7]/40 blur-3xl" />
-          </div>
-        </div>
-      </header>
 
       <main className="max-w-6xl mx-auto px-6 pb-16 space-y-8">
         {/* Quick Access — one-click jumps to core sections */}
