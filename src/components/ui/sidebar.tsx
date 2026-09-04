@@ -159,7 +159,8 @@ const Sidebar = React.forwardRef<
           className="!z-[60] w-[--sidebar-width] max-w-[85vw] !bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
           style={{
             "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-            backgroundColor: "hsl(var(--sidebar-background))",
+            backgroundColor: "hsl(var(--sidebar-background)) !important",
+            opacity: 1,
           } as React.CSSProperties}
           side={side}
         >
