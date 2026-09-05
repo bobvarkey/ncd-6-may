@@ -270,9 +270,11 @@ export function TabNavigation() {
             const isBlood = item.path === "/anemia";
             const isHtn = item.path === "/hypertension";
             const isElectrolyte = item.path === "/electrolytes";
+            const isLiver = item.path === "/liver";
             const showBloodSubs = isBlood && currentPath.startsWith("/anemia") && !collapsed;
             const showHtnSubs = isHtn && currentPath.startsWith("/hypertension") && !collapsed;
             const showElectrolyteSubs = isElectrolyte && (currentPath.startsWith("/electrolytes") || electrolyteSubItems.some(s => currentPath.startsWith(s.path))) && !collapsed;
+            const showLiverSubs = isLiver && currentPath.startsWith("/liver") && !collapsed;
             return (
               <li key={item.path}>
                 <Link
