@@ -164,7 +164,6 @@ const navItems: NavItem[] = [
   { path: "/hypertension",            label: "Hypertension", icon: Heart, active: "bg-orange-500/10 text-orange-400 border-orange-500/30", emoji: "❤️" },
   { path: "/lipids",                  label: "Lipids",    icon: Droplet, active: "bg-blue-500/10 text-blue-400 border-blue-500/30", emoji: "💧" },
   { path: "/liver",                   label: "Liver",     icon: Dna, active: "bg-lime-500/10 text-lime-400 border-lime-500/30", emoji: "🫀" },
-  { path: "/liver/auto-calc",       label: "Liver Auto-Calc", icon: Scan, active: "bg-lime-500/10 text-lime-400 border-lime-500/30", emoji: "📤" },
   { path: "/thyroid",                 label: "Thyroid",   icon: Microscope, active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", emoji: "🦋" },
   { path: "/obesity/bmi-calculator",  label: "Body weight issues",   icon: Weight, active: "bg-violet-500/10 text-violet-400 border-violet-500/30", emoji: "⚖️" },
   { path: "/glp1-screening",          label: "GLP-1 Screening", icon: Eye, active: "bg-pink-500/10 text-pink-400 border-pink-500/30", emoji: "👁️" },
