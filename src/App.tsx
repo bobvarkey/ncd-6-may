@@ -101,6 +101,7 @@ const Diabetes = lazyWithModuleRetry(() => import("@/pages/Diabetes"));
 const Hypertension = lazyWithModuleRetry(() => import("@/pages/Hypertension"));
 const Lipids = lazyWithModuleRetry(() => import("@/pages/Lipids"));
 const Liver = lazyWithModuleRetry(() => import("@/pages/Liver"));
+const LiverAutoCalc = lazyWithModuleRetry(() => import("@/pages/liver/LiverAutoCalc"));
 const Anemia = lazyWithModuleRetry(() => import("@/pages/Anemia"));
 const DiabetesAssessment = lazyWithModuleRetry(() => import("@/pages/diabetes/DiabetesAssessment"));
 const DiabetesOverview = lazyWithModuleRetry(() => import("@/pages/diabetes/DiabetesOverview"));
@@ -318,6 +319,7 @@ const App = () => {
           <Route path="/hypertension" element={<><TabNavigation /><Hypertension /></>} />
           <Route path="/lipids" element={<><TabNavigation /><Lipids /></>} />
           <Route path="/liver" element={<><TabNavigation /><Liver /></>} />
+          <Route path="/liver/auto-calc" element={<><TabNavigation /><LiverAutoCalc /></>} />
           <Route path="/anemia" element={<><TabNavigation /><Anemia /></>} />
           <Route path="/diabetes/assessment" element={<><TabNavigation /><DiabetesAssessment /></>} />
           <Route path="/diabetes/overview" element={<><TabNavigation /><DiabetesOverview /></>} />
