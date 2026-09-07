@@ -310,6 +310,8 @@ export function TabNavigation() {
             const showHtnSubs = isHtn && currentPath.startsWith("/hypertension") && !collapsed;
             const showElectrolyteSubs = isElectrolyte && (currentPath.startsWith("/electrolytes") || electrolyteSubItems.some(s => currentPath.startsWith(s.path))) && !collapsed;
             const showLiverSubs = isLiver && currentPath.startsWith("/liver") && !collapsed;
+            const isObesity = item.path === "/obesity/bmi-calculator";
+            const showObesitySubs = isObesity && currentPath.startsWith("/obesity") && !collapsed;
             return (
               <li key={item.path}>
                 <Link
@@ -332,6 +334,7 @@ export function TabNavigation() {
                 {showHtnSubs && <HtnSubNav />}
                 {showElectrolyteSubs && <ElectrolyteSubNav />}
                 {showLiverSubs && <LiverSubNav />}
+                {showObesitySubs && <ObesitySubNav />}
               </li>
             );
           })}
