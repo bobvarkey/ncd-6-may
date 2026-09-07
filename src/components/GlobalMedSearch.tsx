@@ -5,6 +5,7 @@ import { RENAL_DATA } from "@/calculators/diabetes/RenalDosing";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import { ANTICOAGULANTS_DATA } from "@/calculators/diabetes/anticoagulants-data";
 import { ADDITIONAL_MEDS_DATA } from "@/calculators/diabetes/additional-meds-data";
+import { medicationDatabase as OBESITY_MEDS } from "@/calculators/obesity/medication-database";
 import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMedicationGuide";
 import { GLOSSARY } from "@/data/glossary";
 
@@ -38,12 +39,22 @@ const MED_SYNONYMS: Record<string, string[]> = {
   "Lisinopril": ["Prinivil", "Zestril"],
 };
 
+// Normalize obesity meds into the same search shape.
+const OBESITY_MEDS_NORMALIZED = OBESITY_MEDS.map((m) => ({
+  drug: m.name,
+  drugClass: m.genericName ? `${m.genericName} — ${m.class || ""}` : (m.class || ""),
+  normalDose: m.dose,
+  brand: m.genericName && m.name !== m.genericName ? m.genericName : undefined,
+  _target: "obesity" as const,
+}));
+
 const ALL_MEDS = [
   ...RENAL_DATA,
   ...ANTIBIOTICS_DATA,
   ...ANTICOAGULANTS_DATA,
   ...ADDITIONAL_MEDS_DATA,
   ...HTN_MEDS_NORMALIZED,
+  ...OBESITY_MEDS_NORMALIZED,
 ].filter((m, index, self) => 
   m.drug && index === self.findIndex((t) => t.drug.toLowerCase() === m.drug.toLowerCase())
 );
@@ -219,10 +230,12 @@ export function GlobalMedSearch() {
     const term = q.trim().toLowerCase();
     if (!term) return [];
 
-    // Check synonyms first
-    const synonymMatches = Object.entries(MED_SYNONYMS).filter(([mainDrug, synonyms]) => 
-      synonyms.some(s => s.toLowerCase().includes(term))
-    ).map(([mainDrug]) => mainDrug.toLowerCase());
+    // Check synonyms first (brand -> generic and generic -> brand)
+    const synonymMatches = Object.entries(MED_SYNONYMS).filter(([mainDrug, synonyms]) => {
+      const mainMatch = mainDrug.toLowerCase().includes(term);
+      const synonymMatch = synonyms.some(s => s.toLowerCase().includes(term));
+      return mainMatch || synonymMatch;
+    }).map(([mainDrug]) => mainDrug.toLowerCase());
 
     // Search both medications and clinical topics
     const medResults = ALL_MEDS
