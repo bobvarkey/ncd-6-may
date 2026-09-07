@@ -108,6 +108,41 @@ function LiverSubNav() {
   );
 }
 
+const obesitySubItems: { path: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { path: "/obesity/bmi-calculator", label: "BMI Calculator", icon: Calculator },
+  { path: "/obesity/glp1-dosing", label: "GLP-1 Doses & Schedules", icon: Syringe },
+];
+
+function ObesitySubNav() {
+  const location = useLocation();
+  return (
+    <ul className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-border pl-2">
+      {obesitySubItems.map((s) => {
+        const isActive = location.pathname === s.path;
+        return (
+          <li key={s.path}>
+            <Link
+              to={s.path}
+              className={cn(
+                "flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium transition-colors",
+                isActive
+                  ? "sunset-active"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+              aria-current={isActive ? "page" : undefined}
+            >
+              <s.icon className="h-4 w-4 shrink-0" />
+              <span className="truncate">{s.label}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+
+
 type NavItem = {
   path: string;
   label: string;
