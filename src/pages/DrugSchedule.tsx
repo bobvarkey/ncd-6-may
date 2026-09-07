@@ -22,27 +22,27 @@ const ALL_MEDS: Medication[] = Object.values(ALL_MEDICATIONS).flat();
 
 const INJECTION_SITES = ["Abdomen", "Thigh", "Upper arm (deltoid area)", "Abdomen", "Thigh"];
 
-function parseFrequency(freq: string): { intervalDays: number; oncePerInterval: boolean } {
+function parseFrequency(freq: string): { intervalDays: number } {
   const lower = freq.toLowerCase();
   if (lower.includes("daily") || lower.includes("od") || lower.includes("q24h")) {
-    return { intervalDays: 1, oncePerInterval: true };
+    return { intervalDays: 1 };
   }
   if (lower.includes("weekly") || lower.includes("q7d") || lower.includes("once weekly")) {
-    return { intervalDays: 7, oncePerInterval: true };
+    return { intervalDays: 7 };
   }
   if (lower.includes("twice weekly") || lower.includes("biweekly") || lower.includes("2 times")) {
-    return { intervalDays: 3, oncePerInterval: false };
+    return { intervalDays: 3 };
   }
   if (lower.includes("monthly")) {
-    return { intervalDays: 30, oncePerInterval: true };
+    return { intervalDays: 30 };
   }
   if (lower.includes("tds") || lower.includes("tid") || lower.includes("3 times")) {
-    return { intervalDays: 1, oncePerInterval: false };
+    return { intervalDays: 1 };
   }
   if (lower.includes("bid") || lower.includes("bd") || lower.includes("2 times")) {
-    return { intervalDays: 1, oncePerInterval: false };
+    return { intervalDays: 1 };
   }
-  return { intervalDays: 1, oncePerInterval: true };
+  return { intervalDays: 1 };
 }
 
 function formatDate(date: Date) {
@@ -196,19 +196,11 @@ export default function DrugSchedulePage() {
 
             <div className="flex flex-wrap gap-4 pt-2">
               <div className="flex items-center gap-2">
-                <Checkbox
-                  id="site"
-                  checked={includeInjectionSite}
-                  onCheckedChange={(v) => setIncludeInjectionSite(!!v)}
-                />
+                <Checkbox id="site" checked={includeInjectionSite} onCheckedChange={(v) => setIncludeInjectionSite(!!v)} />
                 <Label htmlFor="site" className="font-normal">Show injection site rotation</Label>
               </div>
               <div className="flex items-center gap-2">
-                <Checkbox
-                  id="se"
-                  checked={showSideEffects}
-                  onCheckedChange={(v) => setShowSideEffects(!!v)}
-                />
+                <Checkbox id="se" checked={showSideEffects} onCheckedChange={(v) => setShowSideEffects(!!v)} />
                 <Label htmlFor="se" className="font-normal">Show side effects</Label>
               </div>
             </div>

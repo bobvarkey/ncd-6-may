@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import {
-  Scan, Sparkles, X, CheckCircle2, AlertTriangle, Calculator, Droplet,
+  Scan, Scale, Sparkles, X, CheckCircle2, AlertTriangle, Calculator, Droplet,
   Heart, Activity, FlaskConical, Dna, Stethoscope, Info, ArrowRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

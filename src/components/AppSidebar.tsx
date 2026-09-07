@@ -53,7 +53,7 @@ const SECTIONS: Section[] = [
       { title: "Ganzoni Iron Deficit", url: "/anemia?tab=ganzoni", icon: Calculator },
       { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, keywords: "semaglutide tirzepatide" },
       { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
-      { title: "GLP-1 Dose Calculator", url: "/glp1-dose-calculator", icon: Calculator, keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
+      { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
 
       { title: "GLP-1 Screening", url: "/glp1-screening", icon: Eye, keywords: "prescreen pre-screen eligibility contraindication naion optic nerve glaucoma retinopathy semaglutide tirzepatide" },
       { title: "GLP-1 Pre-Initiation Screener", url: "/glp1-prescreen", icon: Syringe, keywords: "glp1 prescreening pre-initiation wizard mtc men2 pancreatitis scoff eating disorder dpp4 hypoglycaemia sarcopenia referral" },

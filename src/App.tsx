@@ -139,7 +139,7 @@ const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesi
 const OpticNerveAssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/OpticNerveAssessment"));
 const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/Glp1Screening"));
 const DrugSchedule = lazyWithModuleRetry(() => import("@/pages/DrugSchedule"));
-const Glp1DoseCalculator = lazyWithModuleRetry(() => import("@/pages/Glp1DoseCalculator"));
+const DrugCalculator = lazyWithModuleRetry(() => import("@/pages/DrugCalculator"));
 const GLP1PreInitiationScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1PreInitiationScreener"));
 const GLP1ScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1Screener"));
 const IronReplacementCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/IronReplacementCalculator"));
@@ -363,6 +363,7 @@ const App = () => {
           <Route path="/htn/potency-table" element={<><TabNavigation /><AntihypertensivePotencyTableCalc /></>} />
           <Route path="/obesity/bmi-calculator" element={<><TabNavigation /><BmiCalculatorCalc /></>} />
           <Route path="/obesity/waist-height-ratio" element={<><TabNavigation /><WaistHeightRatioCalc /></>} />
+          <Route path="/obesity/glp1-dosing" element={<><TabNavigation /><GLP1Administration /></>} />
           <Route path="/obesity/glp1-algorithm" element={<><TabNavigation /><GLP1ObesityAlgorithmCalc /></>} />
           <Route path="/obesity/glp1-assessment" element={<><TabNavigation /><GLP1AssessmentCalc /></>} />
           <Route path="/obesity/optic-nerve-assessment" element={<><TabNavigation /><OpticNerveAssessmentCalc /></>} />
@@ -380,7 +381,7 @@ const App = () => {
           />
           <Route path="/obesity/glp1-screener" element={<><TabNavigation /><GLP1ScreenerCalc /></>} />
           <Route path="/drug-schedule" element={<><TabNavigation /><DrugSchedule /></>} />
-          <Route path="/glp1-dose-calculator" element={<><TabNavigation /><Glp1DoseCalculator /></>} />
+          <Route path="/drug-calculator" element={<><TabNavigation /><DrugCalculator /></>} />
           <Route path="/diet-plan" element={<><TabNavigation /><DietPlanPage /></>} />
           <Route path="/iron-calculator" element={<><TabNavigation /><IronReplacementCalculator /></>} />
           <Route path="/thyroid" element={<><TabNavigation /><ThyroidCalculator /></>} />

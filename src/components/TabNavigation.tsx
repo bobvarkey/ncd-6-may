@@ -76,6 +76,73 @@ function HtnSubNav() {
   );
 }
 
+const liverSubItems: { path: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { path: "/liver/auto-calc", label: "Liver Auto-Calc", icon: Calculator },
+];
+
+function LiverSubNav() {
+  const location = useLocation();
+  return (
+    <ul className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-border pl-2">
+      {liverSubItems.map((s) => {
+        const isActive = location.pathname === s.path;
+        return (
+          <li key={s.path}>
+            <Link
+              to={s.path}
+              className={cn(
+                "flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium transition-colors",
+                isActive
+                  ? "sunset-active"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+              aria-current={isActive ? "page" : undefined}
+            >
+              <s.icon className="h-4 w-4 shrink-0" />
+              <span className="truncate">{s.label}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+const obesitySubItems: { path: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { path: "/obesity/bmi-calculator", label: "BMI Calculator", icon: Calculator },
+  { path: "/obesity/glp1-dosing", label: "GLP-1 Doses & Schedules", icon: Syringe },
+];
+
+function ObesitySubNav() {
+  const location = useLocation();
+  return (
+    <ul className="mt-1 ml-4 flex flex-col gap-0.5 border-l border-border pl-2">
+      {obesitySubItems.map((s) => {
+        const isActive = location.pathname === s.path;
+        return (
+          <li key={s.path}>
+            <Link
+              to={s.path}
+              className={cn(
+                "flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium transition-colors",
+                isActive
+                  ? "sunset-active"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+              aria-current={isActive ? "page" : undefined}
+            >
+              <s.icon className="h-4 w-4 shrink-0" />
+              <span className="truncate">{s.label}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+
+
 type NavItem = {
   path: string;
   label: string;
@@ -132,9 +199,9 @@ const navItems: NavItem[] = [
   { path: "/hypertension",            label: "Hypertension", icon: Heart, active: "bg-orange-500/10 text-orange-400 border-orange-500/30", emoji: "❤️" },
   { path: "/lipids",                  label: "Lipids",    icon: Droplet, active: "bg-blue-500/10 text-blue-400 border-blue-500/30", emoji: "💧" },
   { path: "/liver",                   label: "Liver",     icon: Dna, active: "bg-lime-500/10 text-lime-400 border-lime-500/30", emoji: "🫀" },
-  { path: "/liver/auto-calc",       label: "Liver Auto-Calc", icon: Scan, active: "bg-lime-500/10 text-lime-400 border-lime-500/30", emoji: "📤" },
   { path: "/thyroid",                 label: "Thyroid",   icon: Microscope, active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", emoji: "🦋" },
   { path: "/obesity/bmi-calculator",  label: "Body weight issues",   icon: Weight, active: "bg-violet-500/10 text-violet-400 border-violet-500/30", emoji: "⚖️" },
+  { path: "/obesity/glp1-dosing",     label: "GLP-1 Doses & Schedules", icon: Syringe, active: "bg-violet-500/10 text-violet-400 border-violet-500/30", emoji: "💉" },
   { path: "/glp1-screening",          label: "GLP-1 Screening", icon: Eye, active: "bg-pink-500/10 text-pink-400 border-pink-500/30", emoji: "👁️" },
   { path: "/respiratory",             label: "Asthma and COPD", icon: AirVent, active: "sunset-active border-cyan-500/30", emoji: "🫁" },
   { path: "/aki-criteria",            label: "AKI / AKD Criteria", icon: Activity, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🧪" },
@@ -239,9 +306,13 @@ export function TabNavigation() {
             const isBlood = item.path === "/anemia";
             const isHtn = item.path === "/hypertension";
             const isElectrolyte = item.path === "/electrolytes";
+            const isLiver = item.path === "/liver";
             const showBloodSubs = isBlood && currentPath.startsWith("/anemia") && !collapsed;
             const showHtnSubs = isHtn && currentPath.startsWith("/hypertension") && !collapsed;
             const showElectrolyteSubs = isElectrolyte && (currentPath.startsWith("/electrolytes") || electrolyteSubItems.some(s => currentPath.startsWith(s.path))) && !collapsed;
+            const showLiverSubs = isLiver && currentPath.startsWith("/liver") && !collapsed;
+            const isObesity = item.path === "/obesity/bmi-calculator";
+            const showObesitySubs = isObesity && currentPath.startsWith("/obesity") && !collapsed;
             return (
               <li key={item.path}>
                 <Link
@@ -263,6 +334,8 @@ export function TabNavigation() {
                 {showBloodSubs && <BloodSubNav />}
                 {showHtnSubs && <HtnSubNav />}
                 {showElectrolyteSubs && <ElectrolyteSubNav />}
+                {showLiverSubs && <LiverSubNav />}
+                {showObesitySubs && <ObesitySubNav />}
               </li>
             );
           })}
