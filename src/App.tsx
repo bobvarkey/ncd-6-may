@@ -138,6 +138,8 @@ const GLP1ObesityAlgorithmCalc = lazyWithModuleRetry(() => import("@/calculators
 const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1AssessmentCalculator"));
 const OpticNerveAssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/OpticNerveAssessment"));
 const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/Glp1Screening"));
+const DrugSchedule = lazyWithModuleRetry(() => import("@/pages/DrugSchedule"));
+const Glp1DoseCalculator = lazyWithModuleRetry(() => import("@/pages/Glp1DoseCalculator"));
 const GLP1PreInitiationScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1PreInitiationScreener"));
 const GLP1ScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1Screener"));
 const IronReplacementCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/IronReplacementCalculator"));
@@ -377,6 +379,8 @@ const App = () => {
             }
           />
           <Route path="/obesity/glp1-screener" element={<><TabNavigation /><GLP1ScreenerCalc /></>} />
+          <Route path="/drug-schedule" element={<><TabNavigation /><DrugSchedule /></>} />
+          <Route path="/glp1-dose-calculator" element={<><TabNavigation /><Glp1DoseCalculator /></>} />
           <Route path="/diet-plan" element={<><TabNavigation /><DietPlanPage /></>} />
           <Route path="/iron-calculator" element={<><TabNavigation /><IronReplacementCalculator /></>} />
           <Route path="/thyroid" element={<><TabNavigation /><ThyroidCalculator /></>} />
