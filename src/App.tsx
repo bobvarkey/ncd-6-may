@@ -361,6 +361,7 @@ const App = () => {
           <Route path="/htn/potency-table" element={<><TabNavigation /><AntihypertensivePotencyTableCalc /></>} />
           <Route path="/obesity/bmi-calculator" element={<><TabNavigation /><BmiCalculatorCalc /></>} />
           <Route path="/obesity/waist-height-ratio" element={<><TabNavigation /><WaistHeightRatioCalc /></>} />
+          <Route path="/obesity/glp1-dosing" element={<><TabNavigation /><GLP1Administration /></>} />
           <Route path="/obesity/glp1-algorithm" element={<><TabNavigation /><GLP1ObesityAlgorithmCalc /></>} />
           <Route path="/obesity/glp1-assessment" element={<><TabNavigation /><GLP1AssessmentCalc /></>} />
           <Route path="/obesity/optic-nerve-assessment" element={<><TabNavigation /><OpticNerveAssessmentCalc /></>} />
