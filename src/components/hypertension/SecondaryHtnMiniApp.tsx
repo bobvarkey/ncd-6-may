@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
+import { copyToClipboard } from "@/lib/clinical-utils";
+import { Copy, Check } from "lucide-react";
 
 interface EvaluationItem {
   id: string;
@@ -144,6 +146,7 @@ const catColors: Record<string, string> = {
 export default function SecondaryHtnMiniApp() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("evaluation");
+  const [copied, setCopied] = useState(false);
 
   const toggle = (id: string) => {
     const next = new Set(completed);
@@ -152,6 +155,35 @@ export default function SecondaryHtnMiniApp() {
   };
 
   const progress = (completed.size / evaluationItems.length) * 100;
+
+  const buildInvestigationsText = () => {
+    const lines: string[] = [];
+    lines.push("SECONDARY HYPERTENSION EVALUATION — CONDITION-SPECIFIC WORKUP");
+    lines.push("============================================================");
+    lines.push("");
+    evaluationItems.forEach((item, idx) => {
+      lines.push(`${idx + 1}. ${item.condition} (${item.category})`);
+      item.tests.forEach((t) => lines.push(`   - ${t}`));
+      lines.push("");
+    });
+    lines.push("RENINOMA WORKUP PROTOCOL");
+    lines.push("-------------------------");
+    lines.push("a. Stop ACEi, ARB, MRA meds — these interfere with renin measurement.");
+    lines.push("b. CT abdomen with contrast — evaluate for renal artery stenosis and reninoma (look for small cortical tumor / complex renal cyst).");
+    lines.push("c. MRI kidney with delayed contrast — further characterization if CT inconclusive.");
+    lines.push("d. Admit 4-6 days prior to renal vein sampling (RVS) for bed rest, final antihypertensive titration, and salt deprivation.");
+    lines.push("e. Renal vein renin sampling per Wolley et al: after 5 days of salt deprivation and overnight recumbency, simultaneous bilateral renal vein and infrarenal IVC samples before and 20 min after IV enalaprilat 2.5 mg. Lateralization ratio >1.5 confirms a unilateral renin-secreting source.");
+    lines.push("f. Interpretation: e.g., right-to-left ratio 1.9 pre-enalaprilat + 2.0 post-enalaprilat -> consistent with right renal reninoma.");
+    return lines.join("\n");
+  };
+
+  const handleCopy = async () => {
+    const ok = await copyToClipboard(buildInvestigationsText(), "Investigations copied!");
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <Card className="border-2 border-primary/20">
@@ -174,6 +206,16 @@ export default function SecondaryHtnMiniApp() {
           </TabsList>
 
           <TabsContent value="evaluation" className="space-y-2 pt-4">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-xs text-muted-foreground">Condition-specific investigations</span>
+              <button
+                onClick={handleCopy}
+                className="inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+              >
+                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                {copied ? "Copied!" : "Copy investigations to TXT"}
+              </button>
+            </div>
             {evaluationItems.map((item) => {
               const done = completed.has(item.id);
               return (
