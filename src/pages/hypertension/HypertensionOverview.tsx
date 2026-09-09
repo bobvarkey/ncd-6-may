@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -18,8 +16,6 @@ import {
   Activity,
   CheckCircle,
   Info,
-  Stethoscope,
-  Pill,
 } from "lucide-react";
 
 // Category colors for hypertension (orange theme)
@@ -160,65 +156,14 @@ const targetBPGuidelines: TargetBP[] = [
   },
 ];
 
-// Secondary Causes Checklist
-const secondaryCauses = [
-  {
-    category: "Renal",
-    conditions: [
-      "Chronic kidney disease",
-      "Polycystic kidney disease",
-      "Renovascular disease",
-      "Renal parenchymal disease",
-    ],
-  },
-  {
-    category: "Endocrine",
-    conditions: [
-      "Primary aldosteronism",
-      "Cushing's syndrome",
-      "Pheochromocytoma",
-      "Hyper-/Hypothyroidism",
-      "Hyperparathyroidism",
-      "Acromegaly",
-    ],
-  },
-  {
-    category: "Vascular",
-    conditions: [
-      "Coarctation of aorta",
-      "Takayasu arteritis",
-      "Fibromuscular dysplasia",
-    ],
-  },
-  {
-    category: "Medications/Substances",
-    conditions: [
-      "NSAIDs",
-      "Oral contraceptives",
-      "Corticosteroids",
-      "Calcineurin inhibitors",
-      "Erythropoietin",
-      "Decongestants",
-      "Licorice",
-      "Cocaine/Amphetamines",
-    ],
-  },
-  {
-    category: "Sleep",
-    conditions: ["Obstructive sleep apnea", "Central sleep apnea"],
-  },
-];
-
 interface OverviewProps {
   onNavigateToEmergencies?: () => void;
   onNavigateToAssessment?: () => void;
 }
 
 export default function HypertensionOverview({ onNavigateToEmergencies, onNavigateToAssessment }: OverviewProps) {
-  const [selectedStage, setSelectedStage] = useState<string | null>(null);
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Alert for Emergency */}
       <Alert className="border-amber-500/40 bg-warning/100/5">
         <AlertTriangle className="h-4 w-4 text-amber-500" />
@@ -265,8 +210,7 @@ export default function HypertensionOverview({ onNavigateToEmergencies, onNaviga
                 {bpClassification.map((stage, index) => (
                   <tr
                     key={index}
-                    className="border-b border-border/50 hover:bg-muted/30 transition-colors cursor-pointer"
-                    onClick={() => setSelectedStage(selectedStage === stage.category ? null : stage.category)}
+                    className="border-b border-border/50 hover:bg-muted/30 transition-colors"
                   >
                     <td className="py-3 px-2">
                       <Badge variant="outline" className={stage.color}>
@@ -292,117 +236,6 @@ export default function HypertensionOverview({ onNavigateToEmergencies, onNaviga
           </div>
         </CardContent>
       </Card>
-
-      {/* Treatment Algorithm — Step Care + Comorbidity Selection */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Pill className="h-5 w-5" style={{ color: categoryColors.accent }} />
-            <CardTitle className="text-lg">Treatment Algorithm</CardTitle>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Step-care approach and comorbidity-guided selection — ACC/AHA 2025 &amp; ESC 2024
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          {/* Step-Care Algorithm */}
-          <div>
-            <p className="text-sm font-medium mb-3" style={{ color: categoryColors.accent }}>
-              Step-Care Algorithm (ACD Approach)
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-              {[
-                { step: "Step 1", label: "A", desc: "ACEi or ARB", color: "border-l-blue-500" },
-                { step: "Step 2", label: "A + C or A + D", desc: "Add CCB or Thiazide", color: "border-l-emerald-500" },
-                { step: "Step 3", label: "A + C + D", desc: "Triple therapy", color: "border-l-amber-500" },
-                { step: "Step 4", label: "Add MRA", desc: "Spironolactone 25 mg", color: "border-l-red-500" },
-              ].map((s) => (
-                <div key={s.step} className={`p-3 rounded-lg border-l-4 ${s.color} bg-muted/20 border border-border/30`}>
-                  <p className="text-xs font-semibold text-muted-foreground mb-1">{s.step}</p>
-                  <p className="text-sm font-bold">{s.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{s.desc}</p>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              <Info className="h-3 w-3 inline mr-1" />
-              NICE/BHS ACD algorithm. Step 4 (resistant): Add Spironolactone 25 mg (PATHWAY-2). Target BP &lt; 140/90 mmHg (&lt; 130/80 if high risk).
-            </p>
-          </div>
-
-          <Separator className="my-2" />
-
-          {/* Comorbidity-Based Selection */}
-          <div>
-            <p className="text-sm font-medium mb-3" style={{ color: categoryColors.accent }}>
-              Selection by Comorbidity
-            </p>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-2 px-2 font-medium">Condition</th>
-                    <th className="text-left py-2 px-2 font-medium">First-Line</th>
-                    <th className="text-center py-2 px-2 font-medium">Target BP</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { condition: "Diabetes + Proteinuria", firstLine: "ACEi or ARB", target: "< 130/80" },
-                    { condition: "CKD + Proteinuria", firstLine: "ACEi or ARB (max dose)", target: "< 130/80" },
-                    { condition: "HFrEF", firstLine: "ACEi/ARB + BB + MRA", target: "< 130/80" },
-                    { condition: "Post-MI", firstLine: "BB + ACEi", target: "< 130/80" },
-                    { condition: "Stroke Prevention", firstLine: "ACEi + Thiazide", target: "< 130/80" },
-                    { condition: "Isolated Systolic (Elderly)", firstLine: "Thiazide or CCB", target: "< 140/90" },
-                    { condition: "Black Patients", firstLine: "CCB or Thiazide", target: "< 130/80" },
-                    { condition: "Pregnancy", firstLine: "Methyldopa / Labetalol / Nifedipine", target: "< 140/90" },
-                  ].map((row, i) => (
-                    <tr key={i} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                      <td className="py-2 px-2 font-medium text-xs">{row.condition}</td>
-                      <td className="py-2 px-2 text-xs text-muted-foreground">{row.firstLine}</td>
-                      <td className="py-2 px-2 text-center">
-                        <Badge variant="outline" style={{ color: categoryColors.accent, borderColor: categoryColors.border, fontSize: "0.7rem" }}>
-                          {row.target}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-          <Separator className="my-4" />
-
-          {/* 5-Step Investigation Flowchart */}
-          <div className="mb-4">
-            <p className="text-sm font-medium mb-3" style={{ color: categoryColors.accent }}>
-              5-Step Investigation Flowchart
-            </p>
-            <div className="space-y-2">
-              {[
-                { step: 1, title: "Initial Assessment", desc: "History & Physical Examination, BP confirmation (×3 readings), Basic metabolic panel, Urinalysis", color: "border-l-blue-500" },
-                { step: 2, title: "Baseline Investigations", desc: "Creatinine/eGFR, electrolytes (Na+, K+), Fasting glucose/HbA1c, Lipid profile, ECG, Urinalysis with microalbuminuria", color: "border-l-emerald-500" },
-                { step: 3, title: "Screen Secondary Causes", desc: "Aldosterone/Renin ratio, TSH/fT4, Plasma/Urine metanephrines, Overnight dexamethasone suppression, Sleep study if symptomatic, Renal Doppler", color: "border-l-teal-500" },
-                { step: 4, title: "Confirmatory Testing", desc: "Saline suppression test, CT/MRI adrenals, CTA/MRA renal arteries, 24h urine cortisol, Adrenal vein sampling", color: "border-l-amber-500" },
-                { step: 5, title: "Targeted Treatment", desc: "Treat underlying cause, Optimize antihypertensives, Monitor response, Follow-up", color: "border-l-green-500" },
-              ].map((s) => (
-                <div key={s.step} className={`flex items-start gap-3 p-3 rounded-lg border-l-4 ${s.color} bg-muted/20 border border-border/30`}>
-                  <div className="w-7 h-7 rounded-full bg-primary/15 text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
-                    {s.step}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium">{s.title}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{s.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          
 
       {/* Risk Stratification */}
       <Card>
@@ -516,115 +349,6 @@ export default function HypertensionOverview({ onNavigateToEmergencies, onNaviga
         </CardContent>
       </Card>
 
-      {/* Hypertensive Urgency vs Emergency */}
-      <Card className="border-red-500/30">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-500" />
-            <CardTitle className="text-lg">Hypertensive Urgency vs Emergency</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Urgency */}
-            <div className="p-4 rounded-lg border-2 border-amber-500/30 bg-amber-500/5">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-lg">⚠️</span>
-                <span className="font-semibold text-amber-700">Hypertensive Urgency</span>
-              </div>
-              <p className="text-xs text-muted-foreground mb-2">BP ≥180/120 mmHg</p>
-              <ul className="text-xs space-y-1 mb-2">
-                <li>• No acute end-organ damage</li>
-                <li>• No symptoms or mild symptoms</li>
-              </ul>
-              <div className="p-2 rounded bg-muted text-xs">
-                <strong className="text-amber-600">Treatment:</strong> Oral meds over 24-48 hours
-              </div>
-            </div>
-
-            {/* Emergency */}
-            <div className="p-4 rounded-lg border-2 border-red-500/30 bg-red-500/5">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-lg">🚨</span>
-                <span className="font-semibold text-red-600">Hypertensive Emergency</span>
-              </div>
-              <p className="text-xs text-muted-foreground mb-2">BP ≥180/120 mmHg</p>
-              <ul className="text-xs space-y-1 mb-2">
-                <li>• <strong>Acute end-organ damage</strong></li>
-                <li>• Encephalopathy, Stroke</li>
-                <li>• Papilledema, MI</li>
-                <li>• Aortic dissection</li>
-                <li>• Kidney injury</li>
-              </ul>
-              <div className="p-2 rounded bg-muted text-xs">
-                <strong className="text-red-600">Treatment:</strong> IV drugs (labetalol, nicardipine, nitroprusside)
-                <br /><span className="text-muted-foreground">Lower BP by ≤25% in first hour</span>
-              </div>
-            </div>
-          </div>
-
-          <Alert className="border-amber-500/30 bg-amber-500/10">
-            <AlertTriangle className="h-4 w-4 text-amber-500" />
-            <AlertDescription className="text-amber-700 text-sm">
-              <strong>Clinical Pearl:</strong> Do not lower BP too fast in an emergency — 
-              rapid reduction can cause organ hypoperfusion including stroke.
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
-
-      {/* Secondary Causes */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5" style={{ color: categoryColors.accent }} />
-            <CardTitle className="text-lg">Secondary Causes of Hypertension</CardTitle>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Consider screening when: onset &lt; 30 years, resistant HTN, sudden onset,
-            severe HTN, or hypokalemia with normal sodium
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {secondaryCauses.map((category, index) => (
-              <div key={index} className="p-3 rounded-lg border border-border/50">
-                <p className="text-sm font-medium mb-2" style={{ color: categoryColors.accent }}>
-                  {category.category}
-                </p>
-                <ul className="space-y-1">
-                  {category.conditions.map((condition, cIndex) => (
-                    <li key={cIndex} className="text-xs text-muted-foreground flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50" />
-                      {condition}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-<div className="p-3 rounded-lg bg-warning/100/5 border border-amber-500/20">
-            <p className="text-xs font-medium text-amber-700 mb-2">Screening Recommendations</p>
-            <ul className="text-xs text-muted-foreground space-y-1">
-              <li>• Primary aldosteronism: Screen if hypokalemia, resistant HTN, or adrenal incidentaloma</li>
-              <li>• Renovascular disease: Consider if sudden onset, flash pulmonary edema, or asymmetric kidneys</li>
-              <li>• Pheochromocytoma: Screen if episodic symptoms, family history, or adrenal mass</li>
-              <li>• Cushing's: Screen if central obesity, purple striae, proximal myopathy</li>
-              <li>• Liddle's syndrome: Screen if early-onset HTN with hypokalemia but normal aldosterone</li>
-            </ul>
-            {onNavigateToAssessment && (
-              <button
-                onClick={onNavigateToAssessment}
-                className="mt-3 flex items-center gap-2 text-xs text-primary hover:underline font-medium"
-              >
-                <Stethoscope className="h-3.5 w-3.5" />
-                Full Secondary Hypertension Assessment
-              </button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
