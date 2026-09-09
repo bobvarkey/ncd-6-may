@@ -18,6 +18,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { TabNavigation } from "@/components/TabNavigation";
 import { AppSidebar } from "@/components/AppSidebar";
+import { LabAutoCalculator } from "@/components/LabAutoCalculator";
 
 const moduleLoadErrorPattern = /Importing a module script failed|Failed to fetch dynamically imported module|error loading dynamically imported module|Load failed|Loading chunk \d+ failed/i;
 const moduleReloadKey = "ncd-module-script-reloaded";
@@ -227,6 +228,7 @@ const DiabetesBuddyLayout = () => (
         </div>
       </header>
       <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-4xl">
+        <LabAutoCalculator />
         <Suspense fallback={<RouteLoading />}>
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
@@ -273,6 +275,7 @@ const SidebarLayout = ({ title, children }: { title: string; children: ReactNode
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-4xl">
+          <LabAutoCalculator />
           {children}
         </main>
       </div>
