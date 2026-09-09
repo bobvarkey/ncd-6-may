@@ -45,7 +45,7 @@ const MED_SYNONYMS: Record<string, string[]> = {
 const OBESITY_MEDS_NORMALIZED = OBESITY_MEDS.map((m) => ({
   drug: m.name,
   drugClass: m.genericName ? `${m.genericName} — ${m.class || ""}` : (m.class || ""),
-  normalDose: m.dose,
+  normalDose: m.doses.map(({ dose, frequency }) => `${dose} ${frequency}`).join("; "),
   brand: m.genericName && m.name !== m.genericName ? m.genericName : undefined,
   _target: "obesity" as const,
 }));
@@ -412,7 +412,7 @@ export function GlobalMedSearch() {
                         <div className="text-xs text-muted-foreground truncate">
                           Normal: {item.normalDose}
                         </div>
-                        {item.hepatic && (
+                        {"hepatic" in item && item.hepatic && (
                           <div className="text-xs text-accent mt-0.5 line-clamp-1">
                             Hepatic: {item.hepatic}
                           </div>
