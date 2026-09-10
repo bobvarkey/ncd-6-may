@@ -11,7 +11,7 @@ import {
 import ImageLink from "@/components/ImageLink";
 import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 import { copyToClipboard } from "@/lib/clinical-utils";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, CheckSquare, Square } from "lucide-react";
 
 interface EvaluationItem {
   id: string;
@@ -147,11 +147,25 @@ export default function SecondaryHtnMiniApp() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("evaluation");
   const [copied, setCopied] = useState(false);
+  const [selectedTests, setSelectedTests] = useState<Set<string>>(new Set());
 
   const toggle = (id: string) => {
     const next = new Set(completed);
     if (next.has(id)) next.delete(id); else next.add(id);
     setCompleted(next);
+  };
+
+  const toggleTest = (test: string) => {
+    const next = new Set(selectedTests);
+    if (next.has(test)) next.delete(test); else next.add(test);
+    setSelectedTests(next);
+  };
+
+  const allTests = evaluationItems.flatMap((item) => item.tests);
+  const allSelected = allTests.length > 0 && allTests.every((t) => selectedTests.has(t));
+
+  const toggleAll = () => {
+    setSelectedTests(allSelected ? new Set() : new Set(allTests));
   };
 
   const progress = (completed.size / evaluationItems.length) * 100;
@@ -162,23 +176,21 @@ export default function SecondaryHtnMiniApp() {
     lines.push("============================================================");
     lines.push("");
     evaluationItems.forEach((item, idx) => {
+      const selected = item.tests.filter((t) => selectedTests.has(t));
+      if (selected.length === 0) return;
       lines.push(`${idx + 1}. ${item.condition} (${item.category})`);
-      item.tests.forEach((t) => lines.push(`   - ${t}`));
+      selected.forEach((t) => lines.push(`   - ${t}`));
       lines.push("");
     });
-    lines.push("RENINOMA WORKUP PROTOCOL");
-    lines.push("-------------------------");
-    lines.push("a. Stop ACEi, ARB, MRA meds — these interfere with renin measurement.");
-    lines.push("b. CT abdomen with contrast — evaluate for renal artery stenosis and reninoma (look for small cortical tumor / complex renal cyst).");
-    lines.push("c. MRI kidney with delayed contrast — further characterization if CT inconclusive.");
-    lines.push("d. Admit 4-6 days prior to renal vein sampling (RVS) for bed rest, final antihypertensive titration, and salt deprivation.");
-    lines.push("e. Renal vein renin sampling per Wolley et al: after 5 days of salt deprivation and overnight recumbency, simultaneous bilateral renal vein and infrarenal IVC samples before and 20 min after IV enalaprilat 2.5 mg. Lateralization ratio >1.5 confirms a unilateral renin-secreting source.");
-    lines.push("f. Interpretation: e.g., right-to-left ratio 1.9 pre-enalaprilat + 2.0 post-enalaprilat -> consistent with right renal reninoma.");
     return lines.join("\n");
   };
 
   const handleCopy = async () => {
-    const ok = await copyToClipboard(buildInvestigationsText(), "Investigations copied!");
+    if (selectedTests.size === 0) {
+      copyToClipboard("", "Select at least one test first");
+      return;
+    }
+    const ok = await copyToClipboard(buildInvestigationsText(), "Selected investigations copied!");
     if (ok) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -206,15 +218,26 @@ export default function SecondaryHtnMiniApp() {
           </TabsList>
 
           <TabsContent value="evaluation" className="space-y-2 pt-4">
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <span className="text-xs text-muted-foreground">Condition-specific investigations</span>
-              <button
-                onClick={handleCopy}
-                className="inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
-              >
-                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                {copied ? "Copied!" : "Copy investigations to TXT"}
-              </button>
+            <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+              <span className="text-xs text-muted-foreground">
+                {selectedTests.size > 0 ? `${selectedTests.size} test${selectedTests.size > 1 ? 's' : ''} selected` : 'Select tests to copy'}
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleAll}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/60 transition-colors"
+                >
+                  {allSelected ? <CheckSquare className="h-3.5 w-3.5" /> : <Square className="h-3.5 w-3.5" />}
+                  {allSelected ? "Deselect all" : "Select all"}
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copied ? "Copied!" : "Copy selected to TXT"}
+                </button>
+              </div>
             </div>
             {evaluationItems.map((item) => {
               const done = completed.has(item.id);
@@ -237,9 +260,23 @@ export default function SecondaryHtnMiniApp() {
                       </div>
                       {!done && (
                         <div className="flex flex-wrap gap-1">
-                          {item.tests.map((t) => (
-                            <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{t}</span>
-                          ))}
+                          {item.tests.map((t) => {
+                            const sel = selectedTests.has(t);
+                            return (
+                              <button
+                                key={t}
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); toggleTest(t); }}
+                                className={`text-[10px] px-1.5 py-0.5 rounded border transition-colors ${
+                                  sel
+                                    ? 'bg-primary/20 text-primary border-primary/40'
+                                    : 'bg-muted text-muted-foreground border-transparent hover:border-primary/30'
+                                }`}
+                              >
+                                {sel ? '✓ ' : ''}{t}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
