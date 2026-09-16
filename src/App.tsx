@@ -143,7 +143,7 @@ const ThyroidCalculator = lazyWithModuleRetry(() => import("@/calculators/thyroi
 const DrugCalculator = lazyWithModuleRetry(() => import("@/pages/DrugCalculator"));
 const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
 const DrugSchedule = lazyWithModuleRetry(() => import("@/pages/DrugSchedule"));
-const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/GLP1Screening"));
+const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/Glp1Screening"));
 const GLP1PreInitiationScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1PreInitiationScreener"));
 const WomenHealth = lazyWithModuleRetry(() => import("@/pages/WomenHealth"));
 const Fatigue = lazyWithModuleRetry(() => import("@/pages/Fatigue"));
