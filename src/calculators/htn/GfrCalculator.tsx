@@ -25,6 +25,10 @@ export interface GfrResult {
   uacr?: number;
   kdigoStage?: string;
   kdigoRisk?: string;
+  bsa?: number;
+  bsaAdjustedGfr?: number;
+  weightKg?: number;
+  heightCm?: number;
 }
 
 // KDIGO G stages
@@ -101,6 +105,16 @@ function getKdigoRisk(gfrIndex: number, aIndex: number): { label: string; color:
   };
 }
 
+/** Du Bois body surface area (m²). */
+function calculateBSA(weightKg: number, heightCm: number): number {
+  return 0.007184 * Math.pow(weightKg, 0.425) * Math.pow(heightCm, 0.725);
+}
+
+/** Adjust eGFR from mL/min/1.73m² to mL/min for the patient’s actual BSA. */
+function adjustGfrForBSA(gfr: number, bsa: number): number {
+  return gfr * (bsa / 1.73);
+}
+
 interface GfrCalculatorProps {
   onResultChange?: (result: GfrResult | null) => void;
 }
@@ -125,7 +139,21 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
   const [uacrUnit, setUacrUnit] = useState<UacrUnit>(() => {
     try { return (localStorage.getItem("ncd_gfr_uacr_unit") as UacrUnit) || "mg_g"; } catch { return "mg_g"; }
   });
+
+  // BSA adjustment state (optional)
+  const [adjustBsa, setAdjustBsa] = useState(() => {
+    try { return localStorage.getItem("ncd_gfr_adjust_bsa") === "true"; } catch { return false; }
+  });
+  const [weightKg, setWeightKg] = useState(() => {
+    try { return localStorage.getItem("ncd_gfr_weight") || ""; } catch { return ""; }
+  });
+  const [heightCm, setHeightCm] = useState(() => {
+    try { return localStorage.getItem("ncd_gfr_height") || ""; } catch { return ""; }
+  });
+
   const [result, setResult] = useState<number | null>(null);
+  const [bsaAdjustedResult, setBsaAdjustedResult] = useState<number | null>(null);
+  const [bsa, setBsa] = useState<number | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Auto-save
@@ -135,6 +163,9 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
   useEffect(() => { localStorage.setItem("ncd_gfr_unit", unit); }, [unit]);
   useEffect(() => { localStorage.setItem("ncd_gfr_uacr", uacr); }, [uacr]);
   useEffect(() => { localStorage.setItem("ncd_gfr_uacr_unit", uacrUnit); }, [uacrUnit]);
+  useEffect(() => { localStorage.setItem("ncd_gfr_adjust_bsa", adjustBsa ? "true" : "false"); }, [adjustBsa]);
+  useEffect(() => { localStorage.setItem("ncd_gfr_weight", weightKg); }, [weightKg]);
+  useEffect(() => { localStorage.setItem("ncd_gfr_height", heightCm); }, [heightCm]);
 
   const toggleUnit = () => {
     const crVal = parseFloat(creatinine);
@@ -188,6 +219,16 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
     if (!sex) {
       newErrors.sex = "Select sex";
     }
+    if (adjustBsa) {
+      const w = parseFloat(weightKg);
+      if (!weightKg.trim() || isNaN(w) || w <= 0 || w > 300) {
+        newErrors.weight = "Enter valid weight (1-300 kg)";
+      }
+      const h = parseFloat(heightCm);
+      if (!heightCm.trim() || isNaN(h) || h <= 0 || h > 300) {
+        newErrors.height = "Enter valid height (1-300 cm)";
+      }
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -197,6 +238,19 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
     const crMgdl = getCreatinineMgdl();
     const gfr = calculateCkdEpi(crMgdl, parseInt(age), sex!);
     setResult(gfr);
+
+    let bsaValue: number | null = null;
+    let bsaAdj: number | null = null;
+    if (adjustBsa) {
+      bsaValue = calculateBSA(parseFloat(weightKg), parseFloat(heightCm));
+      bsaAdj = adjustGfrForBSA(gfr, bsaValue);
+      setBsa(Math.round(bsaValue * 100) / 100);
+      setBsaAdjustedResult(Math.round(bsaAdj * 10) / 10);
+    } else {
+      setBsa(null);
+      setBsaAdjustedResult(null);
+    }
+
     const stageInfo = getGfrStage(gfr);
     
     // Calculate KDIGO staging if UACR is provided
@@ -223,6 +277,10 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
       uacr: uacrMgG,
       kdigoStage,
       kdigoRisk,
+      bsa: bsaValue ?? undefined,
+      bsaAdjustedGfr: bsaAdj ?? undefined,
+      weightKg: adjustBsa ? parseFloat(weightKg) : undefined,
+      heightCm: adjustBsa ? parseFloat(heightCm) : undefined,
     });
   };
 
@@ -233,7 +291,12 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
     setUnit("mgdl");
     setUacr("");
     setUacrUnit("mg_g");
+    setAdjustBsa(false);
+    setWeightKg("");
+    setHeightCm("");
     setResult(null);
+    setBsa(null);
+    setBsaAdjustedResult(null);
     setErrors({});
     onResultChange?.(null);
   };
@@ -413,6 +476,17 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
                 <p className="text-3xl font-bold text-foreground">
                   {result} <span className="text-sm font-normal text-muted-foreground">mL/min/1.73m²</span>
                 </p>
+                {adjustBsa && bsaAdjustedResult !== null && bsa !== null && (
+                  <div className="mt-2">
+                    <p className="text-sm text-muted-foreground">BSA-adjusted eGFR</p>
+                    <p className="text-xl font-semibold text-foreground">
+                      {bsaAdjustedResult} <span className="text-sm font-normal text-muted-foreground">mL/min</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      BSA {bsa} m² (Du Bois)
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col items-start sm:items-end gap-1">
                 <Badge className={stage.color}>
