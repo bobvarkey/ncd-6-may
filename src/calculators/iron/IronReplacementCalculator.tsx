@@ -36,12 +36,11 @@ import { copyToClipboard, formatClinicalNote, downloadTextFile, parseClinicalVal
 import { cn } from "@/lib/utils";
 
 // ── Types ──────────────────────────────────────────────────────
-type TabKey = "calculator" | "reference" | "about";
+type TabKey = "calculator" | "reference";
 
 const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
   { key: "calculator", label: "Calculator", icon: <Calculator className="h-4 w-4" /> },
   { key: "reference", label: "Reference", icon: <BookOpen className="h-4 w-4" /> },
-  { key: "about", label: "About", icon: <Info className="h-4 w-4" /> },
 ];
 
 interface PatientInputs {
@@ -166,7 +165,6 @@ function recommend(
   const stores = getIronStores(weight);
   const rawDeficit = weight * (targetHb - hb) * 2.4 + stores;
   const deficit = Math.max(0, rawDeficit);
-
 
   let doseText: string;
   if (isIV) {
@@ -684,7 +682,7 @@ export default function IronReplacementCalculator() {
         </div>
       </div>
 
-      <main className="mx-auto max-w-4xl px-4 py-5 space-y-6">
+      <main className="mx-auto max-w-4xl px-4 py-4 space-y-4">
         {activeTab === "calculator" && (
           <>
             {/* Disclaimer */}
@@ -694,7 +692,6 @@ export default function IronReplacementCalculator() {
                 For <strong>educational and decision-support purposes only</strong>. Always correlate with clinical presentation and current guidelines.
               </p>
             </div>
-
 
             {/* ── Live Iron Parameters (auto-calc, no flags needed) ── */}
             <IronParametersLive inputs={inputs} />
@@ -707,7 +704,7 @@ export default function IronReplacementCalculator() {
                   Patient Lab Values
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-5">
+              <CardContent className="space-y-3">
                 {/* Row 1: Ferritin, Hb, Weight */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <RangeOrExact
@@ -977,7 +974,6 @@ export default function IronReplacementCalculator() {
                   </Button>
                 </div>
 
-
                 {/* Diagnosis Card */}
                 <div className={cn("rounded-xl border-2 p-5", colors.bg, colors.border)}>
                   <div className="flex items-center justify-between mb-1">
@@ -1049,7 +1045,7 @@ export default function IronReplacementCalculator() {
                       Ganzoni Iron Deficit
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-3">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       <div className="rounded-lg bg-muted/30 p-3">
                         <p className="text-xs text-muted-foreground">Weight</p>
@@ -1130,7 +1126,7 @@ export default function IronReplacementCalculator() {
 
         {/* ── Reference Tab ──────────────────────────────── */}
         {activeTab === "reference" && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             <Card className="clinical-card">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
@@ -1235,7 +1231,7 @@ export default function IronReplacementCalculator() {
                   Ganzoni Formula Reference
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 <div className="rounded-lg bg-muted/30 border border-border p-4">
                   <p className="font-mono text-sm">
                     <span className="text-primary font-bold">Total iron deficit (mg)</span> = weight (kg) × [<span className="text-emerald-400">target Hb</span> − <span className="text-destructive">current Hb (g/dL)</span>] × 2.4 + <span className="text-warning">iron stores</span>
@@ -1338,20 +1334,14 @@ export default function IronReplacementCalculator() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        )}
-
-        {/* ── About Tab ──────────────────────────────────── */}
-        {activeTab === "about" && (
-          <div className="space-y-4">
             <Card className="clinical-card">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <Info className="h-4 w-4 text-primary" />
-                  About This Calculator
+                  About & References
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+              <CardContent className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>
                   This tool implements an evidence-based iron-replacement decision algorithm using ferritin, TSAT, TIBC, serum iron, hemoglobin, weight, and clinical context to provide a diagnosis and concrete replacement recommendation (oral vs IV, plus approximate dose).
                 </p>
