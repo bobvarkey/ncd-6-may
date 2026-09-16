@@ -974,6 +974,39 @@ export default function IronReplacementCalculator() {
                   </Button>
                 </div>
 
+                {/* Ganzoni Iron Deficit — revealed by the same Calculate action */}
+                <Card className="clinical-card border-2 border-primary/20">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Calculator className="h-4 w-4 text-primary" />
+                      Ganzoni Iron Deficit
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      <div className="rounded-lg bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">Weight</p>
+                        <p className="text-lg font-bold">{parseFloat(inputs.weight) || 0} kg</p>
+                      </div>
+                      <div className="rounded-lg bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">Actual Hb</p>
+                        <p className="text-lg font-bold">{parseFloat(inputs.hemoglobin) || 0} g/dL</p>
+                      </div>
+                      <div className="rounded-lg bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">Target Hb</p>
+                        <p className="text-lg font-bold">{calcResult.rec.targetHb} g/dL</p>
+                      </div>
+                      <div className="rounded-lg bg-primary/10 p-3 border border-primary/20">
+                        <p className="text-xs text-muted-foreground">Total Deficit</p>
+                        <p className="text-lg font-bold text-primary">{Math.round(calcResult.rec.deficit)} mg</p>
+                      </div>
+                    </div>
+                    <div className="rounded-lg border border-dashed border-border bg-card/50 p-3 text-center font-mono text-sm">
+                      {parseFloat(inputs.weight) || 0} × ({calcResult.rec.targetHb} − {parseFloat(inputs.hemoglobin) || 0}) × 2.4 + {getIronStores(parseFloat(inputs.weight))} = <span className="text-primary font-bold">{Math.round(calcResult.rec.deficit)} mg</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 {/* Diagnosis Card */}
                 <div className={cn("rounded-xl border-2 p-5", colors.bg, colors.border)}>
                   <div className="flex items-center justify-between mb-1">
@@ -1001,14 +1034,10 @@ export default function IronReplacementCalculator() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <div className="grid grid-cols-3 gap-4 mb-4">
                       <div className={cn("rounded-lg p-3", calcResult.rec.isIV ? "bg-sky-500/10" : "bg-emerald-500/10")}>
                         <p className="text-xs text-muted-foreground">Route</p>
                         <p className="text-lg font-bold">{calcResult.rec.route}</p>
-                      </div>
-                      <div className="rounded-lg bg-muted/30 p-3">
-                        <p className="text-xs text-muted-foreground">Ganzoni Deficit</p>
-                        <p className="text-lg font-bold">{calcResult.rec.isIV ? `${Math.round(calcResult.rec.deficit)} mg` : "N/A"}</p>
                       </div>
                       <div className="rounded-lg bg-muted/30 p-3">
                         <p className="text-xs text-muted-foreground">Target Hb</p>
