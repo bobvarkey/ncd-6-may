@@ -369,6 +369,8 @@ function IronParametersLive({
   const hb = parseClinicalValue(inputs.hemoglobin) ?? NaN;
   const weight = parseClinicalValue(inputs.weight) ?? NaN;
   const ferritin = parseClinicalValue(inputs.ferritin) ?? NaN;
+  const serumIron = parseClinicalValue(inputs.serumIron) ?? NaN;
+  const tibc = parseClinicalValue(inputs.tibc) ?? NaN;
 
   // TSAT — calculated from serum iron/TIBC or entered directly
   const tsatVal = (() => {
@@ -415,17 +417,25 @@ function IronParametersLive({
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <Activity className="h-3.5 w-3.5 text-primary" />
-          Iron Parameters (Live Summary)
+          Iron Studies + Ganzoni Deficit
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Parameter grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {/* Ferritin */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {/* Serum Iron */}
           <div className="rounded-lg bg-card border border-border/50 p-2.5">
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Ferritin</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Serum Iron</div>
             <div className="text-sm font-semibold text-foreground font-mono">
-              {!isNaN(ferritin) ? `${roundClinical(ferritin, 1)} ng/mL` : "—"}
+              {!isNaN(serumIron) ? `${roundClinical(serumIron, 1)} µg/dL` : "—"}
+            </div>
+          </div>
+
+          {/* TIBC */}
+          <div className="rounded-lg bg-card border border-border/50 p-2.5">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">TIBC</div>
+            <div className="text-sm font-semibold text-foreground font-mono">
+              {!isNaN(tibc) ? `${roundClinical(tibc, 1)} µg/dL` : "—"}
             </div>
           </div>
 
@@ -434,6 +444,17 @@ function IronParametersLive({
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">TSAT</div>
             <div className="text-sm font-semibold text-foreground font-mono">
               {tsatDisplay ?? "—"}
+            </div>
+            {!isNaN(serumIron) && !isNaN(tibc) && tibc > 0 && !inputs.tsat && (
+              <div className="text-[10px] text-muted-foreground mt-0.5">= SI/TIBC × 100</div>
+            )}
+          </div>
+
+          {/* Ferritin */}
+          <div className="rounded-lg bg-card border border-border/50 p-2.5">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Ferritin</div>
+            <div className="text-sm font-semibold text-foreground font-mono">
+              {!isNaN(ferritin) ? `${roundClinical(ferritin, 1)} ng/mL` : "—"}
             </div>
           </div>
 
@@ -445,7 +466,7 @@ function IronParametersLive({
             </div>
             {!isNaN(weight) && (
               <div className="text-[10px] text-muted-foreground mt-0.5">
-                {targetHb !== null ? `Weight ≥35kg → 14; <35kg → 13` : ""}
+                {targetHb !== null ? `≥35kg → 14; <35kg → 13` : ""}
               </div>
             )}
           </div>
@@ -458,9 +479,9 @@ function IronParametersLive({
             </div>
             <div className="text-[10px] text-muted-foreground mt-0.5">
               {ganzoniDeficit !== null && ganzoniDeficit <= 500
-                ? "→ 500 mg IV single dose"
+                ? "→ 500 mg IV"
                 : ganzoniDeficit !== null && ganzoniDeficit <= 1000
-                ? "→ 1000 mg IV (single/split)"
+                ? "→ 1000 mg IV"
                 : ganzoniDeficit !== null
                 ? `→ ~${Math.ceil(ganzoniDeficit / 100) * 100} mg IV`
                 : ""}
@@ -1016,6 +1037,47 @@ export default function IronReplacementCalculator() {
                           <p className="text-sm text-muted-foreground mt-1">{calcResult.rec.doseText}</p>
                         </div>
                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Standalone Ganzoni Deficit Card */}
+                <Card className="clinical-card border-2 border-primary/20">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Calculator className="h-4 w-4 text-primary" />
+                      Ganzoni Iron Deficit
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      <div className="rounded-lg bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">Weight</p>
+                        <p className="text-lg font-bold">{parseFloat(inputs.weight) || 0} kg</p>
+                      </div>
+                      <div className="rounded-lg bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">Actual Hb</p>
+                        <p className="text-lg font-bold">{parseFloat(inputs.hemoglobin) || 0} g/dL</p>
+                      </div>
+                      <div className="rounded-lg bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">Target Hb</p>
+                        <p className="text-lg font-bold">{calcResult.rec.targetHb} g/dL</p>
+                      </div>
+                      <div className="rounded-lg bg-primary/10 p-3 border border-primary/20">
+                        <p className="text-xs text-muted-foreground">Total Deficit</p>
+                        <p className="text-lg font-bold text-primary">{Math.round(calcResult.rec.deficit)} mg</p>
+                      </div>
+                    </div>
+                    <div className="rounded-lg border border-dashed border-border bg-card/50 p-3 text-center font-mono text-sm">
+                      {parseFloat(inputs.weight) || 0} × ({calcResult.rec.targetHb} − {parseFloat(inputs.hemoglobin) || 0}) × 2.4 + {getIronStores(parseFloat(inputs.weight))} = <span className="text-primary font-bold">{Math.round(calcResult.rec.deficit)} mg</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
+                      <p className="font-semibold mb-1">Formula reference:</p>
+                      <p>Total Iron Deficit (mg) = Weight (kg) × (Target Hb − Actual Hb) × 2.4 + Iron Stores (mg)</p>
+                      <ul className="list-disc list-inside mt-1 opacity-70">
+                        <li>Target Hb defaults to 14 g/dL (≥35 kg) or 13 g/dL (&lt;35 kg); pregnancy 11, CKD 12.</li>
+                        <li>Iron stores default to 500 mg (≥35 kg) or 15 mg/kg (&lt;35 kg).</li>
+                      </ul>
                     </div>
                   </CardContent>
                 </Card>
