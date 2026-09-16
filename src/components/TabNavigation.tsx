@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Home, Droplets, Heart, Droplet, Dna, Microscope, Weight, AirVent, Moon, Bug, UtensilsCrossed, Shield, Syringe, Zap, Bandage, Timer, Thermometer, Flame, Bone, Gem, Sun, Stethoscope, Filter, Search, User, Image, Pill, Activity, Eye, Calculator, BookOpen } from "lucide-react";
+import { Link, useLocation, useSearchParams, useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight, Home, Droplets, Heart, Droplet, Dna, Microscope, Weight, AirVent, Moon, Bug, UtensilsCrossed, Shield, Syringe, Zap, Bandage, Timer, Thermometer, Flame, Bone, Gem, Sun, Stethoscope, Filter, Search, User, Image, Pill, Activity, Eye, Calculator, BookOpen, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const bloodSubItems: { tab: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
@@ -246,7 +246,9 @@ const womenHealthItems: NavItem[] = [
 
 export function TabNavigation() {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
+  const isHome = currentPath === "/home" || currentPath === "/";
   const [collapsed, setCollapsed] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth < 768 : false
   );
@@ -278,165 +280,198 @@ export function TabNavigation() {
   }, [collapsed]);
 
   return (
-    <aside
-      className={cn(
-        "fixed top-12 left-0 z-50 h-[calc(100vh-3rem)] clay-sidebar flex flex-col transition-[width] duration-200 ease-out",
-        collapsed ? "w-11 md:w-14" : "w-56"
-      )}
-      aria-label="Primary"
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between h-12 px-2 border-b border-white/[0.06] shrink-0">
+    <>
+      {/* Sticky top nav: back + home + collapse toggle */}
+      <header className="fixed top-0 left-0 right-0 z-50 h-12 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b flex items-center justify-between px-2">
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            disabled={isHome}
+            className="inline-flex items-center justify-center h-9 px-2 rounded-md text-sm font-medium text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            <span className="hidden sm:inline">Back</span>
+          </button>
+          <Link
+            to="/home"
+            className="inline-flex items-center justify-center h-9 px-2 rounded-md text-sm font-medium text-foreground hover:bg-muted"
+            aria-label="Go home"
+          >
+            <Home className="h-4 w-4 mr-1" />
+            <span className="hidden sm:inline">Home</span>
+          </Link>
+        </div>
         <button
           type="button"
           onClick={() => setCollapsed((c) => !c)}
           className="inline-flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground shrink-0"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </button>
-      </div>
+      </header>
 
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-2">
-        <ul className="flex flex-col gap-1 px-2">
-          {navItems.map((item) => {
-            const isActive =
-              currentPath === item.path ||
-              (item.path !== "/home" && currentPath.startsWith(item.path + "/"));
-            const isBlood = item.path === "/anemia";
-            const isHtn = item.path === "/hypertension";
-            const isElectrolyte = item.path === "/electrolytes";
-            const isLiver = item.path === "/liver";
-            const showBloodSubs = isBlood && currentPath.startsWith("/anemia") && !collapsed;
-            const showHtnSubs = isHtn && currentPath.startsWith("/hypertension") && !collapsed;
-            const showElectrolyteSubs = isElectrolyte && (currentPath.startsWith("/electrolytes") || electrolyteSubItems.some(s => currentPath.startsWith(s.path))) && !collapsed;
-            const showLiverSubs = isLiver && currentPath.startsWith("/liver") && !collapsed;
-            const isObesity = item.path === "/obesity/bmi-calculator";
-            const showObesitySubs = isObesity && currentPath.startsWith("/obesity") && !collapsed;
-            return (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  title={item.label}
-                  onClick={handleNavClick}
-                  className={cn(
-                    "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
-                    collapsed && "justify-center",
-                    isActive
-                      ? "sunset-active"
-                      : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {item.emoji && <span className="text-base">{item.emoji}</span>}
-                  {!collapsed && <span className="truncate">{item.label}</span>}
-                </Link>
-                {showBloodSubs && <BloodSubNav />}
-                {showHtnSubs && <HtnSubNav />}
-                {showElectrolyteSubs && <ElectrolyteSubNav />}
-                {showLiverSubs && <LiverSubNav />}
-                {showObesitySubs && <ObesitySubNav />}
-              </li>
-            );
-          })}
-          {/* Women's Health section */}
-          <SectionLabel label="Women's Health" collapsed={collapsed} />
-          {womenHealthItems.map((item) => {
-            const isActive = currentPath.startsWith("/women-health") && currentPath === item.path;
-            return (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  title={item.label}
-                  onClick={handleNavClick}
-                  className={cn(
-                    "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
-                    collapsed && "justify-center",
-                    isActive
-                      ? "sunset-active"
-                      : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {item.emoji && <span className="text-base">{item.emoji}</span>}
-                  {!collapsed && <span className="truncate">{item.label}</span>}
-                </Link>
-              </li>
-            );
-          })}
-          {/* Images placed below Women's Health */}
-          <li>
-            <Link
-              to={imageItem.path}
-              title={imageItem.label}
-              onClick={handleNavClick}
-              className={cn(
-                "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
-                collapsed && "justify-center",
-                currentPath === imageItem.path
-                  ? "sunset-active"
-                  : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-              aria-current={currentPath === imageItem.path ? "page" : undefined}
-            >
-              {imageItem.emoji && <span className="text-base">{imageItem.emoji}</span>}
-              {!collapsed && <span className="truncate">{imageItem.label}</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              to={glossaryItem.path}
-              title={glossaryItem.label}
-              onClick={handleNavClick}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                currentPath === glossaryItem.path ? glossaryItem.active : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-              aria-current={currentPath === glossaryItem.path ? "page" : undefined}
-            >
-              <glossaryItem.icon className="h-4 w-4 shrink-0" />
-              {!collapsed && <span className="truncate">{glossaryItem.label}</span>}
-            </Link>
-          </li>
-          {/* Miscellaneous section */}
-          <SectionLabel label="Miscellaneous" collapsed={collapsed} />
-          {miscItems.map((item) => {
-            const isActive = currentPath === item.path;
-            return (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  title={item.label}
-                  onClick={handleNavClick}
-                  className={cn(
-                    "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
-                    collapsed && "justify-center",
-                    isActive
-                      ? "sunset-active"
-                      : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {item.emoji && <span className="text-base">{item.emoji}</span>}
-                  {!collapsed && <span className="truncate">{item.label}</span>}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-
-      {/* Floating back-to-home button */}
-      <Link
-        to="/home"
-        className="fixed bottom-6 right-6 z-[60] flex items-center justify-center h-12 w-12 rounded-full bg-sunset text-white shadow-lg hover:opacity-90 transition-all hover:scale-105 active:scale-95"
-        aria-label="Back to Home"
-        title="Back to Home"
+      <aside
+        className={cn(
+          "fixed top-12 left-0 z-40 h-[calc(100vh-3rem)] clay-sidebar flex flex-col transition-[width] duration-200 ease-out",
+          collapsed ? "w-11 md:w-14" : "w-56"
+        )}
+        aria-label="Primary"
       >
-        <Home className="h-5 w-5" />
-      </Link>
-    </aside>
+        <div className="flex items-center justify-end h-12 px-2 border-b border-white/[0.06] shrink-0">
+          <button
+            type="button"
+            onClick={() => setCollapsed((c) => !c)}
+            className="inline-flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground shrink-0"
+            aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </button>
+        </div>
+
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden py-2">
+          <ul className="flex flex-col gap-1 px-2">
+            {navItems.map((item) => {
+              const isActive =
+                currentPath === item.path ||
+                (item.path !== "/home" && currentPath.startsWith(item.path + "/"));
+              const isBlood = item.path === "/anemia";
+              const isHtn = item.path === "/hypertension";
+              const isElectrolyte = item.path === "/electrolytes";
+              const isLiver = item.path === "/liver";
+              const showBloodSubs = isBlood && currentPath.startsWith("/anemia") && !collapsed;
+              const showHtnSubs = isHtn && currentPath.startsWith("/hypertension") && !collapsed;
+              const showElectrolyteSubs = isElectrolyte && (currentPath.startsWith("/electrolytes") || electrolyteSubItems.some(s => currentPath.startsWith(s.path))) && !collapsed;
+              const showLiverSubs = isLiver && currentPath.startsWith("/liver") && !collapsed;
+              const isObesity = item.path === "/obesity/bmi-calculator";
+              const showObesitySubs = isObesity && currentPath.startsWith("/obesity") && !collapsed;
+              return (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    title={item.label}
+                    onClick={handleNavClick}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
+                      collapsed && "justify-center",
+                      isActive
+                        ? "sunset-active"
+                        : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {item.emoji && <span className="text-base">{item.emoji}</span>}
+                    {!collapsed && <span className="truncate">{item.label}</span>}
+                  </Link>
+                  {showBloodSubs && <BloodSubNav />}
+                  {showHtnSubs && <HtnSubNav />}
+                  {showElectrolyteSubs && <ElectrolyteSubNav />}
+                  {showLiverSubs && <LiverSubNav />}
+                  {showObesitySubs && <ObesitySubNav />}
+                </li>
+              );
+            })}
+            {/* Women's Health section */}
+            <SectionLabel label="Women's Health" collapsed={collapsed} />
+            {womenHealthItems.map((item) => {
+              const isActive = currentPath.startsWith("/women-health") && currentPath === item.path;
+              return (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    title={item.label}
+                    onClick={handleNavClick}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
+                      collapsed && "justify-center",
+                      isActive
+                        ? "sunset-active"
+                        : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {item.emoji && <span className="text-base">{item.emoji}</span>}
+                    {!collapsed && <span className="truncate">{item.label}</span>}
+                  </Link>
+                </li>
+              );
+            })}
+            {/* Images placed below Women's Health */}
+            <li>
+              <Link
+                to={imageItem.path}
+                title={imageItem.label}
+                onClick={handleNavClick}
+                className={cn(
+                  "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
+                  collapsed && "justify-center",
+                  currentPath === imageItem.path
+                    ? "sunset-active"
+                    : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+                aria-current={currentPath === imageItem.path ? "page" : undefined}
+              >
+                {imageItem.emoji && <span className="text-base">{imageItem.emoji}</span>}
+                {!collapsed && <span className="truncate">{imageItem.label}</span>}
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={glossaryItem.path}
+                title={glossaryItem.label}
+                onClick={handleNavClick}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                  currentPath === glossaryItem.path ? glossaryItem.active : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+                aria-current={currentPath === glossaryItem.path ? "page" : undefined}
+              >
+                <glossaryItem.icon className="h-4 w-4 shrink-0" />
+                {!collapsed && <span className="truncate">{glossaryItem.label}</span>}
+              </Link>
+            </li>
+            {/* Miscellaneous section */}
+            <SectionLabel label="Miscellaneous" collapsed={collapsed} />
+            {miscItems.map((item) => {
+              const isActive = currentPath === item.path;
+              return (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    title={item.label}
+                    onClick={handleNavClick}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
+                      collapsed && "justify-center",
+                      isActive
+                        ? "sunset-active"
+                        : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {item.emoji && <span className="text-base">{item.emoji}</span>}
+                    {!collapsed && <span className="truncate">{item.label}</span>}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Optional floating back-to-home button */}
+        <Link
+          to="/home"
+          className="fixed bottom-6 right-6 z-[60] flex items-center justify-center h-12 w-12 rounded-full bg-sunset text-white shadow-lg hover:opacity-90 transition-all hover:scale-105 active:scale-95 md:hidden"
+          aria-label="Back to Home"
+          title="Back to Home"
+        >
+          <Home className="h-5 w-5" />
+        </Link>
+      </aside>
+    </>
   );
-};
+}
 
 export default TabNavigation;

@@ -6,6 +6,9 @@ import {
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
   Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors, Brain, Bone,
+  Settings as SettingsIcon, LayoutDashboard, Pizza, Pill, CalendarDays, TrendingDown,
+  ShieldAlert, HeartPulse, Bean, BookOpen, TableProperties, BookMarked, TriangleAlert as WarningTriangle,
+  MessageSquare, Trash2, Images, Eye, ArrowLeft,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
@@ -285,6 +288,159 @@ function OCRUpload({ onValuesExtracted }: OCRUploadProps) {
         </CollapsibleContent>
       </Card>
     </Collapsible>
+  );
+}
+
+
+// ── Sidebar Navigation sections, moved to the homepage after sidebar removal ──
+
+type SidebarNavItem = { title: string; url: string; icon: React.ComponentType<{ className?: string }>; keywords?: string };
+type SidebarNavSection = { id: string; label: string; color: string; icon: React.ComponentType<{ className?: string }>; items: SidebarNavItem[] };
+
+const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
+  {
+    id: "overview",
+    label: "Overview",
+    color: "text-[#ff6b35]",
+    icon: LayoutDashboard,
+    items: [
+      { title: "Dashboard", url: "/", icon: LayoutDashboard },
+      { title: "Patient", url: "/patient", icon: User },
+      { title: "Summary", url: "/summary", icon: FileText },
+      { title: "Progress", url: "/progress", icon: TrendingDown },
+      { title: "Image Gallery", url: "/images", icon: Images, keywords: "figures diagrams algorithms" },
+      { title: "Settings", url: "/settings", icon: SettingsIcon, keywords: "offline mode theme dark light text size accessibility sync" },
+    ],
+  },
+  {
+    id: "diet",
+    label: "Diet & Lifestyle",
+    color: "text-[#f7931e]",
+    icon: UtensilsCrossed,
+    items: [
+      { title: "Foods", url: "/foods", icon: UtensilsCrossed },
+      { title: "Plate Method", url: "/plate", icon: Pizza },
+      { title: "Diet Plan", url: "/diet-plan", icon: CalendarDays },
+    ],
+  },
+  {
+    id: "medications",
+    label: "Medications & Insulin",
+    color: "text-[#e84393]",
+    icon: Pill,
+    items: [
+      { title: "Medications", url: "/medications", icon: Pill },
+      { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, keywords: "basal bolus" },
+      { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties },
+      { title: "Ganzoni Iron Deficit", url: "/anemia?tab=ganzoni", icon: Calculator },
+      { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, keywords: "semaglutide tirzepatide" },
+      { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
+      { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
+      { title: "GLP-1 Screening", url: "/glp1-screening", icon: Eye, keywords: "prescreen pre-screen eligibility contraindication naion optic nerve glaucoma retinopathy semaglutide tirzepatide" },
+      { title: "GLP-1 Pre-Initiation Screener", url: "/glp1-prescreen", icon: Syringe, keywords: "glp1 prescreening pre-initiation wizard mtc men2 pancreatitis scoff eating disorder dpp4 hypoglycaemia sarcopenia referral" },
+      { title: "Insulin Therapy", url: "/insulin-therapy", icon: BookMarked },
+    ],
+  },
+  {
+    id: "risk",
+    label: "Risk & Renal",
+    color: "text-[#6c5ce7]",
+    icon: ShieldAlert,
+    items: [
+      { title: "Prediabetes", url: "/prediabetes", icon: HeartPulse },
+      { title: "Hypo Risk Score", url: "/hypo-risk", icon: ShieldAlert },
+      { title: "Renal Dosing", url: "/renal-dosing", icon: FlaskConical, keywords: "egfr ckd mehran pci cin" },
+      { title: "CKD Guideline", url: "/ckd-guideline", icon: Bean, keywords: "kdigo" },
+    ],
+  },
+  {
+    id: "algorithms",
+    label: "Algorithms & Guides",
+    color: "text-[#ff6b35]",
+    icon: BookOpen,
+    items: [
+      { title: "Daily Management", url: "/daily-management", icon: BookOpen },
+      { title: "Type 1 DM", url: "/type1-management", icon: Activity },
+      { title: "T1D Pitfalls", url: "/type1-pitfalls", icon: WarningTriangle },
+      { title: "T2D Transition", url: "/type2-transition", icon: ArrowRight },
+      { title: "T1D Treatment Algorithm", url: "/type1-treatment-algorithm", icon: Brain },
+      { title: "T2D Treatment Algorithm", url: "/type2-treatment-algorithm", icon: Brain },
+      { title: "Hyperglycemic Emergency", url: "/hyperglycemic-emergency", icon: AlertTriangle, keywords: "dka hhs" },
+    ],
+  },
+  {
+    id: "perioperative",
+    label: "Perioperative & Acute",
+    color: "text-[#00b894]",
+    icon: Stethoscope,
+    items: [
+      { title: "Perioperative Tools", url: "/perioperative-calculators", icon: Stethoscope, keywords: "rcri asa mallampati caprini apgar med management" },
+      { title: "cSDH Risk", url: "/perioperative-calculators#csdh", icon: Brain, keywords: "chronic subdural hematoma neurosurgery neuro assessment" },
+      { title: "AKI / AKD Criteria", url: "/aki-criteria", icon: Activity, keywords: "acute kidney injury renal kdigo rifle akd" },
+    ],
+  },
+  {
+    id: "legal",
+    label: "Legal & Support",
+    color: "text-[#e84393]",
+    icon: Shield,
+    items: [
+      { title: "Feedback & Tips", url: "/feedback", icon: MessageSquare },
+      { title: "Disclaimer", url: "/disclaimer", icon: WarningTriangle },
+      { title: "Privacy Policy", url: "/privacy", icon: Shield },
+      { title: "Terms of Service", url: "/terms", icon: Scale },
+      { title: "Delete My Data", url: "/delete-account", icon: Trash2 },
+    ],
+  },
+];
+
+function SidebarNavSectionCard({ section }: { section: SidebarNavSection }) {
+  const SectionIcon = section.icon;
+  return (
+    <section>
+      <div className="flex items-center gap-2 mb-3">
+        <SectionIcon className={`h-4 w-4 ${section.color}`} />
+        <h2 className="text-sm font-semibold text-foreground/80 uppercase tracking-wider">{section.label}</h2>
+        <div className="flex-1 h-px bg-border/60" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+        {section.items.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link key={item.url + item.title} to={item.url} className="group block">
+              <div className="relative h-full p-3.5 rounded-xl border border-border/50 bg-card hover:border-transparent hover:shadow-md transition-all duration-200 overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-0.5 opacity-90" style={{ background: "linear-gradient(90deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%)" }} />
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white shadow-sm" style={{ background: "linear-gradient(135deg, #ff6b35 0%, #e84393 60%, #6c5ce7 100%)" }}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-medium text-foreground group-hover:text-[#e84393] transition-colors truncate">{item.title}</h3>
+                    {item.keywords && (
+                      <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{item.keywords}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function SidebarNavGrid() {
+  return (
+    <section aria-labelledby="full-navigation-heading" className="space-y-8">
+      <div className="flex items-center gap-2">
+        <LayoutDashboard className="h-5 w-5 text-primary" />
+        <h2 id="full-navigation-heading" className="text-lg font-semibold">Full App Navigation</h2>
+      </div>
+      {SIDEBAR_NAV_SECTIONS.map((section) => (
+        <SidebarNavSectionCard key={section.id} section={section} />
+      ))}
+    </section>
   );
 }
 
@@ -959,6 +1115,9 @@ export default function Home() {
             </DiseaseGroup>
           </TabsContent>
         </Tabs>
+
+        {/* Quick Actions */}
+        <SidebarNavGrid />
 
         {/* Quick Actions */}
         <section className="pt-4 border-t border-border">
