@@ -193,8 +193,8 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarContent className="pt-12">
+    <Sidebar collapsible="icon" className="bg-sidebar">
+      <SidebarContent className="pt-12 bg-sidebar text-sidebar-foreground">
         {!collapsed && (
           <div className="px-2 pt-2 pb-1 space-y-2">
             <div className="flex items-center gap-2">
@@ -263,8 +263,8 @@ export function AppSidebar() {
                           <NavLink
                             to={item.url}
                             end={item.url === "/"}
-                            className="hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                            activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                             aria-label={item.title}
                           >
                             <item.icon className={cn("mr-2 h-4 w-4", section.color)} aria-hidden="true" />
@@ -297,7 +297,7 @@ export function AppSidebar() {
                       />
                     </CollapsibleTrigger>
                   </SidebarGroupLabel>
-                  <CollapsibleContent>
+                  <CollapsibleContent className="overflow-hidden">
                     <SidebarGroupContent>
                       <SidebarMenu>
                         {section.items.map((item) => (
@@ -306,8 +306,8 @@ export function AppSidebar() {
                               <NavLink
                                 to={item.url}
                                 end={item.url === "/"}
-                                className="hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-safe:transition-colors"
-                                activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                                className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-safe:transition-colors"
+                                activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                                 aria-label={item.title}
                               >
                                 <item.icon className={cn("mr-2 h-4 w-4", section.color)} aria-hidden="true" />
