@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
@@ -8,11 +8,19 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { Copy, Printer, ChevronDown, Download, AlertTriangle, Droplets, Stethoscope, FlaskConical, Dna, HeartPulse, Syringe, Pill, Activity, RotateCcw, Info, Check } from "lucide-react";
+import { Copy, Printer, ChevronDown, Download, AlertTriangle, Droplets, Stethoscope, FlaskConical, Dna, HeartPulse, Syringe, Pill, Activity, RotateCcw, Info, Check, Calculator, ImageIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import {
+  defaultIronStores,
+  defaultTargetHb,
+  ganzoniDeficitMg,
+  ganzoniDoseRecommendation,
+} from "@/lib/ganzoni";
+import ZoomableImage from "@/components/ZoomableImage";
+import ironProfileStory from "@/assets/iron-profile-story.png.asset.json";
 
 // ── Types ──────────────────────────────────────────────────────
 type IronPattern = "normal" | "A_high_ferritin_normal_TS" | "B_high_TS_high_ferritin" | "C_high_TS_normal_ferritin" | null;
@@ -294,6 +302,8 @@ export default function IronStudiesCombined() {
   const [tibc, setTibc] = useState("");
   const [hemoglobin, setHemoglobin] = useState("");
   const [weight, setWeight] = useState("");
+  const [targetHbInput, setTargetHbInput] = useState("");
+  const [ironStoresInput, setIronStoresInput] = useState("");
   const [alt, setAlt] = useState("");
   const [ast, setAst] = useState("");
 
@@ -436,25 +446,33 @@ export default function IronStudiesCombined() {
     return { diagnosis: "Unable to Classify", detail: "Check input values.", label: "unknown" as DeficiencyType };
   }, [ferritin, tsVal, inflammation]);
 
-  // ── Ganzoni ──
+  const autoTargetHb = defaultTargetHb(n(weight) || 70, { pregnancy, ckd });
+  const autoStores = n(weight) ? defaultIronStores(n(weight)) : 500;
+
+  // ── Ganzoni (shared weight / Hb with iron parameters; target & stores default as the app already does) ──
   const ganzoni = useMemo(() => {
     const hb = n(hemoglobin);
     const w = n(weight);
     if (!hb || !w) return null;
-    const targetHb = pregnancy ? 11 : ckd ? 12 : w >= 35 ? 14 : 13;
-    const stores = w >= 35 ? 500 : 15 * w;
-    const deficit = Math.max(0, w * (targetHb - hb) * 2.4 + stores);
+    const parsedTarget = parseFloat(targetHbInput);
+    const parsedStores = parseFloat(ironStoresInput);
+    const targetHb = targetHbInput.trim() !== "" && !isNaN(parsedTarget)
+      ? parsedTarget
+      : defaultTargetHb(w, { pregnancy, ckd });
+    const stores = ironStoresInput.trim() !== "" && !isNaN(parsedStores)
+      ? parsedStores
+      : defaultIronStores(w);
+    const deficit = ganzoniDeficitMg({ weightKg: w, actualHb: hb, targetHb, ironStores: stores });
     const isIV = hb < 10 || (deficiencyDiagnosis?.label === "functional") || ckd || esa || oralIntolerance || rapidCorrection || ongoingBloodLoss;
-    let doseText: string;
-    if (isIV) {
-      if (deficit <= 500) doseText = `${Math.round(deficit)} mg → 500 mg IV iron (single dose)`;
-      else if (deficit <= 1000) doseText = `${Math.round(deficit)} mg → 1000 mg IV iron (single or split dose)`;
-      else doseText = `${Math.round(deficit)} mg → ${Math.ceil(deficit / 100) * 100} mg IV iron, split over 1–2 doses`;
-    } else {
-      doseText = "40–65 mg elemental iron PO daily or every other day (e.g., ferrous sulfate 325 mg = 65 mg elemental)";
-    }
+    const doseText = ganzoniDoseRecommendation(deficit, isIV);
     return { targetHb, stores, deficit, isIV, doseText };
-  }, [hemoglobin, weight, pregnancy, ckd, esa, oralIntolerance, rapidCorrection, ongoingBloodLoss, deficiencyDiagnosis]);
+  }, [hemoglobin, weight, targetHbInput, ironStoresInput, pregnancy, ckd, esa, oralIntolerance, rapidCorrection, ongoingBloodLoss, deficiencyDiagnosis]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash !== "#ganzoni") return;
+    document.getElementById("ganzoni")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   // ── Overload Red Flags ──
   const redFlags = useMemo(() => {
@@ -586,7 +604,8 @@ export default function IronStudiesCombined() {
   };
 
   const handleReset = () => {
-    setTs(""); setFerritin(""); setSerumIron(""); setTibc(""); setHemoglobin(""); setWeight(""); setAlt(""); setAst("");
+    setTs(""); setFerritin(""); setSerumIron(""); setTibc(""); setHemoglobin(""); setWeight("");
+    setTargetHbInput(""); setIronStoresInput(""); setAlt(""); setAst("");
     setSex(""); setAge("");
     setTransfusions(false); setThalassemia(false); setSickleCell(false); setChronicAnemia(false); setMds(false);
     setViralHepatitis(false); setAlcohol(false); setNafld(false); setMetabolicSyndrome(false); setCkd(false);
@@ -597,7 +616,7 @@ export default function IronStudiesCombined() {
     setFamilyHx(false); setHfeStatus("unknown"); setShowAdvanced(false);
   };
 
-  const hasData = n(ferritin) > 0 || tsVal > 0 || n(serumIron) > 0 || n(tibc) > 0;
+  const hasData = n(ferritin) > 0 || tsVal > 0 || n(serumIron) > 0 || n(tibc) > 0 || n(hemoglobin) > 0 || n(weight) > 0;
 
   return (
     <div className="space-y-4 max-w-6xl mx-auto">
@@ -606,10 +625,10 @@ export default function IronStudiesCombined() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Droplets className="h-5 w-5 text-primary" />
-            <CardTitle className="text-xl">Iron Studies — Comprehensive Assessment</CardTitle>
+            <CardTitle className="text-xl">Iron Calculator</CardTitle>
           </div>
           <CardDescription>
-            Unified iron evaluation: deficiency diagnosis + Ganzoni deficit calculation + iron overload algorithm + differential diagnosis. Enter any combination of labs to begin.
+            One flow for iron-parameter interpretation (ferritin, TSAT, serum iron, TIBC) and Ganzoni iron-deficit dosing. Shared labs — enter any combination to begin.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -676,6 +695,58 @@ export default function IronStudiesCombined() {
               ranges={RANGES.weight} 
               tooltip="Required for Ganzoni formula deficit calculation."
             />
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-1">
+                <Label htmlFor="targetHb" className="text-xs">Target Hb <span className="text-muted-foreground">(g/dL)</span></Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" className="text-muted-foreground hover:text-foreground">
+                        <Info className="h-3 w-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs max-w-xs">Adult ≥35 kg: 14 g/dL; &lt;35 kg: 13; pregnancy: 11; CKD: 12. Leave blank to use the automatic default.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Input
+                id="targetHb"
+                type="text"
+                inputMode="decimal"
+                className="h-9"
+                value={targetHbInput}
+                placeholder={`Auto ${autoTargetHb}`}
+                onChange={(e) => setTargetHbInput(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-1">
+                <Label htmlFor="ironStores" className="text-xs">Iron stores <span className="text-muted-foreground">(mg)</span></Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" className="text-muted-foreground hover:text-foreground">
+                        <Info className="h-3 w-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs max-w-xs">Default 500 mg for adults ≥35 kg, or 15 mg/kg if &lt;35 kg. Leave blank to use the automatic default.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Input
+                id="ironStores"
+                type="text"
+                inputMode="decimal"
+                className="h-9"
+                value={ironStoresInput}
+                placeholder={`Auto ${autoStores}`}
+                onChange={(e) => setIronStoresInput(e.target.value)}
+              />
+            </div>
             <RangeOrExact 
               id="alt" 
               label="ALT" 
@@ -874,7 +945,7 @@ export default function IronStudiesCombined() {
             <div>
               <CardTitle className="text-base">Computed Assessment</CardTitle>
               <CardDescription>
-                Iron deficiency diagnosis, Ganzoni deficit calculation, overload classification, and differential diagnosis
+                Iron-parameter interpretation and Ganzoni deficit from the same inputs
               </CardDescription>
             </div>
             <div className="flex gap-2">
@@ -887,19 +958,20 @@ export default function IronStudiesCombined() {
             {/* Summary cards */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs uppercase text-muted-foreground">Iron Pattern</div>
+                <div className="text-xs uppercase text-muted-foreground">Overload pattern</div>
                 <div className="text-sm font-semibold mt-1">
-                  {pattern === "normal" ? "Normal" :
+                  {pattern === "normal" ? "No overload pattern" :
                    pattern === "A_high_ferritin_normal_TS" ? "A — High ferritin, normal TS" :
                    pattern === "B_high_TS_high_ferritin" ? "B — High TS, high ferritin" :
                    pattern === "C_high_TS_normal_ferritin" ? "C — High TS, normal ferritin" : "—"}
                 </div>
               </div>
               <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs uppercase text-muted-foreground">TS</div>
+                <div className="text-xs uppercase text-muted-foreground">TSAT</div>
                 <div className="text-sm font-semibold mt-1">{computedTs ? `${computedTs}%` : ts ? `${ts}%` : "—"}</div>
                 <div className="mt-1">
                   {tsVal >= 45 ? <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Elevated (≥45%)</Badge> :
+                   tsVal > 0 && tsVal < 20 ? <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low (&lt;20%)</Badge> :
                    tsVal > 0 ? <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge> :
                    <Badge variant="outline">—</Badge>}
                 </div>
@@ -910,8 +982,10 @@ export default function IronStudiesCombined() {
                 <div className="mt-1">
                   {(() => {
                     const f = n(ferritin);
-                    const threshold = sex === "female" ? 200 : 300;
-                    if (f > threshold) return <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Elevated</Badge>;
+                    const overloadCut = sex === "female" ? 200 : 300;
+                    const lowCut = inflammation ? 100 : 30;
+                    if (f > overloadCut) return <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Elevated</Badge>;
+                    if (f > 0 && f < lowCut) return <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low</Badge>;
                     if (f > 0) return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge>;
                     return <Badge variant="outline">—</Badge>;
                   })()}
@@ -930,7 +1004,7 @@ export default function IronStudiesCombined() {
             </div>
 
             {/* Interpretation Summary */}
-            {hasData && (
+            {(deficiencyDiagnosis || pattern) && (
               <div className={cn(
                 "p-3 rounded-lg border",
                 deficiencyDiagnosis?.label === "none" || pattern === "normal"
@@ -939,7 +1013,7 @@ export default function IronStudiesCombined() {
               )}>
                 <div className="flex items-center gap-2 mb-2">
                   <Stethoscope className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-bold">Interpretation Summary</span>
+                  <span className="text-sm font-bold">Iron parameters interpretation</span>
                 </div>
                 <div className="text-sm">
                   {deficiencyDiagnosis && deficiencyDiagnosis.label !== "none" && deficiencyDiagnosis.label !== "unknown" ? (
@@ -966,85 +1040,73 @@ export default function IronStudiesCombined() {
               </div>
             )}
 
-            {/* Deficiency + Ganzoni */}
+            {/* Iron parameters diagnosis */}
             {deficiencyDiagnosis && (
               <div className="p-3 rounded-lg border bg-card/60">
                 <div className="text-xs mb-2 flex items-center gap-2">
                   <Pill className="h-3 w-3 text-primary" />
                   <span className="font-bold">Iron Deficiency Assessment</span>
                 </div>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  <div>
-                    <div className="text-xs text-muted-foreground">Diagnosis</div>
-                    <div className="text-sm font-semibold mt-0.5">{deficiencyDiagnosis.diagnosis}</div>
-                    <div className="text-[10px] text-muted-foreground mt-0.5">{deficiencyDiagnosis.detail}</div>
-                  </div>
-                  {ganzoni && (
-                    <>
-                      <div>
-                        <div className="text-xs text-muted-foreground">Route</div>
-                        <div className="text-sm font-semibold mt-0.5">{ganzoni.isIV ? "IV iron" : "Oral iron"}</div>
-                      </div>
-                      <div className="lg:col-span-2">
-                        <div className="text-xs text-muted-foreground flex items-center justify-between">
-                          <span className="flex items-center gap-1">
-                            Ganzoni Deficit Calculation
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p className="text-[10px] leading-tight max-w-[200px]">
-                                    Total Iron Deficit (mg) = [Weight (kg) × (Target Hb - Actual Hb) × 2.4] + Iron Stores (mg)
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </span>
-                          <span className="text-primary font-bold">{Math.round(ganzoni.deficit)} mg total</span>
-                        </div>
-                        
-                        <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 bg-muted/30 p-2 rounded border border-dashed">
-                          <div className="text-center">
-                            <div className="text-[10px] text-muted-foreground uppercase">Weight</div>
-                            <div className="text-xs font-mono">{weight} kg</div>
-                          </div>
-                          <div className="text-center border-l">
-                            <div className="text-[10px] text-muted-foreground uppercase">Target Hb</div>
-                            <div className="text-xs font-mono">{ganzoni.targetHb} g/dL</div>
-                          </div>
-                          <div className="text-center border-l">
-                            <div className="text-[10px] text-muted-foreground uppercase">Actual Hb</div>
-                            <div className="text-xs font-mono">{hemoglobin} g/dL</div>
-                          </div>
-                          <div className="text-center border-l">
-                            <div className="text-[10px] text-muted-foreground uppercase">Stores</div>
-                            <div className="text-xs font-mono">{ganzoni.stores} mg</div>
-                          </div>
-                        </div>
-
-                        <div className="mt-2 text-[10px] font-mono text-muted-foreground bg-black/5 dark:bg-white/5 p-1.5 rounded text-center">
-                          {weight} × ({ganzoni.targetHb} - {hemoglobin}) × 2.4 + {ganzoni.stores} = {Math.round(ganzoni.deficit)} mg
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-xs text-muted-foreground">Dose Recommendation</div>
-                        <div className="text-xs font-semibold mt-1 p-2 rounded bg-primary/10 border border-primary/20 text-primary">
-                          {ganzoni.doseText}
-                        </div>
-                      </div>
-
-                    </>
-                  )}
+                <div>
+                  <div className="text-xs text-muted-foreground">Diagnosis</div>
+                  <div className="text-sm font-semibold mt-0.5">{deficiencyDiagnosis.diagnosis}</div>
+                  <div className="text-[10px] text-muted-foreground mt-0.5">{deficiencyDiagnosis.detail}</div>
                 </div>
                 {deficiencyNotes.length > 0 && (
                   <div className="mt-2 text-xs text-muted-foreground space-y-0.5">
-                    {deficiencyNotes.map((n, i) => <p key={i}>• {n}</p>)}
+                    {deficiencyNotes.map((note, i) => <p key={i}>• {note}</p>)}
                   </div>
                 )}
               </div>
             )}
+
+            {/* Ganzoni — first-class section, independent of ferritin/TSAT */}
+            <div id="ganzoni" className="scroll-mt-24 p-4 rounded-xl border-2 border-primary/20 bg-primary/5">
+              <div className="flex items-center gap-2 mb-3">
+                <Calculator className="h-4 w-4 text-primary" />
+                <span className="text-sm font-bold">Ganzoni iron deficit</span>
+              </div>
+              {ganzoni ? (
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-lg font-bold">Deficit: {Math.round(ganzoni.deficit)} mg</span>
+                    <Badge variant="outline">{ganzoni.isIV ? "IV iron" : "Oral iron"}</Badge>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-background/60 p-2 rounded border border-dashed">
+                    <div className="text-center">
+                      <div className="text-[10px] text-muted-foreground uppercase">Weight</div>
+                      <div className="text-xs font-mono">{weight} kg</div>
+                    </div>
+                    <div className="text-center sm:border-l">
+                      <div className="text-[10px] text-muted-foreground uppercase">Target Hb</div>
+                      <div className="text-xs font-mono">{ganzoni.targetHb} g/dL</div>
+                    </div>
+                    <div className="text-center sm:border-l">
+                      <div className="text-[10px] text-muted-foreground uppercase">Actual Hb</div>
+                      <div className="text-xs font-mono">{hemoglobin} g/dL</div>
+                    </div>
+                    <div className="text-center sm:border-l">
+                      <div className="text-[10px] text-muted-foreground uppercase">Stores</div>
+                      <div className="text-xs font-mono">{ganzoni.stores} mg</div>
+                    </div>
+                  </div>
+                  <div className="text-xs font-mono text-center bg-background/50 p-2 rounded border border-dashed">
+                    {weight} × ({ganzoni.targetHb} − {hemoglobin}) × 2.4 + {ganzoni.stores} = <span className="text-primary font-bold">{Math.round(ganzoni.deficit)} mg</span>
+                  </div>
+                  <div className="text-xs font-semibold p-2 rounded bg-primary/10 border border-primary/20 text-primary">
+                    {ganzoni.doseText}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    Total iron deficit (mg) = weight (kg) × (target Hb − actual Hb) × 2.4 + iron stores.
+                    Target Hb defaults: pregnancy 11, CKD 12, ≥35 kg 14, else 13. Stores: 500 mg if ≥35 kg, else 15 mg/kg.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Enter hemoglobin and weight (shared with iron parameters above) to calculate the Ganzoni deficit. Target Hb and iron stores default automatically and can be overridden.
+                </p>
+              )}
+            </div>
 
             {/* Differential Diagnosis */}
             {n(ferritin) > 0 && tsVal > 0 && (
@@ -1090,6 +1152,19 @@ export default function IronStudiesCombined() {
               <p className="mt-2 text-[10px] text-muted-foreground/70">
                 Sources: AASLD, EASL, BC Guidelines, Mayo Clinic Laboratories, NCBI, ESGAR/SAR, ACG Clinical Guideline 2023, KDIGO
               </p>
+              <div className="mt-3 rounded-lg border p-3 space-y-2 bg-background/40">
+                <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                  <ImageIcon className="h-3.5 w-3.5 text-primary" />
+                  Iron profile patterns — visual mnemonic
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  IDA vs anaemia of chronic disease vs sideroblastic anaemia: serum iron, TSAT, ferritin and TIBC patterns.
+                </p>
+                <ZoomableImage
+                  src={ironProfileStory.url}
+                  alt="Iron profile patterns comparing iron deficiency anaemia, anaemia of chronic disease and sideroblastic anaemia across serum iron, transferrin saturation, ferritin and TIBC"
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
