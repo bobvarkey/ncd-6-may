@@ -229,7 +229,7 @@ export default function KDIGOStagingCalculator() {
       lines.push(`Indexed eGFR: ${gfr} mL/min/1.73m² (${gStage.stage}: ${gStage.label})`);
     }
     if (bsa !== null && bsaAdjustedGfr !== null) {
-      lines.push(`BSA-adjusted eGFR: ${bsaAdjustedGfr} mL/min (Mosteller BSA ${bsa} m²)`);
+      lines.push(`BSA-adjusted eGFR: ${bsaAdjustedGfr} mL/min (Mosteller BSA ${bsa.toFixed(2)} m²)`);
     }
     if (uacrMgG !== null && aStage) {
       lines.push(`UACR: ${roundClinical(uacrMgG, 0)} mg/g (${aStage.stage}: ${aStage.label})`);
@@ -407,7 +407,7 @@ export default function KDIGOStagingCalculator() {
                         {bsaAdjustedGfr} <span className="text-sm font-normal text-muted-foreground">mL/min</span>
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Mosteller BSA {bsa} m² · indexed × (BSA / 1.73). KDIGO staging uses the indexed value.
+                        Mosteller BSA {bsa.toFixed(2)} m² · indexed × (BSA / 1.73). KDIGO staging uses the indexed value.
                       </p>
                     </div>
                   )}

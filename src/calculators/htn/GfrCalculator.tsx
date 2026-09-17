@@ -502,7 +502,7 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
                       {bsaAdjustedResult} <span className="text-sm font-normal text-muted-foreground">mL/min</span>
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Mosteller BSA {bsa} m² · indexed × (BSA / 1.73). Staging below uses the indexed value.
+                      Mosteller BSA {bsa.toFixed(2)} m² · indexed × (BSA / 1.73). Staging below uses the indexed value.
                     </p>
                   </div>
                 )}
