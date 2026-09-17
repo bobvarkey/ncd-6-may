@@ -21,7 +21,6 @@ const FORMER_SIDEBAR_PATHS = [
   "/anemia?tab=thrombocytopenia",
   "/anemia?tab=bleeding-clotting",
   "/anemia?tab=iron",
-  "/anemia?tab=ganzoni",
   "/anemia?tab=esr",
   "/anemia?tab=erythrocytosis",
   "/anemia?tab=anticoagulants",
@@ -70,5 +69,18 @@ describe("homepage primary navigation", () => {
       }
     }
     expect(tones.size).toBeGreaterThanOrEqual(8);
+  });
+
+  it("publishes a single iron calculator destination", () => {
+    const ironish = published.filter(
+      (path) => /iron|ganzoni/i.test(path) || /iron|ganzoni/i.test(
+        PRIMARY_NAV_SECTIONS.flatMap((s) => s.items).find((i) => i.path === path)?.label ?? "",
+      ),
+    );
+    expect(ironish).toEqual(["/anemia?tab=iron"]);
+    const labels = PRIMARY_NAV_SECTIONS.flatMap((s) => s.items)
+      .filter((i) => /iron|ganzoni/i.test(i.label) || /iron|ganzoni/i.test(i.path))
+      .map((i) => i.label);
+    expect(labels).toEqual(["Iron Calculator"]);
   });
 });

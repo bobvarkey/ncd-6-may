@@ -50,7 +50,7 @@ const SECTIONS: Section[] = [
       { title: "Medications", url: "/medications", icon: Pill },
       { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, keywords: "basal bolus" },
       { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties },
-      { title: "Ganzoni Iron Deficit", url: "/anemia?tab=ganzoni", icon: Calculator },
+      { title: "Iron Calculator", url: "/anemia?tab=iron", icon: Syringe, keywords: "ferritin tsat ganzoni iron deficit" },
       { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, keywords: "semaglutide tirzepatide" },
       { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
       { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },

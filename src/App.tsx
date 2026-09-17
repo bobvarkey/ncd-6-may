@@ -137,7 +137,6 @@ const GLP1ObesityAlgorithmCalc = lazyWithModuleRetry(() => import("@/calculators
 const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1AssessmentCalculator"));
 const OpticNerveAssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/OpticNerveAssessment"));
 const GLP1ScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1Screener"));
-const IronReplacementCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/IronReplacementCalculator"));
 const ThyroidCalculator = lazyWithModuleRetry(() => import("@/calculators/thyroid/ThyroidCalculator"));
 const DrugCalculator = lazyWithModuleRetry(() => import("@/pages/DrugCalculator"));
 const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
@@ -378,7 +377,7 @@ const App = () => {
           <Route path="/drug-schedule" element={withNav(<DrugSchedule />, "Drug Schedule")} />
           <Route path="/drug-calculator" element={withNav(<DrugCalculator />, "Drug Calculator")} />
           <Route path="/diet-plan" element={withNav(<DietPlanPage />, "Diet Plan")} />
-          <Route path="/iron-calculator" element={withNav(<IronReplacementCalculator />, "Iron Calculator")} />
+          <Route path="/iron-calculator" element={<Navigate to="/anemia?tab=iron" replace />} />
           <Route path="/thyroid" element={withNav(<ThyroidCalculator />, "Thyroid")} />
           <Route path="/fatigue" element={withNav(<Fatigue />, "Fatigue")} />
           <Route path="/vitamin-d" element={withNav(<VitaminD />, "Vitamin D")} />

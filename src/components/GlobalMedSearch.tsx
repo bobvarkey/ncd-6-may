@@ -139,9 +139,8 @@ const CLINICAL_TOPICS = [
   { id: "anemia-chronic-disease", label: "Anemia of Chronic Disease", path: "/anemia", keywords: ["anemia chronic disease", "anemia inflammation", "normocytic anemia"] },
   { id: "thrombocytopenia", label: "Thrombocytopenia", path: "/anemia?tab=thrombocytopenia", keywords: ["thrombocytopenia", "low platelets", "itp", "platelet"] },
   { id: "bleeding-clotting", label: "Bleeding / Clotting Disorders", path: "/anemia?tab=bleeding-clotting", keywords: ["bleeding", "clotting", "coagulation", "hemophilia", "dvt"] },
-  { id: "iron-parameters", label: "Iron Parameters", path: "/anemia?tab=iron", keywords: ["iron", "ferritin", "transferrin", "tsat", "iron studies"] },
+  { id: "iron-calculator", label: "Iron Calculator", path: "/anemia?tab=iron", keywords: ["iron", "ferritin", "transferrin", "tsat", "iron studies", "ganzoni", "iron deficit", "iron replacement", "iron dosing", "iron infusion", "ferric"] },
   { id: "esr", label: "ESR (Erythrocyte Sedimentation Rate)", path: "/anemia?tab=esr", keywords: ["esr", "sed rate", "inflammation marker"] },
-  { id: "iron-replacement", label: "Iron Replacement Calculator", path: "/iron-calculator", keywords: ["iron replacement", "iron dosing", "iron infusion", "ferric"] },
 
   // ── Thyroid ──
   { id: "thyroid", label: "Thyroid Calculator", path: "/thyroid", keywords: ["thyroid", "tsh", "t4", "t3", "thyroid function"] },

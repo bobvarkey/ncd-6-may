@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import type { CBCValues, Sex, EvaluationResult } from './anemia/types';
 import { evaluate } from './anemia/utils/anemia';
 import CBCForm from './anemia/components/CBCForm';
@@ -9,8 +9,6 @@ import CausesPanel from './anemia/components/CausesPanel';
 import ReferenceRanges from './anemia/components/ReferenceRanges';
 import IronTherapy from './anemia/components/IronTherapy';
 import IronStudiesCombined from './anemia/components/IronStudiesCombined';
-import IronInterpretation from './anemia/components/IronInterpretation';
-import GanzoniDeficitCalculator from '@/calculators/iron/GanzoniDeficitCalculator';
 
 import ThrombocytopeniaEvaluator from './anemia/components/ThrombocytopeniaEvaluator';
 import BleedingClottingEvaluator from './anemia/components/BleedingClottingEvaluator';
@@ -22,14 +20,13 @@ import TestSuggestionAlgorithm from './anemia/components/TestSuggestionAlgorithm
 
 const EMPTY_CBC: CBCValues = { hgb: '', rbc: '', mcv: '', mch: '', mchc: '', rdw: '', hct: '' };
 
-type Tab = 'anemia' | 'thrombocytopenia' | 'bleeding-clotting' | 'iron' | 'ganzoni' | 'esr' | 'anticoagulants' | 'erythrocytosis';
+type Tab = 'anemia' | 'thrombocytopenia' | 'bleeding-clotting' | 'iron' | 'esr' | 'anticoagulants' | 'erythrocytosis';
 
 const BLOOD_TABS: { tab: Tab; label: string }[] = [
   { tab: 'anemia', label: 'Anemia Evaluator' },
   { tab: 'thrombocytopenia', label: 'Thrombocytopenia' },
   { tab: 'bleeding-clotting', label: 'Bleeding / Clotting' },
-  { tab: 'iron', label: 'Iron Parameters' },
-  { tab: 'ganzoni', label: 'Ganzoni Deficit' },
+  { tab: 'iron', label: 'Iron Calculator' },
   { tab: 'esr', label: 'ESR' },
   { tab: 'erythrocytosis', label: 'Erythrocytosis / PV' },
   { tab: 'anticoagulants', label: 'Anticoagulants' },
@@ -38,7 +35,7 @@ const BLOOD_TABS: { tab: Tab; label: string }[] = [
 export default function Anemia() {
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs: Tab[] = ['anemia', 'thrombocytopenia', 'bleeding-clotting', 'iron', 'ganzoni', 'esr', 'anticoagulants', 'erythrocytosis'];
+  const validTabs: Tab[] = ['anemia', 'thrombocytopenia', 'bleeding-clotting', 'iron', 'esr', 'anticoagulants', 'erythrocytosis'];
   const activeTab: Tab = validTabs.includes(tabParam as Tab) ? (tabParam as Tab) : 'anemia';
   const [cbc, setCbc] = useState<CBCValues>(() => {
     try { const s = localStorage.getItem('ncd_anemia_cbc'); return s ? JSON.parse(s) : EMPTY_CBC; } catch { return EMPTY_CBC; }
@@ -77,6 +74,10 @@ export default function Anemia() {
 
   const hgbNum = parseFloat(cbc.hgb);
   const mcvNum = parseFloat(cbc.mcv);
+
+  if (tabParam === 'ganzoni') {
+    return <Navigate to="/anemia?tab=iron#ganzoni" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -282,15 +283,12 @@ export default function Anemia() {
           </>
         ) : activeTab === 'iron' ? (
           <>
-            <IronInterpretation />
             <IronStudiesCombined />
             <IronTherapy />
           </>
 
         ) : activeTab === 'bleeding-clotting' ? (
           <BleedingClottingEvaluator />
-        ) : activeTab === 'ganzoni' ? (
-          <GanzoniDeficitCalculator />
         ) : activeTab === 'esr' ? (
 
           <ESRInterpretation />

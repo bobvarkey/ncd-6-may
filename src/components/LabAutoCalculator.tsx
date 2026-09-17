@@ -74,13 +74,6 @@ const PAGE_LABS: Record<string, { title: string; fields: LabField[] }> = {
       { key: "hgb", label: "Hemoglobin", unit: "g/dL", refLow: 13, note: "Anemia: <13 (M), <12 (F)" },
       { key: "mcv", label: "MCV", unit: "fL", refLow: 80, refHigh: 100, note: "Microcytic <80, macrocytic >100" },
       { key: "ferritin", label: "Ferritin", unit: "ng/mL", refLow: 30, note: "<30 = iron deficiency" },
-      { key: "tsat", label: "TSAT", unit: "%", refLow: 20, note: "<20% = iron deficiency" },
-    ],
-  },
-  "/iron-calculator": {
-    title: "Iron Studies",
-    fields: [
-      { key: "ferritin", label: "Ferritin", unit: "ng/mL", refLow: 30 },
       { key: "serumIron", label: "Serum Iron", unit: "µg/dL", refLow: 60, refHigh: 170 },
       { key: "tibc", label: "TIBC", unit: "µg/dL", refLow: 250, refHigh: 450 },
       {

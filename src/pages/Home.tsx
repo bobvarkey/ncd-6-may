@@ -336,7 +336,7 @@ const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
       { title: "Medications", url: "/medications", icon: Pill, tone: "fuchsia" },
       { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, tone: "rose", keywords: "basal bolus" },
       { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties, tone: "orange" },
-      { title: "Ganzoni Iron Deficit", url: "/anemia?tab=ganzoni", icon: Calculator, tone: "teal" },
+      { title: "Iron Calculator", url: "/anemia?tab=iron", icon: Syringe, tone: "amber", keywords: "ferritin tsat ganzoni iron deficit" },
       { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, tone: "indigo", keywords: "semaglutide tirzepatide" },
       { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, tone: "violet", keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
       { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, tone: "sky", keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
