@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { Copy, Printer, ChevronDown, Download, AlertTriangle, Droplets, Stethoscope, FlaskConical, Dna, HeartPulse, Syringe, Pill, Activity, RotateCcw, Info, Check, Calculator, ImageIcon } from "lucide-react";
+import { Copy, Printer, ChevronDown, Download, AlertTriangle, Droplets, Stethoscope, FlaskConical, Dna, HeartPulse, Syringe, Activity, RotateCcw, Info, Check, Calculator, ImageIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "@/hooks/use-toast";
@@ -204,6 +204,53 @@ function RangeOrExact({
   );
 }
 
+function ReadMore({ summary, children }: { summary: string; children: React.ReactNode }) {
+  return (
+    <details className="group text-xs text-muted-foreground">
+      <summary className="cursor-pointer list-none flex items-center gap-1 text-primary hover:underline font-medium select-none">
+        <ChevronDown className="h-3 w-3 shrink-0 transition-transform group-open:rotate-180" />
+        {summary}
+      </summary>
+      <div className="mt-2 space-y-1.5 leading-relaxed">{children}</div>
+    </details>
+  );
+}
+
+function OptionalBlock({
+  title,
+  icon,
+  hint,
+  children,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Collapsible>
+      <Card>
+        <CardHeader className="py-3">
+          <CollapsibleTrigger asChild>
+            <button type="button" className="flex w-full items-center justify-between gap-2 text-left">
+              <CardTitle className="text-sm flex items-center gap-2">
+                {icon}
+                {title}
+              </CardTitle>
+              <span className="flex items-center gap-2 shrink-0">
+                {hint && <span className="text-[10px] font-normal text-muted-foreground">{hint}</span>}
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              </span>
+            </button>
+          </CollapsibleTrigger>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent>{children}</CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
 
 // ── Differential Diagnosis Table ───────────────────────────────
 function DifferentialDiagnosisTable({ ferritin, tsVal, sex, inflammation, ckd, pregnancy }: {
@@ -617,19 +664,24 @@ export default function IronStudiesCombined() {
   };
 
   const hasData = n(ferritin) > 0 || tsVal > 0 || n(serumIron) > 0 || n(tibc) > 0 || n(hemoglobin) > 0 || n(weight) > 0;
+  const hasIronParams = n(ferritin) > 0 || tsVal > 0 || n(serumIron) > 0 || n(tibc) > 0;
+  const contextFlagCount = [
+    transfusions, thalassemia, sickleCell, chronicAnemia, mds, viralHepatitis, alcohol, nafld,
+    metabolicSyndrome, ckd, inflammation, hemolysis, pct, pregnancy, esa, chf, ibd, rls,
+    bariatric, oralIntolerance, rapidCorrection, ongoingBloodLoss, symptomsFatigue,
+    symptomsArthralgia, symptomsDiabetes, symptomsCardiac, symptomsHypogonadism, familyHx,
+  ].filter(Boolean).length;
 
   return (
     <div className="space-y-4 max-w-6xl mx-auto">
       {/* Header */}
       <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
-        <CardHeader>
+        <CardHeader className="py-3">
           <div className="flex items-center gap-2">
             <Droplets className="h-5 w-5 text-primary" />
             <CardTitle className="text-xl">Iron Calculator</CardTitle>
           </div>
-          <CardDescription>
-            One flow for iron-parameter interpretation (ferritin, TSAT, serum iron, TIBC) and Ganzoni iron-deficit dosing. Shared labs — enter any combination to begin.
-          </CardDescription>
+          <CardDescription>Ferritin · TSAT · Ganzoni deficit</CardDescription>
         </CardHeader>
       </Card>
 
@@ -796,9 +848,7 @@ export default function IronStudiesCombined() {
               </div>
             </div>
 
-            {/* Overload symptoms */}
-            <div className="pt-2 border-t space-y-2">
-              <div className="text-xs font-semibold text-muted-foreground">Symptoms (iron overload)</div>
+            <ReadMore summary="Overload symptoms & family history">
               <div className="grid grid-cols-2 gap-x-3 gap-y-2">
                 {[
                   ["fatigue","Fatigue / malaise", symptomsFatigue, setSymptomsFatigue],
@@ -813,85 +863,87 @@ export default function IronStudiesCombined() {
                   </label>
                 ))}
               </div>
-            </div>
-
-            {/* Family history */}
-            <div className="pt-2 border-t">
-              <label className="flex items-center gap-2 text-xs cursor-pointer">
+              <label className="flex items-center gap-2 text-xs cursor-pointer pt-2">
                 <Checkbox checked={familyHx} onCheckedChange={(v) => setFamilyHx(!!v)} />
-                <span>Family history of hemochromatosis / iron overload</span>
+                <span>Family history of hemochromatosis</span>
               </label>
+            </ReadMore>
+          </CardContent>
+        </Card>
+      </div>
+
+      <OptionalBlock
+        title="Clinical context"
+        icon={<Stethoscope className="h-4 w-4 text-primary" />}
+        hint={contextFlagCount > 0 ? `${contextFlagCount} selected` : "Pregnancy, CKD, inflammation…"}
+      >
+        <div className="grid lg:grid-cols-3 gap-4">
+          <div>
+            <div className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+              <HeartPulse className="h-3.5 w-3.5 text-primary" /> Secondary overload
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Risk factor cards */}
-      <div className="grid lg:grid-cols-3 gap-4">
-        {/* Secondary overload */}
-        <Card>
-          <CardHeader><CardTitle className="text-sm flex items-center gap-2"><HeartPulse className="h-4 w-4 text-primary" />Secondary Overload</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-x-3 gap-y-2">
-            {[
-              ["transfusions","Chronic transfusions", transfusions, setTransfusions],
-              ["thal","Thalassemia", thalassemia, setThalassemia],
-              ["scd","Sickle cell disease", sickleCell, setSickleCell],
-              ["anemia","Other chronic anemia", chronicAnemia, setChronicAnemia],
-              ["mds","MDS / sideroblastic anemia", mds, setMds],
-              ["hemolysis","Chronic hemolysis", hemolysis, setHemolysis],
-              ["pct","Porphyria cutanea tarda", pct, setPct],
-            ].map(([id, label, val, setter]: any) => (
-              <label key={id} className="flex items-center gap-2 text-xs cursor-pointer">
-                <Checkbox checked={val} onCheckedChange={(v) => setter(!!v)} />
-                <span>{label}</span>
-              </label>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Reactive hyperferritinemia */}
-        <Card>
-          <CardHeader><CardTitle className="text-sm flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-warning" />Reactive / Inflammatory</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-x-3 gap-y-2">
-            {[
-              ["nafld","NAFLD / MASLD", nafld, setNafld],
-              ["alcohol","Alcohol use", alcohol, setAlcohol],
-              ["metsyn","Metabolic syndrome", metabolicSyndrome, setMetabolicSyndrome],
-              ["ckd","CKD", ckd, setCkd],
-              ["inflam","Inflammation / infection", inflammation, setInflammation],
-              ["viralhep","Viral hepatitis", viralHepatitis, setViralHepatitis],
-            ].map(([id, label, val, setter]: any) => (
-              <label key={id} className="flex items-center gap-2 text-xs cursor-pointer">
-                <Checkbox checked={val} onCheckedChange={(v) => setter(!!v)} />
-                <span>{label}</span>
-              </label>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Deficiency context */}
-        <Card>
-          <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Syringe className="h-4 w-4 text-primary" />Deficiency Context</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-x-3 gap-y-2">
-            {[
-              ["preg","Pregnancy", pregnancy, setPregnancy],
-              ["esa","On ESA therapy", esa, setEsa],
-              ["chf","Chronic heart failure", chf, setChf],
-              ["ibd","IBD / GI inflammation", ibd, setIbd],
-              ["rls","Restless legs syndrome", rls, setRls],
-              ["bariatric","Post-bariatric surgery", bariatric, setBariatric],
-              ["oralintol","Oral iron intolerant", oralIntolerance, setOralIntolerance],
-              ["rapid","Rapid correction needed", rapidCorrection, setRapidCorrection],
-              ["bloodloss","Ongoing blood loss", ongoingBloodLoss, setOngoingBloodLoss],
-            ].map(([id, label, val, setter]: any) => (
-              <label key={id} className="flex items-center gap-2 text-xs cursor-pointer">
-                <Checkbox checked={val} onCheckedChange={(v) => setter(!!v)} />
-                <span>{label}</span>
-              </label>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+              {[
+                ["transfusions","Chronic transfusions", transfusions, setTransfusions],
+                ["thal","Thalassemia", thalassemia, setThalassemia],
+                ["scd","Sickle cell disease", sickleCell, setSickleCell],
+                ["anemia","Other chronic anemia", chronicAnemia, setChronicAnemia],
+                ["mds","MDS / sideroblastic anemia", mds, setMds],
+                ["hemolysis","Chronic hemolysis", hemolysis, setHemolysis],
+                ["pct","Porphyria cutanea tarda", pct, setPct],
+              ].map(([id, label, val, setter]: any) => (
+                <label key={id} className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Checkbox checked={val} onCheckedChange={(v) => setter(!!v)} />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+              <AlertTriangle className="h-3.5 w-3.5 text-warning" /> Reactive / inflammatory
+            </div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+              {[
+                ["nafld","NAFLD / MASLD", nafld, setNafld],
+                ["alcohol","Alcohol use", alcohol, setAlcohol],
+                ["metsyn","Metabolic syndrome", metabolicSyndrome, setMetabolicSyndrome],
+                ["ckd","CKD", ckd, setCkd],
+                ["inflam","Inflammation / infection", inflammation, setInflammation],
+                ["viralhep","Viral hepatitis", viralHepatitis, setViralHepatitis],
+              ].map(([id, label, val, setter]: any) => (
+                <label key={id} className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Checkbox checked={val} onCheckedChange={(v) => setter(!!v)} />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+              <Syringe className="h-3.5 w-3.5 text-primary" /> Deficiency
+            </div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+              {[
+                ["preg","Pregnancy", pregnancy, setPregnancy],
+                ["esa","On ESA therapy", esa, setEsa],
+                ["chf","Chronic heart failure", chf, setChf],
+                ["ibd","IBD / GI inflammation", ibd, setIbd],
+                ["rls","Restless legs syndrome", rls, setRls],
+                ["bariatric","Post-bariatric surgery", bariatric, setBariatric],
+                ["oralintol","Oral iron intolerant", oralIntolerance, setOralIntolerance],
+                ["rapid","Rapid correction needed", rapidCorrection, setRapidCorrection],
+                ["bloodloss","Ongoing blood loss", ongoingBloodLoss, setOngoingBloodLoss],
+              ].map(([id, label, val, setter]: any) => (
+                <label key={id} className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Checkbox checked={val} onCheckedChange={(v) => setter(!!v)} />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+      </OptionalBlock>
 
       {/* HFE genotyping */}
       <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
@@ -924,15 +976,14 @@ export default function IronStudiesCombined() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="text-xs text-muted-foreground space-y-1 p-3 rounded-lg bg-muted/30">
-                <p><strong>HFE genotyping indications</strong> (per AASLD/EASL):</p>
+              <ReadMore summary="HFE indications (AASLD/EASL)">
                 <ul className="list-disc list-inside space-y-0.5">
                   <li>TS ≥ 45% (fasting, morning) on at least two occasions</li>
                   <li>Elevated ferritin above sex-specific threshold</li>
                   <li>Family history of hemochromatosis</li>
                   <li>Unexplained liver disease with elevated iron indices</li>
                 </ul>
-              </div>
+              </ReadMore>
             </CardContent>
           </CollapsibleContent>
         </Card>
@@ -941,69 +992,64 @@ export default function IronStudiesCombined() {
       {/* Results */}
       {hasData && (
         <Card className="border-primary/40">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-base">Computed Assessment</CardTitle>
-              <CardDescription>
-                Iron-parameter interpretation and Ganzoni deficit from the same inputs
-              </CardDescription>
-            </div>
+          <CardHeader className="flex flex-row items-center justify-between py-3 space-y-0">
+            <CardTitle className="text-base">Results</CardTitle>
             <div className="flex gap-2">
               <Button size="sm" variant="outline" onClick={handleCopy}><Copy className="h-4 w-4 mr-1" />Copy</Button>
               <Button size="sm" variant="outline" onClick={() => downloadTextFile(`iron-studies-${new Date().toISOString().slice(0,10)}`, buildSummary())}><Download className="h-4 w-4 mr-1" />Download .txt</Button>
-              <Button size="sm" onClick={handlePrint}><Printer className="h-4 w-4 mr-1" />Print / PDF</Button>
+              <Button size="sm" onClick={handlePrint}><Printer className="h-4 w-4 mr-1" />Print</Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Summary cards */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs uppercase text-muted-foreground">Overload pattern</div>
-                <div className="text-sm font-semibold mt-1">
-                  {pattern === "normal" ? "No overload pattern" :
-                   pattern === "A_high_ferritin_normal_TS" ? "A — High ferritin, normal TS" :
-                   pattern === "B_high_TS_high_ferritin" ? "B — High TS, high ferritin" :
-                   pattern === "C_high_TS_normal_ferritin" ? "C — High TS, normal ferritin" : "—"}
+          <CardContent className="space-y-3">
+            {hasIronParams && (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="p-3 rounded-lg border bg-card/60">
+                  <div className="text-[10px] uppercase text-muted-foreground">Pattern</div>
+                  <div className="text-sm font-semibold mt-1">
+                    {pattern === "normal" ? "No overload" :
+                     pattern === "A_high_ferritin_normal_TS" ? "A — High ferritin" :
+                     pattern === "B_high_TS_high_ferritin" ? "B — High TS + ferritin" :
+                     pattern === "C_high_TS_normal_ferritin" ? "C — High TS" : "—"}
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg border bg-card/60">
+                  <div className="text-[10px] uppercase text-muted-foreground">TSAT</div>
+                  <div className="text-sm font-semibold mt-1">{computedTs ? `${computedTs}%` : ts ? `${ts}%` : "—"}</div>
+                  <div className="mt-1">
+                    {tsVal >= 45 ? <Badge className="bg-red-500/15 text-red-400 border-red-500/30">High</Badge> :
+                     tsVal > 0 && tsVal < 20 ? <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low</Badge> :
+                     tsVal > 0 ? <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge> :
+                     <Badge variant="outline">—</Badge>}
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg border bg-card/60">
+                  <div className="text-[10px] uppercase text-muted-foreground">Ferritin</div>
+                  <div className="text-sm font-semibold mt-1">{ferritin || "—"} µg/L</div>
+                  <div className="mt-1">
+                    {(() => {
+                      const f = n(ferritin);
+                      const overloadCut = sex === "female" ? 200 : 300;
+                      const lowCut = inflammation ? 100 : 30;
+                      if (f > overloadCut) return <Badge className="bg-red-500/15 text-red-400 border-red-500/30">High</Badge>;
+                      if (f > 0 && f < lowCut) return <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low</Badge>;
+                      if (f > 0) return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge>;
+                      return <Badge variant="outline">—</Badge>;
+                    })()}
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg border bg-card/60">
+                  <div className="text-[10px] uppercase text-muted-foreground">Overload</div>
+                  <div className="text-sm font-semibold mt-1">
+                    {overloadType === "none" ? "None" :
+                     overloadType === "reactive" ? "Reactive" :
+                     overloadType === "primary_hh" ? "HFE-related HH" :
+                     overloadType === "primary_non_hfe" ? "Non-classic" :
+                     overloadType === "secondary" ? "Secondary" : "—"}
+                  </div>
                 </div>
               </div>
-              <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs uppercase text-muted-foreground">TSAT</div>
-                <div className="text-sm font-semibold mt-1">{computedTs ? `${computedTs}%` : ts ? `${ts}%` : "—"}</div>
-                <div className="mt-1">
-                  {tsVal >= 45 ? <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Elevated (≥45%)</Badge> :
-                   tsVal > 0 && tsVal < 20 ? <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low (&lt;20%)</Badge> :
-                   tsVal > 0 ? <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge> :
-                   <Badge variant="outline">—</Badge>}
-                </div>
-              </div>
-              <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs uppercase text-muted-foreground">Ferritin</div>
-                <div className="text-sm font-semibold mt-1">{ferritin || "—"} µg/L</div>
-                <div className="mt-1">
-                  {(() => {
-                    const f = n(ferritin);
-                    const overloadCut = sex === "female" ? 200 : 300;
-                    const lowCut = inflammation ? 100 : 30;
-                    if (f > overloadCut) return <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Elevated</Badge>;
-                    if (f > 0 && f < lowCut) return <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low</Badge>;
-                    if (f > 0) return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge>;
-                    return <Badge variant="outline">—</Badge>;
-                  })()}
-                </div>
-              </div>
-              <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs uppercase text-muted-foreground">Overload</div>
-                <div className="text-sm font-semibold mt-1">
-                  {overloadType === "none" ? "No iron excess" :
-                   overloadType === "reactive" ? "Reactive hyperferritinemia" :
-                   overloadType === "primary_hh" ? "HFE-related HH" :
-                   overloadType === "primary_non_hfe" ? "Non-classic iron overload" :
-                   overloadType === "secondary" ? "Secondary iron overload" : "—"}
-                </div>
-              </div>
-            </div>
+            )}
 
-            {/* Interpretation Summary */}
             {(deficiencyDiagnosis || pattern) && (
               <div className={cn(
                 "p-3 rounded-lg border",
@@ -1011,161 +1057,132 @@ export default function IronStudiesCombined() {
                   ? "bg-emerald-500/5 border-emerald-500/20"
                   : "bg-primary/5 border-primary/20"
               )}>
-                <div className="flex items-center gap-2 mb-2">
-                  <Stethoscope className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-bold">Iron parameters interpretation</span>
-                </div>
-                <div className="text-sm">
-                  {deficiencyDiagnosis && deficiencyDiagnosis.label !== "none" && deficiencyDiagnosis.label !== "unknown" ? (
-                    <div className="flex items-start gap-2 text-amber-600 dark:text-amber-400">
-                      <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-                      <p>
-                        Likely <span className="font-bold">{deficiencyDiagnosis.diagnosis}</span>. {deficiencyDiagnosis.detail}
-                      </p>
-                    </div>
-                  ) : pattern !== "normal" && pattern !== null ? (
-                    <div className="flex items-start gap-2 text-primary">
-                      <Info className="h-4 w-4 mt-0.5 shrink-0" />
-                      <p>
-                        Pattern indicates <span className="font-bold">{overloadType === 'reactive' ? 'Reactive Hyperferritinemia' : 'Possible Iron Overload'}</span>. TSAT is {tsVal}%.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="flex items-start gap-2 text-emerald-600 dark:text-emerald-400">
-                      <Check className="h-4 w-4 mt-0.5 shrink-0" />
-                      <p>Iron studies are currently within <span className="font-bold">Normal Limits</span> for iron deficiency assessment.</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Iron parameters diagnosis */}
-            {deficiencyDiagnosis && (
-              <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs mb-2 flex items-center gap-2">
-                  <Pill className="h-3 w-3 text-primary" />
-                  <span className="font-bold">Iron Deficiency Assessment</span>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Diagnosis</div>
-                  <div className="text-sm font-semibold mt-0.5">{deficiencyDiagnosis.diagnosis}</div>
-                  <div className="text-[10px] text-muted-foreground mt-0.5">{deficiencyDiagnosis.detail}</div>
-                </div>
-                {deficiencyNotes.length > 0 && (
-                  <div className="mt-2 text-xs text-muted-foreground space-y-0.5">
-                    {deficiencyNotes.map((note, i) => <p key={i}>• {note}</p>)}
+                {deficiencyDiagnosis && deficiencyDiagnosis.label !== "none" && deficiencyDiagnosis.label !== "unknown" ? (
+                  <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                    <AlertTriangle className="h-4 w-4 shrink-0" />
+                    <p className="text-sm font-bold">{deficiencyDiagnosis.diagnosis}</p>
+                  </div>
+                ) : pattern !== "normal" && pattern !== null ? (
+                  <div className="flex items-center gap-2 text-primary">
+                    <Info className="h-4 w-4 shrink-0" />
+                    <p className="text-sm font-bold">{overloadType === "reactive" ? "Reactive hyperferritinemia" : "Possible iron overload"}</p>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                    <Check className="h-4 w-4 shrink-0" />
+                    <p className="text-sm font-bold">No iron deficiency</p>
+                  </div>
+                )}
+                {(deficiencyDiagnosis || deficiencyNotes.length > 0) && (
+                  <div className="mt-2">
+                    <ReadMore summary="Read more">
+                      {deficiencyDiagnosis && <p>{deficiencyDiagnosis.detail}</p>}
+                      {deficiencyNotes.map((note, i) => <p key={i}>{note}</p>)}
+                    </ReadMore>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Ganzoni — first-class section, independent of ferritin/TSAT */}
             <div id="ganzoni" className="scroll-mt-24 p-4 rounded-xl border-2 border-primary/20 bg-primary/5">
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-2">
                 <Calculator className="h-4 w-4 text-primary" />
-                <span className="text-sm font-bold">Ganzoni iron deficit</span>
+                <span className="text-sm font-bold">Ganzoni deficit</span>
               </div>
               {ganzoni ? (
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-lg font-bold">Deficit: {Math.round(ganzoni.deficit)} mg</span>
-                    <Badge variant="outline">{ganzoni.isIV ? "IV iron" : "Oral iron"}</Badge>
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-end justify-between gap-2">
+                    <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Total</div>
+                      <div className="text-2xl font-bold leading-tight">{Math.round(ganzoni.deficit)} mg</div>
+                    </div>
+                    <Badge variant="outline">{ganzoni.isIV ? "IV" : "Oral"}</Badge>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-background/60 p-2 rounded border border-dashed">
-                    <div className="text-center">
-                      <div className="text-[10px] text-muted-foreground uppercase">Weight</div>
+                  <p className="text-sm font-medium">{ganzoni.doseText}</p>
+                  <div className="grid grid-cols-4 gap-2 text-center">
+                    <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Wt</div>
                       <div className="text-xs font-mono">{weight} kg</div>
                     </div>
-                    <div className="text-center sm:border-l">
-                      <div className="text-[10px] text-muted-foreground uppercase">Target Hb</div>
-                      <div className="text-xs font-mono">{ganzoni.targetHb} g/dL</div>
+                    <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Target</div>
+                      <div className="text-xs font-mono">{ganzoni.targetHb}</div>
                     </div>
-                    <div className="text-center sm:border-l">
-                      <div className="text-[10px] text-muted-foreground uppercase">Actual Hb</div>
-                      <div className="text-xs font-mono">{hemoglobin} g/dL</div>
+                    <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Hb</div>
+                      <div className="text-xs font-mono">{hemoglobin}</div>
                     </div>
-                    <div className="text-center sm:border-l">
-                      <div className="text-[10px] text-muted-foreground uppercase">Stores</div>
+                    <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Stores</div>
                       <div className="text-xs font-mono">{ganzoni.stores} mg</div>
                     </div>
                   </div>
-                  <div className="text-xs font-mono text-center bg-background/50 p-2 rounded border border-dashed">
-                    {weight} × ({ganzoni.targetHb} − {hemoglobin}) × 2.4 + {ganzoni.stores} = <span className="text-primary font-bold">{Math.round(ganzoni.deficit)} mg</span>
-                  </div>
-                  <div className="text-xs font-semibold p-2 rounded bg-primary/10 border border-primary/20 text-primary">
-                    {ganzoni.doseText}
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">
-                    Total iron deficit (mg) = weight (kg) × (target Hb − actual Hb) × 2.4 + iron stores.
-                    Target Hb defaults: pregnancy 11, CKD 12, ≥35 kg 14, else 13. Stores: 500 mg if ≥35 kg, else 15 mg/kg.
-                  </p>
+                  <ReadMore summary="How calculated">
+                    <p className="font-mono text-center bg-background/50 rounded p-2 border border-dashed">
+                      {weight} × ({ganzoni.targetHb} − {hemoglobin}) × 2.4 + {ganzoni.stores} = <span className="text-primary font-bold">{Math.round(ganzoni.deficit)} mg</span>
+                    </p>
+                    <p>Total iron deficit (mg) = weight (kg) × (target Hb − actual Hb) × 2.4 + iron stores.</p>
+                    <p>Target Hb defaults: pregnancy 11, CKD 12, ≥35 kg 14, else 13. Stores: 500 mg if ≥35 kg, else 15 mg/kg.</p>
+                  </ReadMore>
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground">
-                  Enter hemoglobin and weight (shared with iron parameters above) to calculate the Ganzoni deficit. Target Hb and iron stores default automatically and can be overridden.
-                </p>
+                <p className="text-xs text-muted-foreground">Enter Hb and weight.</p>
               )}
             </div>
 
-            {/* Differential Diagnosis */}
             {n(ferritin) > 0 && tsVal > 0 && (
-              <DifferentialDiagnosisTable
-                ferritin={n(ferritin)}
-                tsVal={tsVal}
-                sex={sex}
-                inflammation={inflammation}
-                ckd={ckd}
-                pregnancy={pregnancy}
-              />
+              <ReadMore summary="Differential diagnosis">
+                <DifferentialDiagnosisTable
+                  ferritin={n(ferritin)}
+                  tsVal={tsVal}
+                  sex={sex}
+                  inflammation={inflammation}
+                  ckd={ckd}
+                  pregnancy={pregnancy}
+                />
+              </ReadMore>
             )}
 
-            {/* Red flags */}
             {redFlags.length > 0 && (
               <div className="p-3 rounded-lg border border-red-500/40 bg-destructive/100/5">
-                <div className="text-xs font-semibold text-destructive mb-1">Red flags — urgent action</div>
+                <div className="text-xs font-semibold text-destructive mb-1">Red flags</div>
                 <ul className="text-xs space-y-0.5 list-disc list-inside">
                   {redFlags.map(f => <li key={f}>{f}</li>)}
                 </ul>
               </div>
             )}
 
-            {/* Overload pathway */}
             {overloadPathway.length > 0 && (
-              <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs font-semibold mb-2">Overload management pathway</div>
-                <ol className="text-xs space-y-1 list-decimal list-inside">
+              <ReadMore summary="Overload pathway">
+                <ol className="space-y-1 list-decimal list-inside">
                   {overloadPathway.map((s, i) => <li key={i}>{s}</li>)}
                 </ol>
-              </div>
+              </ReadMore>
             )}
 
-            {/* Reference thresholds */}
-            <div className="text-xs text-muted-foreground space-y-1 p-3 rounded-lg bg-muted/30">
-              <p className="font-semibold">Screening thresholds (adult, non-pregnant):</p>
-              <ul className="list-disc list-inside space-y-0.5">
-                <li>TS ≥ 45% suggests iron overload</li>
-                <li>Ferritin &gt; 300 µg/L (men) or &gt; 200 µg/L (women) strengthens suspicion</li>
-                <li>TS &lt; 20% suggests inadequate iron for erythropoiesis</li>
-                <li>Ferritin &lt; 30 (no inflammation) or &lt; 100 (with inflammation) = absolute iron deficiency</li>
-              </ul>
-              <p className="mt-2 text-[10px] text-muted-foreground/70">
-                Sources: AASLD, EASL, BC Guidelines, Mayo Clinic Laboratories, NCBI, ESGAR/SAR, ACG Clinical Guideline 2023, KDIGO
-              </p>
-              <div className="mt-3 rounded-lg border p-3 space-y-2 bg-background/40">
-                <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                  <ImageIcon className="h-3.5 w-3.5 text-primary" />
-                  Iron profile patterns — visual mnemonic
-                </div>
-                <p className="text-[11px] text-muted-foreground">
-                  IDA vs anaemia of chronic disease vs sideroblastic anaemia: serum iron, TSAT, ferritin and TIBC patterns.
+            {hasIronParams && (
+              <ReadMore summary="Thresholds & sources">
+                <ul className="list-disc list-inside space-y-0.5">
+                  <li>TS ≥ 45% suggests iron overload</li>
+                  <li>Ferritin &gt; 300 µg/L (men) or &gt; 200 µg/L (women) strengthens suspicion</li>
+                  <li>TS &lt; 20% suggests inadequate iron for erythropoiesis</li>
+                  <li>Ferritin &lt; 30 (no inflammation) or &lt; 100 (with inflammation) = absolute iron deficiency</li>
+                </ul>
+                <p className="text-[10px] text-muted-foreground/70">
+                  Sources: AASLD, EASL, BC Guidelines, Mayo Clinic Laboratories, NCBI, ESGAR/SAR, ACG Clinical Guideline 2023, KDIGO
                 </p>
-                <ZoomableImage
-                  src={ironProfileStory.url}
-                  alt="Iron profile patterns comparing iron deficiency anaemia, anaemia of chronic disease and sideroblastic anaemia across serum iron, transferrin saturation, ferritin and TIBC"
-                />
-              </div>
-            </div>
+                <div className="rounded-lg border p-3 space-y-2 bg-background/40">
+                  <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <ImageIcon className="h-3.5 w-3.5 text-primary" />
+                    Iron profile patterns
+                  </div>
+                  <ZoomableImage
+                    src={ironProfileStory.url}
+                    alt="Iron profile patterns comparing iron deficiency anaemia, anaemia of chronic disease and sideroblastic anaemia across serum iron, transferrin saturation, ferritin and TIBC"
+                  />
+                </div>
+              </ReadMore>
+            )}
           </CardContent>
         </Card>
       )}
