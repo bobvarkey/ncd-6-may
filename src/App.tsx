@@ -15,7 +15,7 @@ import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, Link } from "react-router-dom";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, Home as HomeIcon } from "lucide-react";
 import { LabAutoCalculator } from "@/components/LabAutoCalculator";
 
 const moduleLoadErrorPattern = /Importing a module script failed|Failed to fetch dynamically imported module|error loading dynamically imported module|Load failed|Loading chunk \d+ failed/i;
@@ -228,7 +228,7 @@ const AppHeader = ({ title }: { title: string }) => {
           className="inline-flex items-center justify-center h-9 px-2 rounded-md text-sm font-medium text-foreground hover:bg-muted"
           aria-label="Go home"
         >
-          <Home className="h-4 w-4 mr-1" />
+          <HomeIcon className="h-4 w-4 mr-1" />
           <span className="hidden sm:inline">Home</span>
         </Link>
       </div>
