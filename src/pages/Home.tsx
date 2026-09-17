@@ -29,6 +29,7 @@ import {
 import Seo from "@/components/Seo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
+import { CollapsibleHomeSections } from "@/components/CollapsibleHomeSections";
 import { PrimaryNavGrid } from "@/components/PrimaryNavGrid";
 import { ENTRY_TONES, type EntryTone } from "@/lib/entry-tones";
 import { cn } from "@/lib/utils";
@@ -398,50 +399,7 @@ const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
   },
 ];
 
-function SidebarNavSectionCard({ section }: { section: SidebarNavSection }) {
-  const SectionIcon = section.icon;
-  const heading = ENTRY_TONES[section.tone];
-  return (
-    <section>
-      <div className="flex items-center gap-2 mb-3">
-        <span className={cn("w-6 h-6 rounded-md flex items-center justify-center", heading.iconWrap)}>
-          <SectionIcon className="h-3.5 w-3.5" />
-        </span>
-        <h2 className="text-sm font-semibold text-foreground/80 uppercase tracking-wider">{section.label}</h2>
-        <div className="flex-1 h-px bg-border/60" />
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        {section.items.map((item) => {
-          const Icon = item.icon;
-          const tone = ENTRY_TONES[item.tone];
-          return (
-            <Link key={item.url + item.title} to={item.url} className="group block">
-              <div
-                className={cn(
-                  "relative h-full p-3.5 rounded-xl border transition-all duration-200 overflow-hidden",
-                  tone.card,
-                )}
-              >
-                <div className={cn("absolute top-0 left-0 right-0 h-0.5", tone.bar)} />
-                <div className="flex items-start gap-3">
-                  <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", tone.iconWrap)}>
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className={cn("text-sm font-medium text-foreground transition-colors truncate", tone.titleHover)}>{item.title}</h3>
-                    {item.keywords && (
-                      <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{item.keywords}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
+const FULL_NAV_SECTIONS_STORAGE_KEY = "ncd_home_full_nav_sections_open";
 
 function SidebarNavGrid() {
   return (
@@ -450,9 +408,41 @@ function SidebarNavGrid() {
         <LayoutDashboard className="h-5 w-5 text-primary" />
         <h2 id="full-navigation-heading" className="text-lg font-semibold">Full App Navigation</h2>
       </div>
-      {SIDEBAR_NAV_SECTIONS.map((section) => (
-        <SidebarNavSectionCard key={section.id} section={section} />
-      ))}
+      <CollapsibleHomeSections
+        storageKey={FULL_NAV_SECTIONS_STORAGE_KEY}
+        sections={SIDEBAR_NAV_SECTIONS}
+        renderItems={(section) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {section.items.map((item) => {
+              const Icon = item.icon;
+              const tone = ENTRY_TONES[item.tone];
+              return (
+                <Link key={item.url + item.title} to={item.url} className="group block">
+                  <div
+                    className={cn(
+                      "relative h-full p-3.5 rounded-xl border transition-all duration-200 overflow-hidden",
+                      tone.card,
+                    )}
+                  >
+                    <div className={cn("absolute top-0 left-0 right-0 h-0.5", tone.bar)} />
+                    <div className="flex items-start gap-3">
+                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", tone.iconWrap)}>
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className={cn("text-sm font-medium text-foreground transition-colors truncate", tone.titleHover)}>{item.title}</h3>
+                        {item.keywords && (
+                          <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{item.keywords}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      />
     </section>
   );
 }

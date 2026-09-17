@@ -17,6 +17,7 @@ export type PrimaryNavItem = {
 export type PrimaryNavSection = {
   id: string;
   label: string;
+  tone: EntryTone;
   items: PrimaryNavItem[];
 };
 
@@ -25,6 +26,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
   {
     id: "core",
     label: "Cardiometabolic & endocrine",
+    tone: "rose",
     items: [
       { path: "/diabetes", label: "Diabetes", icon: Droplets, tone: "teal", keywords: "ada glucose insulin" },
       { path: "/hypertension", label: "Hypertension", icon: Heart, tone: "rose", keywords: "bp esc" },
@@ -41,6 +43,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
   {
     id: "renal-blood",
     label: "Renal, blood & electrolytes",
+    tone: "orange",
     items: [
       { path: "/aki-criteria", label: "AKI / AKD Criteria", icon: Activity, tone: "orange", keywords: "kdigo rifle" },
       { path: "/renal-dosing", label: "Renal", icon: Filter, tone: "amber", keywords: "egfr dosing" },
@@ -70,6 +73,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
   {
     id: "general",
     label: "Respiratory, infection & general",
+    tone: "cyan",
     items: [
       { path: "/respiratory", label: "Asthma and COPD", icon: AirVent, tone: "cyan", keywords: "gold" },
       { path: "/fatigue", label: "Fatigue", icon: Moon, tone: "slate" },
@@ -88,6 +92,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
   {
     id: "womens-health",
     label: "Women's health",
+    tone: "fuchsia",
     items: [
       { path: "/women-health?tab=pmos", label: "PMOS / PCOS", icon: Stethoscope, tone: "fuchsia" },
       { path: "/women-health?tab=hrt", label: "HRT Algorithm", icon: Heart, tone: "rose" },
@@ -96,6 +101,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
   {
     id: "reference",
     label: "Reference",
+    tone: "slate",
     items: [
       { path: "/images", label: "Images", icon: Image, tone: "sky", keywords: "figures diagrams" },
       { path: "/glossary", label: "Clinical Glossary", icon: BookOpen, tone: "slate" },
