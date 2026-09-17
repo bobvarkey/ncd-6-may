@@ -992,9 +992,9 @@ export default function IronStudiesCombined() {
       {/* Results */}
       {hasData && (
         <Card className="border-primary/40">
-          <CardHeader className="flex flex-row items-center justify-between py-3 space-y-0">
-            <CardTitle className="text-base">Results</CardTitle>
-            <div className="flex gap-2">
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between py-3 space-y-0">
+            <CardTitle className="text-base shrink-0">Results</CardTitle>
+            <div className="flex flex-wrap gap-2">
               <Button size="sm" variant="outline" onClick={handleCopy}><Copy className="h-4 w-4 mr-1" />Copy</Button>
               <Button size="sm" variant="outline" onClick={() => downloadTextFile(`iron-studies-${new Date().toISOString().slice(0,10)}`, buildSummary())}><Download className="h-4 w-4 mr-1" />Download .txt</Button>
               <Button size="sm" onClick={handlePrint}><Printer className="h-4 w-4 mr-1" />Print</Button>
