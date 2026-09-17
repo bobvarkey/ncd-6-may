@@ -61,6 +61,12 @@ describe("homepage primary navigation", () => {
     expect(missing).toEqual([]);
   });
 
+  it("assigns a colour tone to every clinical section heading", () => {
+    for (const section of PRIMARY_NAV_SECTIONS) {
+      expect(section.tone, `${section.label} missing section tone`).toBeTruthy();
+    }
+  });
+
   it("assigns a distinct clinical colour tone to every entry tile", () => {
     const tones = new Set<string>();
     for (const section of PRIMARY_NAV_SECTIONS) {
