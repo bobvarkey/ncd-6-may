@@ -60,4 +60,15 @@ describe("homepage primary navigation", () => {
     const missing = FORMER_SIDEBAR_PATHS.filter((path) => !published.includes(path));
     expect(missing).toEqual([]);
   });
+
+  it("assigns a distinct clinical colour tone to every entry tile", () => {
+    const tones = new Set<string>();
+    for (const section of PRIMARY_NAV_SECTIONS) {
+      for (const item of section.items) {
+        expect(item.tone, `${item.label} missing tone`).toBeTruthy();
+        tones.add(item.tone);
+      }
+    }
+    expect(tones.size).toBeGreaterThanOrEqual(8);
+  });
 });
