@@ -85,8 +85,8 @@ describe("PrimaryNavGrid collapsible sections", () => {
     const renal = screen.getByRole("link", { name: /egfr calculator/i });
     expect(renal).toHaveAttribute("href", "/gfr-calculator");
 
-    const anemiaTab = screen.getByRole("link", { name: /ganzoni deficit/i });
-    expect(anemiaTab).toHaveAttribute("href", "/anemia?tab=ganzoni");
+    const anemiaTab = screen.getByRole("link", { name: /iron calculator/i });
+    expect(anemiaTab).toHaveAttribute("href", "/anemia?tab=iron");
   });
 
   it("exposes a chevron affordance on each section header", () => {
