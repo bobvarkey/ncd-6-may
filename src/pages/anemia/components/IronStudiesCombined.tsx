@@ -958,19 +958,20 @@ export default function IronStudiesCombined() {
             {/* Summary cards */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs uppercase text-muted-foreground">Iron Pattern</div>
+                <div className="text-xs uppercase text-muted-foreground">Overload pattern</div>
                 <div className="text-sm font-semibold mt-1">
-                  {pattern === "normal" ? "Normal" :
+                  {pattern === "normal" ? "No overload pattern" :
                    pattern === "A_high_ferritin_normal_TS" ? "A — High ferritin, normal TS" :
                    pattern === "B_high_TS_high_ferritin" ? "B — High TS, high ferritin" :
                    pattern === "C_high_TS_normal_ferritin" ? "C — High TS, normal ferritin" : "—"}
                 </div>
               </div>
               <div className="p-3 rounded-lg border bg-card/60">
-                <div className="text-xs uppercase text-muted-foreground">TS</div>
+                <div className="text-xs uppercase text-muted-foreground">TSAT</div>
                 <div className="text-sm font-semibold mt-1">{computedTs ? `${computedTs}%` : ts ? `${ts}%` : "—"}</div>
                 <div className="mt-1">
                   {tsVal >= 45 ? <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Elevated (≥45%)</Badge> :
+                   tsVal > 0 && tsVal < 20 ? <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low (&lt;20%)</Badge> :
                    tsVal > 0 ? <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge> :
                    <Badge variant="outline">—</Badge>}
                 </div>
@@ -981,8 +982,10 @@ export default function IronStudiesCombined() {
                 <div className="mt-1">
                   {(() => {
                     const f = n(ferritin);
-                    const threshold = sex === "female" ? 200 : 300;
-                    if (f > threshold) return <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Elevated</Badge>;
+                    const overloadCut = sex === "female" ? 200 : 300;
+                    const lowCut = inflammation ? 100 : 30;
+                    if (f > overloadCut) return <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Elevated</Badge>;
+                    if (f > 0 && f < lowCut) return <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low</Badge>;
                     if (f > 0) return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge>;
                     return <Badge variant="outline">—</Badge>;
                   })()}
