@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import {
   Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, Info,
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
@@ -28,6 +27,9 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import Seo from "@/components/Seo";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import OfflineStatusBadge from "@/components/OfflineStatusBadge";
+import { PrimaryNavGrid } from "@/components/PrimaryNavGrid";
 
 interface PrescriptionState {
   content: React.ReactNode;
@@ -816,7 +818,8 @@ const QUICK_ACCESS = [
   { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart },
   { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet },
   { to: "/infections?tab=csdh", label: "cSDH Risk", desc: "Neuro-perioperative plan",  Icon: Brain },
-  { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator },
+      { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator },
+      { to: "/gfr-calculator",    label: "eGFR + BSA",  desc: "CKD-EPI with optional BSA", Icon: Activity },
 ] as const;
 
 function QuickAccessPanel() {
@@ -829,7 +832,7 @@ function QuickAccessPanel() {
         <span className="text-xs text-muted-foreground hidden sm:inline">One-click jumps</span>
       </div>
       <nav aria-label="Quick access shortcuts">
-        <ul className="grid grid-cols-2 md:grid-cols-5 gap-2.5">
+        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
           {QUICK_ACCESS.map(({ to, label, desc, Icon }) => (
             <li key={to}>
               <Link
@@ -851,7 +854,6 @@ function QuickAccessPanel() {
 }
 
 export default function Home() {
-  const navigate = useNavigate();
 
   // Quick Actions data
   const quickActions: QuickActionProps[] = [
@@ -944,9 +946,20 @@ export default function Home() {
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
       }} />
 
-      <main className="max-w-6xl mx-auto px-6 pb-16 space-y-8">
+      <header className="sticky top-0 z-40 w-full h-12 flex items-center border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 px-4">
+        <div className="absolute inset-x-0 top-0 h-0.5 bg-sunset" aria-hidden />
+        <span className="text-sm font-heading font-semibold text-sunset truncate">Clinical Tools</span>
+        <div className="ml-auto flex items-center gap-2">
+          <OfflineStatusBadge className="hidden sm:inline-flex" />
+          <ThemeToggle />
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-6 py-8 pb-16 space-y-8">
         {/* Quick Access — one-click jumps to core sections */}
         <QuickAccessPanel />
+
+        <PrimaryNavGrid />
 
         {/* Image Upload + Analyzer — prominent at top */}
         <ImageUploadAnalyzer />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import type { CBCValues, Sex, EvaluationResult } from './anemia/types';
 import { evaluate } from './anemia/utils/anemia';
 import CBCForm from './anemia/components/CBCForm';
@@ -23,6 +23,17 @@ import TestSuggestionAlgorithm from './anemia/components/TestSuggestionAlgorithm
 const EMPTY_CBC: CBCValues = { hgb: '', rbc: '', mcv: '', mch: '', mchc: '', rdw: '', hct: '' };
 
 type Tab = 'anemia' | 'thrombocytopenia' | 'bleeding-clotting' | 'iron' | 'ganzoni' | 'esr' | 'anticoagulants' | 'erythrocytosis';
+
+const BLOOD_TABS: { tab: Tab; label: string }[] = [
+  { tab: 'anemia', label: 'Anemia Evaluator' },
+  { tab: 'thrombocytopenia', label: 'Thrombocytopenia' },
+  { tab: 'bleeding-clotting', label: 'Bleeding / Clotting' },
+  { tab: 'iron', label: 'Iron Parameters' },
+  { tab: 'ganzoni', label: 'Ganzoni Deficit' },
+  { tab: 'esr', label: 'ESR' },
+  { tab: 'erythrocytosis', label: 'Erythrocytosis / PV' },
+  { tab: 'anticoagulants', label: 'Anticoagulants' },
+];
 
 export default function Anemia() {
   const [searchParams] = useSearchParams();
@@ -82,7 +93,25 @@ export default function Anemia() {
             </div>
           </div>
 
-          {/* Sub-navigation hint — use sidebar tabs */}
+          <nav className="flex gap-1 overflow-x-auto" aria-label="Hematology sections">
+            {BLOOD_TABS.map(({ tab, label }) => {
+              const isActive = activeTab === tab;
+              return (
+                <Link
+                  key={tab}
+                  to={`/anemia?tab=${tab}`}
+                  className={`shrink-0 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    isActive
+                      ? 'bg-primary/15 text-primary'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
       </header>
 

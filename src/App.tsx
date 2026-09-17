@@ -15,8 +15,7 @@ import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, Link } from "react-router-dom";
-import { ArrowLeft, Home } from "lucide-react";
-import { TabNavigation } from "@/components/TabNavigation";
+import { ArrowLeft, Home as HomeIcon } from "lucide-react";
 import { LabAutoCalculator } from "@/components/LabAutoCalculator";
 
 const moduleLoadErrorPattern = /Importing a module script failed|Failed to fetch dynamically imported module|error loading dynamically imported module|Load failed|Loading chunk \d+ failed/i;
@@ -229,7 +228,7 @@ const AppHeader = ({ title }: { title: string }) => {
           className="inline-flex items-center justify-center h-9 px-2 rounded-md text-sm font-medium text-foreground hover:bg-muted"
           aria-label="Go home"
         >
-          <Home className="h-4 w-4 mr-1" />
+          <HomeIcon className="h-4 w-4 mr-1" />
           <span className="hidden sm:inline">Home</span>
         </Link>
       </div>
@@ -253,10 +252,7 @@ const PageShell = ({ title, children }: { title: string; children: ReactNode }) 
 );
 
 const withNav = (element: ReactNode, title: string) => (
-  <>
-    <TabNavigation />
-    <PageShell title={title}>{element}</PageShell>
-  </>
+  <PageShell title={title}>{element}</PageShell>
 );
 
 const App = () => {
@@ -314,7 +310,7 @@ const App = () => {
           <Route path="/db/*" element={<NotFound />} />
 
           {/* Main App — unified interface */}
-          <Route path="/home" element={<><TabNavigation /><Home /></>} />
+          <Route path="/home" element={<Home />} />
           <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
           <Route path="/settings" element={withNav(<Settings />, "Settings")} />
           <Route path="/diabetes" element={withNav(<Diabetes />, "Diabetes")} />
@@ -371,14 +367,11 @@ const App = () => {
           <Route
             path="/glp1-prescreen"
             element={
-              <>
-                <TabNavigation />
-                <PageShell title="GLP-1 Pre-Initiation Screener">
-                  <div className="max-w-4xl mx-auto px-4 py-6">
-                    <GLP1PreInitiationScreenerCalc />
-                  </div>
-                </PageShell>
-              </>
+              <PageShell title="GLP-1 Pre-Initiation Screener">
+                <div className="max-w-4xl mx-auto px-4 py-6">
+                  <GLP1PreInitiationScreenerCalc />
+                </div>
+              </PageShell>
             }
           />
           <Route path="/obesity/glp1-screener" element={withNav(<GLP1ScreenerCalc />, "GLP-1 Screener")} />
