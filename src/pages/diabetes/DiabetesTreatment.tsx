@@ -51,12 +51,12 @@ const AlgorithmStep = ({ step, title, description, criteria, medications, icon, 
   return (
     <div className="flex flex-col">
       <div className={cn("p-4 rounded-lg border-2", getToneClasses())}>
-        <div className="flex items-start gap-3">
-          <div className={cn("mt-0.5", getIconColor())}>{icon}</div>
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="font-semibold text-foreground">{title}</h3>
-              <Badge variant="outline" className="text-xs">Step {step}</Badge>
+        <div className="flex items-start gap-3 min-w-0">
+          <div className={cn("mt-0.5 shrink-0", getIconColor())}>{icon}</div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-2 mb-1 min-w-0">
+              <h3 className="font-semibold text-foreground min-w-0">{title}</h3>
+              <Badge variant="outline" className="text-xs shrink-0">Step {step}</Badge>
             </div>            <p className="text-sm text-muted-foreground mb-2">{description}</p>
 
             {criteria && (
@@ -88,7 +88,7 @@ const AlgorithmStep = ({ step, title, description, criteria, medications, icon, 
                     variant="outline"
                     size="sm"
                     onClick={onToggleInsulinRef}
-                    className="mt-2"
+                    className="mt-2 h-auto max-w-full whitespace-normal"
                   >
                     {showInsulinRef ? "Hide Insulin Reference" : "Show Insulin Reference Charts"}
                     <ChevronRight className={`h-4 w-4 ml-1 transition-transform ${showInsulinRef ? "rotate-90" : ""}`} />

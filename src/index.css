@@ -160,6 +160,8 @@
   html {
     @apply bg-background;
     font-size: calc(17.5px * var(--user-text-scale, 1));
+    overflow-x: clip;
+    overscroll-behavior-x: none;
   }
   @media (min-width: 640px) {
     html { font-size: calc(18px * var(--user-text-scale, 1)); }
@@ -168,6 +170,14 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Source Sans 3', system-ui, sans-serif;
     line-height: 1.55;
+    max-width: 100%;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+  }
+  #root {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -566,6 +576,13 @@
 .slide-in-right {
   animation: slideInFromRight 0.3s ease-out;
 }
+/* Keep table/tab row scrollers on their own axis so a sideways swipe
+   does not pan the whole page. max-width contains unwrapped flex rows. */
+.overflow-x-auto {
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+
 @media print {
   aside, nav, .sidebar, button, [role="navigation"] { display: none !important; }
   main { margin: 0 !important; padding: 0 !important; }
