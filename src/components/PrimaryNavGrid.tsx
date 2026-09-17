@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { LayoutDashboard } from "lucide-react";
 import { PRIMARY_NAV_SECTIONS } from "@/data/primary-nav";
+import { ENTRY_TONES } from "@/lib/entry-tones";
+import { cn } from "@/lib/utils";
 
 function SectionGrid({
   label,
@@ -18,22 +20,32 @@ function SectionGrid({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         {items.map((item) => {
           const Icon = item.icon;
+          const tone = ENTRY_TONES[item.tone];
           return (
             <Link key={item.path + item.label} to={item.path} className="group block">
-              <div className="relative h-full p-3.5 rounded-xl border border-border/50 bg-card hover:border-transparent hover:shadow-md transition-all duration-200 overflow-hidden">
-                <div
-                  className="absolute top-0 left-0 right-0 h-0.5 opacity-90"
-                  style={{ background: "linear-gradient(90deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%)" }}
-                />
+              <div
+                className={cn(
+                  "relative h-full p-3.5 rounded-xl border transition-all duration-200 overflow-hidden",
+                  tone.card,
+                )}
+              >
+                <div className={cn("absolute top-0 left-0 right-0 h-0.5", tone.bar)} />
                 <div className="flex items-start gap-3">
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white shadow-sm"
-                    style={{ background: "linear-gradient(135deg, #ff6b35 0%, #e84393 60%, #6c5ce7 100%)" }}
+                    className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                      tone.iconWrap,
+                    )}
                   >
                     <Icon className="h-4 w-4" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h4 className="text-sm font-medium text-foreground group-hover:text-[#e84393] transition-colors truncate">
+                    <h4
+                      className={cn(
+                        "text-sm font-medium text-foreground transition-colors truncate",
+                        tone.titleHover,
+                      )}
+                    >
                       {item.label}
                     </h4>
                     {item.keywords && (
