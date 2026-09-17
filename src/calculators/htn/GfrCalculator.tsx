@@ -5,6 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calculator, RotateCcw, ArrowLeftRight, Info } from "lucide-react";
+import { BsaAdjustmentFields } from "@/components/calculator/BsaAdjustmentFields";
+import {
+  adjustEgfrForBsa,
+  calculateMostellerBsa,
+  roundTo,
+  validateBsaInputs,
+} from "@/lib/egfr-bsa";
 
 type CreatinineUnit = "mgdl" | "umol";
 type Sex = "male" | "female" | null;
@@ -105,15 +112,6 @@ function getKdigoRisk(gfrIndex: number, aIndex: number): { label: string; color:
   };
 }
 
-/** Du Bois body surface area (m²). */
-function calculateBSA(weightKg: number, heightCm: number): number {
-  return 0.007184 * Math.pow(weightKg, 0.425) * Math.pow(heightCm, 0.725);
-}
-
-/** Adjust eGFR from mL/min/1.73m² to mL/min for the patient’s actual BSA. */
-function adjustGfrForBSA(gfr: number, bsa: number): number {
-  return gfr * (bsa / 1.73);
-}
 
 interface GfrCalculatorProps {
   onResultChange?: (result: GfrResult | null) => void;
@@ -220,14 +218,7 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
       newErrors.sex = "Select sex";
     }
     if (adjustBsa) {
-      const w = parseFloat(weightKg);
-      if (!weightKg.trim() || isNaN(w) || w <= 0 || w > 300) {
-        newErrors.weight = "Enter valid weight (1-300 kg)";
-      }
-      const h = parseFloat(heightCm);
-      if (!heightCm.trim() || isNaN(h) || h <= 0 || h > 300) {
-        newErrors.height = "Enter valid height (1-300 cm)";
-      }
+      Object.assign(newErrors, validateBsaInputs(heightCm, weightKg));
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -242,10 +233,10 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
     let bsaValue: number | null = null;
     let bsaAdj: number | null = null;
     if (adjustBsa) {
-      bsaValue = calculateBSA(parseFloat(weightKg), parseFloat(heightCm));
-      bsaAdj = adjustGfrForBSA(gfr, bsaValue);
-      setBsa(Math.round(bsaValue * 100) / 100);
-      setBsaAdjustedResult(Math.round(bsaAdj * 10) / 10);
+      bsaValue = calculateMostellerBsa(parseFloat(weightKg), parseFloat(heightCm));
+      bsaAdj = adjustEgfrForBsa(gfr, bsaValue);
+      setBsa(roundTo(bsaValue, 2));
+      setBsaAdjustedResult(roundTo(bsaAdj, 1));
     } else {
       setBsa(null);
       setBsaAdjustedResult(null);
@@ -463,6 +454,30 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
           </div>
         </div>
 
+        <BsaAdjustmentFields
+          enabled={adjustBsa}
+          onEnabledChange={(next) => {
+            setAdjustBsa(next);
+            if (!next) {
+              setBsa(null);
+              setBsaAdjustedResult(null);
+              setErrors((p) => ({ ...p, height: "", weight: "" }));
+            }
+          }}
+          heightCm={heightCm}
+          weightKg={weightKg}
+          onHeightCmChange={(v) => {
+            setHeightCm(v);
+            if (errors.height) setErrors((p) => ({ ...p, height: "" }));
+          }}
+          onWeightKgChange={(v) => {
+            setWeightKg(v);
+            if (errors.weight) setErrors((p) => ({ ...p, weight: "" }));
+          }}
+          errors={{ height: errors.height, weight: errors.weight }}
+          idPrefix="gfr-bsa"
+        />
+
         <Button onClick={calculate} className="w-full sm:w-auto mt-4">
           <Calculator className="h-4 w-4 mr-2" />
           Calculate eGFR{uacr.trim() && " & KDIGO Stage"}
@@ -472,18 +487,22 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
           <div className="mt-4 p-4 rounded-lg bg-card border-2 border-border">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <p className="text-sm text-muted-foreground">Estimated GFR</p>
+                <p className="text-sm text-muted-foreground">
+                  Indexed eGFR (CKD-EPI 2021, per 1.73 m²)
+                </p>
                 <p className="text-3xl font-bold text-foreground">
                   {result} <span className="text-sm font-normal text-muted-foreground">mL/min/1.73m²</span>
                 </p>
                 {adjustBsa && bsaAdjustedResult !== null && bsa !== null && (
-                  <div className="mt-2">
-                    <p className="text-sm text-muted-foreground">BSA-adjusted eGFR</p>
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <p className="text-sm text-muted-foreground">
+                      BSA-adjusted eGFR (absolute / unindexed)
+                    </p>
                     <p className="text-xl font-semibold text-foreground">
                       {bsaAdjustedResult} <span className="text-sm font-normal text-muted-foreground">mL/min</span>
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      BSA {bsa} m² (Du Bois)
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Mosteller BSA {bsa} m² · indexed × (BSA / 1.73). Staging below uses the indexed value.
                     </p>
                   </div>
                 )}

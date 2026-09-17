@@ -6,6 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calculator, RotateCcw, ArrowLeftRight, AlertTriangle, Info, Copy, Download } from "lucide-react";
 import { copyToClipboard, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
+import { BsaAdjustmentFields } from "@/components/calculator/BsaAdjustmentFields";
+import {
+  adjustEgfrForBsa,
+  calculateMostellerBsa,
+  roundTo,
+  validateBsaInputs,
+} from "@/lib/egfr-bsa";
 
 type CreatinineUnit = "mgdl" | "umol";
 type Sex = "male" | "female" | null;
@@ -109,6 +116,17 @@ export default function KDIGOStagingCalculator() {
     try { return (localStorage.getItem("ncd_kdigo_uacr_unit") as UacrUnit) || "mg_g"; } catch { return "mg_g"; }
   });
   const [gfr, setGfr] = useState<number | null>(null);
+  const [adjustBsa, setAdjustBsa] = useState(() => {
+    try { return localStorage.getItem("ncd_kdigo_adjust_bsa") === "true"; } catch { return false; }
+  });
+  const [weightKg, setWeightKg] = useState(() => {
+    try { return localStorage.getItem("ncd_kdigo_weight") || ""; } catch { return ""; }
+  });
+  const [heightCm, setHeightCm] = useState(() => {
+    try { return localStorage.getItem("ncd_kdigo_height") || ""; } catch { return ""; }
+  });
+  const [bsa, setBsa] = useState<number | null>(null);
+  const [bsaAdjustedGfr, setBsaAdjustedGfr] = useState<number | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => { localStorage.setItem("ncd_kdigo_creatinine", creatinine); }, [creatinine]);
@@ -117,6 +135,9 @@ export default function KDIGOStagingCalculator() {
   useEffect(() => { localStorage.setItem("ncd_kdigo_unit", unit); }, [unit]);
   useEffect(() => { localStorage.setItem("ncd_kdigo_uacr", uacr); }, [uacr]);
   useEffect(() => { localStorage.setItem("ncd_kdigo_uacr_unit", uacrUnit); }, [uacrUnit]);
+  useEffect(() => { localStorage.setItem("ncd_kdigo_adjust_bsa", adjustBsa ? "true" : "false"); }, [adjustBsa]);
+  useEffect(() => { localStorage.setItem("ncd_kdigo_weight", weightKg); }, [weightKg]);
+  useEffect(() => { localStorage.setItem("ncd_kdigo_height", heightCm); }, [heightCm]);
 
   const toggleUnit = () => {
     const crVal = parseClinicalValue(creatinine);
@@ -150,6 +171,9 @@ export default function KDIGOStagingCalculator() {
       newErrors.age = "Enter valid age (18–120)";
     }
     if (!sex) newErrors.sex = "Select sex";
+    if (adjustBsa) {
+      Object.assign(newErrors, validateBsaInputs(heightCm, weightKg));
+    }
     if (uacr.trim()) {
       const uVal = parseClinicalValue(uacr);
       if (uVal === null || uVal < 0 || uVal > (uacrUnit === "mg_g" ? 5000 : 500)) {
@@ -165,6 +189,14 @@ export default function KDIGOStagingCalculator() {
     const crMgdl = getCreatinineMgdl();
     const gfrVal = calculateCkdEpi(crMgdl, parseInt(age), sex!);
     setGfr(gfrVal);
+    if (adjustBsa) {
+      const bsaValue = calculateMostellerBsa(parseFloat(weightKg), parseFloat(heightCm));
+      setBsa(roundTo(bsaValue, 2));
+      setBsaAdjustedGfr(roundTo(adjustEgfrForBsa(gfrVal, bsaValue), 1));
+    } else {
+      setBsa(null);
+      setBsaAdjustedGfr(null);
+    }
   };
 
   const reset = () => {
@@ -174,6 +206,11 @@ export default function KDIGOStagingCalculator() {
     setUnit("mgdl");
     setUacr("");
     setUacrUnit("mg_g");
+    setAdjustBsa(false);
+    setWeightKg("");
+    setHeightCm("");
+    setBsa(null);
+    setBsaAdjustedGfr(null);
     setGfr(null);
     setErrors({});
   };
@@ -189,7 +226,10 @@ export default function KDIGOStagingCalculator() {
     const lines: string[] = [];
     lines.push("--- KDIGO CKD Assessment ---");
     if (gfr !== null && gStage) {
-      lines.push(`eGFR: ${gfr} mL/min/1.73m² (${gStage.stage}: ${gStage.label})`);
+      lines.push(`Indexed eGFR: ${gfr} mL/min/1.73m² (${gStage.stage}: ${gStage.label})`);
+    }
+    if (bsa !== null && bsaAdjustedGfr !== null) {
+      lines.push(`BSA-adjusted eGFR: ${bsaAdjustedGfr} mL/min (Mosteller BSA ${bsa} m²)`);
     }
     if (uacrMgG !== null && aStage) {
       lines.push(`UACR: ${roundClinical(uacrMgG, 0)} mg/g (${aStage.stage}: ${aStage.label})`);
@@ -320,7 +360,31 @@ export default function KDIGOStagingCalculator() {
           </div>
         </div>
 
-        <Button onClick={calculate} className="w-full sm:w-auto">
+        <BsaAdjustmentFields
+          enabled={adjustBsa}
+          onEnabledChange={(next) => {
+            setAdjustBsa(next);
+            if (!next) {
+              setBsa(null);
+              setBsaAdjustedGfr(null);
+              setErrors((p) => ({ ...p, height: "", weight: "" }));
+            }
+          }}
+          heightCm={heightCm}
+          weightKg={weightKg}
+          onHeightCmChange={(v) => {
+            setHeightCm(v);
+            if (errors.height) setErrors((p) => ({ ...p, height: "" }));
+          }}
+          onWeightKgChange={(v) => {
+            setWeightKg(v);
+            if (errors.weight) setErrors((p) => ({ ...p, weight: "" }));
+          }}
+          errors={{ height: errors.height, weight: errors.weight }}
+          idPrefix="kdigo-bsa"
+        />
+
+        <Button onClick={calculate} className="w-full sm:w-auto mt-4">
           <Calculator className="h-4 w-4 mr-2" />
           Calculate eGFR &amp; KDIGO Stage
         </Button>
@@ -332,10 +396,21 @@ export default function KDIGOStagingCalculator() {
             <div className="p-4 rounded-lg bg-card border-2 border-border select-all">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <p className="text-sm text-muted-foreground">Estimated GFR (CKD-EPI 2021)</p>
+                  <p className="text-sm text-muted-foreground">Indexed eGFR (CKD-EPI 2021, per 1.73 m²)</p>
                   <p className="text-3xl font-bold text-foreground">
                     {roundClinical(gfr, 1)} <span className="text-sm font-normal text-muted-foreground">mL/min/1.73m²</span>
                   </p>
+                  {adjustBsa && bsa !== null && bsaAdjustedGfr !== null && (
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <p className="text-sm text-muted-foreground">BSA-adjusted eGFR (absolute / unindexed)</p>
+                      <p className="text-xl font-semibold text-foreground">
+                        {bsaAdjustedGfr} <span className="text-sm font-normal text-muted-foreground">mL/min</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Mosteller BSA {bsa} m² · indexed × (BSA / 1.73). KDIGO staging uses the indexed value.
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-start sm:items-end gap-1">
                   <Badge className={gStage.color}>
