@@ -241,9 +241,9 @@ const AppHeader = ({ title }: { title: string }) => {
 };
 
 const PageShell = ({ title, children }: { title: string; children: ReactNode }) => (
-  <div className="min-h-screen flex flex-col w-full">
+  <div className="min-h-screen flex flex-col w-full min-w-0 overflow-x-clip">
     <AppHeader title={title} />
-    <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-4xl mx-auto w-full">
+    <main className="flex-1 overflow-y-auto overflow-x-clip p-4 md:p-6 max-w-4xl mx-auto w-full min-w-0">
       <LabAutoCalculator />
       {children}
     </main>

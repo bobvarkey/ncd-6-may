@@ -953,7 +953,7 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-clip">
       <Seo
         title="Clinical Tools — Evidence-Based Decision Support"
         description="Fast, evidence-based calculators and algorithms for diabetes, hypertension, lipids, renal dosing, infections, and more — designed for the point of care."
@@ -981,7 +981,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-8 pb-16 space-y-8">
+      <main className="max-w-6xl mx-auto px-6 py-8 pb-16 space-y-8 min-w-0">
         {/* Quick Access — one-click jumps to core sections */}
         <QuickAccessPanel />
 
@@ -995,18 +995,18 @@ export default function Home() {
 
         {/* ── Tabbed topic navigation ── */}
         <Tabs defaultValue="quick-actions">
-          <TabsList className="w-full h-auto flex flex-wrap justify-start gap-1.5 overflow-x-auto p-1.5 bg-muted/40">
-            <TabsTrigger value="quick-actions" className={cn("flex-1 min-w-[120px] h-auto py-2", ENTRY_TONES.violet.tab)}>
-              <Calculator className="h-4 w-4 mr-1.5" /> Quick Actions
+          <TabsList className="w-full max-w-full min-w-0 h-auto flex flex-wrap justify-start gap-1.5 p-1.5 bg-muted/40">
+            <TabsTrigger value="quick-actions" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.violet.tab)}>
+              <Calculator className="h-4 w-4 mr-1.5 shrink-0" /> Quick Actions
             </TabsTrigger>
-            <TabsTrigger value="cardiometabolic" className={cn("flex-1 min-w-[140px] h-auto py-2", ENTRY_TONES.rose.tab)}>
-              <Heart className="h-4 w-4 mr-1.5" /> Cardiometabolic & Renal
+            <TabsTrigger value="cardiometabolic" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.rose.tab)}>
+              <Heart className="h-4 w-4 mr-1.5 shrink-0" /> Cardiometabolic & Renal
             </TabsTrigger>
-            <TabsTrigger value="specialty" className={cn("flex-1 min-w-[120px] h-auto py-2", ENTRY_TONES.emerald.tab)}>
-              <Dna className="h-4 w-4 mr-1.5" /> Specialty Medicine
+            <TabsTrigger value="specialty" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.emerald.tab)}>
+              <Dna className="h-4 w-4 mr-1.5 shrink-0" /> Specialty Medicine
             </TabsTrigger>
-            <TabsTrigger value="infections" className={cn("flex-1 min-w-[140px] h-auto py-2", ENTRY_TONES.amber.tab)}>
-              <Bug className="h-4 w-4 mr-1.5" /> Infections & General
+            <TabsTrigger value="infections" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.amber.tab)}>
+              <Bug className="h-4 w-4 mr-1.5 shrink-0" /> Infections & General
             </TabsTrigger>
           </TabsList>
 
@@ -1161,7 +1161,7 @@ export default function Home() {
         {/* Quick Actions */}
         <section className="pt-4 border-t border-border">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-success/100" />
                 ADA Guidelines 2024

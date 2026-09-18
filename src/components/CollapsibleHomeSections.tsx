@@ -46,7 +46,7 @@ export function CollapsibleHomeSections<T extends CollapsibleHomeSection>({
           <AccordionItem key={section.id} value={section.id} className="border-none">
             <AccordionTrigger
               className={cn(
-                "group/section min-h-11 gap-2 justify-start rounded-lg py-2.5 px-2 -mx-2",
+                "group/section min-h-11 min-w-0 gap-2 justify-start rounded-lg py-2.5 px-1",
                 "hover:no-underline hover:bg-muted/40",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 "[&>svg]:h-4 [&>svg]:w-4 [&>svg]:text-muted-foreground",
@@ -66,7 +66,7 @@ export function CollapsibleHomeSections<T extends CollapsibleHomeSection>({
                   <Icon className="h-3.5 w-3.5" />
                 </span>
               ) : null}
-              <span className="text-sm font-semibold text-foreground/80 uppercase tracking-wider text-left">
+              <span className="min-w-0 text-sm font-semibold text-foreground/80 uppercase tracking-wider text-left">
                 {section.label}
               </span>
               <span className="flex-1 h-px bg-border/60" aria-hidden />

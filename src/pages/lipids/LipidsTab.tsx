@@ -159,7 +159,7 @@ export default function LipidsTab() {
         </div>
 
         {/* Quick Navigation Tabs — sticky at top */}
-        <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 -mx-4 px-4 mb-4">
+        <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 w-full min-w-0 mb-4">
           <div className="flex flex-wrap gap-1.5">
             {sectionOrder.map((id) => {
               const section = sections.find(s => s.id === id)!;

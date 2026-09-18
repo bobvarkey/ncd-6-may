@@ -80,7 +80,7 @@ export default function Anemia() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground overflow-x-clip">
       {/* Header */}
       <header className="bg-card border-b border-border shadow-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
@@ -94,7 +94,7 @@ export default function Anemia() {
             </div>
           </div>
 
-          <nav className="flex gap-1 overflow-x-auto" aria-label="Hematology sections">
+          <nav className="flex gap-1 overflow-x-auto max-w-full min-w-0 overscroll-x-contain" aria-label="Hematology sections">
             {BLOOD_TABS.map(({ tab, label }) => {
               const isActive = activeTab === tab;
               return (

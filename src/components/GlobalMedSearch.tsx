@@ -339,9 +339,9 @@ export function GlobalMedSearch() {
   return (
     <div
       ref={wrapRef}
-      className="fixed top-0 left-0 right-0 z-[60] h-12 border-b border-border bg-card/95 backdrop-blur-md shadow-sm relative"
+      className="fixed top-0 left-0 right-0 z-[60] h-12 border-b border-border bg-card/95 backdrop-blur-md shadow-sm overflow-hidden"
     >
-      <div className="flex items-center h-full max-w-7xl mx-auto px-4 gap-3">
+      <div className="flex items-center h-full max-w-7xl mx-auto px-4 gap-3 min-w-0">
         <Search className="h-4 w-4 text-primary shrink-0" />
         <input
           type="text"
@@ -352,7 +352,7 @@ export function GlobalMedSearch() {
           }}
           onFocus={() => setOpen(true)}
           placeholder="Search any topic — reninoma, hypothyroidism, medications…"
-          className="flex-1 bg-transparent py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none"
+          className="min-w-0 flex-1 bg-transparent py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none"
           aria-label="Search medications"
           onKeyDown={(e) => {
             if (e.key === "Enter" && q.trim()) {

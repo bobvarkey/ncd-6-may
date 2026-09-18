@@ -637,7 +637,7 @@ export default function IronReplacementCalculator() {
   const colors = calcResult ? dxColors[calcResult.dx.label] ?? dxColors.unknown : dxColors.unknown;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-clip">
       {/* Sticky Header */}
       <div className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto max-w-4xl px-4">
@@ -662,7 +662,7 @@ export default function IronReplacementCalculator() {
               </Button>
             </div>
           </div>
-          <div className="flex gap-0.5 pb-2 overflow-x-auto no-print">
+          <div className="flex gap-0.5 pb-2 overflow-x-auto no-print min-w-0 max-w-full overscroll-x-contain">
             {TABS.map((tab) => (
               <button
                 key={tab.key}
