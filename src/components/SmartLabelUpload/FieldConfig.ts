@@ -114,10 +114,10 @@ export const CBC_FIELDS: CalculatorFields = {
 // ── Liver / LFT ──
 export const LIVER_FIELDS: CalculatorFields = {
   id: "liver",
-  label: "Liver Auto-Calculator",
+  label: "Liver Calculator",
   fields: [
     { key: "age", label: "Age", unit: "years", keywords: ["age", "years old"], regex: /age[:\s]*([\d]+)/i },
-    { key: "sex", label: "Sex", unit: "", keywords: ["sex", "gender"], regex: /(?:sex|gender)[:\s]*([MmFf])|\b([Mm]ale|[Ff]emale)\b/i },
+    { key: "sex", label: "Sex", unit: "", keywords: ["sex", "gender"], regex: /(?:sex|gender)[:\s]*([MmFf][a-z]*)|\b([Mm]ale|[Ff]emale)\b/i },
     { key: "bmi", label: "BMI", unit: "", keywords: ["bmi", "body mass index"], regex: /bmi[:\s]*([\d.]+)/i },
     { key: "ast", label: "AST", unit: "U/L", keywords: ["ast", "sgot", "aspartate aminotransferase"], regex: /(?:ast|sgot|aspartate aminotransferase)[:\s]*([\d,.]+)/i },
     { key: "alt", label: "ALT", unit: "U/L", keywords: ["alt", "sgpt", "alanine aminotransferase"], regex: /(?:alt|sgpt|alanine aminotransferase)[:\s]*([\d,.]+)/i },
@@ -125,7 +125,7 @@ export const LIVER_FIELDS: CalculatorFields = {
     { key: "ggt", label: "GGT", unit: "U/L", keywords: ["ggt", "gamma gt", "gamma glutamyl transferase"], regex: /(?:ggt|gamma.?glutamyl|gamma gt)[:\s]*([\d,.]+)/i },
     { key: "bili", label: "Bilirubin", unit: "mg/dL", keywords: ["bilirubin", "bili", "total bilirubin"], regex: /(?:total bilirubin|bilirubin|bili)[:\s]*([\d.]+)/i },
     { key: "alb", label: "Albumin", unit: "g/dL", keywords: ["albumin", "alb", "serum albumin"], regex: /(?:albumin|serum albumin|alb)[:\s]*([\d.]+)/i },
-    { key: "plt", label: "Platelets", unit: "K/µL", keywords: ["platelet", "plt", "platelet count"], regex: /(?:platelet|plt|platelet count)[:\s]*([\d,]+)/i },
+    { key: "plt", label: "Platelets", unit: "K/µL", keywords: ["platelets", "platelet", "plt", "platelet count"], regex: /(?:platelets?|plt|platelet count)[:\s]*([\d]+(?:,\d{3})*)/i },
     { key: "inr", label: "INR", unit: "", keywords: ["inr", "international normalized ratio"], regex: /(?:inr|international normalized ratio)[:\s]*([\d.]+)/i },
     { key: "creatinine", label: "Creatinine", unit: "mg/dL", keywords: ["creatinine", "cr", "serum creatinine"], regex: /(?:creatinine|serum creatinine)[:\s]*([\d.]+)/i },
     { key: "sodium", label: "Sodium", unit: "mEq/L", keywords: ["sodium", "na", "serum sodium"], regex: /(?:sodium|serum sodium|na\+?)[:\s]*([\d.]+)/i },

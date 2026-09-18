@@ -129,7 +129,7 @@ const CLINICAL_TOPICS = [
   { id: "lipid-panel", label: "Lipid Panel Analysis", path: "/lipid-panel", keywords: ["lipid panel", "lipid profile", "cholesterol panel"] },
 
   // ── Liver ──
-  { id: "liver", label: "Liver Overview", path: "/liver", keywords: ["liver", "hepatic", "lft", "liver enzymes", "alt", "ast"] },
+  { id: "liver", label: "Liver", path: "/liver", keywords: ["liver", "hepatic", "lft", "liver enzymes", "alt", "ast", "fib-4", "fib4", "apri", "nfs", "meld", "child-pugh", "auto-calc", "autocalc", "masld", "nafld"] },
 
   // ── Anemia / Blood ──
   { id: "anemia", label: "Anemia Workup", path: "/anemia", keywords: ["anemia", "hemoglobin", "mcv", "anemia evaluation"] },

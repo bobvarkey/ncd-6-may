@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,13 +7,25 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Printer, Activity, Settings2, ChevronDown, Download, ImageIcon, Table2 } from "lucide-react";
+import { Copy, Printer, Activity, Settings2, ChevronDown, Download, ImageIcon, Table2, Calculator, Clipboard } from "lucide-react";
 import { downloadTextFile, copyToClipboard, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
+import {
+  AASLD_LIVER_CUTOFFS,
+  calcChildPugh,
+  calcMeld3,
+  childPughClass,
+  classifyAPRI,
+  classifyFIB4,
+  classifyNFS,
+  patternFromLFTs,
+  type LiverCutoffs,
+} from "@/lib/liver-scores";
 import { toast } from "@/hooks/use-toast";
 import ZoomableImage from "@/components/ZoomableImage";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 import MasldWorkup from "@/pages/liver/MasldWorkup";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
+import { SmartLabelUpload, LIVER_FIELDS } from "@/components/SmartLabelUpload";
 
 
 // --- Range dropdown helper ---
@@ -35,42 +47,41 @@ const RANGES: Record<string, Range[]> = {
 function RangeOrExact({
   id, label, unit, value, onChange, ranges,
 }: { id: string; label: string; unit?: string; value: string; onChange: (v: string) => void; ranges: Range[] }) {
+  const matchesRange = ranges.some((r) => String(r.value) === value);
   const [mode, setMode] = useState<"range" | "exact">("range");
+  // Imported exact labs (e.g. platelets 180) are not range options — never mount a Select
+  // with a non-option value, or Radix will clear the shared input.
+  const showExact = mode === "exact" || Boolean(value && !matchesRange);
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <Label htmlFor={id} className="text-xs">{label} {unit && <span className="text-muted-foreground">({unit})</span>}</Label>
         <button type="button" onClick={() => setMode(m => m === "range" ? "exact" : "range")}
-          className="text-xs text-primary hover:underline">{mode === "range" ? "exact" : "range"}</button>
+          className="text-xs text-primary hover:underline">{showExact ? "range" : "exact"}</button>
       </div>
-      {mode === "range" ? (
+      {showExact ? (
+        <Input id={id} type="text" inputMode="decimal" className="h-9" value={value} onChange={e => onChange(e.target.value)} />
+      ) : (
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger id={id} className="h-9"><SelectValue placeholder="Select range" /></SelectTrigger>
           <SelectContent>{ranges.map(r => <SelectItem key={r.label} value={String(r.value)}>{r.label}</SelectItem>)}</SelectContent>
         </Select>
-      ) : (
-        <Input id={id} type="text" inputMode="decimal" className="h-9" value={value} onChange={e => onChange(e.target.value)} />
       )}
     </div>
   );
 }
 
 // --- Cutoff presets ---
-type Cutoffs = {
-  fib4Low: number; fib4High: number; fib4LowElderly: number;
-  apriLow: number; apriHigh: number;
-  nfsLow: number; nfsHigh: number;
-};
 type PresetKey = "aasld" | "easl" | "who" | "custom";
-const PRESETS: Record<Exclude<PresetKey, "custom">, { label: string; cutoffs: Cutoffs; note: string }> = {
+const PRESETS: Record<Exclude<PresetKey, "custom">, { label: string; cutoffs: LiverCutoffs; note: string }> = {
   aasld: {
     label: "AASLD / AGA (default)",
-    cutoffs: { fib4Low: 1.3, fib4High: 2.67, fib4LowElderly: 2.0, apriLow: 0.5, apriHigh: 1.5, nfsLow: -1.455, nfsHigh: 0.676 },
+    cutoffs: AASLD_LIVER_CUTOFFS,
     note: "Standard US primary-care thresholds; age-adjusted FIB-4 ≥65y.",
   },
   easl: {
     label: "EASL (MASLD)",
-    cutoffs: { fib4Low: 1.3, fib4High: 2.67, fib4LowElderly: 2.0, apriLow: 0.5, apriHigh: 1.5, nfsLow: -1.455, nfsHigh: 0.676 },
+    cutoffs: AASLD_LIVER_CUTOFFS,
     note: "EASL CPG 2024 — same FIB-4 cut-offs; refer indeterminate/high to FibroScan.",
   },
   who: {
@@ -80,42 +91,7 @@ const PRESETS: Record<Exclude<PresetKey, "custom">, { label: string; cutoffs: Cu
   },
 };
 
-// --- Score logic ---
-type Risk = "low" | "indeterminate" | "high" | null;
-
-function classifyFIB4(age: number, ast: number, alt: number, plt: number, c: Cutoffs): { score: number; risk: Risk } {
-  if (!age || !ast || !alt || !plt) return { score: NaN, risk: null };
-  const score = (age * ast) / (plt * Math.sqrt(alt));
-  const low = age >= 65 ? c.fib4LowElderly : c.fib4Low;
-  const risk: Risk = score < low ? "low" : score <= c.fib4High ? "indeterminate" : "high";
-  return { score, risk };
-}
-function classifyAPRI(ast: number, astULN: number, plt: number, c: Cutoffs): { score: number; risk: Risk } {
-  if (!ast || !astULN || !plt) return { score: NaN, risk: null };
-  const score = ((ast / astULN) * 100) / plt;
-  const risk: Risk = score < c.apriLow ? "low" : score <= c.apriHigh ? "indeterminate" : "high";
-  return { score, risk };
-}
-function classifyNFS(age: number, bmi: number, hyperglycemia: boolean, plt: number, alb: number, ast: number, alt: number, c: Cutoffs): { score: number; risk: Risk } {
-  if (!age || !bmi || !plt || !alb || !ast || !alt) return { score: NaN, risk: null };
-  const ifg = hyperglycemia ? 1 : 0;
-  const score = -1.675 + 0.037 * age + 0.094 * bmi + 1.13 * ifg + 0.99 * (ast / alt) - 0.013 * plt - 0.66 * alb;
-  const risk: Risk = score < c.nfsLow ? "low" : score <= c.nfsHigh ? "indeterminate" : "high";
-  return { score, risk };
-}
-function patternFromLFTs(ast: number, alt: number, alp: number, alpULN = 120): "hepatocellular" | "cholestatic" | "mixed" | "normal" | "unknown" {
-  if (!ast && !alt && !alp) return "unknown";
-  const altULN = 40;
-  const altR = alt / altULN;
-  const alpR = alp / alpULN;
-  if (altR < 1 && alpR < 1) return "normal";
-  const R = altR / Math.max(alpR, 0.01);
-  if (R >= 5) return "hepatocellular";
-  if (R <= 2) return "cholestatic";
-  return "mixed";
-}
-
-const riskBadge = (r: Risk) => {
+const riskBadge = (r: "low" | "indeterminate" | "high" | null) => {
   if (r === "low") return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Low risk</Badge>;
   if (r === "indeterminate") return <Badge className="bg-warning/100/15 text-warning border-amber-500/30">Indeterminate</Badge>;
   if (r === "high") return <Badge className="bg-destructive/100/15 text-destructive border-red-500/30">High risk</Badge>;
@@ -169,13 +145,14 @@ export default function LiverMiniApp() {
 
   // Cutoffs
   const [preset, setPreset] = useState<PresetKey>("aasld");
-  const [customCutoffs, setCustomCutoffs] = useState<Cutoffs>(PRESETS.aasld.cutoffs);
+  const [customCutoffs, setCustomCutoffs] = useState<LiverCutoffs>(AASLD_LIVER_CUTOFFS);
   const [showCutoffs, setShowCutoffs] = useState(false);
+  const [showAutoCalc, setShowAutoCalc] = useState(true);
   const [showInfographic, setShowInfographic] = useState(false);
   const [showMashTable, setShowMashTable] = useState(false);
   const [showMasldOverview, setShowMasldOverview] = useState(false);
   const cutoffs = preset === "custom" ? customCutoffs : PRESETS[preset].cutoffs;
-  const setCutoff = (k: keyof Cutoffs, v: string) => {
+  const setCutoff = (k: keyof LiverCutoffs, v: string) => {
     setPreset("custom");
     setCustomCutoffs(c => ({ ...c, [k]: parseClinicalValue(v) ?? 0 }));
   };
@@ -191,24 +168,24 @@ export default function LiverMiniApp() {
   const alcohol = useMemo(() => alcoholTier(sex, n(drinksWk)), [sex, drinksWk]);
   const meld = useMemo(() => {
     if (!bili || !inr || !creatinine || !sodium || !alb || !sex) return NaN;
-    const bilirubin = Math.max(1, n(bili));
-    const normalizedInr = Math.max(1, n(inr));
-    const cr = Math.min(3, Math.max(1, n(creatinine)));
-    const na = Math.min(137, Math.max(125, n(sodium)));
-    const albumin = Math.min(3.5, Math.max(1.5, n(alb)));
-    return Math.max(6, Math.min(40, Math.round(
-      1.33 * (sex === "female" ? 1 : 0) + 4.56 * Math.log(bilirubin)
-      + 0.82 * (137 - na) - 0.24 * (137 - na) * Math.log(bilirubin)
-      + 9.09 * Math.log(normalizedInr) + 11.14 * Math.log(cr)
-      + 1.85 * (3.5 - albumin) - 1.83 * (3.5 - albumin) * Math.log(cr) + 6,
-    )));
+    return calcMeld3({
+      bilirubin: n(bili),
+      inr: n(inr),
+      creatinine: n(creatinine),
+      sodium: n(sodium),
+      albumin: n(alb),
+      sex,
+    });
   }, [bili, inr, creatinine, sodium, alb, sex]);
   const childPugh = useMemo(() => {
     if (!bili || !alb || !inr) return NaN;
-    const bilirubinPoints = n(bili) < 2 ? 1 : n(bili) <= 3 ? 2 : 3;
-    const albuminPoints = n(alb) > 3.5 ? 1 : n(alb) >= 2.8 ? 2 : 3;
-    const inrPoints = n(inr) < 1.7 ? 1 : n(inr) <= 2.3 ? 2 : 3;
-    return bilirubinPoints + albuminPoints + inrPoints + (ascites ? 3 : 1) + (encephalopathy ? 3 : 1);
+    return calcChildPugh({
+      bilirubin: n(bili),
+      albumin: n(alb),
+      inr: n(inr),
+      ascites,
+      encephalopathy,
+    });
   }, [bili, alb, inr, ascites, encephalopathy]);
   const scoreExplanations = [
     ["LFT pattern", "Shows whether injury is predominantly hepatocellular, cholestatic, mixed, or normal; it guides the next diagnostic tests."],
@@ -315,7 +292,7 @@ export default function LiverMiniApp() {
       `  APRI:   ${isNaN(apri.score) ? "n/a" : apri.score.toFixed(2)}  (${apri.risk ?? "n/a"})`,
       `  NFS:    ${isNaN(nfs.score)  ? "n/a" : nfs.score.toFixed(2)}  (${nfs.risk ?? "n/a"})`,
       `  MELD 3.0: ${isNaN(meld) ? "n/a" : meld}`,
-      `  Child-Pugh: ${isNaN(childPugh) ? "n/a" : `${childPugh} (${childPugh <= 6 ? "A" : childPugh <= 9 ? "B" : "C"})`}`,
+      `  Child-Pugh: ${isNaN(childPugh) ? "n/a" : `${childPugh} (${childPughClass(childPugh)})`}`,
       "",
       "SCORE SIGNIFICANCE",
       ...scoreExplanations.map(([name, explanation]) => `  ${name}: ${explanation}`),
@@ -326,6 +303,37 @@ export default function LiverMiniApp() {
     ];
     return lines.filter(Boolean).join("\n");
   };
+
+  const handleParsed = useCallback((values: Record<string, string>) => {
+    if (values.age) setAge(values.age);
+    if (values.sex) {
+      const v = values.sex.toLowerCase();
+      setSex(v.startsWith("m") ? "male" : v.startsWith("f") ? "female" : v);
+    }
+    if (values.bmi) setBmi(values.bmi);
+    if (values.ast) setAst(values.ast);
+    if (values.alt) setAlt(values.alt);
+    if (values.alp) setAlp(values.alp);
+    if (values.ggt) setGgt(values.ggt);
+    if (values.bili) setBili(values.bili);
+    if (values.alb) setAlb(values.alb);
+    if (values.plt) setPlt(values.plt);
+    if (values.inr) setInr(values.inr);
+    if (values.creatinine) setCreatinine(values.creatinine);
+    if (values.sodium) setSodium(values.sodium);
+    toast({ title: "Values imported", description: `${Object.keys(values).length} fields auto-filled from lab text.` });
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash.replace("#", "");
+    if (hash !== "auto-calc") return;
+    setShowAutoCalc(true);
+    const t = window.setTimeout(() => {
+      document.getElementById("auto-calc")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+    return () => window.clearTimeout(t);
+  }, []);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(buildSummary());
@@ -355,7 +363,7 @@ export default function LiverMiniApp() {
             <CardTitle className="text-xl">Liver Test Interpretation — Primary Care</CardTitle>
           </div>
           <CardDescription>
-            Abnormal LFT pathway with FIB-4 (primary), APRI + NAFLD-FS companions. Configurable cut-offs, viral hepatitis & alcohol logic.
+            Paste a lab report or enter values. FIB-4 (primary), APRI + NAFLD-FS companions, MELD 3.0 and Child-Pugh. Configurable cut-offs, viral hepatitis & alcohol logic.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -364,6 +372,43 @@ export default function LiverMiniApp() {
         FIB-4 is the most validated primary care triage tool. 
         Always adjust for age (≥65y threshold is 2.0) and confirm indeterminate results with a second-line test like FibroScan or ELF.
       </TakeHomeMessage>
+
+      <Collapsible open={showAutoCalc} onOpenChange={setShowAutoCalc}>
+        <Card id="auto-calc" className="scroll-mt-24 border-primary/40">
+          <CollapsibleTrigger asChild>
+            <CardHeader className="py-3 cursor-pointer hover:bg-accent/30 transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Calculator className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-sm">Lab auto-calc — upload or paste</CardTitle>
+                </div>
+                <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showAutoCalc ? "rotate-180" : ""}`} />
+              </div>
+              <CardDescription className="text-xs">
+                Parser auto-fills the shared LFT inputs below and updates FIB-4, APRI, NFS, LFT pattern, MELD 3.0, and Child-Pugh.
+              </CardDescription>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="space-y-4">
+              <SmartLabelUpload
+                fields={LIVER_FIELDS.fields}
+                onParse={handleParsed}
+                existingValues={{ age, sex, bmi, ast, alt, alp, ggt, bili, alb, plt, inr, creatinine, sodium }}
+              />
+              <div className="rounded-lg border bg-muted/30 p-3 space-y-1">
+                <div className="text-sm font-medium flex items-center gap-2">
+                  <Clipboard className="h-4 w-4 text-primary" />
+                  Quick paste example
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Try pasting: “Age 58, Male. AST 45 U/L, ALT 38 U/L, ALP 120 U/L, Bilirubin 1.2 mg/dL, Albumin 3.8 g/dL, Platelets 180, INR 1.1, Creatinine 0.9, Sodium 138.”
+                </p>
+              </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
       <Card className="border-primary/40">
         <CardHeader className="py-3">
@@ -742,7 +787,7 @@ export default function LiverMiniApp() {
             </div>
             <div className="p-3 rounded-lg border bg-card/60">
               <div className="text-xs uppercase text-muted-foreground">Child-Pugh</div>
-              <div className="text-sm font-semibold mt-1">{isNaN(childPugh) ? "—" : `${childPugh} (${childPugh <= 6 ? "A" : childPugh <= 9 ? "B" : "C"})`}</div>
+              <div className="text-sm font-semibold mt-1">{isNaN(childPugh) ? "—" : `${childPugh} (${childPughClass(childPugh)})`}</div>
               <div className="text-xs text-muted-foreground mt-1">{scoreExplanations[5][1]}</div>
             </div>
           </div>
