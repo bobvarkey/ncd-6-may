@@ -46,10 +46,13 @@ function tryParseField(text: string, field: FieldDef): string | null {
     // Find first non-undefined capture group
     for (let i = 1; i < match.length; i++) {
       if (match[i] !== undefined) {
-        let val = parseFloat(match[i].replace(/,/g, ""));
-        if (isNaN(val)) continue;
-        if (field.transform) val = field.transform(val);
-        return String(val);
+        const token = match[i].replace(/,/g, "").trim();
+        const val = parseFloat(token);
+        if (!isNaN(val)) {
+          return String(field.transform ? field.transform(val) : val);
+        }
+        // Non-numeric captures used by liver sex (male/female)
+        if (/^(male|female|m|f)$/i.test(token)) return token;
       }
     }
   }

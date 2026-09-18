@@ -316,7 +316,7 @@ const App = () => {
           <Route path="/hypertension" element={withNav(<Hypertension />, "Hypertension")} />
           <Route path="/lipids" element={withNav(<Lipids />, "Lipids")} />
           <Route path="/liver" element={withNav(<Liver />, "Liver")} />
-          <Route path="/liver/auto-calc" element={<Navigate to="/liver#auto-calc" replace />} />
+          <Route path="/liver/auto-calc" element={<Navigate to={{ pathname: "/liver", hash: "auto-calc" }} replace />} />
           <Route path="/anemia" element={withNav(<Anemia />, "Anemia")} />
           <Route path="/diabetes/assessment" element={withNav(<DiabetesAssessment />, "Diabetes Assessment")} />
           <Route path="/diabetes/overview" element={withNav(<DiabetesOverview />, "Diabetes Overview")} />

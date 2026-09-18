@@ -140,3 +140,19 @@ describe("Liver scores (existing app formulas)", () => {
     expect(classifyNFS(58, 0, false, 180, 3.8, 45, 38, aasld).risk).toBeNull();
   });
 });
+
+describe("Liver lab paste example (unified auto-calc)", () => {
+  const sample =
+    "Age 58, Male. AST 45 U/L, ALT 38 U/L, ALP 120 U/L, Bilirubin 1.2 mg/dL, Albumin 3.8 g/dL, Platelets 180, INR 1.1, Creatinine 0.9, Sodium 138.";
+
+  it("extracts platelets (plural) and sex from the published paste example", async () => {
+    const { LIVER_FIELDS } = await import("@/components/SmartLabelUpload/FieldConfig");
+    const byKey = Object.fromEntries(LIVER_FIELDS.fields.map((f) => [f.key, f]));
+    expect(sample.match(byKey.plt.regex)?.[1]).toBe("180");
+    expect(sample.match(byKey.age.regex)?.[1]).toBe("58");
+    expect(sample.match(byKey.ast.regex)?.[1]).toBe("45");
+    expect(sample.match(byKey.alt.regex)?.[1]).toBe("38");
+    const sex = sample.match(byKey.sex.regex);
+    expect(sex?.[1] ?? sex?.[2]).toMatch(/male/i);
+  });
+});

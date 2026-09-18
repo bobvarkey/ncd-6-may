@@ -48,26 +48,24 @@ function RangeOrExact({
   id, label, unit, value, onChange, ranges,
 }: { id: string; label: string; unit?: string; value: string; onChange: (v: string) => void; ranges: Range[] }) {
   const matchesRange = ranges.some((r) => String(r.value) === value);
-  const [mode, setMode] = useState<"range" | "exact">(value && !matchesRange ? "exact" : "range");
-  useEffect(() => {
-    if (value && !ranges.some((r) => String(r.value) === value)) {
-      setMode("exact");
-    }
-  }, [value, ranges]);
+  const [mode, setMode] = useState<"range" | "exact">("range");
+  // Imported exact labs (e.g. platelets 180) are not range options — never mount a Select
+  // with a non-option value, or Radix will clear the shared input.
+  const showExact = mode === "exact" || Boolean(value && !matchesRange);
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <Label htmlFor={id} className="text-xs">{label} {unit && <span className="text-muted-foreground">({unit})</span>}</Label>
         <button type="button" onClick={() => setMode(m => m === "range" ? "exact" : "range")}
-          className="text-xs text-primary hover:underline">{mode === "range" ? "exact" : "range"}</button>
+          className="text-xs text-primary hover:underline">{showExact ? "range" : "exact"}</button>
       </div>
-      {mode === "range" ? (
+      {showExact ? (
+        <Input id={id} type="text" inputMode="decimal" className="h-9" value={value} onChange={e => onChange(e.target.value)} />
+      ) : (
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger id={id} className="h-9"><SelectValue placeholder="Select range" /></SelectTrigger>
           <SelectContent>{ranges.map(r => <SelectItem key={r.label} value={String(r.value)}>{r.label}</SelectItem>)}</SelectContent>
         </Select>
-      ) : (
-        <Input id={id} type="text" inputMode="decimal" className="h-9" value={value} onChange={e => onChange(e.target.value)} />
       )}
     </div>
   );
