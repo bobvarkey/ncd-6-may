@@ -41,6 +41,7 @@ const SEARCH_ITEMS: SearchItem[] = [
   { id: "copd", label: "COPD/GOLD Assessment", category: "calculator", path: "/respiratory/copd", keywords: ["asthma", "gold", "copd", "lung function"] },
   { id: "anemia", label: "Anemia Workup", category: "calculator", path: "/anemia", keywords: ["hemoglobin", "anemia", "mcv", "iron deficiency"] },
   { id: "thyroid", label: "Thyroid Calculator", category: "calculator", path: "/thyroid", keywords: ["tsh", "thyroid", "t4", "t3"] },
+  { id: "steroid-taper", label: "Steroid Taper", category: "calculator", path: "/steroid-taper", keywords: ["steroid", "taper", "glucocorticoid", "prednisolone", "prednisone", "adrenal", "cortisol", "hpa"] },
   { id: "iron", label: "Iron Calculator", category: "calculator", path: "/anemia?tab=iron", keywords: ["ferritin", "iron", "tsat", "iron deficiency", "ganzoni", "iron deficit"] },
   // Guidelines (placeholder - could expand)
   { id: "ada-guidelines", label: "ADA Standards of Care 2024", category: "guideline", path: "/about", keywords: ["diabetes", "guideline"] },

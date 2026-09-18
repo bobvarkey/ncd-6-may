@@ -29,6 +29,7 @@ const entries: Entry[] = [
   { path: "/infections", priority: "0.8", changefreq: "monthly" },
   { path: "/adult-vaccinations", priority: "0.7", changefreq: "monthly" },
   { path: "/thyroid", priority: "0.7", changefreq: "monthly" },
+  { path: "/steroid-taper", priority: "0.7", changefreq: "monthly" },
   { path: "/fatigue", priority: "0.7", changefreq: "monthly" },
   { path: "/vitamin-d", priority: "0.7", changefreq: "monthly" },
   { path: "/women-health", priority: "0.7", changefreq: "monthly" },

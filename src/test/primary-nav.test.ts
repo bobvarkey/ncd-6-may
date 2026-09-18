@@ -89,4 +89,12 @@ describe("homepage primary navigation", () => {
       .map((i) => i.label);
     expect(labels).toEqual(["Iron Calculator"]);
   });
+
+  it("publishes the steroid taper destination once", () => {
+    const items = PRIMARY_NAV_SECTIONS.flatMap((s) => s.items).filter(
+      (i) => /steroid|glucocorticoid|taper/i.test(i.label) || i.path.includes("steroid"),
+    );
+    expect(items.map((i) => i.path)).toEqual(["/steroid-taper"]);
+    expect(items.map((i) => i.label)).toEqual(["Steroid Taper"]);
+  });
 });

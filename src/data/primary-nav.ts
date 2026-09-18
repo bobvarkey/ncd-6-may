@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Activity, AirVent, Bandage, BookOpen, Bone, Bug, Calculator, Dna, Droplet, Droplets,
   Eye, Filter, Flame, Gem, Heart, Image, Microscope, Moon, Pill, Search, Shield,
-  Stethoscope, Sun, Syringe, Thermometer, Timer, User, UtensilsCrossed, Weight, Zap,
+  Stethoscope, Sun, Syringe, Thermometer, Timer, TrendingDown, User, UtensilsCrossed, Weight, Zap,
 } from "lucide-react";
 import type { EntryTone } from "@/lib/entry-tones";
 
@@ -35,6 +35,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/liver", label: "Liver", icon: Dna, tone: "lime", keywords: "masld nafld" },
       { path: "/liver/auto-calc", label: "Liver Auto-Calc", icon: Calculator, tone: "emerald" },
       { path: "/thyroid", label: "Thyroid", icon: Microscope, tone: "orange", keywords: "tsh" },
+      { path: "/steroid-taper", label: "Steroid Taper", icon: TrendingDown, tone: "amber", keywords: "glucocorticoid prednisolone adrenal hpa" },
       { path: "/obesity/bmi-calculator", label: "Body weight issues", icon: Weight, tone: "violet", keywords: "bmi" },
       { path: "/obesity/glp1-dosing", label: "GLP-1 Doses & Schedules", icon: Syringe, tone: "indigo", keywords: "semaglutide tirzepatide" },
       { path: "/glp1-screening", label: "GLP-1 Screening", icon: Eye, tone: "sky", keywords: "naion retinopathy" },
