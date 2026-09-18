@@ -25,44 +25,44 @@ describe("PrimaryNavGrid collapsible sections", () => {
     localStorage.clear();
   });
 
-  it("defaults every clinical section to open", () => {
+  it("defaults every clinical section to collapsed", () => {
     renderGrid();
 
     for (const section of PRIMARY_NAV_SECTIONS) {
-      expect(sectionTrigger(section.label)).toHaveAttribute("aria-expanded", "true");
+      expect(sectionTrigger(section.label)).toHaveAttribute("aria-expanded", "false");
     }
 
-    expect(screen.getByRole("link", { name: /diabetes/i })).toBeVisible();
-    expect(screen.getByRole("link", { name: /hyponatremia/i })).toBeVisible();
+    expect(screen.queryByRole("link", { name: /diabetes/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /hyponatremia/i })).not.toBeInTheDocument();
   });
 
-  it("toggles a section closed and open from its heading button", () => {
+  it("toggles a section open and closed from its heading button", () => {
     renderGrid();
     const trigger = sectionTrigger("Cardiometabolic & endocrine");
 
     expect(trigger.tagName).toBe("BUTTON");
-    expect(screen.getByRole("link", { name: /diabetes/i })).toBeVisible();
-
-    fireEvent.click(trigger);
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByRole("link", { name: /diabetes/i })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /hyponatremia/i })).toBeVisible();
 
     fireEvent.click(trigger);
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByRole("link", { name: /diabetes/i })).toBeVisible();
+    expect(screen.queryByRole("link", { name: /hyponatremia/i })).not.toBeInTheDocument();
+
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("link", { name: /diabetes/i })).not.toBeInTheDocument();
   });
 
   it("persists open/closed state in localStorage", () => {
     renderGrid();
-    fireEvent.click(sectionTrigger("Renal, blood & electrolytes"));
+    fireEvent.click(sectionTrigger("Cardiometabolic & endocrine"));
 
     const stored = JSON.parse(localStorage.getItem(CLINICAL_SECTIONS_STORAGE_KEY) ?? "{}");
-    expect(stored["renal-blood"]).toBe(false);
     expect(stored.core).toBe(true);
+    expect(stored["renal-blood"]).toBe(false);
   });
 
-  it("restores a previously collapsed section", () => {
+  it("restores a previously saved open/closed map", () => {
     localStorage.setItem(
       CLINICAL_SECTIONS_STORAGE_KEY,
       JSON.stringify({
@@ -82,6 +82,7 @@ describe("PrimaryNavGrid collapsible sections", () => {
 
   it("keeps deep-link tile hrefs intact", () => {
     renderGrid();
+    fireEvent.click(sectionTrigger("Renal, blood & electrolytes"));
     const renal = screen.getByRole("link", { name: /egfr calculator/i });
     expect(renal).toHaveAttribute("href", "/gfr-calculator");
 

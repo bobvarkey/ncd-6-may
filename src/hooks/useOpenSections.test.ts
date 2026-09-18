@@ -9,12 +9,18 @@ describe("useOpenSections", () => {
     localStorage.clear();
   });
 
-  it("defaults listed ids to open and treats missing keys as open", () => {
+  it("defaults listed ids to closed and treats missing keys as closed", () => {
     const { result } = renderHook(() => useOpenSections(KEY, ["a", "b"]));
-    expect(result.current.value).toEqual(["a", "b"]);
+    expect(result.current.value).toEqual([]);
   });
 
-  it("records closed sections and leaves unknown ids open", () => {
+  it("respects a saved open/closed map and defaults unknown ids to closed", () => {
+    localStorage.setItem(KEY, JSON.stringify({ a: true, b: false }));
+    const { result } = renderHook(() => useOpenSections(KEY, ["a", "b", "c"]));
+    expect(result.current.value).toEqual(["a"]);
+  });
+
+  it("records open sections and leaves unselected ids closed", () => {
     const { result } = renderHook(() => useOpenSections(KEY, ["a", "b", "c"]));
 
     act(() => {
