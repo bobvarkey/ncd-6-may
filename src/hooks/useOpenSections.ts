@@ -2,15 +2,16 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 /**
  * Persist which disclosure sections are open.
- * Missing keys default to open so newly added sections stay visible.
+ * Missing keys default to closed so first visit and newly added sections start collapsed.
+ * Saved true/false values in localStorage are respected.
  */
 export function useOpenSections(storageKey: string, ids: readonly string[]) {
   const [openMap, setOpenMap] = useLocalStorage<Record<string, boolean>>(
     storageKey,
-    Object.fromEntries(ids.map((id) => [id, true])),
+    {},
   );
 
-  const value = ids.filter((id) => openMap[id] !== false);
+  const value = ids.filter((id) => openMap[id] === true);
 
   const onValueChange = (next: string[]) => {
     const open = new Set(next);
