@@ -147,6 +147,7 @@ const CLINICAL_TOPICS = [
   { id: "hypothyroidism", label: "Hypothyroidism", path: "/thyroid", keywords: ["hypothyroidism", "low t4", "high tsh", "thyroid deficiency"] },
   { id: "hyperthyroidism", label: "Hyperthyroidism", path: "/thyroid", keywords: ["hyperthyroidism", "thyrotoxicosis", "high t4", "low tsh", "graves"] },
   { id: "thyroid-nodules", label: "Thyroid Nodules", path: "/thyroid", keywords: ["thyroid nodule", "fna", "thyroid ultrasound", "tirads"] },
+  { id: "steroid-taper", label: "Steroid Taper / Glucocorticoid Withdrawal", path: "/steroid-taper", keywords: ["steroid taper", "glucocorticoid", "prednisolone", "prednisone", "adrenal insufficiency", "hpa", "cortisol", "acth"] },
 
   // ── Obesity ──
   { id: "obesity", label: "Obesity Management", path: "/obesity/bmi-calculator", keywords: ["obesity", "bmi", "weight loss", "overweight"] },

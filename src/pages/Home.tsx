@@ -338,6 +338,7 @@ const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
       { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, tone: "rose", keywords: "basal bolus" },
       { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties, tone: "orange" },
       { title: "Iron Calculator", url: "/anemia?tab=iron", icon: Syringe, tone: "amber", keywords: "ferritin tsat ganzoni iron deficit" },
+      { title: "Steroid Taper", url: "/steroid-taper", icon: TrendingDown, tone: "orange", keywords: "glucocorticoid prednisolone adrenal insufficiency hpa cortisol" },
       { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, tone: "indigo", keywords: "semaglutide tirzepatide" },
       { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, tone: "violet", keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
       { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, tone: "sky", keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
@@ -1086,6 +1087,13 @@ export default function Home() {
                 icon={<Microscope className="h-5 w-5" />}
                 to="/thyroid"
                 tone="emerald"
+              />
+              <DiseaseCard
+                title="Steroid Taper"
+                description="Glucocorticoid withdrawal, dose-band taper, morning cortisol / HPA"
+                icon={<TrendingDown className="h-5 w-5" />}
+                to="/steroid-taper"
+                tone="amber"
               />
               <DiseaseCard
                 title="COPD / Respiratory"

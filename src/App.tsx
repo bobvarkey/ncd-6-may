@@ -138,6 +138,7 @@ const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesi
 const OpticNerveAssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/OpticNerveAssessment"));
 const GLP1ScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1Screener"));
 const ThyroidCalculator = lazyWithModuleRetry(() => import("@/calculators/thyroid/ThyroidCalculator"));
+const SteroidTaperCalculator = lazyWithModuleRetry(() => import("@/calculators/steroid/SteroidTaperCalculator"));
 const DrugCalculator = lazyWithModuleRetry(() => import("@/pages/DrugCalculator"));
 const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
 const DrugSchedule = lazyWithModuleRetry(() => import("@/pages/DrugSchedule"));
@@ -379,6 +380,7 @@ const App = () => {
           <Route path="/diet-plan" element={withNav(<DietPlanPage />, "Diet Plan")} />
           <Route path="/iron-calculator" element={<Navigate to="/anemia?tab=iron" replace />} />
           <Route path="/thyroid" element={withNav(<ThyroidCalculator />, "Thyroid")} />
+          <Route path="/steroid-taper" element={withNav(<SteroidTaperCalculator />, "Steroid Taper")} />
           <Route path="/fatigue" element={withNav(<Fatigue />, "Fatigue")} />
           <Route path="/vitamin-d" element={withNav(<VitaminD />, "Vitamin D")} />
           <Route path="/pcos" element={<Navigate to="/women-health?tab=pmos" replace />} />
