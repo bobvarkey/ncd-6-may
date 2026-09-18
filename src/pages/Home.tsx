@@ -1076,7 +1076,7 @@ export default function Home() {
             <DiseaseGroup title="Specialty Medicine" icon={<Dna className="h-3.5 w-3.5 text-emerald-400" />}>
               <DiseaseCard
                 title="Liver Disease"
-                description="NAFLD/MASLD, cirrhosis, medication adjustments"
+                description="NAFLD/MASLD, LFT auto-calc, FIB-4, MELD, Child-Pugh"
                 icon={<Dna className="h-5 w-5" />}
                 to="/liver"
                 tone="lime"

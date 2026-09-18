@@ -8,7 +8,6 @@ const FORMER_SIDEBAR_PATHS = [
   "/hypertension/secondary-htn",
   "/lipids",
   "/liver",
-  "/liver/auto-calc",
   "/thyroid",
   "/obesity/bmi-calculator",
   "/obesity/glp1-dosing",
@@ -88,6 +87,14 @@ describe("homepage primary navigation", () => {
       .filter((i) => /iron|ganzoni/i.test(i.label) || /iron|ganzoni/i.test(i.path))
       .map((i) => i.label);
     expect(labels).toEqual(["Iron Calculator"]);
+  });
+
+  it("publishes a single liver destination", () => {
+    const items = PRIMARY_NAV_SECTIONS.flatMap((s) => s.items).filter(
+      (i) => /liver|fib-4|meld|child-pugh|auto-calc/i.test(i.label) || i.path.includes("liver"),
+    );
+    expect(items.map((i) => i.path)).toEqual(["/liver"]);
+    expect(items.map((i) => i.label)).toEqual(["Liver"]);
   });
 
   it("publishes the steroid taper destination once", () => {

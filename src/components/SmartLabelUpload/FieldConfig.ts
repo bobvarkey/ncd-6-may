@@ -114,7 +114,7 @@ export const CBC_FIELDS: CalculatorFields = {
 // ── Liver / LFT ──
 export const LIVER_FIELDS: CalculatorFields = {
   id: "liver",
-  label: "Liver Auto-Calculator",
+  label: "Liver Calculator",
   fields: [
     { key: "age", label: "Age", unit: "years", keywords: ["age", "years old"], regex: /age[:\s]*([\d]+)/i },
     { key: "sex", label: "Sex", unit: "", keywords: ["sex", "gender"], regex: /(?:sex|gender)[:\s]*([MmFf])|\b([Mm]ale|[Ff]emale)\b/i },

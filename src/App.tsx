@@ -100,7 +100,6 @@ const Diabetes = lazyWithModuleRetry(() => import("@/pages/Diabetes"));
 const Hypertension = lazyWithModuleRetry(() => import("@/pages/Hypertension"));
 const Lipids = lazyWithModuleRetry(() => import("@/pages/Lipids"));
 const Liver = lazyWithModuleRetry(() => import("@/pages/Liver"));
-const LiverAutoCalc = lazyWithModuleRetry(() => import("@/pages/liver/LiverAutoCalc"));
 const Anemia = lazyWithModuleRetry(() => import("@/pages/Anemia"));
 const DiabetesAssessment = lazyWithModuleRetry(() => import("@/pages/diabetes/DiabetesAssessment"));
 const DiabetesOverview = lazyWithModuleRetry(() => import("@/pages/diabetes/DiabetesOverview"));
@@ -317,7 +316,7 @@ const App = () => {
           <Route path="/hypertension" element={withNav(<Hypertension />, "Hypertension")} />
           <Route path="/lipids" element={withNav(<Lipids />, "Lipids")} />
           <Route path="/liver" element={withNav(<Liver />, "Liver")} />
-          <Route path="/liver/auto-calc" element={withNav(<LiverAutoCalc />, "Liver Auto-Calc")} />
+          <Route path="/liver/auto-calc" element={<Navigate to="/liver#auto-calc" replace />} />
           <Route path="/anemia" element={withNav(<Anemia />, "Anemia")} />
           <Route path="/diabetes/assessment" element={withNav(<DiabetesAssessment />, "Diabetes Assessment")} />
           <Route path="/diabetes/overview" element={withNav(<DiabetesOverview />, "Diabetes Overview")} />
