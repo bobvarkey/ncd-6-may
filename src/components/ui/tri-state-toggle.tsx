@@ -30,11 +30,11 @@ export function TriStateToggle({
   required,
 }: TriStateToggleProps) {
   return (
-    <div className="space-y-2">
-      <Label className="text-sm font-medium" htmlFor={id}>
+    <div className="space-y-1.5 sm:space-y-2">
+      <Label className="text-xs sm:text-sm font-medium leading-tight block" htmlFor={id}>
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
-      <div className="flex flex-wrap gap-2" id={id} role="group" aria-label={label}>
+      <div className="flex flex-wrap gap-1.5 sm:gap-2" id={id} role="group" aria-label={label}>
         {ORDER.map((opt) => {
           const selected = value === opt;
           return (
@@ -44,19 +44,19 @@ export function TriStateToggle({
               onClick={() => onChange(opt)}
               aria-pressed={selected}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                "inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm font-medium transition-colors",
                 selected
                   ? "bg-[#e91e63] text-white shadow-sm"
                   : "bg-[#fff5f0] text-foreground hover:bg-[#ffe8dc]"
               )}
             >
-              {selected && <Check className="h-3.5 w-3.5" />}
+              {selected && <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5" />}
               {LABELS[opt]}
             </button>
           );
         })}
       </div>
-      {help && <p className="text-xs text-muted-foreground">{help}</p>}
+      {help && <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight">{help}</p>}
     </div>
   );
 }
