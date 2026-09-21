@@ -70,6 +70,15 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
     ],
   },
   {
+    id: "bone",
+    label: "Bone health",
+    tone: "rose",
+    items: [
+      { path: "/bone-health", label: "Bone Health", icon: Bone, tone: "rose", keywords: "osteoporosis fracture risk assessment romosozumab teriparatide denosumab bisphosphonate" },
+      { path: "/vitamin-d", label: "Vitamin D", icon: Sun, tone: "amber" },
+    ],
+  },
+  {
     id: "general",
     label: "Respiratory, infection & general",
     tone: "cyan",
@@ -81,7 +90,6 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/food-poisoning", label: "Food Poisoning", icon: UtensilsCrossed, tone: "orange" },
       { path: "/pep", label: "Post exposure prophylaxis (PEP)", icon: Shield, tone: "indigo" },
       { path: "/adult-vaccinations", label: "Vaccinations", icon: Syringe, tone: "teal" },
-      { path: "/vitamin-d", label: "Vitamin D", icon: Sun, tone: "amber" },
       { path: "/geriatrics", label: "Geriatrics", icon: User, tone: "violet" },
       { path: "/frailty-calculator", label: "Frailty Calculator", icon: User, tone: "fuchsia" },
       { path: "/vaccine-calculator", label: "Vaccine Calculator", icon: Syringe, tone: "emerald" },
