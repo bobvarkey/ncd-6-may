@@ -186,6 +186,18 @@ const YN_OPTS = [
   { v: "yes", l: "Yes" },
 ];
 
+function TriStateField({ label, value, onChange, required, help }: { label: string; value: YNU; onChange: (v: YNU) => void; required?: boolean; help?: string }) {
+  return (
+    <TriStateToggle
+      label={label}
+      value={value}
+      onChange={(v) => onChange(v as YNU)}
+      required={required}
+      help={help}
+    />
+  );
+}
+
 function CheckGroup({
   label,
   options,
@@ -516,13 +528,13 @@ function PreScreen() {
       <Card>
         <CardHeader className="pb-3"><CardTitle className="text-base">Hard-stop safety screen</CardTitle></CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Toggle label="Personal history of medullary thyroid carcinoma (MTC)" required value={personalMtc} onChange={(v) => setPersonalMtc(v as YNU)} options={YNU_OPTS} />
-          <Toggle label="Family history of MTC" required value={familyMtc} onChange={(v) => setFamilyMtc(v as YNU)} options={YNU_OPTS} />
-          <Toggle label="Multiple endocrine neoplasia type 2 (MEN2)" required value={men2} onChange={(v) => setMen2(v as YNU)} options={YNU_OPTS} />
-          <Toggle label="Prior serious hypersensitivity to the intended agent or excipients" required value={hypersensitivity} onChange={(v) => setHypersensitivity(v as YNU)} options={YNU_OPTS} />
-          <Toggle label="Currently pregnant" required value={pregnant} onChange={(v) => setPregnant(v as YNU)} options={YNU_OPTS} />
-          <Toggle label="Currently breastfeeding" required value={breastfeeding} onChange={(v) => setBreastfeeding(v as YNU)} options={YNU_OPTS} />
-          <Toggle label="Pregnancy planned during the treatment period" required value={pregnancyPlanned} onChange={(v) => setPregnancyPlanned(v as YNU)} options={YNU_OPTS} />
+          <TriStateField label="Personal history of medullary thyroid carcinoma (MTC)" required value={personalMtc} onChange={(v) => setPersonalMtc(v as YNU)} />
+          <TriStateField label="Family history of MTC" required value={familyMtc} onChange={(v) => setFamilyMtc(v as YNU)} />
+          <TriStateField label="Multiple endocrine neoplasia type 2 (MEN2)" required value={men2} onChange={(v) => setMen2(v as YNU)} />
+          <TriStateField label="Prior serious hypersensitivity to the intended agent or excipients" required value={hypersensitivity} onChange={(v) => setHypersensitivity(v as YNU)} />
+          <TriStateField label="Currently pregnant" required value={pregnant} onChange={(v) => setPregnant(v as YNU)} />
+          <TriStateField label="Currently breastfeeding" required value={breastfeeding} onChange={(v) => setBreastfeeding(v as YNU)} />
+          <TriStateField label="Pregnancy planned during the treatment period" required value={pregnancyPlanned} onChange={(v) => setPregnancyPlanned(v as YNU)} />
         </CardContent>
       </Card>
 
@@ -550,9 +562,9 @@ function PreScreen() {
               onChange={(v) => setInsulinSu(v as YN)}
               options={YN_OPTS}
             />
-            <Toggle label="Previous acute or chronic pancreatitis" value={pancreatitis} onChange={(v) => setPancreatitis(v as YNU)} options={YNU_OPTS} />
-            <Toggle label="Active biliary colic, cholecystitis, choledocholithiasis or cholestatic symptoms" value={biliary} onChange={(v) => setBiliary(v as YNU)} options={YNU_OPTS} />
-            <Toggle label="Active eating disorder or major psychiatric risk" value={psych} onChange={(v) => setPsych(v as YNU)} options={YNU_OPTS} />
+            <TriStateField label="Previous acute or chronic pancreatitis"  value={pancreatitis} onChange={(v) => setPancreatitis(v as YNU)} />
+            <TriStateField label="Active biliary colic, cholecystitis, choledocholithiasis or cholestatic symptoms"  value={biliary} onChange={(v) => setBiliary(v as YNU)} />
+            <TriStateField label="Active eating disorder or major psychiatric risk"  value={psych} onChange={(v) => setPsych(v as YNU)} />
             <Toggle label="Currently using another GLP-1RA or dual incretin agent" value={currentGlp1} onChange={(v) => setCurrentGlp1(v as YN)} options={YN_OPTS} />
             <Toggle
               label="Currently on a DPP-4 inhibitor (gliptin)"

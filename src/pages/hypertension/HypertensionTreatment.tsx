@@ -782,7 +782,7 @@ export default function HypertensionTreatment() {
   return (
     <div className="space-y-6">
       {/* Quick Navigation Tabs */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 -mx-4 px-4">
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 w-full min-w-0">
         <div className="flex flex-wrap gap-1.5">
           {sections.map((s) => (
             <button

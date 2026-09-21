@@ -5,6 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calculator, RotateCcw, ArrowLeftRight, Info } from "lucide-react";
+import { BsaAdjustmentFields } from "@/components/calculator/BsaAdjustmentFields";
+import {
+  adjustEgfrForBsa,
+  calculateMostellerBsa,
+  roundTo,
+  validateBsaInputs,
+} from "@/lib/egfr-bsa";
 
 type CreatinineUnit = "mgdl" | "umol";
 type Sex = "male" | "female" | null;
@@ -25,6 +32,10 @@ export interface GfrResult {
   uacr?: number;
   kdigoStage?: string;
   kdigoRisk?: string;
+  bsa?: number;
+  bsaAdjustedGfr?: number;
+  weightKg?: number;
+  heightCm?: number;
 }
 
 // KDIGO G stages
@@ -101,6 +112,7 @@ function getKdigoRisk(gfrIndex: number, aIndex: number): { label: string; color:
   };
 }
 
+
 interface GfrCalculatorProps {
   onResultChange?: (result: GfrResult | null) => void;
 }
@@ -125,7 +137,21 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
   const [uacrUnit, setUacrUnit] = useState<UacrUnit>(() => {
     try { return (localStorage.getItem("ncd_gfr_uacr_unit") as UacrUnit) || "mg_g"; } catch { return "mg_g"; }
   });
+
+  // BSA adjustment state (optional)
+  const [adjustBsa, setAdjustBsa] = useState(() => {
+    try { return localStorage.getItem("ncd_gfr_adjust_bsa") === "true"; } catch { return false; }
+  });
+  const [weightKg, setWeightKg] = useState(() => {
+    try { return localStorage.getItem("ncd_gfr_weight") || ""; } catch { return ""; }
+  });
+  const [heightCm, setHeightCm] = useState(() => {
+    try { return localStorage.getItem("ncd_gfr_height") || ""; } catch { return ""; }
+  });
+
   const [result, setResult] = useState<number | null>(null);
+  const [bsaAdjustedResult, setBsaAdjustedResult] = useState<number | null>(null);
+  const [bsa, setBsa] = useState<number | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Auto-save
@@ -135,6 +161,9 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
   useEffect(() => { localStorage.setItem("ncd_gfr_unit", unit); }, [unit]);
   useEffect(() => { localStorage.setItem("ncd_gfr_uacr", uacr); }, [uacr]);
   useEffect(() => { localStorage.setItem("ncd_gfr_uacr_unit", uacrUnit); }, [uacrUnit]);
+  useEffect(() => { localStorage.setItem("ncd_gfr_adjust_bsa", adjustBsa ? "true" : "false"); }, [adjustBsa]);
+  useEffect(() => { localStorage.setItem("ncd_gfr_weight", weightKg); }, [weightKg]);
+  useEffect(() => { localStorage.setItem("ncd_gfr_height", heightCm); }, [heightCm]);
 
   const toggleUnit = () => {
     const crVal = parseFloat(creatinine);
@@ -188,6 +217,9 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
     if (!sex) {
       newErrors.sex = "Select sex";
     }
+    if (adjustBsa) {
+      Object.assign(newErrors, validateBsaInputs(heightCm, weightKg));
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -197,6 +229,19 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
     const crMgdl = getCreatinineMgdl();
     const gfr = calculateCkdEpi(crMgdl, parseInt(age), sex!);
     setResult(gfr);
+
+    let bsaValue: number | null = null;
+    let bsaAdj: number | null = null;
+    if (adjustBsa) {
+      bsaValue = calculateMostellerBsa(parseFloat(weightKg), parseFloat(heightCm));
+      bsaAdj = adjustEgfrForBsa(gfr, bsaValue);
+      setBsa(roundTo(bsaValue, 2));
+      setBsaAdjustedResult(roundTo(bsaAdj, 1));
+    } else {
+      setBsa(null);
+      setBsaAdjustedResult(null);
+    }
+
     const stageInfo = getGfrStage(gfr);
     
     // Calculate KDIGO staging if UACR is provided
@@ -223,6 +268,10 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
       uacr: uacrMgG,
       kdigoStage,
       kdigoRisk,
+      bsa: bsaValue ?? undefined,
+      bsaAdjustedGfr: bsaAdj ?? undefined,
+      weightKg: adjustBsa ? parseFloat(weightKg) : undefined,
+      heightCm: adjustBsa ? parseFloat(heightCm) : undefined,
     });
   };
 
@@ -233,7 +282,12 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
     setUnit("mgdl");
     setUacr("");
     setUacrUnit("mg_g");
+    setAdjustBsa(false);
+    setWeightKg("");
+    setHeightCm("");
     setResult(null);
+    setBsa(null);
+    setBsaAdjustedResult(null);
     setErrors({});
     onResultChange?.(null);
   };
@@ -400,6 +454,30 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
           </div>
         </div>
 
+        <BsaAdjustmentFields
+          enabled={adjustBsa}
+          onEnabledChange={(next) => {
+            setAdjustBsa(next);
+            if (!next) {
+              setBsa(null);
+              setBsaAdjustedResult(null);
+              setErrors((p) => ({ ...p, height: "", weight: "" }));
+            }
+          }}
+          heightCm={heightCm}
+          weightKg={weightKg}
+          onHeightCmChange={(v) => {
+            setHeightCm(v);
+            if (errors.height) setErrors((p) => ({ ...p, height: "" }));
+          }}
+          onWeightKgChange={(v) => {
+            setWeightKg(v);
+            if (errors.weight) setErrors((p) => ({ ...p, weight: "" }));
+          }}
+          errors={{ height: errors.height, weight: errors.weight }}
+          idPrefix="gfr-bsa"
+        />
+
         <Button onClick={calculate} className="w-full sm:w-auto mt-4">
           <Calculator className="h-4 w-4 mr-2" />
           Calculate eGFR{uacr.trim() && " & KDIGO Stage"}
@@ -409,10 +487,25 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
           <div className="mt-4 p-4 rounded-lg bg-card border-2 border-border">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <p className="text-sm text-muted-foreground">Estimated GFR</p>
+                <p className="text-sm text-muted-foreground">
+                  Indexed eGFR (CKD-EPI 2021, per 1.73 m²)
+                </p>
                 <p className="text-3xl font-bold text-foreground">
                   {result} <span className="text-sm font-normal text-muted-foreground">mL/min/1.73m²</span>
                 </p>
+                {adjustBsa && bsaAdjustedResult !== null && bsa !== null && (
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <p className="text-sm text-muted-foreground">
+                      BSA-adjusted eGFR (absolute / unindexed)
+                    </p>
+                    <p className="text-xl font-semibold text-foreground">
+                      {bsaAdjustedResult} <span className="text-sm font-normal text-muted-foreground">mL/min</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Mosteller BSA {bsa.toFixed(2)} m² · indexed × (BSA / 1.73). Staging below uses the indexed value.
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col items-start sm:items-end gap-1">
                 <Badge className={stage.color}>

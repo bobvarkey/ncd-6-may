@@ -160,6 +160,8 @@
   html {
     @apply bg-background;
     font-size: calc(17.5px * var(--user-text-scale, 1));
+    overflow-x: clip;
+    overscroll-behavior-x: none;
   }
   @media (min-width: 640px) {
     html { font-size: calc(18px * var(--user-text-scale, 1)); }
@@ -168,6 +170,14 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Source Sans 3', system-ui, sans-serif;
     line-height: 1.55;
+    max-width: 100%;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+  }
+  #root {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -178,38 +188,6 @@
     }
   }
 
-  /* Sidebar layout adjustments */
-  body.has-tab-navigation #root > div:not([role="region"]),
-  body.has-tab-navigation #root > main,
-  body.has-tab-navigation #root > section {
-    margin-left: 14rem;
-    max-width: calc(100vw - 14rem);
-    transition: margin-left 200ms ease, max-width 200ms ease;
-  }
-  body.has-tab-navigation.tab-navigation-collapsed #root > div:not([role="region"]),
-  body.has-tab-navigation.tab-navigation-collapsed #root > main,
-  body.has-tab-navigation.tab-navigation-collapsed #root > section {
-    margin-left: 3.5rem;
-    max-width: calc(100vw - 3.5rem);
-  }
-
-  /* Mobile-friendly: collapsed rail overlays instead of reserving layout width,
-     so content gets the full viewport on small screens. Expand (tap the chevron)
-     to reveal the full nav, which still overlays content. */
-  @media (max-width: 639px) {
-    body.has-tab-navigation #root > div:not([role="region"]),
-    body.has-tab-navigation #root > main,
-    body.has-tab-navigation #root > section {
-      margin-left: 0;
-      max-width: 100vw;
-    }
-    body.has-tab-navigation.tab-navigation-collapsed #root > div:not([role="region"]),
-    body.has-tab-navigation.tab-navigation-collapsed #root > main,
-    body.has-tab-navigation.tab-navigation-collapsed #root > section {
-      margin-left: 0;
-      max-width: 100vw;
-    }
-  }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', system-ui, sans-serif;
   }
@@ -598,6 +576,13 @@
 .slide-in-right {
   animation: slideInFromRight 0.3s ease-out;
 }
+/* Keep table/tab row scrollers on their own axis so a sideways swipe
+   does not pan the whole page. max-width contains unwrapped flex rows. */
+.overflow-x-auto {
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+
 @media print {
   aside, nav, .sidebar, button, [role="navigation"] { display: none !important; }
   main { margin: 0 !important; padding: 0 !important; }

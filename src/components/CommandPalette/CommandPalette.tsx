@@ -41,7 +41,9 @@ const SEARCH_ITEMS: SearchItem[] = [
   { id: "copd", label: "COPD/GOLD Assessment", category: "calculator", path: "/respiratory/copd", keywords: ["asthma", "gold", "copd", "lung function"] },
   { id: "anemia", label: "Anemia Workup", category: "calculator", path: "/anemia", keywords: ["hemoglobin", "anemia", "mcv", "iron deficiency"] },
   { id: "thyroid", label: "Thyroid Calculator", category: "calculator", path: "/thyroid", keywords: ["tsh", "thyroid", "t4", "t3"] },
-  { id: "iron", label: "Iron Replacement Calculator", category: "calculator", path: "/iron-calculator", keywords: ["ferritin", "iron", "tsat", "iron deficiency"] },
+  { id: "steroid-taper", label: "Steroid Taper", category: "calculator", path: "/steroid-taper", keywords: ["steroid", "taper", "glucocorticoid", "prednisolone", "prednisone", "adrenal", "cortisol", "hpa"] },
+  { id: "iron", label: "Iron Calculator", category: "calculator", path: "/anemia?tab=iron", keywords: ["ferritin", "iron", "tsat", "iron deficiency", "ganzoni", "iron deficit"] },
+  { id: "liver", label: "Liver", category: "calculator", path: "/liver", keywords: ["liver", "hepatic", "lft", "fib-4", "fib4", "apri", "nfs", "meld", "child-pugh", "auto-calc", "masld", "nafld"] },
   // Guidelines (placeholder - could expand)
   { id: "ada-guidelines", label: "ADA Standards of Care 2024", category: "guideline", path: "/about", keywords: ["diabetes", "guideline"] },
   { id: "esc-guidelines", label: "ESC Cardiovascular Guidelines", category: "guideline", path: "/about", keywords: ["hypertension", "lipids"] },

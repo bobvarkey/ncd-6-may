@@ -305,12 +305,12 @@ const DiagnosticCriteriaSection = () => {
           </p>
           <div className="space-y-2">
             {criteria.map((c, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
-                <div className="flex-1">
+              <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-destructive/5 border border-destructive/20 min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium"><AbbrText text={c.test} /></p>
                   <p className="text-xs text-muted-foreground"><AbbrText text={c.notes} /></p>
                 </div>
-                <Badge variant="destructive" className="text-xs">{c.threshold}</Badge>
+                <Badge variant="destructive" className="text-xs shrink-0 whitespace-normal text-right">{c.threshold}</Badge>
               </div>
             ))}
           </div>

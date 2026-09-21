@@ -129,7 +129,7 @@ const CLINICAL_TOPICS = [
   { id: "lipid-panel", label: "Lipid Panel Analysis", path: "/lipid-panel", keywords: ["lipid panel", "lipid profile", "cholesterol panel"] },
 
   // ── Liver ──
-  { id: "liver", label: "Liver Overview", path: "/liver", keywords: ["liver", "hepatic", "lft", "liver enzymes", "alt", "ast"] },
+  { id: "liver", label: "Liver", path: "/liver", keywords: ["liver", "hepatic", "lft", "liver enzymes", "alt", "ast", "fib-4", "fib4", "apri", "nfs", "meld", "child-pugh", "auto-calc", "autocalc", "masld", "nafld"] },
 
   // ── Anemia / Blood ──
   { id: "anemia", label: "Anemia Workup", path: "/anemia", keywords: ["anemia", "hemoglobin", "mcv", "anemia evaluation"] },
@@ -139,15 +139,15 @@ const CLINICAL_TOPICS = [
   { id: "anemia-chronic-disease", label: "Anemia of Chronic Disease", path: "/anemia", keywords: ["anemia chronic disease", "anemia inflammation", "normocytic anemia"] },
   { id: "thrombocytopenia", label: "Thrombocytopenia", path: "/anemia?tab=thrombocytopenia", keywords: ["thrombocytopenia", "low platelets", "itp", "platelet"] },
   { id: "bleeding-clotting", label: "Bleeding / Clotting Disorders", path: "/anemia?tab=bleeding-clotting", keywords: ["bleeding", "clotting", "coagulation", "hemophilia", "dvt"] },
-  { id: "iron-parameters", label: "Iron Parameters", path: "/anemia?tab=iron", keywords: ["iron", "ferritin", "transferrin", "tsat", "iron studies"] },
+  { id: "iron-calculator", label: "Iron Calculator", path: "/anemia?tab=iron", keywords: ["iron", "ferritin", "transferrin", "tsat", "iron studies", "ganzoni", "iron deficit", "iron replacement", "iron dosing", "iron infusion", "ferric"] },
   { id: "esr", label: "ESR (Erythrocyte Sedimentation Rate)", path: "/anemia?tab=esr", keywords: ["esr", "sed rate", "inflammation marker"] },
-  { id: "iron-replacement", label: "Iron Replacement Calculator", path: "/iron-calculator", keywords: ["iron replacement", "iron dosing", "iron infusion", "ferric"] },
 
   // ── Thyroid ──
   { id: "thyroid", label: "Thyroid Calculator", path: "/thyroid", keywords: ["thyroid", "tsh", "t4", "t3", "thyroid function"] },
   { id: "hypothyroidism", label: "Hypothyroidism", path: "/thyroid", keywords: ["hypothyroidism", "low t4", "high tsh", "thyroid deficiency"] },
   { id: "hyperthyroidism", label: "Hyperthyroidism", path: "/thyroid", keywords: ["hyperthyroidism", "thyrotoxicosis", "high t4", "low tsh", "graves"] },
   { id: "thyroid-nodules", label: "Thyroid Nodules", path: "/thyroid", keywords: ["thyroid nodule", "fna", "thyroid ultrasound", "tirads"] },
+  { id: "steroid-taper", label: "Steroid Taper / Glucocorticoid Withdrawal", path: "/steroid-taper", keywords: ["steroid taper", "glucocorticoid", "prednisolone", "prednisone", "adrenal insufficiency", "hpa", "cortisol", "acth"] },
 
   // ── Obesity ──
   { id: "obesity", label: "Obesity Management", path: "/obesity/bmi-calculator", keywords: ["obesity", "bmi", "weight loss", "overweight"] },
@@ -340,9 +340,9 @@ export function GlobalMedSearch() {
   return (
     <div
       ref={wrapRef}
-      className="fixed top-0 left-0 right-0 z-[60] h-12 border-b border-border bg-card/95 backdrop-blur-md shadow-sm relative"
+      className="fixed top-0 left-0 right-0 z-[60] h-12 border-b border-border bg-card/95 backdrop-blur-md shadow-sm overflow-hidden"
     >
-      <div className="flex items-center h-full max-w-7xl mx-auto px-4 gap-3">
+      <div className="flex items-center h-full max-w-7xl mx-auto px-4 gap-3 min-w-0">
         <Search className="h-4 w-4 text-primary shrink-0" />
         <input
           type="text"
@@ -353,7 +353,7 @@ export function GlobalMedSearch() {
           }}
           onFocus={() => setOpen(true)}
           placeholder="Search any topic — reninoma, hypothyroidism, medications…"
-          className="flex-1 bg-transparent py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none"
+          className="min-w-0 flex-1 bg-transparent py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none"
           aria-label="Search medications"
           onKeyDown={(e) => {
             if (e.key === "Enter" && q.trim()) {

@@ -1,11 +1,13 @@
 import React, { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import {
   Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, Info,
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
   Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors, Brain, Bone,
+  Settings as SettingsIcon, LayoutDashboard, Pizza, Pill, CalendarDays, TrendingDown,
+  ShieldAlert, HeartPulse, Bean, BookOpen, TableProperties, BookMarked, TriangleAlert as WarningTriangle,
+  MessageSquare, Trash2, Images, Eye, ArrowLeft,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
@@ -25,6 +27,12 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import Seo from "@/components/Seo";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import OfflineStatusBadge from "@/components/OfflineStatusBadge";
+import { CollapsibleHomeSections } from "@/components/CollapsibleHomeSections";
+import { PrimaryNavGrid } from "@/components/PrimaryNavGrid";
+import { ENTRY_TONES, type EntryTone } from "@/lib/entry-tones";
+import { cn } from "@/lib/utils";
 
 interface PrescriptionState {
   content: React.ReactNode;
@@ -285,6 +293,158 @@ function OCRUpload({ onValuesExtracted }: OCRUploadProps) {
         </CollapsibleContent>
       </Card>
     </Collapsible>
+  );
+}
+
+
+// ── Sidebar Navigation sections, moved to the homepage after sidebar removal ──
+
+type SidebarNavItem = { title: string; url: string; icon: React.ComponentType<{ className?: string }>; tone: EntryTone; keywords?: string };
+type SidebarNavSection = { id: string; label: string; tone: EntryTone; icon: React.ComponentType<{ className?: string }>; items: SidebarNavItem[] };
+
+const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
+  {
+    id: "overview",
+    label: "Overview",
+    tone: "orange",
+    icon: LayoutDashboard,
+    items: [
+      { title: "Dashboard", url: "/", icon: LayoutDashboard, tone: "orange" },
+      { title: "Patient", url: "/patient", icon: User, tone: "sky" },
+      { title: "Summary", url: "/summary", icon: FileText, tone: "violet" },
+      { title: "Progress", url: "/progress", icon: TrendingDown, tone: "teal" },
+      { title: "Image Gallery", url: "/images", icon: Images, tone: "fuchsia", keywords: "figures diagrams algorithms" },
+      { title: "Settings", url: "/settings", icon: SettingsIcon, tone: "slate", keywords: "offline mode theme dark light text size accessibility sync" },
+    ],
+  },
+  {
+    id: "diet",
+    label: "Diet & Lifestyle",
+    tone: "amber",
+    icon: UtensilsCrossed,
+    items: [
+      { title: "Foods", url: "/foods", icon: UtensilsCrossed, tone: "amber" },
+      { title: "Plate Method", url: "/plate", icon: Pizza, tone: "lime" },
+      { title: "Diet Plan", url: "/diet-plan", icon: CalendarDays, tone: "orange" },
+    ],
+  },
+  {
+    id: "medications",
+    label: "Medications & Insulin",
+    tone: "fuchsia",
+    icon: Pill,
+    items: [
+      { title: "Medications", url: "/medications", icon: Pill, tone: "fuchsia" },
+      { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, tone: "rose", keywords: "basal bolus" },
+      { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties, tone: "orange" },
+      { title: "Iron Calculator", url: "/anemia?tab=iron", icon: Syringe, tone: "amber", keywords: "ferritin tsat ganzoni iron deficit" },
+      { title: "Steroid Taper", url: "/steroid-taper", icon: TrendingDown, tone: "orange", keywords: "glucocorticoid prednisolone adrenal insufficiency hpa cortisol" },
+      { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, tone: "indigo", keywords: "semaglutide tirzepatide" },
+      { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, tone: "violet", keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
+      { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, tone: "sky", keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
+      { title: "GLP-1 Screening", url: "/glp1-screening", icon: Eye, tone: "cyan", keywords: "prescreen pre-screen eligibility contraindication naion optic nerve glaucoma retinopathy semaglutide tirzepatide" },
+      { title: "GLP-1 Pre-Initiation Screener", url: "/glp1-prescreen", icon: Syringe, tone: "emerald", keywords: "glp1 prescreening pre-initiation wizard mtc men2 pancreatitis scoff eating disorder dpp4 hypoglycaemia sarcopenia referral" },
+      { title: "Insulin Therapy", url: "/insulin-therapy", icon: BookMarked, tone: "rose" },
+    ],
+  },
+  {
+    id: "risk",
+    label: "Risk & Renal",
+    tone: "indigo",
+    icon: ShieldAlert,
+    items: [
+      { title: "Prediabetes", url: "/prediabetes", icon: HeartPulse, tone: "amber" },
+      { title: "Hypo Risk Score", url: "/hypo-risk", icon: ShieldAlert, tone: "rose" },
+      { title: "Renal Dosing", url: "/renal-dosing", icon: FlaskConical, tone: "orange", keywords: "egfr ckd mehran pci cin" },
+      { title: "CKD Guideline", url: "/ckd-guideline", icon: Bean, tone: "cyan", keywords: "kdigo" },
+    ],
+  },
+  {
+    id: "algorithms",
+    label: "Algorithms & Guides",
+    tone: "orange",
+    icon: BookOpen,
+    items: [
+      { title: "Daily Management", url: "/daily-management", icon: BookOpen, tone: "orange" },
+      { title: "Type 1 DM", url: "/type1-management", icon: Activity, tone: "teal" },
+      { title: "T1D Pitfalls", url: "/type1-pitfalls", icon: WarningTriangle, tone: "rose" },
+      { title: "T2D Transition", url: "/type2-transition", icon: ArrowRight, tone: "violet" },
+      { title: "T1D Treatment Algorithm", url: "/type1-treatment-algorithm", icon: Brain, tone: "indigo" },
+      { title: "T2D Treatment Algorithm", url: "/type2-treatment-algorithm", icon: Brain, tone: "sky" },
+      { title: "Hyperglycemic Emergency", url: "/hyperglycemic-emergency", icon: AlertTriangle, tone: "fuchsia", keywords: "dka hhs" },
+    ],
+  },
+  {
+    id: "perioperative",
+    label: "Perioperative & Acute",
+    tone: "teal",
+    icon: Stethoscope,
+    items: [
+      { title: "Perioperative Tools", url: "/perioperative-calculators", icon: Stethoscope, tone: "indigo", keywords: "rcri asa mallampati caprini apgar med management" },
+      { title: "cSDH Risk", url: "/perioperative-calculators#csdh", icon: Brain, tone: "violet", keywords: "chronic subdural hematoma neurosurgery neuro assessment" },
+      { title: "AKI / AKD Criteria", url: "/aki-criteria", icon: Activity, tone: "orange", keywords: "acute kidney injury renal kdigo rifle akd" },
+    ],
+  },
+  {
+    id: "legal",
+    label: "Legal & Support",
+    tone: "slate",
+    icon: Shield,
+    items: [
+      { title: "Feedback & Tips", url: "/feedback", icon: MessageSquare, tone: "sky" },
+      { title: "Disclaimer", url: "/disclaimer", icon: WarningTriangle, tone: "amber" },
+      { title: "Privacy Policy", url: "/privacy", icon: Shield, tone: "indigo" },
+      { title: "Terms of Service", url: "/terms", icon: Scale, tone: "slate" },
+      { title: "Delete My Data", url: "/delete-account", icon: Trash2, tone: "rose" },
+    ],
+  },
+];
+
+const FULL_NAV_SECTIONS_STORAGE_KEY = "ncd_home_full_nav_sections_open";
+
+function SidebarNavGrid() {
+  return (
+    <section aria-labelledby="full-navigation-heading" className="space-y-8">
+      <div className="flex items-center gap-2">
+        <LayoutDashboard className="h-5 w-5 text-primary" />
+        <h2 id="full-navigation-heading" className="text-lg font-semibold">Full App Navigation</h2>
+      </div>
+      <CollapsibleHomeSections
+        storageKey={FULL_NAV_SECTIONS_STORAGE_KEY}
+        sections={SIDEBAR_NAV_SECTIONS}
+        renderItems={(section) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {section.items.map((item) => {
+              const Icon = item.icon;
+              const tone = ENTRY_TONES[item.tone];
+              return (
+                <Link key={item.url + item.title} to={item.url} className="group block">
+                  <div
+                    className={cn(
+                      "relative h-full p-3.5 rounded-xl border transition-all duration-200 overflow-hidden",
+                      tone.card,
+                    )}
+                  >
+                    <div className={cn("absolute top-0 left-0 right-0 h-0.5", tone.bar)} />
+                    <div className="flex items-start gap-3">
+                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", tone.iconWrap)}>
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className={cn("text-sm font-medium text-foreground transition-colors truncate", tone.titleHover)}>{item.title}</h3>
+                        {item.keywords && (
+                          <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{item.keywords}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      />
+    </section>
   );
 }
 
@@ -560,38 +720,38 @@ interface DiseaseCardProps {
   description: string;
   icon: React.ReactNode;
   to: string;
-  accent: string; // Tailwind color class for the icon bg
+  tone: EntryTone;
   badge?: string;
 }
 
-const DiseaseCard = React.memo(function DiseaseCard({ title, description, icon, to, badge }: DiseaseCardProps) {
+const DiseaseCard = React.memo(function DiseaseCard({ title, description, icon, to, tone, badge }: DiseaseCardProps) {
+  const t = ENTRY_TONES[tone];
   return (
     <Link to={to} className="group block">
-      <div className="relative h-full p-4 rounded-xl border border-border/50 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer overflow-hidden">
-        {/* Sunset Blaze accent bar */}
-        <div
-          className="absolute top-0 left-0 right-0 h-1 opacity-90"
-          style={{ background: "linear-gradient(90deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%)" }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          style={{ background: "linear-gradient(120deg, rgba(255,107,53,0.06) 0%, rgba(232,67,147,0.06) 55%, rgba(108,92,231,0.08) 100%)" }}
-        />
+      <div
+        className={cn(
+          "relative h-full p-4 rounded-xl border transition-all duration-200 cursor-pointer overflow-hidden",
+          t.card,
+        )}
+      >
+        <div className={cn("absolute top-0 left-0 right-0 h-1", t.bar)} />
         <div className="relative flex items-start gap-3">
           <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform text-white shadow-sm"
-            style={{ background: "linear-gradient(135deg, #ff6b35 0%, #e84393 60%, #6c5ce7 100%)" }}
+            className={cn(
+              "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform",
+              t.iconWrap,
+            )}
           >
             <span className="[&_svg]:text-white">{icon}</span>
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-foreground group-hover:text-[#e84393] transition-colors">{title}</h3>
-              {badge && <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-[#e84393]/40 text-[#e84393]">{badge}</Badge>}
+              <h3 className={cn("text-sm font-semibold text-foreground transition-colors", t.titleHover)}>{title}</h3>
+              {badge && <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 h-4", t.badge)}>{badge}</Badge>}
             </div>
             <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{description}</p>
           </div>
-          <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-[#e84393] group-hover:translate-x-0.5 transition-all shrink-0 mt-2" />
+          <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:translate-x-0.5 transition-all shrink-0 mt-2" />
         </div>
       </div>
     </Link>
@@ -628,25 +788,31 @@ interface QuickActionProps {
   description: string;
   icon: React.ReactNode;
   to: string;
+  tone: EntryTone;
 }
 
-const QuickAction = React.memo(function QuickAction({ title, description, icon, to }: QuickActionProps) {
+const QuickAction = React.memo(function QuickAction({ title, description, icon, to, tone }: QuickActionProps) {
+  const t = ENTRY_TONES[tone];
   return (
     <Link to={to}>
-      <div className="relative overflow-hidden p-5 rounded-xl border border-border/40 bg-card hover:border-transparent hover:shadow-lg hover:shadow-[#e84393]/10 transition-all duration-200 cursor-pointer group">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          style={{ background: "linear-gradient(120deg, rgba(255,107,53,0.08) 0%, rgba(247,147,30,0.06) 30%, rgba(232,67,147,0.08) 65%, rgba(108,92,231,0.10) 100%)" }}
-        />
+      <div
+        className={cn(
+          "relative overflow-hidden p-5 rounded-xl border transition-all duration-200 cursor-pointer group",
+          t.card,
+        )}
+      >
+        <div className={cn("absolute top-0 left-0 right-0 h-1", t.bar)} />
         <div className="relative flex items-start gap-4">
           <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform text-white shadow-sm"
-            style={{ background: "linear-gradient(135deg, #ff6b35 0%, #f7931e 30%, #e84393 65%, #6c5ce7 100%)" }}
+            className={cn(
+              "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform",
+              t.iconWrap,
+            )}
           >
             <span className="[&_svg]:text-white">{icon}</span>
           </div>
           <div className="min-w-0">
-            <p className="text-base font-semibold text-foreground group-hover:text-[#e84393] transition-colors">{title}</p>
+            <p className={cn("text-base font-semibold text-foreground transition-colors", t.titleHover)}>{title}</p>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{description}</p>
           </div>
         </div>
@@ -655,13 +821,14 @@ const QuickAction = React.memo(function QuickAction({ title, description, icon, 
   );
 });
 
-const QUICK_ACCESS = [
-  { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets },
-  { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart },
-  { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet },
-  { to: "/infections?tab=csdh", label: "cSDH Risk", desc: "Neuro-perioperative plan",  Icon: Brain },
-  { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator },
-] as const;
+const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Droplets; tone: EntryTone }[] = [
+  { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets, tone: "teal" },
+  { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart, tone: "rose" },
+  { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet, tone: "amber" },
+  { to: "/infections?tab=csdh", label: "cSDH Risk", desc: "Neuro-perioperative plan",  Icon: Brain, tone: "indigo" },
+  { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator, tone: "orange" },
+  { to: "/gfr-calculator",    label: "eGFR + BSA",  desc: "CKD-EPI with optional BSA", Icon: Activity, tone: "cyan" },
+];
 
 function QuickAccessPanel() {
   return (
@@ -673,21 +840,29 @@ function QuickAccessPanel() {
         <span className="text-xs text-muted-foreground hidden sm:inline">One-click jumps</span>
       </div>
       <nav aria-label="Quick access shortcuts">
-        <ul className="grid grid-cols-2 md:grid-cols-5 gap-2.5">
-          {QUICK_ACCESS.map(({ to, label, desc, Icon }) => (
-            <li key={to}>
-              <Link
-                to={to}
-                className="group flex flex-col gap-1 rounded-xl border bg-background p-3 hover:border-primary/60 hover:shadow-sm transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-              >
-                <span className="flex items-center gap-2 font-semibold text-sm">
-                  <Icon className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
-                  {label}
-                </span>
-                <span className="text-[11px] text-muted-foreground leading-snug">{desc}</span>
-              </Link>
-            </li>
-          ))}
+        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
+          {QUICK_ACCESS.map(({ to, label, desc, Icon, tone }) => {
+            const t = ENTRY_TONES[tone];
+            return (
+              <li key={to}>
+                <Link
+                  to={to}
+                  className={cn(
+                    "group flex flex-col gap-1 rounded-xl border p-3 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary",
+                    t.shortcut,
+                  )}
+                >
+                  <span className="flex items-center gap-2 font-semibold text-sm text-foreground">
+                    <span className={cn("w-7 h-7 rounded-md flex items-center justify-center shrink-0", t.iconWrap)}>
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    {label}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground leading-snug">{desc}</span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </section>
@@ -695,81 +870,91 @@ function QuickAccessPanel() {
 }
 
 export default function Home() {
-  const navigate = useNavigate();
 
   // Quick Actions data
   const quickActions: QuickActionProps[] = [
     {
       title: "Goldman Cardiac Index",
       description: "Cardiac risk stratification for non-cardiac surgery",
-      icon: <Heart className="h-4 w-4 text-rose-500" />,
+      icon: <Heart className="h-4 w-4" />,
       to: "/perioperative-calculators#goldman",
+      tone: "rose",
     },
     {
       title: "Perioperative Calculators",
       description: "RCRI, ASA, Mallampati, Caprini, STOP-Bang, Apgar, Med Management",
-      icon: <Scissors className="h-4 w-4 text-indigo-500" />,
+      icon: <Scissors className="h-4 w-4" />,
       to: "/perioperative-calculators",
+      tone: "indigo",
     },
     {
       title: "cSDH Risk Assessment",
       description: "Structured perioperative assessment for chronic subdural hematoma",
-      icon: <Brain className="h-4 w-4 text-indigo-500" />,
+      icon: <Brain className="h-4 w-4" />,
       to: "/infections?tab=csdh",
+      tone: "violet",
     },
     {
       title: "Meal Planner",
       description: "7-day diet plans for Kerala, Indian, Asian, and international cuisines",
-      icon: <UtensilsCrossed className="h-4 w-4 text-red-500" />,
+      icon: <UtensilsCrossed className="h-4 w-4" />,
       to: "/diet-plan",
+      tone: "amber",
     },
     {
       title: "ASCVD Risk Calculator",
       description: "Calculate 10-year cardiovascular risk with LAI 2023 guidelines",
-      icon: <Calculator className="h-4 w-4 text-primary" />,
+      icon: <Calculator className="h-4 w-4" />,
       to: "/ascvd-risk",
+      tone: "fuchsia",
     },
     {
       title: "Insulin Titration",
       description: "Calculate basal and prandial insulin doses",
-      icon: <Syringe className="h-4 w-4 text-red-500" />,
+      icon: <Syringe className="h-4 w-4" />,
       to: "/insulin-titration",
+      tone: "rose",
     },
     {
       title: "GFR + KDIGO Staging",
       description: "Calculate eGFR using CKD-EPI 2021 and KDIGO staging with UACR",
-      icon: <Activity className="h-4 w-4 text-orange-500" />,
+      icon: <Activity className="h-4 w-4" />,
       to: "/renal-dosing#egfr",
+      tone: "orange",
     },
     {
       title: "Mehran CIN Score",
       description: "Post-PCI Contrast-Induced Nephropathy risk stratification",
-      icon: <Filter className="h-4 w-4 text-amber-500" />,
+      icon: <Filter className="h-4 w-4" />,
       to: "/renal-dosing#mehran",
+      tone: "amber",
     },
     {
       title: "Drug Interactions",
       description: "Check for interactions between antihypertensives",
-      icon: <FileSearch className="h-4 w-4 text-blue-500" />,
+      icon: <FileSearch className="h-4 w-4" />,
       to: "/drug-interactions",
+      tone: "sky",
     },
     {
       title: "BMI Calculator",
       description: "Calculate BMI with Indian population cutoffs",
-      icon: <Scale className="h-4 w-4 text-violet-500" />,
+      icon: <Scale className="h-4 w-4" />,
       to: "/obesity/bmi-calculator",
+      tone: "violet",
     },
     {
       title: "Sliding Scale Insulin",
       description: "Quick reference for correction doses",
-      icon: <Stethoscope className="h-4 w-4 text-red-500" />,
+      icon: <Stethoscope className="h-4 w-4" />,
       to: "/sliding-scale",
+      tone: "teal",
     },
   ];
 
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-clip">
       <Seo
         title="Clinical Tools — Evidence-Based Decision Support"
         description="Fast, evidence-based calculators and algorithms for diabetes, hypertension, lipids, renal dosing, infections, and more — designed for the point of care."
@@ -788,9 +973,20 @@ export default function Home() {
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
       }} />
 
-      <main className="max-w-6xl mx-auto px-6 pb-16 space-y-8">
+      <header className="sticky top-0 z-40 w-full h-12 flex items-center border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 px-4">
+        <div className="absolute inset-x-0 top-0 h-0.5 bg-sunset" aria-hidden />
+        <span className="text-sm font-heading font-semibold text-sunset truncate">Clinical Tools</span>
+        <div className="ml-auto flex items-center gap-2">
+          <OfflineStatusBadge className="hidden sm:inline-flex" />
+          <ThemeToggle />
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-6 py-8 pb-16 space-y-8 min-w-0">
         {/* Quick Access — one-click jumps to core sections */}
         <QuickAccessPanel />
+
+        <PrimaryNavGrid />
 
         {/* Image Upload + Analyzer — prominent at top */}
         <ImageUploadAnalyzer />
@@ -800,18 +996,18 @@ export default function Home() {
 
         {/* ── Tabbed topic navigation ── */}
         <Tabs defaultValue="quick-actions">
-          <TabsList className="w-full flex flex-wrap justify-start gap-1 overflow-x-auto">
-            <TabsTrigger value="quick-actions" className="flex-1 min-w-[120px]">
-              <Calculator className="h-4 w-4 mr-1.5" /> Quick Actions
+          <TabsList className="w-full max-w-full min-w-0 h-auto flex flex-wrap justify-start gap-1.5 p-1.5 bg-muted/40">
+            <TabsTrigger value="quick-actions" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.violet.tab)}>
+              <Calculator className="h-4 w-4 mr-1.5 shrink-0" /> Quick Actions
             </TabsTrigger>
-            <TabsTrigger value="cardiometabolic" className="flex-1 min-w-[140px]">
-              <Heart className="h-4 w-4 mr-1.5" /> Cardiometabolic & Renal
+            <TabsTrigger value="cardiometabolic" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.rose.tab)}>
+              <Heart className="h-4 w-4 mr-1.5 shrink-0" /> Cardiometabolic & Renal
             </TabsTrigger>
-            <TabsTrigger value="specialty" className="flex-1 min-w-[120px]">
-              <Dna className="h-4 w-4 mr-1.5" /> Specialty Medicine
+            <TabsTrigger value="specialty" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.emerald.tab)}>
+              <Dna className="h-4 w-4 mr-1.5 shrink-0" /> Specialty Medicine
             </TabsTrigger>
-            <TabsTrigger value="infections" className="flex-1 min-w-[140px]">
-              <Bug className="h-4 w-4 mr-1.5" /> Infections & General
+            <TabsTrigger value="infections" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.amber.tab)}>
+              <Bug className="h-4 w-4 mr-1.5 shrink-0" /> Infections & General
             </TabsTrigger>
           </TabsList>
 
@@ -836,41 +1032,41 @@ export default function Home() {
               <DiseaseCard
                 title="Diabetes"
                 description="ADA 2026: Dx, algorithms, medication guide, insulin, DKA/HHS"
-                icon={<Droplets className="h-5 w-5 text-red-400" />}
+                icon={<Droplets className="h-5 w-5" />}
                 to="/diabetes"
-                accent="bg-red-500"
+                tone="teal"
                 badge="ADA"
               />
               <DiseaseCard
                 title="Hypertension"
                 description="ESC/ESH 2024: BP class, algorithms, meds, secondary HTN workup"
-                icon={<Heart className="h-5 w-5 text-orange-400" />}
+                icon={<Heart className="h-5 w-5" />}
                 to="/hypertension"
-                accent="bg-orange-500"
+                tone="rose"
                 badge="ESC"
               />
               <DiseaseCard
                 title="Renal Tools"
                 description="CKD/AKI staging, eGFR, UACR, Mehran Score, and renal dosing adjustment"
-                icon={<Filter className="h-5 w-5 text-amber-400" />}
+                icon={<Filter className="h-5 w-5" />}
                 to="/renal-dosing"
-                accent="bg-amber-500"
+                tone="amber"
                 badge="KDIGO"
               />
               <DiseaseCard
                 title="Lipids"
                 description="LAI 2023 / ACC-AHA: ASCVD risk, statins, targets"
-                icon={<Droplet className="h-5 w-5 text-blue-400" />}
+                icon={<Droplet className="h-5 w-5" />}
                 to="/lipids"
-                accent="bg-blue-500"
+                tone="sky"
                 badge="LAI"
               />
               <DiseaseCard
                 title="Obesity"
                 description="BMI (Indian), GLP-1 algorithm, waist-height ratio"
-                icon={<Weight className="h-5 w-5 text-violet-400" />}
+                icon={<Weight className="h-5 w-5" />}
                 to="/obesity/bmi-calculator"
-                accent="bg-violet-500"
+                tone="violet"
               />
             </DiseaseGroup>
           </TabsContent>
@@ -880,39 +1076,46 @@ export default function Home() {
             <DiseaseGroup title="Specialty Medicine" icon={<Dna className="h-3.5 w-3.5 text-emerald-400" />}>
               <DiseaseCard
                 title="Liver Disease"
-                description="NAFLD/MASLD, cirrhosis, medication adjustments"
-                icon={<Dna className="h-5 w-5 text-lime-400" />}
+                description="NAFLD/MASLD, LFT auto-calc, FIB-4, MELD, Child-Pugh"
+                icon={<Dna className="h-5 w-5" />}
                 to="/liver"
-                accent="bg-lime-500"
+                tone="lime"
               />
               <DiseaseCard
                 title="Thyroid"
                 description="TSH/FT4 interpretation, nodules, medication dosing"
-                icon={<Microscope className="h-5 w-5 text-emerald-400" />}
+                icon={<Microscope className="h-5 w-5" />}
                 to="/thyroid"
-                accent="bg-emerald-500"
+                tone="emerald"
+              />
+              <DiseaseCard
+                title="Steroid Taper"
+                description="Glucocorticoid withdrawal, dose-band taper, morning cortisol / HPA"
+                icon={<TrendingDown className="h-5 w-5" />}
+                to="/steroid-taper"
+                tone="amber"
               />
               <DiseaseCard
                 title="COPD / Respiratory"
                 description="GOLD: assessment, spirometry, inhalers"
-                icon={<AirVent className="h-5 w-5 text-cyan-400" />}
+                icon={<AirVent className="h-5 w-5" />}
                 to="/respiratory"
-                accent="bg-cyan-500"
+                tone="cyan"
                 badge="GOLD"
               />
               <DiseaseCard
                 title="Blood & Electrolytes"
                 description="Anemia, iron, thrombocytopenia, electrolytes, acid-base"
-                icon={<Zap className="h-5 w-5 text-sky-400" />}
+                icon={<Zap className="h-5 w-5" />}
                 to="/anemia"
-                accent="bg-sky-500"
+                tone="sky"
               />
               <DiseaseCard
                 title="Hypercortisolism"
                 description="Structured Cushing's screen for refractory metabolic disease"
-                icon={<Scan className="h-5 w-5 text-purple-400" />}
+                icon={<Scan className="h-5 w-5" />}
                 to="/images?search=Structured%20Hypercortisolism%20Screen"
-                accent="bg-purple-500"
+                tone="violet"
               />
             </DiseaseGroup>
           </TabsContent>
@@ -923,37 +1126,37 @@ export default function Home() {
               <DiseaseCard
                 title="Infections"
                 description="UTI, pneumonia, cellulitis, serious/nosocomial protocols"
-                icon={<Bug className="h-5 w-5 text-rose-400" />}
+                icon={<Bug className="h-5 w-5" />}
                 to="/infections"
-                accent="bg-rose-500"
+                tone="rose"
               />
               <DiseaseCard
                 title="GI & Diarrhoea"
                 description="Acute diarrhoea, food poisoning, Constipation, rehydration"
-                icon={<UtensilsCrossed className="h-5 w-5 text-amber-400" />}
+                icon={<UtensilsCrossed className="h-5 w-5" />}
                 to="/acute-diarrhoea"
-                accent="bg-amber-500"
+                tone="amber"
               />
               <DiseaseCard
                 title="Women's Health"
                 description="PCOS (Rotterdam), HRT algorithm"
-                icon={<Stethoscope className="h-5 w-5 text-pink-400" />}
+                icon={<Stethoscope className="h-5 w-5" />}
                 to="/women-health"
-                accent="bg-pink-500"
+                tone="fuchsia"
               />
               <DiseaseCard
                 title="Geriatrics & Preventive"
                 description="Frailty, fragile fractures, adult vaccinations, Vitamin D, fatigue"
-                icon={<User className="h-5 w-5 text-sky-400" />}
+                icon={<User className="h-5 w-5" />}
                 to="/geriatrics"
-                accent="bg-sky-500"
+                tone="sky"
               />
               <DiseaseCard
                 title="PEP"
                 description="Post-Exposure Prophylaxis (HIV, HBV, HCV, Rabies)"
-                icon={<Shield className="h-5 w-5 text-amber-400" />}
+                icon={<Shield className="h-5 w-5" />}
                 to="/pep"
-                accent="bg-amber-500"
+                tone="indigo"
                 badge="WHO"
               />
             </DiseaseGroup>
@@ -961,9 +1164,12 @@ export default function Home() {
         </Tabs>
 
         {/* Quick Actions */}
+        <SidebarNavGrid />
+
+        {/* Quick Actions */}
         <section className="pt-4 border-t border-border">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-success/100" />
                 ADA Guidelines 2024

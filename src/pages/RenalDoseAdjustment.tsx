@@ -29,18 +29,24 @@ const RenalDoseAdjustment = () => {
     const handleHash = () => {
       const hash = window.location.hash.toLowerCase();
       if (!hash) return;
-      if (hash === "#mehran" && mehranRef.current) {
-        mehranRef.current.open = true;
-        setTimeout(() => mehranRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-      } else if (hash === "#egfr" && egfrRef.current) {
-        egfrRef.current.open = true;
-        setTimeout(() => egfrRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      if (hash === "#mehran" || hash === "#egfr") {
+        setActiveTab("calculators");
       }
     };
     handleHash();
-    window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+    window.addEventListener("hashchange", handleHash);
+    return () => window.removeEventListener("hashchange", handleHash);
   }, []);
+
+  useEffect(() => {
+    if (activeTab !== "calculators") return;
+    const hash = window.location.hash.toLowerCase();
+    const target = hash === "#mehran" ? mehranRef.current : hash === "#egfr" ? egfrRef.current : null;
+    if (!target) return;
+    target.open = true;
+    const id = window.setTimeout(() => target.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    return () => window.clearTimeout(id);
+  }, [activeTab]);
 
   const groupedByClass = ALL_RENAL_DATA.reduce((acc, drug) => {
     if (!acc[drug.drugClass]) acc[drug.drugClass] = [];

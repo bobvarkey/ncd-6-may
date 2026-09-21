@@ -23,6 +23,7 @@ const LABEL_OVERRIDES: Record<string, string> = {
   geriatrics: "Geriatrics",
   fatigue: "Fatigue",
   "vitamin-d": "Vitamin D",
+  "steroid-taper": "Steroid Taper",
   "women-health": "Women's Health",
   "adult-vaccinations": "Adult Vaccinations",
   pep: "Post exposure prophylaxis (PEP)",

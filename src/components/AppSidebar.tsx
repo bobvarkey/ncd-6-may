@@ -50,7 +50,7 @@ const SECTIONS: Section[] = [
       { title: "Medications", url: "/medications", icon: Pill },
       { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, keywords: "basal bolus" },
       { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties },
-      { title: "Ganzoni Iron Deficit", url: "/anemia?tab=ganzoni", icon: Calculator },
+      { title: "Iron Calculator", url: "/anemia?tab=iron", icon: Syringe, keywords: "ferritin tsat ganzoni iron deficit" },
       { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, keywords: "semaglutide tirzepatide" },
       { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
       { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
@@ -194,8 +194,8 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarContent className="pt-12">
+    <Sidebar collapsible="icon" className="bg-sidebar">
+      <SidebarContent className="pt-12 bg-sidebar text-sidebar-foreground">
         {!collapsed && (
           <div className="px-2 pt-2 pb-1 space-y-2">
             <div className="flex items-center gap-2">
@@ -264,8 +264,8 @@ export function AppSidebar() {
                           <NavLink
                             to={item.url}
                             end={item.url === "/"}
-                            className="hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                            activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                             aria-label={item.title}
                           >
                             <item.icon className={cn("mr-2 h-4 w-4", section.color)} aria-hidden="true" />
@@ -298,7 +298,7 @@ export function AppSidebar() {
                       />
                     </CollapsibleTrigger>
                   </SidebarGroupLabel>
-                  <CollapsibleContent>
+                  <CollapsibleContent className="overflow-hidden">
                     <SidebarGroupContent>
                       <SidebarMenu>
                         {section.items.map((item) => (
@@ -307,8 +307,8 @@ export function AppSidebar() {
                               <NavLink
                                 to={item.url}
                                 end={item.url === "/"}
-                                className="hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-safe:transition-colors"
-                                activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                                className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-safe:transition-colors"
+                                activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                                 aria-label={item.title}
                               >
                                 <item.icon className={cn("mr-2 h-4 w-4", section.color)} aria-hidden="true" />

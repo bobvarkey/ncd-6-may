@@ -44,7 +44,7 @@ export default function HypertensionTab() {
 
       <Tabs value={activeTab} onValueChange={(value) => selectTab(value as TabId)}>
         <nav className="sticky top-0 z-40 border-y border-border/60 bg-background/95 backdrop-blur">
-          <div className="mx-auto max-w-6xl overflow-x-auto px-4 py-2 sm:px-6">
+          <div className="mx-auto max-w-6xl overflow-x-auto overscroll-x-contain px-4 py-2 sm:px-6">
             <TabsList className="h-9 min-w-max justify-start gap-1 rounded-lg bg-muted/60 p-1">
               {tabs.map(({ id, label, icon: Icon }) => (
                 <TabsTrigger key={id} value={id} className="h-7 gap-1.5 px-2.5 text-xs sm:text-sm">

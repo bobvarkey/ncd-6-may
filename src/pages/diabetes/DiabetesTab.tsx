@@ -31,22 +31,22 @@ const Section = ({ id, title, icon, description, isOpen, onToggle, children }: S
     <Collapsible open={isOpen} onOpenChange={onToggle}>
       <CollapsibleTrigger asChild>
         <CardHeader className="cursor-pointer hover:bg-muted/30 transition-colors">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-2 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
               <div className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+                "w-10 h-10 rounded-lg flex items-center justify-center transition-colors shrink-0",
                 isOpen ? "bg-destructive/100/20" : "bg-muted"
               )}>
                 {React.cloneElement(icon as React.ReactElement, {
                   className: cn("h-5 w-5", isOpen ? "text-red-500" : "text-muted-foreground")
                 })}
               </div>
-              <div>
+              <div className="min-w-0">
                 <CardTitle className="text-lg">{title}</CardTitle>
                 <p className="text-sm text-muted-foreground">{description}</p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 shrink-0">
               {isOpen ? (
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />
               ) : (
@@ -208,7 +208,7 @@ export default function DiabetesTab() {
   };
 
   return (
-    <div ref={rootRef} className="min-h-screen bg-background">
+    <div ref={rootRef} className="min-h-screen bg-background overflow-x-clip min-w-0">
       {/* Grain Overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] print-hidden"
@@ -263,7 +263,7 @@ export default function DiabetesTab() {
       </section>
 
       {/* Quick Navigation Tabs — sticky at top */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 -mx-4 px-4 max-w-6xl mx-auto" data-print-hide>
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 w-full max-w-6xl mx-auto px-4 min-w-0" data-print-hide>
         <div className="flex flex-wrap gap-1.5">
           {orderedSections.map((section) => {
             const isMatch = matchedIds?.has(section.id);

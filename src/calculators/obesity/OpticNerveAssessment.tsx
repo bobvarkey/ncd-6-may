@@ -337,8 +337,8 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
     L.push(`Vertical CDR — R: ${cdrRV || "-"} | L: ${cdrLV || "-"}`);
     L.push(`Horizontal CDR — R: ${cdrRH || "-"} | L: ${cdrLH || "-"}`);
     L.push(`Disc-at-risk anatomy: ${discAtRisk || "not recorded"}`);
-    L.push(`Previous NAION: ${YNU_LABEL[previousNaion]}`);
-    L.push(`Optic-disc oedema / unexplained optic neuropathy: ${YNU_LABEL[discOedema]}`);
+    L.push(`Previous NAION: ${"unknown" === previousNaion ? "Unknown" : ("yes" === previousNaion ? "Yes" : "No")}`);
+    L.push(`Optic-disc oedema / unexplained optic neuropathy: ${"unknown" === discOedema ? "Unknown" : ("yes" === discOedema ? "Yes" : "No")}`);
     L.push(`IOP — R: ${iopR || "-"} mmHg | L: ${iopL || "-"} mmHg`);
     L.push(`Glaucoma status: ${glaucoma || "not recorded"}`);
     L.push(`Optic nerve OCT / RNFL: ${oct || "not recorded"}`);
@@ -456,14 +456,14 @@ export default function OpticNerveAssessment({ embedded = false }: { embedded?: 
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <YesNoUnknown
+              <TriStateToggle
                 id="prev-naion"
                 label="Previous NAION (either eye)"
                 help="Non-arteritic anterior ischaemic optic neuropathy."
                 value={previousNaion}
                 onChange={setPreviousNaion}
               />
-              <YesNoUnknown
+              <TriStateToggle
                 id="disc-oedema"
                 label="Current optic-disc oedema or unexplained optic neuropathy"
                 value={discOedema}

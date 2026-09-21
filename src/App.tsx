@@ -14,10 +14,8 @@ import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { TabNavigation } from "@/components/TabNavigation";
-import { AppSidebar } from "@/components/AppSidebar";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, Link } from "react-router-dom";
+import { ArrowLeft, Home as HomeIcon } from "lucide-react";
 import { LabAutoCalculator } from "@/components/LabAutoCalculator";
 
 const moduleLoadErrorPattern = /Importing a module script failed|Failed to fetch dynamically imported module|error loading dynamically imported module|Load failed|Loading chunk \d+ failed/i;
@@ -102,7 +100,6 @@ const Diabetes = lazyWithModuleRetry(() => import("@/pages/Diabetes"));
 const Hypertension = lazyWithModuleRetry(() => import("@/pages/Hypertension"));
 const Lipids = lazyWithModuleRetry(() => import("@/pages/Lipids"));
 const Liver = lazyWithModuleRetry(() => import("@/pages/Liver"));
-const LiverAutoCalc = lazyWithModuleRetry(() => import("@/pages/liver/LiverAutoCalc"));
 const Anemia = lazyWithModuleRetry(() => import("@/pages/Anemia"));
 const DiabetesAssessment = lazyWithModuleRetry(() => import("@/pages/diabetes/DiabetesAssessment"));
 const DiabetesOverview = lazyWithModuleRetry(() => import("@/pages/diabetes/DiabetesOverview"));
@@ -138,67 +135,59 @@ const WaistHeightRatioCalc = lazyWithModuleRetry(() => import("@/calculators/obe
 const GLP1ObesityAlgorithmCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1ObesityAlgorithm"));
 const GLP1AssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1AssessmentCalculator"));
 const OpticNerveAssessmentCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/OpticNerveAssessment"));
-const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/Glp1Screening"));
-const DrugSchedule = lazyWithModuleRetry(() => import("@/pages/DrugSchedule"));
-const DrugCalculator = lazyWithModuleRetry(() => import("@/pages/DrugCalculator"));
-const GLP1PreInitiationScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1PreInitiationScreener"));
 const GLP1ScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1Screener"));
-const IronReplacementCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/IronReplacementCalculator"));
-const GanzoniDeficitCalculator = lazyWithModuleRetry(() => import("@/calculators/iron/GanzoniDeficitCalculator"));
-
 const ThyroidCalculator = lazyWithModuleRetry(() => import("@/calculators/thyroid/ThyroidCalculator"));
-const Dashboard = lazyWithModuleRetry(() => import("@/pages/Dashboard"));
-const PatientInput = lazyWithModuleRetry(() => import("@/pages/PatientInput"));
+const SteroidTaperCalculator = lazyWithModuleRetry(() => import("@/calculators/steroid/SteroidTaperCalculator"));
+const DrugCalculator = lazyWithModuleRetry(() => import("@/pages/DrugCalculator"));
+const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
+const DrugSchedule = lazyWithModuleRetry(() => import("@/pages/DrugSchedule"));
+const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/Glp1Screening"));
+const GLP1PreInitiationScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1PreInitiationScreener"));
+const WomenHealth = lazyWithModuleRetry(() => import("@/pages/WomenHealth"));
+const Fatigue = lazyWithModuleRetry(() => import("@/pages/Fatigue"));
+const VitaminD = lazyWithModuleRetry(() => import("@/pages/VitaminD"));
+const BoneHealth = lazyWithModuleRetry(() => import("@/pages/BoneHealth"));
+const Infections = lazyWithModuleRetry(() => import("@/pages/Infections"));
+const Geriatrics = lazyWithModuleRetry(() => import("@/pages/Geriatrics"));
+const FrailtyCalculator = lazyWithModuleRetry(() => import("@/pages/FrailtyCalculator"));
+const VaccineCalculator = lazyWithModuleRetry(() => import("@/pages/VaccineCalculator"));
+const RespiratoryPage = lazyWithModuleRetry(() => import("@/pages/Respiratory"));
+const PerioperativeCalculators = lazyWithModuleRetry(() => import("@/pages/PerioperativeCalculators"));
+const DiabeticFootScoring = lazyWithModuleRetry(() => import("@/pages/DiabeticFootScoring"));
+const DevTools = lazyWithModuleRetry(() => import("@/pages/dev/DevTools"));
+const ImageGallery = lazyWithModuleRetry(() => import("@/pages/ImageGallery"));
+const PrivacyPolicy = lazyWithModuleRetry(() => import("@/pages/PrivacyPolicy"));
+const TermsOfService = lazyWithModuleRetry(() => import("@/pages/TermsOfService"));
+const DisclaimerPage = lazyWithModuleRetry(() => import("@/pages/Disclaimer"));
+const DeleteAccount = lazyWithModuleRetry(() => import("@/pages/DeleteAccount"));
+const MMEGuide = lazyWithModuleRetry(() => import("@/pages/guides/MMEGuide"));
 const FoodDatabase = lazyWithModuleRetry(() => import("@/pages/FoodDatabase"));
 const PlateMethod = lazyWithModuleRetry(() => import("@/pages/PlateMethod"));
 const MedOptimizer = lazyWithModuleRetry(() => import("@/pages/MedOptimizer"));
 const DietPlanPage = lazyWithModuleRetry(() => import("@/pages/DietPlanPage"));
 const Progress = lazyWithModuleRetry(() => import("@/pages/Progress"));
 const SummaryPage = lazyWithModuleRetry(() => import("@/pages/SummaryPage"));
+const PatientInput = lazyWithModuleRetry(() => import("@/pages/PatientInput"));
+const Dashboard = lazyWithModuleRetry(() => import("@/pages/Dashboard"));
 const InsulinTitrationPage = lazyWithModuleRetry(() => import("@/pages/InsulinTitration"));
 const SlidingScalePage = lazyWithModuleRetry(() => import("@/pages/SlidingScaleInsulin"));
 const HypoRiskPage = lazyWithModuleRetry(() => import("@/pages/HypoRiskCalculator"));
 const RenalDosePage = lazyWithModuleRetry(() => import("@/pages/RenalDoseAdjustment"));
-const RespiratoryPage = lazyWithModuleRetry(() => import("@/pages/Respiratory"));
 const PrediabetesAlgorithm = lazyWithModuleRetry(() => import("@/pages/PrediabetesAlgorithm"));
 const CKDGuideline = lazyWithModuleRetry(() => import("@/pages/CKDGuideline"));
-const PrivacyPolicy = lazyWithModuleRetry(() => import("@/pages/PrivacyPolicy"));
-const TermsOfService = lazyWithModuleRetry(() => import("@/pages/TermsOfService"));
-const DisclaimerPage = lazyWithModuleRetry(() => import("@/pages/Disclaimer"));
-const DeleteAccount = lazyWithModuleRetry(() => import("@/pages/DeleteAccount"));
-const ImageGallery = lazyWithModuleRetry(() => import("@/pages/ImageGallery"));
-const MMEGuide = lazyWithModuleRetry(() => import("@/pages/guides/MMEGuide"));
-const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Administration"));
 const DailyManagementGuide = lazyWithModuleRetry(() => import("@/pages/DailyManagementGuide"));
 const Type1DMManagement = lazyWithModuleRetry(() => import("@/pages/Type1DMManagement"));
 const InsulinTherapy = lazyWithModuleRetry(() => import("@/pages/InsulinTherapy"));
 const Type1Pitfalls = lazyWithModuleRetry(() => import("@/pages/Type1Pitfalls"));
 const Type2Transition = lazyWithModuleRetry(() => import("@/pages/Type2Transition"));
 const FeedbackTips = lazyWithModuleRetry(() => import("@/pages/FeedbackTips"));
-const NotFound = lazyWithModuleRetry(() => import("@/components/NotFound"));
-const Fatigue = lazyWithModuleRetry(() => import("@/pages/Fatigue"));
-const VitaminD = lazyWithModuleRetry(() => import("@/pages/VitaminD"));
-const BoneHealth = lazyWithModuleRetry(() => import("@/pages/BoneHealth"));
-const WomenHealth = lazyWithModuleRetry(() => import("@/pages/WomenHealth"));
-const Infections = lazyWithModuleRetry(() => import("@/pages/Infections"));
-const AcuteDiarrhoeaPage = lazyWithModuleRetry(() => import("@/pages/AcuteDiarrhoeaPage"));
-const FoodPoisoningPage = lazyWithModuleRetry(() => import("@/pages/FoodPoisoningPage"));
-const PEP = lazyWithModuleRetry(() => import("@/pages/PEP"));
-const AdultVaccinations = lazyWithModuleRetry(() => import("@/pages/AdultVaccinations"));
-const AKICriteria = lazyWithModuleRetry(() => import("@/pages/AKICriteria"));
-const AKIAKDMiniApp = lazyWithModuleRetry(() => import("@/pages/AKIAKDMiniApp"));
 const AcidBaseDisorders = lazyWithModuleRetry(() => import("@/pages/AcidBaseDisorders"));
-const MetabolicAlkalosis = lazyWithModuleRetry(() => import("@/pages/MetabolicAlkalosis"));
-const Geriatrics = lazyWithModuleRetry(() => import("@/pages/Geriatrics"));
-const FrailtyCalculator = lazyWithModuleRetry(() => import("@/pages/FrailtyCalculator"));
-const VaccineCalculator = lazyWithModuleRetry(() => import("@/pages/VaccineCalculator"));
-const Electrolytes = lazyWithModuleRetry(() => import("@/pages/Electrolytes"));
-const Hyponatremia = lazyWithModuleRetry(() => import("@/pages/Hyponatremia"));
-const Hypernatremia = lazyWithModuleRetry(() => import("@/pages/Hypernatremia"));
-const Hyperkalemia = lazyWithModuleRetry(() => import("@/pages/Hyperkalemia"));
 const Hypocalcemia = lazyWithModuleRetry(() => import("@/pages/Hypocalcemia"));
 const Hypercalcemia = lazyWithModuleRetry(() => import("@/pages/Hypercalcemia"));
+const Hyponatremia = lazyWithModuleRetry(() => import("@/pages/Hyponatremia"));
+const Hypernatremia = lazyWithModuleRetry(() => import("@/pages/Hypernatremia"));
 const Hypokalemia = lazyWithModuleRetry(() => import("@/pages/Hypokalemia"));
+const Hyperkalemia = lazyWithModuleRetry(() => import("@/pages/Hyperkalemia"));
 const Hypomagnesemia = lazyWithModuleRetry(() => import("@/pages/Hypomagnesemia"));
 const Hypermagnesemia = lazyWithModuleRetry(() => import("@/pages/Hypermagnesemia"));
 const Hypophosphatemia = lazyWithModuleRetry(() => import("@/pages/Hypophosphatemia"));
@@ -207,81 +196,63 @@ const Hyperphosphatemia = lazyWithModuleRetry(() => import("@/pages/Hyperphospha
 const HyperglycemicEmergency = lazyWithModuleRetry(() => import("@/pages/HyperglycemicEmergency"));
 const Type1TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type1TreatmentAlgorithm"));
 const Type2TreatmentAlgorithm = lazyWithModuleRetry(() => import("@/pages/Type2TreatmentAlgorithm"));
-
-const PerioperativeCalculators = lazyWithModuleRetry(() => import("@/pages/PerioperativeCalculators"));
-const DiabeticFootScoring = lazyWithModuleRetry(() => import("@/pages/DiabeticFootScoring"));
-const DevTools = lazyWithModuleRetry(() => import("@/pages/dev/DevTools"));
+const AcuteDiarrhoeaPage = lazyWithModuleRetry(() => import("@/pages/AcuteDiarrhoeaPage"));
+const FoodPoisoningPage = lazyWithModuleRetry(() => import("@/pages/FoodPoisoningPage"));
+const PEPPage = lazyWithModuleRetry(() => import("@/pages/PEP"));
+const AdultVaccinationsPage = lazyWithModuleRetry(() => import("@/pages/AdultVaccinations"));
+const AKIAKDMiniApp = lazyWithModuleRetry(() => import("@/pages/AKIAKDMiniApp"));
+const NotFound = lazyWithModuleRetry(() => import("@/components/NotFound"));
 
 const queryClient = new QueryClient();
 
-const DiabetesBuddyLayout = () => (
-  <div className="min-h-screen flex w-full">
-    <AppSidebar />
-    <div className="flex-1 flex flex-col min-w-0">
-      <header className="relative h-12 flex items-center border-b bg-card px-2 overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-0.5 bg-sunset" aria-hidden />
-        <SidebarTrigger className="relative z-[61] ml-2 h-10 w-10 shrink-0 hover:bg-sidebar-accent" aria-label="Toggle sidebar navigation" />
-        <span className="ml-3 text-sm font-heading font-semibold text-sunset">
-          Clinical Tools
-        </span>
-        <div className="ml-auto mr-2">
-          <ThemeToggle />
-        </div>
-      </header>
-      <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-4xl">
-        <LabAutoCalculator />
-        <Suspense fallback={<RouteLoading />}>
-        <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/patient" element={<PatientInput />} />
-          <Route path="/foods" element={<FoodDatabase />} />
-          <Route path="/plate" element={<PlateMethod />} />
-          <Route path="/medications" element={<MedOptimizer />} />
-          <Route path="/diet-plan" element={<DietPlanPage />} />
-          <Route path="/progress" element={<Progress />} />
-          <Route path="/summary" element={<SummaryPage />} />
-          <Route path="/db/insulin-titration" element={<InsulinTitrationPage />} />
-          <Route path="/db/sliding-scale" element={<SlidingScalePage />} />
-          <Route path="/db/glp1-administration" element={<GLP1Administration />} />
-          <Route path="/db/hypo-risk" element={<HypoRiskPage />} />
-          <Route path="/db/renal-dosing" element={<RenalDosePage />} />
-          <Route path="/db/prediabetes" element={<PrediabetesAlgorithm />} />
-          <Route path="/db/ckd-guideline" element={<CKDGuideline />} />
-          <Route path="/db/daily-management" element={<DailyManagementGuide />} />
-          <Route path="/db/type1-management" element={<Type1DMManagement />} />
-          <Route path="/db/insulin-therapy" element={<InsulinTherapy />} />
-          <Route path="/db/type1-pitfalls" element={<Type1Pitfalls />} />
-          <Route path="/db/type2-transition" element={<Type2Transition />} />
-          <Route path="/db/feedback" element={<FeedbackTips />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        </Suspense>
-      </main>
-    </div>
+const AppHeader = ({ title }: { title: string }) => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isHome = pathname === "/home" || pathname === "/";
+  return (
+    <header className="sticky top-0 z-40 w-full h-12 flex items-center border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 px-2 overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-sunset" aria-hidden />
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          disabled={isHome}
+          className="inline-flex items-center justify-center h-9 px-2 rounded-md text-sm font-medium text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed"
+          aria-label="Go back"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          <span className="hidden sm:inline">Back</span>
+        </button>
+        <Link
+          to="/home"
+          className="inline-flex items-center justify-center h-9 px-2 rounded-md text-sm font-medium text-foreground hover:bg-muted"
+          aria-label="Go home"
+        >
+          <HomeIcon className="h-4 w-4 mr-1" />
+          <span className="hidden sm:inline">Home</span>
+        </Link>
+      </div>
+      <span className="ml-3 text-sm font-heading font-semibold text-sunset truncate">{title}</span>
+      <div className="ml-auto mr-2 flex items-center gap-2">
+        <OfflineStatusBadge className="hidden sm:inline-flex" />
+        <ThemeToggle />
+      </div>
+    </header>
+  );
+};
+
+const PageShell = ({ title, children }: { title: string; children: ReactNode }) => (
+  <div className="min-h-screen flex flex-col w-full min-w-0 overflow-x-clip">
+    <AppHeader title={title} />
+    <main className="flex-1 overflow-y-auto overflow-x-clip p-4 md:p-6 max-w-4xl mx-auto w-full min-w-0">
+      <LabAutoCalculator />
+      {children}
+    </main>
   </div>
 );
 
-const SidebarLayout = ({ title, children }: { title: string; children: ReactNode }) => (
-  <SidebarProvider>
-    <div className="min-h-screen flex w-full">
-      <AppSidebar />
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="relative h-12 flex items-center border-b bg-card px-2 overflow-hidden">
-          <div className="absolute inset-x-0 top-0 h-0.5 bg-sunset" aria-hidden />
-          <SidebarTrigger className="relative z-[61] ml-2 h-10 w-10 shrink-0 hover:bg-sidebar-accent" aria-label="Toggle sidebar navigation" />
-          <span className="ml-3 text-sm font-heading font-semibold text-sunset">{title}</span>
-          <div className="ml-auto mr-2 flex items-center gap-2">
-            <OfflineStatusBadge className="hidden sm:inline-flex" />
-            <ThemeToggle />
-          </div>
-        </header>
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-4xl">
-          <LabAutoCalculator />
-          {children}
-        </main>
-      </div>
-    </div>
-  </SidebarProvider>
+const withNav = (element: ReactNode, title: string) => (
+  <PageShell title={title}>{element}</PageShell>
 );
 
 const App = () => {
@@ -314,121 +285,154 @@ const App = () => {
           <Route path="/landing" element={<Navigate to="/home" replace />} />
           <Route path="/app" element={<Navigate to="/home" replace />} />
 
-          {/* Diabetes Buddy routes with sidebar */}
-          <Route path="/db/*" element={<SidebarProvider><DiabetesBuddyLayout /></SidebarProvider>} />
+          {/* Legacy Diabetes Buddy routes — now served without sidebar */}
+          <Route path="/db/dashboard" element={withNav(<Dashboard />, "Dashboard")} />
+          <Route path="/db/patient" element={withNav(<PatientInput />, "Patient")} />
+          <Route path="/db/foods" element={withNav(<FoodDatabase />, "Foods")} />
+          <Route path="/db/plate" element={withNav(<PlateMethod />, "Plate Method")} />
+          <Route path="/db/medications" element={withNav(<MedOptimizer />, "Medications")} />
+          <Route path="/db/diet-plan" element={withNav(<DietPlanPage />, "Diet Plan")} />
+          <Route path="/db/progress" element={withNav(<Progress />, "Progress")} />
+          <Route path="/db/summary" element={withNav(<SummaryPage />, "Summary")} />
+          <Route path="/db/insulin-titration" element={withNav(<InsulinTitrationPage />, "Insulin Titration")} />
+          <Route path="/db/sliding-scale" element={withNav(<SlidingScalePage />, "Sliding Scale")} />
+          <Route path="/db/glp1-administration" element={withNav(<GLP1Administration />, "GLP-1 Administration")} />
+          <Route path="/db/hypo-risk" element={withNav(<HypoRiskPage />, "Hypo Risk")} />
+          <Route path="/db/renal-dosing" element={withNav(<RenalDosePage />, "Renal Dosing")} />
+          <Route path="/db/prediabetes" element={withNav(<PrediabetesAlgorithm />, "Prediabetes")} />
+          <Route path="/db/ckd-guideline" element={withNav(<CKDGuideline />, "CKD Guideline")} />
+          <Route path="/db/daily-management" element={withNav(<DailyManagementGuide />, "Daily Management")} />
+          <Route path="/db/type1-management" element={withNav(<Type1DMManagement />, "Type 1 DM")} />
+          <Route path="/db/insulin-therapy" element={withNav(<InsulinTherapy />, "Insulin Therapy")} />
+          <Route path="/db/type1-pitfalls" element={withNav(<Type1Pitfalls />, "T1D Pitfalls")} />
+          <Route path="/db/type2-transition" element={withNav(<Type2Transition />, "T2D Transition")} />
+          <Route path="/db/feedback" element={withNav(<FeedbackTips />, "Feedback")} />
+          <Route path="/db/*" element={<NotFound />} />
 
           {/* Main App — unified interface */}
-          <Route path="/home" element={<><TabNavigation /><Home /></>} />
-          <Route path="/glossary" element={<><TabNavigation /><GlossaryPage /></>} />
-          <Route path="/settings" element={<><TabNavigation /><Settings /></>} />
-          <Route path="/diabetes" element={<><TabNavigation /><Diabetes /></>} />
-          <Route path="/hypertension" element={<><TabNavigation /><Hypertension /></>} />
-          <Route path="/lipids" element={<><TabNavigation /><Lipids /></>} />
-          <Route path="/liver" element={<><TabNavigation /><Liver /></>} />
-          <Route path="/liver/auto-calc" element={<><TabNavigation /><LiverAutoCalc /></>} />
-          <Route path="/anemia" element={<><TabNavigation /><Anemia /></>} />
-          <Route path="/diabetes/assessment" element={<><TabNavigation /><DiabetesAssessment /></>} />
-          <Route path="/diabetes/overview" element={<><TabNavigation /><DiabetesOverview /></>} />
-          <Route path="/diabetes/tab" element={<><TabNavigation /><DiabetesTab /></>} />
-          <Route path="/diabetes/treatment" element={<><TabNavigation /><DiabetesTreatment /></>} />
-          <Route path="/diabetes/insulin-guide" element={<><TabNavigation /><InsulinGuide /></>} />
-          <Route path="/hypertension/assessment" element={<><TabNavigation /><HypertensionAssessment /></>} />
-          <Route path="/hypertension/medication-guide" element={<><TabNavigation /><HypertensionMedicationGuide /></>} />
-          <Route path="/hypertension/overview" element={<><TabNavigation /><HypertensionOverview /></>} />
-          <Route path="/hypertension/tab" element={<><TabNavigation /><HypertensionTab /></>} />
-          <Route path="/hypertension/treatment" element={<><TabNavigation /><HypertensionTreatment /></>} />
-          <Route path="/hypertension/clinical-cards" element={<><TabNavigation /><HypertensionClinicalCards /></>} />
-          <Route path="/hypertension/secondary-htn" element={<><TabNavigation /><SecondaryHtnPage /></>} />
-          <Route path="/hypertension/mra-selection" element={<><TabNavigation /><MRASelectionAlgorithm /></>} />
-          <Route path="/lipids/assessment" element={<><TabNavigation /><LipidsAssessment /></>} />
-          <Route path="/lipids/overview" element={<><TabNavigation /><LipidsOverview /></>} />
-          <Route path="/lipids/tab" element={<><TabNavigation /><LipidsTab /></>} />
-          <Route path="/lipids/treatment" element={<><TabNavigation /><LipidsTreatment /></>} />
-          <Route path="/insulin-titration" element={<><TabNavigation /><InsulinTitrationCalc /></>} />
-          <Route path="/sliding-scale" element={<><TabNavigation /><SlidingScaleInsulinCalc /></>} />
-          <Route path="/hypo-risk" element={<><TabNavigation /><HypoRiskCalculatorCalc /></>} />
-          <Route path="/renal-dosing" element={<><TabNavigation /><RenalDosePage /></>} />
-          <Route path="/aki-criteria" element={<><TabNavigation /><AKIAKDMiniApp /></>} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
+          <Route path="/settings" element={withNav(<Settings />, "Settings")} />
+          <Route path="/diabetes" element={withNav(<Diabetes />, "Diabetes")} />
+          <Route path="/hypertension" element={withNav(<Hypertension />, "Hypertension")} />
+          <Route path="/lipids" element={withNav(<Lipids />, "Lipids")} />
+          <Route path="/liver" element={withNav(<Liver />, "Liver")} />
+          <Route path="/liver/auto-calc" element={<Navigate to={{ pathname: "/liver", hash: "auto-calc" }} replace />} />
+          <Route path="/anemia" element={withNav(<Anemia />, "Anemia")} />
+          <Route path="/diabetes/assessment" element={withNav(<DiabetesAssessment />, "Diabetes Assessment")} />
+          <Route path="/diabetes/overview" element={withNav(<DiabetesOverview />, "Diabetes Overview")} />
+          <Route path="/diabetes/tab" element={withNav(<DiabetesTab />, "Diabetes")} />
+          <Route path="/diabetes/treatment" element={withNav(<DiabetesTreatment />, "Diabetes Treatment")} />
+          <Route path="/diabetes/insulin-guide" element={withNav(<InsulinGuide />, "Insulin Guide")} />
+          <Route path="/hypertension/assessment" element={withNav(<HypertensionAssessment />, "Hypertension Assessment")} />
+          <Route path="/hypertension/medication-guide" element={withNav(<HypertensionMedicationGuide />, "Medication Guide")} />
+          <Route path="/hypertension/overview" element={withNav(<HypertensionOverview />, "Hypertension Overview")} />
+          <Route path="/hypertension/tab" element={withNav(<HypertensionTab />, "Hypertension")} />
+          <Route path="/hypertension/treatment" element={withNav(<HypertensionTreatment />, "Hypertension Treatment")} />
+          <Route path="/hypertension/clinical-cards" element={withNav(<HypertensionClinicalCards />, "Clinical Cards")} />
+          <Route path="/hypertension/secondary-htn" element={withNav(<SecondaryHtnPage />, "Secondary HTN")} />
+          <Route path="/hypertension/mra-selection" element={withNav(<MRASelectionAlgorithm />, "MRA Selection")} />
+          <Route path="/lipids/assessment" element={withNav(<LipidsAssessment />, "Lipids Assessment")} />
+          <Route path="/lipids/overview" element={withNav(<LipidsOverview />, "Lipids Overview")} />
+          <Route path="/lipids/tab" element={withNav(<LipidsTab />, "Lipids")} />
+          <Route path="/lipids/treatment" element={withNav(<LipidsTreatment />, "Lipids Treatment")} />
+          <Route path="/insulin-titration" element={withNav(<InsulinTitrationCalc />, "Insulin Titration")} />
+          <Route path="/sliding-scale" element={withNav(<SlidingScaleInsulinCalc />, "Sliding Scale")} />
+          <Route path="/hypo-risk" element={withNav(<HypoRiskCalculatorCalc />, "Hypo Risk")} />
+          <Route path="/renal-dosing" element={withNav(<RenalDoseAdjustmentCalc />, "Renal Dosing")} />
+          <Route path="/aki-criteria" element={withNav(<AKIAKDMiniApp />, "AKI / AKD Criteria")} />
           <Route path="/aki-akd" element={<Navigate to="/aki-criteria" replace />} />
-          <Route path="/acid-base" element={<><TabNavigation /><AcidBaseDisorders /></>} />
+          <Route path="/acid-base" element={withNav(<AcidBaseDisorders />, "Acid-Base Disorders")} />
           <Route path="/metabolic-alkalosis" element={<Navigate to="/acid-base?tab=metabolic-alkalosis" replace />} />
-          <Route path="/geriatrics" element={<><TabNavigation /><Geriatrics /></>} />
-          <Route path="/frailty-calculator" element={<><TabNavigation /><FrailtyCalculator /></>} />
-          <Route path="/vaccine-calculator" element={<><TabNavigation /><VaccineCalculator /></>} />
-          <Route path="/respiratory" element={<><TabNavigation /><RespiratoryPage /></>} />
+          <Route path="/geriatrics" element={withNav(<Geriatrics />, "Geriatrics")} />
+          <Route path="/frailty-calculator" element={withNav(<FrailtyCalculator />, "Frailty Calculator")} />
+          <Route path="/vaccine-calculator" element={withNav(<VaccineCalculator />, "Vaccine Calculator")} />
+          <Route path="/respiratory" element={withNav(<RespiratoryPage />, "Respiratory")} />
           <Route path="/respiratory/simple" element={<Navigate to="/respiratory" replace />} />
           <Route path="/respiratory/moderate" element={<Navigate to="/respiratory" replace />} />
-          <Route path="/diabetes/medication-algorithm" element={<><TabNavigation /><DiabetesMedicationAlgorithmCalc /></>} />
-          <Route path="/lipid-panel" element={<><TabNavigation /><LipidPanelCalc /></>} />
-          <Route path="/ascvd-risk" element={<><TabNavigation /><AscvdEmrCalc /></>} />
-          <Route path="/gfr-calculator" element={<><TabNavigation /><GfrCalculatorCalc /></>} />
-          <Route path="/drug-interactions" element={<><TabNavigation /><DrugInteractionCheckerCalc /></>} />
-          <Route path="/htn/treatment-algorithm" element={<><TabNavigation /><AntihypertensiveTreatmentAlgorithmCalc /></>} />
-          <Route path="/htn/potency-table" element={<><TabNavigation /><AntihypertensivePotencyTableCalc /></>} />
-          <Route path="/obesity/bmi-calculator" element={<><TabNavigation /><BmiCalculatorCalc /></>} />
-          <Route path="/obesity/waist-height-ratio" element={<><TabNavigation /><WaistHeightRatioCalc /></>} />
-          <Route path="/obesity/glp1-dosing" element={<><TabNavigation /><GLP1Administration /></>} />
-          <Route path="/obesity/glp1-algorithm" element={<><TabNavigation /><GLP1ObesityAlgorithmCalc /></>} />
-          <Route path="/obesity/glp1-assessment" element={<><TabNavigation /><GLP1AssessmentCalc /></>} />
-          <Route path="/obesity/optic-nerve-assessment" element={<><TabNavigation /><OpticNerveAssessmentCalc /></>} />
-          <Route path="/glp1-screening" element={<><TabNavigation /><Glp1Screening /></>} />
+          <Route path="/diabetes/medication-algorithm" element={withNav(<DiabetesMedicationAlgorithmCalc />, "Diabetes Medication Algorithm")} />
+          <Route path="/lipid-panel" element={withNav(<LipidPanelCalc />, "Lipid Panel")} />
+          <Route path="/ascvd-risk" element={withNav(<AscvdEmrCalc />, "ASCVD Risk")} />
+          <Route path="/gfr-calculator" element={withNav(<GfrCalculatorCalc />, "GFR Calculator")} />
+          <Route path="/drug-interactions" element={withNav(<DrugInteractionCheckerCalc />, "Drug Interactions")} />
+          <Route path="/htn/treatment-algorithm" element={withNav(<AntihypertensiveTreatmentAlgorithmCalc />, "Treatment Algorithm")} />
+          <Route path="/htn/potency-table" element={withNav(<AntihypertensivePotencyTableCalc />, "Potency Table")} />
+          <Route path="/obesity/bmi-calculator" element={withNav(<BmiCalculatorCalc />, "BMI Calculator")} />
+          <Route path="/obesity/waist-height-ratio" element={withNav(<WaistHeightRatioCalc />, "Waist-Height Ratio")} />
+          <Route path="/obesity/glp1-dosing" element={withNav(<GLP1Administration />, "GLP-1 Doses & Schedules")} />
+          <Route path="/obesity/glp1-algorithm" element={withNav(<GLP1ObesityAlgorithmCalc />, "GLP-1 Algorithm")} />
+          <Route path="/obesity/glp1-assessment" element={withNav(<GLP1AssessmentCalc />, "GLP-1 Assessment")} />
+          <Route path="/obesity/optic-nerve-assessment" element={withNav(<OpticNerveAssessmentCalc />, "Optic Nerve Assessment")} />
+          <Route path="/glp1-screening" element={withNav(<Glp1Screening />, "GLP-1 Screening")} />
           <Route
             path="/glp1-prescreen"
             element={
-              <>
-                <TabNavigation />
+              <PageShell title="GLP-1 Pre-Initiation Screener">
                 <div className="max-w-4xl mx-auto px-4 py-6">
                   <GLP1PreInitiationScreenerCalc />
                 </div>
-              </>
+              </PageShell>
             }
           />
-          <Route path="/obesity/glp1-screener" element={<><TabNavigation /><GLP1ScreenerCalc /></>} />
-          <Route path="/drug-schedule" element={<><TabNavigation /><DrugSchedule /></>} />
-          <Route path="/drug-calculator" element={<><TabNavigation /><DrugCalculator /></>} />
-          <Route path="/diet-plan" element={<><TabNavigation /><DietPlanPage /></>} />
-          <Route path="/iron-calculator" element={<><TabNavigation /><IronReplacementCalculator /></>} />
-          <Route path="/thyroid" element={<><TabNavigation /><ThyroidCalculator /></>} />
-          <Route path="/fatigue" element={<><TabNavigation /><Fatigue /></>} />
-          <Route path="/vitamin-d" element={<><TabNavigation /><VitaminD /></>} />
-          <Route path="/bone-health" element={<><TabNavigation /><BoneHealth /></>} />
+          <Route path="/obesity/glp1-screener" element={withNav(<GLP1ScreenerCalc />, "GLP-1 Screener")} />
+          <Route path="/drug-schedule" element={withNav(<DrugSchedule />, "Drug Schedule")} />
+          <Route path="/drug-calculator" element={withNav(<DrugCalculator />, "Drug Calculator")} />
+          <Route path="/diet-plan" element={withNav(<DietPlanPage />, "Diet Plan")} />
+          <Route path="/iron-calculator" element={<Navigate to="/anemia?tab=iron" replace />} />
+          <Route path="/thyroid" element={withNav(<ThyroidCalculator />, "Thyroid")} />
+          <Route path="/steroid-taper" element={withNav(<SteroidTaperCalculator />, "Steroid Taper")} />
+          <Route path="/fatigue" element={withNav(<Fatigue />, "Fatigue")} />
+          <Route path="/vitamin-d" element={withNav(<VitaminD />, "Vitamin D")} />
+          <Route path="/bone-health" element={withNav(<BoneHealth />, "Bone Health")} />
           <Route path="/pcos" element={<Navigate to="/women-health?tab=pmos" replace />} />
-          <Route path="/women-health" element={<><TabNavigation /><WomenHealth /></>} />
-          <Route path="/infections" element={<><TabNavigation /><Infections /></>} />
-          <Route path="/diabetic-foot-scoring" element={<><TabNavigation /><DiabeticFootScoring /></>} />
-          <Route path="/acute-diarrhoea" element={<><TabNavigation /><AcuteDiarrhoeaPage /></>} />
-          <Route path="/food-poisoning" element={<><TabNavigation /><FoodPoisoningPage /></>} />
-          <Route path="/pep" element={<><TabNavigation /><PEP /></>} />
-          <Route path="/adult-vaccinations" element={<><TabNavigation /><AdultVaccinations /></>} />
-          <Route path="/electrolytes" element={<><TabNavigation /><Electrolytes /></>} />
-          <Route path="/hyponatremia" element={<><TabNavigation /><Hyponatremia /></>} />
-          <Route path="/hypernatremia" element={<><TabNavigation /><Hypernatremia /></>} />
-          <Route path="/hyperkalemia" element={<><TabNavigation /><Hyperkalemia /></>} />
-          <Route path="/hypocalcemia" element={<><TabNavigation /><Hypocalcemia /></>} />
-          <Route path="/hypercalcemia" element={<><TabNavigation /><Hypercalcemia /></>} />
-          <Route path="/hypokalemia" element={<><TabNavigation /><Hypokalemia /></>} />
-          <Route path="/hypomagnesemia" element={<><TabNavigation /><Hypomagnesemia /></>} />
-          <Route path="/hypermagnesemia" element={<><TabNavigation /><Hypermagnesemia /></>} />
-          <Route path="/hypophosphatemia" element={<><TabNavigation /><Hypophosphatemia /></>} />
-          <Route path="/fcm-hypophosphatemia" element={<><TabNavigation /><FCMHypophosphatemia /></>} />
-          <Route path="/hyperphosphatemia" element={<><TabNavigation /><Hyperphosphatemia /></>} />
-          <Route path="/hyperglycemic-emergency" element={<><TabNavigation /><HyperglycemicEmergency /></>} />
-          <Route path="/type1-treatment-algorithm" element={<><TabNavigation /><Type1TreatmentAlgorithm /></>} />
-          <Route path="/type2-treatment-algorithm" element={<><TabNavigation /><Type2TreatmentAlgorithm /></>} />
-          <Route path="/goldman-cardiac" element={<Navigate to="/perioperative-calculators#goldman" replace />} />
-          <Route path="/perioperative-calculators" element={<><TabNavigation /><PerioperativeCalculators /></>} />
-          <Route path="/perioperative" element={<Navigate to="/perioperative-calculators" replace />} />
+          <Route path="/women-health" element={withNav(<WomenHealth />, "Women's Health")} />
+          <Route path="/infections" element={withNav(<Infections />, "Infections")} />
+          <Route path="/diabetic-foot-scoring" element={withNav(<DiabeticFootScoring />, "Diabetic Foot Scoring")} />
+          <Route path="/acute-diarrhoea" element={withNav(<AcuteDiarrhoeaPage />, "Acute Diarrhoea")} />
+          <Route path="/food-poisoning" element={withNav(<FoodPoisoningPage />, "Food Poisoning")} />
+          <Route path="/pep" element={withNav(<PEPPage />, "PEP")} />
+          <Route path="/adult-vaccinations" element={withNav(<AdultVaccinationsPage />, "Adult Vaccinations")} />
+          <Route path="/electrolytes" element={withNav(<Hyperkalemia />, "Electrolytes")} />
+          <Route path="/hyponatremia" element={withNav(<Hyponatremia />, "Hyponatremia")} />
+          <Route path="/hypernatremia" element={withNav(<Hypernatremia />, "Hypernatremia")} />
+          <Route path="/hypokalemia" element={withNav(<Hypokalemia />, "Hypokalemia")} />
+          <Route path="/hyperkalemia" element={withNav(<Hyperkalemia />, "Hyperkalemia")} />
+          <Route path="/hypocalcemia" element={withNav(<Hypocalcemia />, "Hypocalcemia")} />
+          <Route path="/hypercalcemia" element={withNav(<Hypercalcemia />, "Hypercalcemia")} />
+          <Route path="/hypomagnesemia" element={withNav(<Hypomagnesemia />, "Hypomagnesemia")} />
+          <Route path="/hypermagnesemia" element={withNav(<Hypermagnesemia />, "Hypermagnesemia")} />
+          <Route path="/hypophosphatemia" element={withNav(<Hypophosphatemia />, "Hypophosphatemia")} />
+          <Route path="/hyperphosphatemia" element={withNav(<Hyperphosphatemia />, "Hyperphosphatemia")} />
+          <Route path="/fcm-hypophosphatemia" element={withNav(<FCMHypophosphatemia />, "FCM Hypophosphatemia")} />
+          <Route path="/type1-treatment-algorithm" element={withNav(<Type1TreatmentAlgorithm />, "T1D Treatment Algorithm")} />
+          <Route path="/type2-treatment-algorithm" element={withNav(<Type2TreatmentAlgorithm />, "T2D Treatment Algorithm")} />
+          <Route path="/hyperglycemic-emergency" element={withNav(<HyperglycemicEmergency />, "Hyperglycemic Emergency")} />
+          <Route path="/perioperative-calculators" element={withNav(<PerioperativeCalculators />, "Perioperative Tools")} />
+          <Route path="/daily-management" element={withNav(<DailyManagementGuide />, "Daily Management")} />
+          <Route path="/type1-management" element={withNav(<Type1DMManagement />, "Type 1 DM")} />
+          <Route path="/type1-pitfalls" element={withNav(<Type1Pitfalls />, "T1D Pitfalls")} />
+          <Route path="/type2-transition" element={withNav(<Type2Transition />, "T2D Transition")} />
+          <Route path="/insulin-therapy" element={withNav(<InsulinTherapy />, "Insulin Therapy")} />
+          <Route path="/prediabetes" element={withNav(<PrediabetesAlgorithm />, "Prediabetes")} />
+          <Route path="/ckd-guideline" element={withNav(<CKDGuideline />, "CKD Guideline")} />
+          <Route path="/summary" element={withNav(<SummaryPage />, "Summary")} />
+          <Route path="/progress" element={withNav(<Progress />, "Progress")} />
+          <Route path="/patient" element={withNav(<PatientInput />, "Patient")} />
+          <Route path="/foods" element={withNav(<FoodDatabase />, "Foods")} />
+          <Route path="/plate" element={withNav(<PlateMethod />, "Plate Method")} />
+          <Route path="/medications" element={withNav(<MedOptimizer />, "Medications")} />
+          <Route path="/feedback" element={withNav(<FeedbackTips />, "Feedback")} />
 
           {/* Legal / Compliance */}
-          <Route path="/privacy" element={<><TabNavigation /><PrivacyPolicy /></>} />
-          <Route path="/terms" element={<><TabNavigation /><TermsOfService /></>} />
-          <Route path="/disclaimer" element={<><TabNavigation /><DisclaimerPage /></>} />
-          <Route path="/delete-account" element={<><TabNavigation /><DeleteAccount /></>} />
+          <Route path="/privacy" element={withNav(<PrivacyPolicy />, "Privacy Policy")} />
+          <Route path="/terms" element={withNav(<TermsOfService />, "Terms of Service")} />
+          <Route path="/disclaimer" element={withNav(<DisclaimerPage />, "Disclaimer")} />
+          <Route path="/delete-account" element={withNav(<DeleteAccount />, "Delete Account")} />
           <Route path="/account/delete" element={<Navigate to="/delete-account" replace />} />
-          <Route path="/images" element={<><TabNavigation /><ImageGallery /></>} />
+          <Route path="/images" element={withNav(<ImageGallery />, "Image Gallery")} />
           <Route path="/image-gallery" element={<Navigate to="/images" replace />} />
-          <Route path="/guides/mme-cdc" element={<><TabNavigation /><MMEGuide /></>} />
-          <Route path="/dev/tools" element={<><TabNavigation /><DevTools /></>} />
+          <Route path="/guides/mme-cdc" element={withNav(<MMEGuide />, "MME Guide")} />
+          <Route path="/dev/tools" element={withNav(<DevTools />, "Dev Tools")} />
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
