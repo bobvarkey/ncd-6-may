@@ -214,6 +214,7 @@ const navItems: NavItem[] = [
   { path: "/pep",                   label: "Post exposure prophylaxis (PEP)",icon: Shield, active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", emoji: "💉" },
   { path: "/adult-vaccinations",    label: "Vaccinations",  icon: Syringe, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "💉" },
   { path: "/vitamin-d",            label: "Vitamin D",  icon: Sun, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "☀️" },
+  { path: "/bone-health",          label: "Bone Health", icon: Bone, active: "bg-pink-500/10 text-pink-400 border-pink-500/30", emoji: "🦴" },
   { path: "/geriatrics",           label: "Geriatrics", icon: User, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "👴" },
   { path: "/frailty-calculator",   label: "Frailty Calculator", icon: User, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "🧍" },
   { path: "/vaccine-calculator",   label: "Vaccine Calculator", icon: Syringe, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "🧮" },

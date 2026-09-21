@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Settings as SettingsIcon,
-  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope, Eye, Calculator,
+  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope, Eye, Calculator, Bone,
   type LucideIcon,
 } from "lucide-react";
 
@@ -69,6 +69,7 @@ const SECTIONS: Section[] = [
       { title: "Hypo Risk Score", url: "/hypo-risk", icon: ShieldAlert },
       { title: "Renal Dosing", url: "/renal-dosing", icon: FlaskConical, keywords: "egfr ckd mehran pci cin" },
       { title: "CKD Guideline", url: "/ckd-guideline", icon: Bean, keywords: "kdigo" },
+      { title: "Bone Health", url: "/bone-health", icon: Bone, keywords: "osteoporosis fracture risk assessment romosozumab teriparatide denosumab bisphosphonate" },
     ],
   },
   {

@@ -178,6 +178,7 @@ const FeedbackTips = lazyWithModuleRetry(() => import("@/pages/FeedbackTips"));
 const NotFound = lazyWithModuleRetry(() => import("@/components/NotFound"));
 const Fatigue = lazyWithModuleRetry(() => import("@/pages/Fatigue"));
 const VitaminD = lazyWithModuleRetry(() => import("@/pages/VitaminD"));
+const BoneHealth = lazyWithModuleRetry(() => import("@/pages/BoneHealth"));
 const WomenHealth = lazyWithModuleRetry(() => import("@/pages/WomenHealth"));
 const Infections = lazyWithModuleRetry(() => import("@/pages/Infections"));
 const AcuteDiarrhoeaPage = lazyWithModuleRetry(() => import("@/pages/AcuteDiarrhoeaPage"));
@@ -390,6 +391,7 @@ const App = () => {
           <Route path="/thyroid" element={<><TabNavigation /><ThyroidCalculator /></>} />
           <Route path="/fatigue" element={<><TabNavigation /><Fatigue /></>} />
           <Route path="/vitamin-d" element={<><TabNavigation /><VitaminD /></>} />
+          <Route path="/bone-health" element={<><TabNavigation /><BoneHealth /></>} />
           <Route path="/pcos" element={<Navigate to="/women-health?tab=pmos" replace />} />
           <Route path="/women-health" element={<><TabNavigation /><WomenHealth /></>} />
           <Route path="/infections" element={<><TabNavigation /><Infections /></>} />
