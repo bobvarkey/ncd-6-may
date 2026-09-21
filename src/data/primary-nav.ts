@@ -82,6 +82,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/pep", label: "Post exposure prophylaxis (PEP)", icon: Shield, tone: "indigo" },
       { path: "/adult-vaccinations", label: "Vaccinations", icon: Syringe, tone: "teal" },
       { path: "/vitamin-d", label: "Vitamin D", icon: Sun, tone: "amber" },
+      { path: "/osteoporosis", label: "Bone health / Osteoporosis", icon: Bone, tone: "lime", keywords: "dxa frax t-score bone seiomm nogg fracture" },
       { path: "/geriatrics", label: "Geriatrics", icon: User, tone: "violet" },
       { path: "/frailty-calculator", label: "Frailty Calculator", icon: User, tone: "fuchsia" },
       { path: "/vaccine-calculator", label: "Vaccine Calculator", icon: Syringe, tone: "emerald" },

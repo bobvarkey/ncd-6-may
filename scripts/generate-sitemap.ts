@@ -32,6 +32,7 @@ const entries: Entry[] = [
   { path: "/steroid-taper", priority: "0.7", changefreq: "monthly" },
   { path: "/fatigue", priority: "0.7", changefreq: "monthly" },
   { path: "/vitamin-d", priority: "0.7", changefreq: "monthly" },
+  { path: "/osteoporosis", priority: "0.7", changefreq: "monthly" },
   { path: "/women-health", priority: "0.7", changefreq: "monthly" },
   { path: "/ascvd-risk", priority: "0.8", changefreq: "monthly" },
   { path: "/gfr-calculator", priority: "0.7", changefreq: "monthly" },
