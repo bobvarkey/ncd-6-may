@@ -220,6 +220,23 @@
     color: hsl(var(--muted-foreground)) !important;
   }
 
+  /* ============================================================
+     Osteoporosis page — brighter (near-white) and bolder text.
+     Scoped to .osteoporosis-page so the rest of the app is
+     unaffected; placed after the muted-foreground rule above so
+     it wins the !important tie-break.
+     ============================================================ */
+  .osteoporosis-page {
+    font-weight: 500;
+  }
+  .osteoporosis-page strong {
+    font-weight: 700;
+  }
+  .osteoporosis-page .text-muted-foreground[class],
+  .osteoporosis-page [class*="text-muted-foreground"][class] {
+    color: hsl(0 0% 92%) !important;
+  }
+
   /* Portal surfaces (dialogs, dropdowns, popovers, tooltips, toasts) */
   [role="dialog"], [role="menu"], [role="listbox"], [role="tooltip"],
   [data-radix-popper-content-wrapper], [data-sonner-toaster], [data-sonner-toast],
