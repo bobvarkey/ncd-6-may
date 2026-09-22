@@ -1,6 +1,7 @@
 import { Bone, BrickWall, ShieldCheck, Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import OsteoporosisAlgorithm from "@/components/bone-health/OsteoporosisAlgorithm";
+import BoneHealthGuidedApp from "@/components/bone-health/BoneHealthGuidedApp";
 
 export default function BoneHealth() {
   return (
@@ -17,6 +18,8 @@ export default function BoneHealth() {
         </header>
 
         <OsteoporosisAlgorithm />
+
+        <BoneHealthGuidedApp />
 
         <Card className="overflow-hidden">
           <CardHeader className="pb-3">
