@@ -4,7 +4,7 @@ import OsteoporosisAlgorithm from "@/components/bone-health/OsteoporosisAlgorith
 
 export default function BoneHealth() {
   return (
-    <main className="min-h-screen pb-24">
+    <main className="osteoporosis-page min-h-screen pb-24">
       <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
         <header className="space-y-1">
           <div className="flex items-center gap-2">
