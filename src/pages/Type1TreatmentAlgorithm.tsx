@@ -28,6 +28,7 @@ import {
   Thermometer,
   Monitor,
   FileText,
+  Info,
 } from "lucide-react";
 import { AbbrText } from "@/components/AbbreviationHover";
 
@@ -637,6 +638,26 @@ export default function Type1TreatmentAlgorithm() {
         <p className="text-primary-foreground/80">
           Step-by-step treatment algorithm from diagnosis through advanced insulin delivery for type 1 diabetes mellitus
         </p>
+      </div>
+
+      {/* Image */}
+      <figure className="m-0">
+        <img src="/diabetes-type1-algorithm.jpg" alt="Type 1 diabetes treatment algorithm" className="w-full h-auto rounded-lg border" loading="lazy" />
+      </figure>
+
+      {/* Clinical Caveats */}
+      <div className="rounded-xl border border-amber-200/60 bg-amber-50/50 p-4 space-y-2">
+        <h3 className="text-sm font-semibold text-amber-800 flex items-center gap-2">
+          <Info className="h-4 w-4" />
+          Important clinical caveats (as emphasised in the source guidelines)
+        </h3>
+        <ul className="text-sm text-amber-900 space-y-1.5 list-none">
+          <li>• No single feature confirms type 1 diabetes.</li>
+          <li>• Antibody-negative type 1 diabetes occurs in 5–10% of cases (especially &lt;35 years).</li>
+          <li>• C-peptide is most useful after ~3 years' duration and must be interpreted with concurrent glucose and clinical context.</li>
+          <li>• Monogenic diabetes (MODY) and other atypical forms must remain in the differential.</li>
+          <li>• Always prioritise clinical judgement and patient safety (especially regarding insulin requirement).</li>
+        </ul>
       </div>
 
       {/* Navigation Tabs */}
