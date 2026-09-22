@@ -17,9 +17,9 @@ export default function BoneHealth() {
           </p>
         </header>
 
-        <OsteoporosisAlgorithm />
-
         <BoneHealthGuidedApp />
+
+        <OsteoporosisAlgorithm />
 
         <Card className="overflow-hidden">
           <CardHeader className="pb-3">
