@@ -467,6 +467,39 @@ export default function HypertensionMedicationGuide() {
         </CardContent>
       </Card>
 
+      {/* Beta-Blocker Selection Guidance */}
+      <Card className="border-amber-200 bg-amber-50/50">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base text-amber-800">Clinical Guidance: Beta-Blocker Selection by Phenotype</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="bg-white p-3 rounded-lg border">
+              <p className="font-medium text-green-700">❤️ Best for HR Control + HF</p>
+              <p className="text-muted-foreground mt-1">Bisoprolol • Metoprolol Succinate</p>
+              <p className="text-xs text-muted-foreground mt-1">Excellent HR control and established HFrEF evidence</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border">
+              <p className="font-medium text-blue-700">🫁 Best When Bronchospasm Matters</p>
+              <p className="text-muted-foreground mt-1">Bisoprolol • Nebivolol</p>
+              <p className="text-xs text-muted-foreground mt-1">Highest β₁-selectivity, lower bronchospasm risk</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border">
+              <p className="font-medium text-purple-700">🔄 Better Metabolic Profile</p>
+              <p className="text-muted-foreground mt-1">Nebivolol • Carvedilol</p>
+              <p className="text-xs text-muted-foreground mt-1">More favourable metabolic effects</p>
+            </div>
+          </div>
+          <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg">
+            <p className="font-medium text-amber-800 text-xs">⚠️ Important Note on Metoprolol Formulations</p>
+            <div className="mt-2 text-xs text-amber-700 space-y-1">
+              <p><strong>Metoprolol tartrate</strong> = immediate release (twice daily)</p>
+              <p><strong>Metoprolol succinate</strong> = extended release (once daily) — the formulation used in guideline-directed HFrEF therapy</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Navigation Tabs */}
       <div className="flex flex-wrap gap-2">
         {[
