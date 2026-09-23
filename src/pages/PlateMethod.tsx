@@ -271,7 +271,7 @@ const PlateMethod = () => {
                       className={`w-full text-left p-4 rounded-lg transition-all border ${
                         slot.foods.some(f => f.id === food.id)
                           ? "bg-success/10 dark:bg-green-950/30 border-green-500"
-                          : "border-transparent hover:bg-muted/50 hover:border-primary/20"
+                          : "border-transparent hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 hover:border-pink-200/30"
                       }`}
                     >
                       <div className="flex items-start justify-between">

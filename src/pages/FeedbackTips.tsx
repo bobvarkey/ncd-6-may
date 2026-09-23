@@ -100,7 +100,7 @@ const FeedbackTips = () => {
               onClick={() => handleTemplateClick(key)}
               className={`px-3 py-2 rounded-full text-xs font-medium transition-all border ${
                 template === key
-                  ? "bg-primary text-primary-foreground border-primary"
+                  ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md"
                   : "bg-muted text-muted-foreground border-border hover:border-primary/50"
               }`}
             >

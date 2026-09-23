@@ -263,6 +263,16 @@ export const drugDoseDetails: DrugDoseDetail[] = [
   { name: "Atenolol", brand: "Tenormin", drugClass: "β₁-selective BB", doseRange: "25–100 mg OD", pearls: "ASCOT showed atenolol inferior to amlodipine for CV outcomes. No longer preferred.", caution: "Less evidence vs newer BBs" },
   { name: "Propranolol", brand: "Inderal", drugClass: "Non-selective BB", doseRange: "40–240 mg BID", pearls: "Non-selective — blocks β₂ receptors. Used for migraine prophylaxis, essential tremor, performance anxiety.", caution: "Avoid in asthma, COPD" },
 
+  // Beta-blocker selection guide
+  {
+    name: "Beta-Blocker Selection Guide",
+    brand: "",
+    drugClass: "Clinical Decision Tool",
+    doseRange: "",
+    pearls: "Beta-blockers are not interchangeable — choose based on patient's phenotype. See image below for comparison.",
+    caution: ""
+  },
+
   // ─── Alpha Blockers ───
   { name: "Prazosin", brand: "Minipress", drugClass: "α₁-blocker", doseRange: "1–10 mg BID/TID", pearls: "First-dose syncope risk — start at bedtime. Also for BPH, PTSD nightmares.", caution: "Orthostatic hypotension" },
   { name: "Doxazosin", brand: "Cardura", drugClass: "α₁-blocker", doseRange: "1–8 mg OD", pearls: "Longer T½ — OD dosing. ALLHAT: increased HF vs chlorthalidone — no longer 1st line.", caution: "Not 1st-line for HTN" },
@@ -442,21 +452,69 @@ export default function HypertensionMedicationGuide() {
         </CardContent>
       </Card>
 
+      {/* Beta-Blocker Selection Guide */}
+      <Card className="clinical-card overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Beta-Blocker Selection Guide</CardTitle>
+          <p className="text-sm text-muted-foreground">Choose the right beta-blocker for the right patient</p>
+        </CardHeader>
+        <CardContent className="p-3">
+          <ZoomableImage
+            src="/beta-blocker-selection.jpg"
+            alt="Beta-blocker selection by clinical phenotype"
+            caption="Beta-blockers are not interchangeable — choose based on patient's phenotype"
+          />
+        </CardContent>
+      </Card>
+
+      {/* Beta-Blocker Selection Guidance */}
+      <Card className="border-amber-200 bg-amber-50/50">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base text-amber-800">Clinical Guidance: Beta-Blocker Selection by Phenotype</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="bg-white p-3 rounded-lg border">
+              <p className="font-medium text-green-700">❤️ Best for HR Control + HF</p>
+              <p className="text-muted-foreground mt-1">Bisoprolol • Metoprolol Succinate</p>
+              <p className="text-xs text-muted-foreground mt-1">Excellent HR control and established HFrEF evidence</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border">
+              <p className="font-medium text-blue-700">🫁 Best When Bronchospasm Matters</p>
+              <p className="text-muted-foreground mt-1">Bisoprolol • Nebivolol</p>
+              <p className="text-xs text-muted-foreground mt-1">Highest β₁-selectivity, lower bronchospasm risk</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border">
+              <p className="font-medium text-purple-700">🔄 Better Metabolic Profile</p>
+              <p className="text-muted-foreground mt-1">Nebivolol • Carvedilol</p>
+              <p className="text-xs text-muted-foreground mt-1">More favourable metabolic effects</p>
+            </div>
+          </div>
+          <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg">
+            <p className="font-medium text-amber-800 text-xs">⚠️ Important Note on Metoprolol Formulations</p>
+            <div className="mt-2 text-xs text-amber-700 space-y-1">
+              <p><strong>Metoprolol tartrate</strong> = immediate release (twice daily)</p>
+              <p><strong>Metoprolol succinate</strong> = extended release (once daily) — the formulation used in guideline-directed HFrEF therapy</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Navigation Tabs */}
       <div className="flex flex-wrap gap-2">
         {[
-          { id: "classes", label: "Drug Classes", icon: Stethoscope },
-          { id: "dosing", label: "Dosing Guide", icon: Stethoscope },
-          { id: "algorithm", label: "By Comorbidity", icon: Heart },
-          { id: "interactions", label: "Drug Interactions", icon: AlertTriangle },
-        ].map((tab) => (
+          { id: "classes", label: "Drug Classes", icon: Stethoscope, color: "from-pink-500 to-rose-500" },
+          { id: "dosing", label: "Dosing Guide", icon: Stethoscope, color: "from-violet-500 to-purple-500" },
+          { id: "algorithm", label: "By Comorbidity", icon: Heart, color: "from-cyan-500 to-blue-500" },
+          { id: "interactions", label: "Drug Interactions", icon: AlertTriangle, color: "from-amber-500 to-orange-500" },
+        ].map((tab, idx) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               activeTab === tab.id
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                ? `bg-gradient-to-r ${tab.color} text-white shadow-lg shadow-primary/25 scale-105`
+                : "bg-muted/60 text-muted-foreground hover:bg-muted/80 hover:scale102"
             }`}
           >
             <tab.icon className="h-4 w-4" />

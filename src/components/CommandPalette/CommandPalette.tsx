@@ -44,6 +44,7 @@ const SEARCH_ITEMS: SearchItem[] = [
   { id: "steroid-taper", label: "Steroid Taper", category: "calculator", path: "/steroid-taper", keywords: ["steroid", "taper", "glucocorticoid", "prednisolone", "prednisone", "adrenal", "cortisol", "hpa"] },
   { id: "iron", label: "Iron Calculator", category: "calculator", path: "/anemia?tab=iron", keywords: ["ferritin", "iron", "tsat", "iron deficiency", "ganzoni", "iron deficit"] },
   { id: "osteoporosis", label: "Bone health / Osteoporosis", category: "calculator", path: "/osteoporosis", keywords: ["osteoporosis", "bone", "dxa", "frax", "t-score", "fracture", "denosumab", "bisphosphonate", "seiomm", "nogg"] },
+  { id: "bone-health", label: "Bone Health", category: "page", path: "/bone-health", keywords: ["bone health", "osteoporosis", "fracture", "romosozumab", "teriparatide", "denosumab", "bisphosphonate"] },
   { id: "liver", label: "Liver", category: "calculator", path: "/liver", keywords: ["liver", "hepatic", "lft", "fib-4", "fib4", "apri", "nfs", "meld", "child-pugh", "auto-calc", "masld", "nafld"] },
   // Guidelines (placeholder - could expand)
   { id: "ada-guidelines", label: "ADA Standards of Care 2024", category: "guideline", path: "/about", keywords: ["diabetes", "guideline"] },

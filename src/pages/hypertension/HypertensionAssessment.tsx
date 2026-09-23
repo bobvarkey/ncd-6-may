@@ -634,7 +634,7 @@ export default function HypertensionAssessment() {
                   <label
                     key={drug.id}
                     className={`flex items-center space-x-2 p-1.5 rounded-md cursor-pointer transition-colors text-sm ${
-                      selectedDrugs.has(drug.id) ? "bg-warning/100/10 text-warning font-medium" : "hover:bg-muted/50"
+                      selectedDrugs.has(drug.id) ? "bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 font-medium" : "hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50"
                     }`}
                   >
                     <Checkbox

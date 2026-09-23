@@ -30,7 +30,7 @@ const FoodDatabase = () => {
             onClick={() => setActiveCategory(cat.key)}
             className={`food-chip whitespace-nowrap ${
               activeCategory === cat.key
-                ? "bg-primary text-primary-foreground border-primary"
+                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md"
                 : "bg-card border-border text-foreground"
             }`}
           >

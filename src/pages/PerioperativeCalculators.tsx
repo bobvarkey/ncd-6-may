@@ -619,8 +619,8 @@ const PerioperativeCalculators = () => {
                     }}
                     className={`flex flex-col items-start p-2.5 rounded-lg border transition-all text-left group ${
                       selectorAnswers.surgeryType === type.id 
-                        ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                        : "bg-background border-border hover:border-primary hover:bg-primary/5"
+                        ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md" 
+                        : "bg-background border-border hover:border-primary hover:bg-primary/5 hover:scale-[1.02]"
                     }`}
                   >
                     <span className="text-xs font-bold transition-colors">{type.label}</span>
@@ -650,8 +650,8 @@ const PerioperativeCalculators = () => {
                     }}
                     className={`flex flex-col items-start p-2.5 rounded-lg border transition-all text-left group ${
                       selectorAnswers.clinicalFocus === focus.id 
-                        ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                        : "bg-background border-border hover:border-primary hover:bg-primary/5"
+                        ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white border-transparent shadow-md" 
+                        : "bg-background border-border hover:border-primary hover:bg-primary/5 hover:scale-[1.02]"
                     }`}
                   >
                     <span className="text-xs font-bold transition-colors">{focus.label}</span>
@@ -705,7 +705,7 @@ const PerioperativeCalculators = () => {
                         toggleToolComparison(card.value);
                       }}
                       className={`p-1 rounded-md transition-colors ${
-                        isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted text-muted-foreground"
+                        isSelected ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "hover:bg-muted text-muted-foreground hover:scale-105"
                       }`}
                       title="Add to comparison"
                     >
@@ -1010,8 +1010,8 @@ const RCRICalculator = ({ surgeryType }: { surgeryType?: string }) => {
 
 
           {/* Management by class */}
-          <div className="mt-4 p-3 rounded-lg bg-muted/30 border border-border/30">
-            <h4 className="text-sm font-medium mb-2">Management by RCRI Class</h4>
+          <div className="mt-4 p-3 rounded-lg bg-gradient-to-br from-cyan-50/30 to-blue-50/30 border border-cyan-200/20 hover:from-cyan-50/50 hover:to-blue-50/50 transition-all">
+            <h4 className="text-sm font-medium mb-2 text-cyan-700">Management by RCRI Class</h4>
             <div className="space-y-2 text-xs">
               <div className="p-2 rounded bg-success/5 border border-success/20">
                 <strong>Class I–II (0–1 factors):</strong> Proceed with surgery. No additional cardiac testing needed.
@@ -1096,8 +1096,8 @@ const ASACalculator = ({ surgeryType }: { surgeryType?: string }) => {
             </div>
           )}
 
-          <div className="mt-4 p-3 rounded-lg bg-muted/30 border border-border/30">
-            <h4 className="text-xs font-medium mb-1">ASA with Emergency Modifier</h4>
+          <div className="mt-4 p-3 rounded-lg bg-gradient-to-br from-violet-50/30 to-purple-50/30 border border-violet-200/20 hover:from-violet-50/50 hover:to-purple-50/50 transition-all">
+            <h4 className="text-xs font-medium mb-1 text-violet-700">ASA with Emergency Modifier</h4>
             <p className="text-xs text-muted-foreground">
               Add "E" suffix for emergency surgery (e.g., ASA IIIE). Emergency surgery increases risk by approximately 1 ASA class equivalent.
             </p>
@@ -1192,8 +1192,8 @@ const MallampatiCalculator = ({ clinicalFocus }: { clinicalFocus?: string }) => 
             </div>
           )}
 
-          <div className="mt-4 p-3 rounded-lg bg-muted/30 border border-border/30">
-            <h4 className="text-xs font-medium mb-1">Other Airway Assessment Tests</h4>
+          <div className="mt-4 p-3 rounded-lg bg-gradient-to-br from-amber-50/30 to-orange-50/30 border border-amber-200/20 hover:from-amber-50/50 hover:to-orange-50/50 transition-all">
+            <h4 className="text-xs font-medium mb-1 text-amber-700">Other Airway Assessment Tests</h4>
             <div className="grid grid-cols-2 gap-2 text-xs mt-2">
               <div className="p-2 rounded bg-background/50">
                 <strong>Thyromental Distance:</strong> &lt;6 cm → difficult intubation
@@ -1717,8 +1717,10 @@ const PeriopMedManagement = () => {
             <div className="flex flex-wrap gap-1">
               <button
                 onClick={() => setCategoryFilter("all")}
-                className={`text-xs px-2 py-1 rounded-full border transition-colors ${
-                  categoryFilter === "all" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/30 border-border/40 hover:bg-muted/50"
+                className={`text-xs px-3 py-1.5 rounded-full border transition-all duration-200 ${
+                  categoryFilter === "all" 
+                    ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md" 
+                    : "bg-muted/30 border-border/40 hover:bg-muted/50 hover:scale-105"
                 }`}
               >
                 All
@@ -1727,8 +1729,10 @@ const PeriopMedManagement = () => {
                 <button
                   key={key}
                   onClick={() => setCategoryFilter(key)}
-                  className={`text-xs px-2 py-1 rounded-full border transition-colors ${
-                    categoryFilter === key ? "bg-primary text-primary-foreground border-primary" : "bg-muted/30 border-border/40 hover:bg-muted/50"
+                  className={`text-xs px-3 py-1.5 rounded-full border transition-all duration-200 ${
+                    categoryFilter === key 
+                      ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white border-transparent shadow-md scale-105" 
+                      : "bg-muted/30 border-border/40 hover:bg-muted/50 hover:scale-105"
                   }`}
                 >
                   {label}

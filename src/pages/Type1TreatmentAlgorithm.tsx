@@ -28,6 +28,7 @@ import {
   Thermometer,
   Monitor,
   FileText,
+  Info,
 } from "lucide-react";
 import { AbbrText } from "@/components/AbbreviationHover";
 
@@ -237,11 +238,11 @@ const InsulinReferenceSection = () => (
       </CollapsibleTrigger>
       <CollapsibleContent className="mt-3 space-y-4">
         {INSULIN_TYPES_DATA.map((cat, ci) => (
-          <div key={ci} className="p-3 rounded-lg border border-border bg-card/50">
+          <div key={ci} className="p-3 rounded-lg border border-pink-200/30 bg-pink-50/30 hover:bg-pink-50/50 transition-colors">
             <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">{cat.category}</p>
             <div className="space-y-2">
               {cat.items.map((item, ii) => (
-                <div key={ii} className="p-2.5 rounded-lg bg-muted/30 border border-border/40">
+                <div key={ii} className="p-2.5 rounded-lg bg-violet-50/30 border border-violet-200/30 hover:bg-violet-50/50 transition-all hover:scale-[1.01]">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
                     <div>
                       <p className="text-xs text-muted-foreground uppercase font-semibold mb-0.5">Generic</p>
@@ -328,8 +329,8 @@ const PumpTherapyPanel = () => (
     </CardHeader>
     <CardContent className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
-          <p className="text-xs font-medium mb-2">CSII Pump Candidates</p>
+        <div className="p-3 rounded-lg bg-gradient-to-br from-pink-50/40 to-rose-50/40 border border-pink-200/30 hover:from-pink-50/60 hover:to-rose-50/60 transition-all hover:scale-[1.01]">
+          <p className="text-xs font-medium mb-2 text-pink-700">CSII Pump Candidates</p>
           <ul className="space-y-1">
             <li className="text-xs text-muted-foreground">• Recurrent severe hypoglycemia</li>
             <li className="text-xs text-muted-foreground">• Dawn phenomenon (morning hyperglycemia)</li>
@@ -534,8 +535,8 @@ const GLP1InT1DMPanel = () => {
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
-          <p className="text-sm font-medium mb-2">GLP-1 Receptor Agonists (Off-Label)</p>
+        <div className="p-3 rounded-lg bg-gradient-to-br from-violet-50/40 to-purple-50/40 border border-violet-200/30 hover:from-violet-50/60 hover:to-purple-50/60 transition-all hover:scale-[1.01]">
+          <p className="text-sm font-medium mb-2 text-violet-700">GLP-1 Receptor Agonists (Off-Label)</p>
           <p className="text-xs text-muted-foreground">
             Emerging evidence supports GLP-1 RA use as adjunct in overweight/obese T1DM patients. Liraglutide (1.8 mg SC daily) or semaglutide (1.0 mg SC weekly) can reduce insulin dose by 15-30% and promote weight loss. Risk of DKA if insulin is reduced too aggressively — reduce basal by no more than 10-15% at initiation.
           </p>
@@ -543,8 +544,8 @@ const GLP1InT1DMPanel = () => {
             Evidence: Liraglutide in T1D (ADJUNCT ONE/TWO trials) — reduced A1c by 0.2-0.3%, weight loss 4-6 kg, but increased risk of symptomatic hypoglycemia (adjusted for lower insulin doses).
           </p>
         </div>
-        <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
-          <p className="text-sm font-medium mb-2">SGLT2 Inhibitors in T1DM</p>
+        <div className="p-3 rounded-lg bg-gradient-to-br from-amber-50/40 to-orange-50/40 border border-amber-200/30 hover:from-amber-50/60 hover:to-orange-50/60 transition-all hover:scale-[1.01]">
+          <p className="text-sm font-medium mb-2 text-amber-700">SGLT2 Inhibitors in T1DM</p>
           <p className="text-xs text-muted-foreground">
             Dapagliflozin and empagliflozin not approved for T1DM in most regions due to EUGLYCEMIC DKA RISK (~5% incidence). Use only under specialist supervision with strict ketone monitoring protocol. If used: reduce basal by 10-20% at initiation, test ketones daily, discontinue if any illness or reduced oral intake.
           </p>
@@ -639,20 +640,79 @@ export default function Type1TreatmentAlgorithm() {
         </p>
       </div>
 
+      {/* Image */}
+      <figure className="m-0">
+        <img src="/diabetes-type1-algorithm.jpg" alt="Type 1 diabetes treatment algorithm" className="w-full h-auto rounded-lg border" loading="lazy" />
+      </figure>
+
+      {/* Clinical Caveats */}
+      <div className="rounded-xl border border-amber-200/60 bg-amber-50/50 p-4 space-y-2">
+        <h3 className="text-sm font-semibold text-amber-800 flex items-center gap-2">
+          <Info className="h-4 w-4" />
+          Important clinical caveats (as emphasised in the source guidelines)
+        </h3>
+        <ul className="text-sm text-amber-900 space-y-1.5 list-none">
+          <li>• No single feature confirms type 1 diabetes.</li>
+          <li>• Antibody-negative type 1 diabetes occurs in 5–10% of cases (especially &lt;35 years).</li>
+          <li>• C-peptide is most useful after ~3 years' duration and must be interpreted with concurrent glucose and clinical context.</li>
+          <li>• Monogenic diabetes (MODY) and other atypical forms must remain in the differential.</li>
+          <li>• Always prioritise clinical judgement and patient safety (especially regarding insulin requirement).</li>
+        </ul>
+      </div>
+
+      {/* C-Peptide Testing Guidance */}
+      <div className="rounded-xl border border-blue-200/60 bg-blue-50/50 p-4 space-y-3">
+        <h3 className="text-sm font-semibold text-blue-800 flex items-center gap-2">
+          <Info className="h-4 w-4" />
+          Preferred method for diabetes classification (ADA/EASD guidance)
+        </h3>
+        <div className="text-sm text-blue-900 space-y-2">
+          <p>For suspected type 1 diabetes in adults:</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>Use a <strong>random non-fasting blood sample</strong> taken <strong>within 5 hours of eating</strong>.</li>
+            <li>Always measure <strong>concurrent plasma glucose</strong>.</li>
+            <li>This can replace formal stimulation tests in routine clinical classification.</li>
+          </ul>
+          <p className="font-medium mt-2">Key rules from guidelines:</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>Only indicated in people already receiving insulin treatment.</li>
+            <li>Do <strong>not</strong> test within 2 weeks of a hyperglycemic emergency (e.g., DKA).</li>
+            <li>If result is ≥600 pmol/L (≥1.8 ng/mL), testing conditions matter less.</li>
+            <li>If result is &lt;600 pmol/L and concurrent glucose is &lt;4 mmol/L (&lt;70–72 mg/dL) or may have been fasting, consider repeating.</li>
+            <li>Very low results (e.g., &lt;80 pmol/L) usually do not need repeating.</li>
+            <li>Always measure C-peptide <strong>before</strong> discontinuing insulin to exclude severe insulin deficiency.</li>
+          </ul>
+          <p className="font-medium mt-2">Blood test procedure:</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li><strong>Random/non-fasting</strong> (preferred): Eat normally; sample within ~5 hours of a meal.</li>
+            <li><strong>Fasting</strong>: Fast 8–12 hours; water usually allowed.</li>
+            <li>Avoid biotin supplements for 12 hours beforehand.</li>
+            <li>Preferred specimen: Serum (red-top or gel-barrier tube).</li>
+            <li>Concurrent glucose measured from same or paired sample.</li>
+            <li>Results in 1–3 business days.</li>
+          </ul>
+          <p className="font-medium mt-2">Urine testing (alternative):</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li><strong>Spot urine C-peptide:creatinine ratio (UCPCR)</strong>: Collect ~2 hours after largest meal.</li>
+            <li>Practical and non-invasive.</li>
+          </ul>
+        </div>
+      </div>
+
       {/* Navigation Tabs */}
       <div className="flex flex-wrap gap-2 mb-4">
         {[
-          { id: "algorithm", label: "Treatment Algorithm", icon: Brain },
-          { id: "glp1", label: "Adjunct Therapies", icon: FileText },
-          { id: "checklist", label: "Checklist", icon: CheckCircle2 },
+          { id: "algorithm", label: "Treatment Algorithm", icon: Brain, color: "from-pink-500 to-rose-500" },
+          { id: "glp1", label: "Adjunct Therapies", icon: FileText, color: "from-violet-500 to-purple-500" },
+          { id: "checklist", label: "Checklist", icon: CheckCircle2, color: "from-emerald-500 to-teal-500" },
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               activeTab === tab.id
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                ? `bg-gradient-to-r ${tab.color} text-white shadow-lg shadow-primary/25 scale-105`
+                : "bg-muted/60 text-muted-foreground hover:bg-muted/80 hover:scale-102"
             }`}
           >
             <tab.icon className="h-4 w-4" />

@@ -105,11 +105,11 @@ describe("homepage primary navigation", () => {
     expect(items.map((i) => i.label)).toEqual(["Steroid Taper"]);
   });
 
-  it("publishes a single bone-health / osteoporosis destination", () => {
+  it("publishes the v3 osteoporosis tool and the bone-health page", () => {
     const items = PRIMARY_NAV_SECTIONS.flatMap((s) => s.items).filter(
-      (i) => /osteoporosis|bone health/i.test(i.label) || i.path.includes("osteoporosis"),
+      (i) => /osteoporosis|bone health/i.test(i.label) || i.path.includes("osteoporosis") || i.path === "/bone-health",
     );
-    expect(items.map((i) => i.path)).toEqual(["/osteoporosis"]);
-    expect(items.map((i) => i.label)).toEqual(["Bone health / Osteoporosis"]);
+    expect(items.map((i) => i.path)).toEqual(["/osteoporosis", "/bone-health"]);
+    expect(items.map((i) => i.label)).toEqual(["Bone health / Osteoporosis", "Bone Health"]);
   });
 });

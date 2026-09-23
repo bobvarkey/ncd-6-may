@@ -212,7 +212,7 @@ export default function FrailtyCalculator() {
                         aria-pressed={value === option}
                         className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                           value === option
-                            ? "border-primary bg-primary text-primary-foreground"
+                            ? "border-transparent bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
                             : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background"
                         }`}
                       >
