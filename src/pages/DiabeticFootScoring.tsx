@@ -138,7 +138,7 @@ export default function DiabeticFootScoring() {
                 <CardContent className="space-y-3">
                   <RadioGroup value={String(wagnerGrade)} onValueChange={(value) => setWagnerGrade(Number(value))} className="grid gap-3 sm:grid-cols-2">
                     {WAGNER_GRADES.map((item) => (
-                      <label key={item.grade} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors hover:bg-muted/50 ${item.tone}`}>
+                      <label key={item.grade} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 ${item.tone}`}>
                         <RadioGroupItem value={String(item.grade)} className="mt-1" />
                         <span className="text-sm"><strong>Grade {item.grade}: {item.title}</strong><span className="mt-1 block text-muted-foreground">{item.description}</span></span>
                       </label>

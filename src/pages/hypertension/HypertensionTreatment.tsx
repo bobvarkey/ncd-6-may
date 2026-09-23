@@ -987,7 +987,7 @@ export default function HypertensionTreatment() {
               </TableHeader>
               <TableBody>
                 {drugData.map((row, index) => (
-                  <TableRow key={index} className="hover:bg-muted/50">
+                  <TableRow key={index} className="hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all">
                     <TableCell>
                       <Badge variant="outline" className={getPotencyColor(row.potency)}>
                         {row.potency}

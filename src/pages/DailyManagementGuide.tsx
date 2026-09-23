@@ -198,7 +198,7 @@ const DailyManagementGuide = () => {
             <div key={section.id} className="clinical-card border border-border">
               <button
                 onClick={() => setExpanded(isExpanded ? null : section.id)}
-                className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                className="w-full flex items-center justify-between p-4 hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all"
               >
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg ${section.color}`}>

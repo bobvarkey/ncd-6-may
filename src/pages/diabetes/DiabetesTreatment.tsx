@@ -1055,7 +1055,7 @@ function GeriatricSyndromes() {
                       ? "border-primary bg-primary/10 ring-1 ring-primary/30"
                       : hasQualifiers
                         ? "border-emerald-500/50 bg-emerald-500/10"
-                        : "bg-muted/30 border-border/50 hover:border-primary/40 hover:bg-muted/50"
+                        : "bg-muted/30 border-border/50 hover:border-pink-300/40 hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50"
                   }`}
                 >
                   <span className={s.color}>{s.icon}</span>

@@ -872,7 +872,7 @@ function HrtAlgorithm() {
             <button
               key={key}
               onClick={() => handleChoice(key, child)}
-              className="text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-muted/50 hover:border-primary/30 transition-all"
+              className="text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 hover:border-pink-300/30 transition-all"
             >
               <div className="flex items-center gap-2 mb-1">
                 <ArrowRight className="h-4 w-4 text-primary" />
@@ -948,7 +948,7 @@ function HrtAlgorithm() {
             {/* GSM */}
             <button
               onClick={() => { setPath([]); setCurrentNode(HRT_TREE.gsm_assessment); }}
-              className="text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-muted/50 hover:border-pink-500/30 transition-all"
+              className="text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 hover:border-violet-300/30 transition-all"
             >
               <p className="text-sm font-semibold mb-1">Genitourinary Syndrome (GSM)</p>
               <p className="text-xs text-muted-foreground">Vaginal dryness, dyspareunia, urinary symptoms</p>
@@ -956,7 +956,7 @@ function HrtAlgorithm() {
             {/* Libido */}
             <button
               onClick={() => { setPath([]); setCurrentNode(HRT_TREE.libido_assessment); }}
-              className="text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-muted/50 hover:border-orange-500/30 transition-all"
+              className="text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:border-amber-300/30 transition-all"
             >
               <p className="text-sm font-semibold mb-1">Low Libido</p>
               <p className="text-xs text-muted-foreground">Testosterone consideration despite optimal HRT</p>
@@ -964,7 +964,7 @@ function HrtAlgorithm() {
             {/* Special populations */}
             <button
               onClick={() => { setPath([]); setCurrentNode(HRT_TREE.special_populations); }}
-              className="text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-muted/50 hover:border-rose-500/30 transition-all"
+              className="text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-gradient-to-r hover:from-rose-50 hover:to-pink-50 hover:border-rose-300/30 transition-all"
             >
               <p className="text-sm font-semibold mb-1">Special Populations</p>
               <p className="text-xs text-muted-foreground">Breast cancer, thromboembolic disease, high-risk</p>
@@ -977,7 +977,7 @@ function HrtAlgorithm() {
       <div className="space-y-3">
         <button
           onClick={() => { setPath([]); setCurrentNode(HRT_TREE.duration_and_followup); }}
-          className="w-full text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-muted/50 hover:border-indigo-500/30 transition-all"
+          className="w-full text-left p-4 rounded-lg border border-border/60 bg-card hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 hover:border-indigo-300/30 transition-all"
         >
           <div className="flex items-center gap-2 mb-1">
             <Info className="h-4 w-4 text-indigo-400" />

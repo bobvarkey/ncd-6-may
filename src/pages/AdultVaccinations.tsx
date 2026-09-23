@@ -1143,7 +1143,7 @@ export default function AdultVaccinations() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors ${
                     activeCategory === cat.id
                       ? "bg-primary/20 border-primary text-primary"
-                      : "bg-muted/30 border-border/60 text-muted-foreground hover:bg-muted/50"
+                      : "bg-muted/30 border-border/60 text-muted-foreground hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50"
                   }`}
                   title={cat.description}
                 >

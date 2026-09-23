@@ -140,7 +140,7 @@ const Progress = () => {
           </div>
           <div className="space-y-2">
             {entries.slice().reverse().map((e, i) => (
-              <div key={i} className="flex items-center justify-between text-sm p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-default">
+              <div key={i} className="flex items-center justify-between text-sm p-2 rounded-lg bg-muted/30 hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all cursor-default">
                 <span className="text-muted-foreground text-xs">{e.date}</span>
                 <div className="flex gap-4 text-xs">
                   <span>Wt: <strong>{e.weight}</strong> kg</span>

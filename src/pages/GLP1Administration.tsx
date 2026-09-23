@@ -200,6 +200,17 @@ const GLP1Administration = () => {
         </p>
       </div>
 
+      {/* Obesity GLP-1 Checklist */}
+      <Card className="clinical-card overflow-hidden">
+        <CardContent className="p-0">
+          <img 
+            src="/obesity-glp1-checklist.jpg" 
+            alt="Obesity GLP-1 Treatment Checklist" 
+            className="w-full h-auto rounded-lg"
+          />
+        </CardContent>
+      </Card>
+
       {/* Quick Overview */}
       <Card className="p-6 bg-card border-2 border-primary/30">
         <h2 className="font-bold mb-3 text-xl text-foreground">Quick Reference</h2>
@@ -247,7 +258,7 @@ const GLP1Administration = () => {
           {glp1Medications.map((med) => (
             <div
               key={med.id}
-              className="border-2 border-border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors bg-card"
+              className="border-2 border-border rounded-lg p-4 cursor-pointer hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all bg-card"
               onClick={() => setExpandedMed(expandedMed === med.id ? null : med.id)}
             >
               <div className="flex items-center justify-between mb-2">

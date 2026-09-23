@@ -229,7 +229,7 @@ function CheckGroup({
       </Label>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {options.map((o) => (
-          <label key={o} className="flex items-center gap-2 text-xs rounded-md border p-2 cursor-pointer hover:bg-muted/50">
+          <label key={o} className="flex items-center gap-2 text-xs rounded-md border p-2 cursor-pointer hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all">
             <Checkbox checked={value.includes(o)} onCheckedChange={() => toggle(o)} aria-label={o} />
             {o}
           </label>
