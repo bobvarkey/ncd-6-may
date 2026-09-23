@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import ImageLink from "@/components/ImageLink";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
@@ -1457,7 +1458,7 @@ export default function DiabetesTreatment() {
   return (
     <div className="space-y-4">
       {/* Navigation Tabs */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className={`${headerTabListClass} mb-4`}>
         {[
           { id: "algorithm", label: "Treatment Algorithm", icon: Brain },
           { id: "glp1", label: "GLP-1 Guide", icon: Syringe },
@@ -1470,12 +1471,10 @@ export default function DiabetesTreatment() {
         ].map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              activeTab === tab.id
-                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
-            }`}
+            data-active={activeTab === tab.id}
+            className={headerTabClass("px-4 py-2")}
           >
             <tab.icon className="h-4 w-4" />
             {tab.label}

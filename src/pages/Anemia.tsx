@@ -16,6 +16,7 @@ import ESRInterpretation from './anemia/components/ESRInterpretation';
 import Anticoagulants from './anemia/components/Anticoagulants';
 import Erythrocytosis from './anemia/components/Erythrocytosis';
 import { Microscope, AlertTriangle } from 'lucide-react';
+import { headerTabClass, headerTabListClass } from '@/lib/header-tabs';
 import TestSuggestionAlgorithm from './anemia/components/TestSuggestionAlgorithm';
 
 const EMPTY_CBC: CBCValues = { hgb: '', rbc: '', mcv: '', mch: '', mchc: '', rdw: '', hct: '' };
@@ -94,18 +95,15 @@ export default function Anemia() {
             </div>
           </div>
 
-          <nav className="flex gap-1 overflow-x-auto max-w-full min-w-0 overscroll-x-contain" aria-label="Hematology sections">
+          <nav className={`${headerTabListClass} overflow-x-auto overscroll-x-contain`} aria-label="Hematology sections">
             {BLOOD_TABS.map(({ tab, label }) => {
               const isActive = activeTab === tab;
               return (
                 <Link
                   key={tab}
                   to={`/anemia?tab=${tab}`}
-                  className={`shrink-0 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                    isActive
-                      ? 'bg-primary/15 text-primary'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  }`}
+                  data-active={isActive}
+                  className={headerTabClass('shrink-0')}
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {label}

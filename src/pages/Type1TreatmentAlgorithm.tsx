@@ -13,6 +13,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import {
   Activity,
   Syringe,
@@ -700,20 +701,18 @@ export default function Type1TreatmentAlgorithm() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className={`${headerTabListClass} mb-4`}>
         {[
-          { id: "algorithm", label: "Treatment Algorithm", icon: Brain, color: "from-pink-500 to-rose-500" },
-          { id: "glp1", label: "Adjunct Therapies", icon: FileText, color: "from-violet-500 to-purple-500" },
-          { id: "checklist", label: "Checklist", icon: CheckCircle2, color: "from-emerald-500 to-teal-500" },
+          { id: "algorithm", label: "Treatment Algorithm", icon: Brain },
+          { id: "glp1", label: "Adjunct Therapies", icon: FileText },
+          { id: "checklist", label: "Checklist", icon: CheckCircle2 },
         ].map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeTab === tab.id
-                ? `bg-gradient-to-r ${tab.color} text-white shadow-lg shadow-primary/25 scale-105`
-                : "bg-muted/60 text-muted-foreground hover:bg-muted/80 hover:scale-102"
-            }`}
+            data-active={activeTab === tab.id}
+            className={headerTabClass("px-4 py-2")}
           >
             <tab.icon className="h-4 w-4" />
             {tab.label}

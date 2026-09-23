@@ -4,6 +4,7 @@ import { CuisineType } from "@/lib/food-data";
 import { generate7DayPlan, DayPlan } from "@/lib/diet-generator";
 import { RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 
 const DietPlanPage = () => {
   const [patient, setPatient] = useState<PatientData>(EXAMPLE_PATIENT);
@@ -44,16 +45,14 @@ const DietPlanPage = () => {
       </div>
 
       {/* Cuisine selector */}
-      <div className="flex flex-wrap gap-1.5">
+      <div className={headerTabListClass}>
         {(["Kerala", "Indian", "European", "Japanese", "Chinese", "Korean", "American"] as CuisineType[]).map((c) => (
           <button
             key={c}
+            type="button"
             onClick={() => setCuisine(c)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              cuisine === c
-                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-            }`}
+            data-active={cuisine === c}
+            className={headerTabClass()}
           >
             {(c as string) === "Kerala" ? "🇮🇳 Kerala" : (c as string) === "Indian" ? "🇮🇳 Indian" : c === "European" ? "🇪🇺 European" : c === "Japanese" ? "🇯🇵 Japanese" : c === "Chinese" ? "🇨🇳 Chinese" : c === "Korean" ? "🇰🇷 Korean" : "🇺🇸 American"}
           </button>

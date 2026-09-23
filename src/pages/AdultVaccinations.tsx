@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import ZoomableImage from "@/components/ZoomableImage";
 import vaccinesLiveVsInactivatedAsset from "@/assets/vaccines-live-vs-inactivated.png.asset.json";
 
@@ -761,18 +762,15 @@ function CoAdministrationSchedule() {
           <Syringe className="h-5 w-5 text-primary" />
           <CardTitle className="text-lg">Co-Administration Schedule &amp; Sites</CardTitle>
         </div>
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <div className={`${headerTabListClass} pt-1`}>
           {COADMIN_SCHEDULES.map((s) => (
             <button
               key={s.key}
               type="button"
               onClick={() => setScheduleKey(s.key)}
               aria-pressed={scheduleKey === s.key}
-              className={`rounded-full border px-3 py-1 text-xs font-medium transition-all ${
-                scheduleKey === s.key
-                  ? "border-transparent bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
-                  : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background hover:scale-105"
-              }`}
+              data-active={scheduleKey === s.key}
+              className={headerTabClass("rounded-full")}
             >
               {s.label}
             </button>

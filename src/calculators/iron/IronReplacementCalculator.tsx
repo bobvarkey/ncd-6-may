@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { copyToClipboard, formatClinicalNote, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 
 // ── Types ──────────────────────────────────────────────────────
 type TabKey = "calculator" | "reference";
@@ -662,17 +663,14 @@ export default function IronReplacementCalculator() {
               </Button>
             </div>
           </div>
-          <div className="flex gap-0.5 pb-2 overflow-x-auto no-print min-w-0 max-w-full overscroll-x-contain">
+          <div className={cn(headerTabListClass, "pb-2 overflow-x-auto no-print overscroll-x-contain")}>
             {TABS.map((tab) => (
               <button
                 key={tab.key}
+                type="button"
                 onClick={() => setActiveTab(tab.key)}
-                className={cn(
-                  "flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-colors",
-                  activeTab === tab.key
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                )}
+                data-active={activeTab === tab.key}
+                className={headerTabClass()}
               >
                 {tab.icon}
                 {tab.label}

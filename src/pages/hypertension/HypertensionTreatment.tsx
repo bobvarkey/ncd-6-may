@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import HtnAlgorithmFlowchart from "@/components/hypertension/HtnAlgorithmFlowchart";
 import ImageLink from "@/components/ImageLink";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
 const AbbrText = ({ text }: { text: string }) => <AbbreviationHover term={text}>{text}</AbbreviationHover>;
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -783,16 +784,14 @@ export default function HypertensionTreatment() {
     <div className="space-y-6">
       {/* Quick Navigation Tabs */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 w-full min-w-0">
-        <div className="flex flex-wrap gap-1.5">
+        <div className={headerTabListClass}>
           {sections.map((s) => (
             <button
               key={s.id}
+              type="button"
               onClick={() => scrollToSection(s.id)}
-              className={`px-3 py-1.5 text-xs rounded-full border transition-all whitespace-nowrap ${
-                activeSection === s.id
-                  ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md"
-                  : "bg-muted/50 text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
-              }`}
+              data-active={activeSection === s.id}
+              className={headerTabClass("rounded-full")}
             >
               {s.icon} {s.label}
             </button>

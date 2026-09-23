@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { Badge } from "@/components/ui/badge";
 import { useLabContext } from "@/components/SmartLabelUpload/GlobalLabContext";
 import {
@@ -335,25 +336,21 @@ export default function ImageUploadAnalyzer() {
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Tab switcher */}
-            <div className="flex gap-2">
+            <div className={headerTabListClass}>
               <button
+                type="button"
                 onClick={() => setActiveTab("image")}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === "image"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
+                data-active={activeTab === "image"}
+                className={headerTabClass("flex-1 py-2")}
               >
                 <Upload className="h-4 w-4" />
                 Upload Image
               </button>
               <button
+                type="button"
                 onClick={() => setActiveTab("text")}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === "text"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
+                data-active={activeTab === "text"}
+                className={headerTabClass("flex-1 py-2")}
               >
                 <FileText className="h-4 w-4" />
                 Paste Text

@@ -6,6 +6,7 @@ import { Stethoscope, FlaskConical, Activity, Scan, ClipboardList,
   BookOpen, GitBranch, FileText, Heart, ArrowRight, RotateCcw, CheckCircle2, ChevronDown, ChevronUp, Info, Sparkles
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 
 /* ============================ PMOS TAB ============================ */
 
@@ -1007,32 +1008,24 @@ export default function WomenHealth() {
     <div>
       {/* Tab bar */}
       <div className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border">
-        <div className="max-w-4xl mx-auto px-4 flex items-center gap-1">
+        <div className={`${headerTabListClass} max-w-4xl mx-auto px-4 py-2`}>
           <button
+            type="button"
             onClick={() => switchTab("pmos")}
-            className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
-              activeTab === "pmos"
-                ? "border-rose-400 text-rose-400"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+            data-active={activeTab === "pmos"}
+            className={headerTabClass("px-4 py-2 text-sm")}
           >
-            <span className="flex items-center gap-2">
-              <FlaskConical className="h-4 w-4" />
-              PMOS / PCOS
-            </span>
+            <FlaskConical className="h-4 w-4" />
+            PMOS / PCOS
           </button>
           <button
+            type="button"
             onClick={() => switchTab("hrt")}
-            className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
-              activeTab === "hrt"
-                ? "border-pink-400 text-pink-400"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+            data-active={activeTab === "hrt"}
+            className={headerTabClass("px-4 py-2 text-sm")}
           >
-            <span className="flex items-center gap-2">
-              <Heart className="h-4 w-4" />
-              HRT Algorithm
-            </span>
+            <Heart className="h-4 w-4" />
+            HRT Algorithm
           </button>
         </div>
       </div>

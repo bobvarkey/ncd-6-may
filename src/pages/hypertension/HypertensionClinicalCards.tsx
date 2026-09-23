@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -347,16 +348,14 @@ export default function HypertensionClinicalCards() {
       </div>
 
       {/* Tab navigation */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className={headerTabListClass}>
         {CARD_TABS.map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveCard(tab.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-              activeCard === tab.id
-                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-            }`}
+            data-active={activeCard === tab.id}
+            className={headerTabClass("px-4 py-2")}
           >
             {tab.label}
           </button>

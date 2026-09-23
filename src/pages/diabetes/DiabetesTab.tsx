@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { toast } from "sonner";
 import DiabetesOverview from "./DiabetesOverview";
@@ -264,18 +265,16 @@ export default function DiabetesTab() {
 
       {/* Quick Navigation Tabs — sticky at top */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 w-full max-w-6xl mx-auto px-4 min-w-0" data-print-hide>
-        <div className="flex flex-wrap gap-1.5">
+        <div className={headerTabListClass}>
           {orderedSections.map((section) => {
             const isMatch = matchedIds?.has(section.id);
             return (
               <button
                 key={section.id}
+                type="button"
                 onClick={() => scrollToSection(section.id)}
-                className={`px-3 py-1.5 text-xs rounded-full border transition-all whitespace-nowrap ${
-                  openSections.has(section.id)
-                    ? "border-red-500/40 text-red-500 shadow-sm"
-                    : "bg-muted/50 text-muted-foreground border-border hover:border-red-500/40 hover:text-foreground"
-                } ${isMatch ? "ring-2 ring-red-500/40" : ""}`}
+                data-active={openSections.has(section.id)}
+                className={headerTabClass(`rounded-full ${isMatch ? "ring-2 ring-ring" : ""}`)}
               >
                 {React.cloneElement(section.icon as React.ReactElement, { className: "h-3.5 w-3.5 inline mr-1" })}
                 {section.title.split(" ")[0]}

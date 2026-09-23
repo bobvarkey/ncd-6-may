@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   GitBranch,
@@ -253,7 +254,7 @@ export default function DiabetesMedicationAlgorithm() {
               </Button>
             </div>
           </div>
-          <div className="flex gap-0.5 pb-2 overflow-x-auto no-print">
+          <div className={`${headerTabListClass} pb-2 overflow-x-auto no-print`}>
             {[
               { key: "algorithm", label: "Treatment Algorithm", icon: <Brain className="h-4 w-4" /> },
               { key: "drug-classes", label: "Drug Classes", icon: <Pill className="h-4 w-4" /> },
@@ -261,12 +262,10 @@ export default function DiabetesMedicationAlgorithm() {
             ].map((tab) => (
               <button
                 key={tab.key}
+                type="button"
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
-                  activeTab === tab.key
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
+                data-active={activeTab === tab.key}
+                className={headerTabClass()}
               >
                 {tab.icon}
                 {tab.label}

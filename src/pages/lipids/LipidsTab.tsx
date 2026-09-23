@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import LipidsOverview from "./LipidsOverview";
 import LipidMiniApp from "./LipidMiniApp";
 import LipidsComprehensiveAlgorithm from "./LipidsComprehensiveAlgorithm";
@@ -160,18 +161,16 @@ export default function LipidsTab() {
 
         {/* Quick Navigation Tabs — sticky at top */}
         <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2 pt-2 w-full min-w-0 mb-4">
-          <div className="flex flex-wrap gap-1.5">
+          <div className={headerTabListClass}>
             {sectionOrder.map((id) => {
               const section = sections.find(s => s.id === id)!;
               return (
                 <button
                   key={id}
+                  type="button"
                   onClick={() => scrollToSection(id)}
-                  className={`px-3 py-1.5 text-xs rounded-full border transition-all whitespace-nowrap ${
-                    openSections.has(id)
-                      ? "border-blue-500/40 text-blue-500 shadow-sm"
-                      : "bg-muted/50 text-muted-foreground border-border hover:border-blue-500/40 hover:text-foreground"
-                  }`}
+                  data-active={openSections.has(id)}
+                  className={headerTabClass("rounded-full")}
                 >
                   {React.cloneElement(section.icon as React.ReactElement, { className: "h-3.5 w-3.5 inline mr-1" })}
                   {section.title.split(" ")[0]}

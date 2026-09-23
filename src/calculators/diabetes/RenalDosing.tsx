@@ -8,7 +8,7 @@ import {
 import { ANTIBIOTICS_DATA } from "./antibiotics-data";
 import { ANTICOAGULANTS_DATA } from "./anticoagulants-data";
 import { ADDITIONAL_MEDS_DATA } from "./additional-meds-data";
-import { cn } from "@/lib/utils";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 
 // Infer frequency from dose string
 function inferFrequency(dose: string): string {
@@ -444,63 +444,48 @@ const RenalDoseAdjustment = () => {
 
 
       {/* Category Toggle */}
-      <div className="flex flex-wrap gap-2">
+      <div className={headerTabListClass}>
         <button
+          type="button"
           onClick={() => { setCategory("all"); setClassFilter("all"); setSearch(""); }}
-          className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors",
-            category === "all"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:bg-muted/80"
-          )}
+          data-active={category === "all"}
+          className={headerTabClass("px-4 py-2")}
         >
           <Layers className="h-4 w-4" />
           All Drugs
         </button>
         <button
+          type="button"
           onClick={() => { setCategory("diabetes"); setClassFilter("all"); setSearch(""); }}
-          className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors",
-            category === "diabetes"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:bg-muted/80"
-          )}
+          data-active={category === "diabetes"}
+          className={headerTabClass("px-4 py-2")}
         >
           <Pill className="h-4 w-4" />
           Diabetes
         </button>
         <button
+          type="button"
           onClick={() => { setCategory("antibiotics"); setClassFilter("all"); setSearch(""); }}
-          className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors",
-            category === "antibiotics"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:bg-muted/80"
-          )}
+          data-active={category === "antibiotics"}
+          className={headerTabClass("px-4 py-2")}
         >
           <Syringe className="h-4 w-4" />
           Antibiotics
         </button>
         <button
+          type="button"
           onClick={() => { setCategory("anticoagulants"); setClassFilter("all"); setSearch(""); }}
-          className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors",
-            category === "anticoagulants"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:bg-muted/80"
-          )}
+          data-active={category === "anticoagulants"}
+          className={headerTabClass("px-4 py-2")}
         >
           <Droplet className="h-4 w-4" />
           Anticoagulants
         </button>
         <button
+          type="button"
           onClick={() => { setCategory("other"); setClassFilter("all"); setSearch(""); }}
-          className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors",
-            category === "other"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:bg-muted/80"
-          )}
+          data-active={category === "other"}
+          className={headerTabClass("px-4 py-2")}
         >
           <Layers className="h-4 w-4" />
           HTN / Lipids / Thyroid / Obesity / Blood

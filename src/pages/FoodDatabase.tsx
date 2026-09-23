@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FOOD_CATEGORIES, KERALA_FOODS, FoodCategory } from "@/lib/food-data";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 
 const FoodDatabase = () => {
   const [activeCategory, setActiveCategory] = useState<FoodCategory>("veggies");
@@ -23,16 +24,14 @@ const FoodDatabase = () => {
       </div>
 
       {/* Category tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className={`${headerTabListClass} overflow-x-auto pb-1`}>
         {FOOD_CATEGORIES.map(cat => (
           <button
             key={cat.key}
+            type="button"
             onClick={() => setActiveCategory(cat.key)}
-            className={`food-chip whitespace-nowrap ${
-              activeCategory === cat.key
-                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md"
-                : "bg-card border-border text-foreground"
-            }`}
+            data-active={activeCategory === cat.key}
+            className={headerTabClass()}
           >
             <span>{cat.icon}</span>
             <span>{cat.label}</span>

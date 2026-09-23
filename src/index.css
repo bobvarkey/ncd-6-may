@@ -57,6 +57,28 @@
     --sunset-amber: 31 93% 54%;         /* #f7931e */
     --sunset-magenta: 330 78% 58%;      /* #e84393 */
     --sunset-violet: 249 73% 63%;       /* #6c5ce7 */
+    /* Header tabs: peach, amber, magenta, teal, violet.
+       Fills stay dark enough for white labels (WCAG AA). */
+    --htab-1-fill: #c2410c;
+    --htab-1-bg: #3d2218;
+    --htab-1-ink: #ffd7c2;
+    --htab-1-line: #e08a5a;
+    --htab-2-fill: #b45309;
+    --htab-2-bg: #3a2a12;
+    --htab-2-ink: #ffe3b8;
+    --htab-2-line: #e0a04a;
+    --htab-3-fill: #be185d;
+    --htab-3-bg: #3a1628;
+    --htab-3-ink: #ffd0e4;
+    --htab-3-line: #e070a0;
+    --htab-4-fill: #0f766e;
+    --htab-4-bg: #0e2c28;
+    --htab-4-ink: #c8f6ee;
+    --htab-4-line: #3dbeb0;
+    --htab-5-fill: #6d28d9;
+    --htab-5-bg: #241848;
+    --htab-5-ink: #e4d9ff;
+    --htab-5-line: #a78bfa;
     --gradient-sunset: linear-gradient(120deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%);
     --gradient-sunset-soft: linear-gradient(120deg, rgba(255,107,53,0.12) 0%, rgba(247,147,30,0.10) 35%, rgba(232,67,147,0.12) 70%, rgba(108,92,231,0.14) 100%);
 
@@ -150,6 +172,21 @@
     --sunset-amber: 31 90% 48%;
     --sunset-magenta: 330 78% 48%;
     --sunset-violet: 249 73% 55%;
+    --htab-1-bg: #ffede4;
+    --htab-1-ink: #9a3412;
+    --htab-1-line: #e08a5a;
+    --htab-2-bg: #fff4d6;
+    --htab-2-ink: #92400e;
+    --htab-2-line: #e0a04a;
+    --htab-3-bg: #fde4ef;
+    --htab-3-ink: #9d174d;
+    --htab-3-line: #e070a0;
+    --htab-4-bg: #d9f5f0;
+    --htab-4-ink: #115e59;
+    --htab-4-line: #3dbeb0;
+    --htab-5-bg: #ede9fe;
+    --htab-5-ink: #5b21b6;
+    --htab-5-line: #a78bfa;
 
     /* Sidebar — soft warm cream with sunset accents */
     --sidebar-background: 25 50% 98%;
@@ -261,10 +298,7 @@
     color: hsl(var(--popover-foreground)) !important;
   }
 
-  /* Tabs: keep foreground regardless of state */
-  [role="tab"], [role="tab"] * {
-    color: hsl(var(--foreground)) !important;
-  }
+  /* Tab label color is owned by the header-tab palette below. */
 
   /* Clinical context chips */
   .iron-context-toggle,
@@ -390,6 +424,122 @@
   /* Larger text-size preference must wrap, not clip */
   h1, h2, h3, h4, h5, h6, p, li, label, button, a {
     overflow-wrap: anywhere;
+  }
+
+  /* ============================================================
+     Header tabs — peach / amber / magenta / teal / violet.
+     Selected: solid fill + white. Unselected: tint, colored
+     border, colored label. Applies to every Radix tab and to
+     custom strips marked .header-tablist > .header-tab.
+     ============================================================ */
+  [role="tablist"],
+  .header-tablist {
+    height: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex-wrap: wrap !important;
+    background: hsl(var(--sunset-magenta) / 0.10) !important;
+    border-color: hsl(var(--sunset-coral) / 0.35) !important;
+  }
+
+  [role="tablist"] > [role="tab"].header-tab,
+  .header-tablist > .header-tab {
+    --htab-fill: var(--htab-1-fill);
+    --htab-bg: var(--htab-1-bg);
+    --htab-ink: var(--htab-1-ink);
+    --htab-line: var(--htab-1-line);
+    background: var(--htab-bg) !important;
+    color: var(--htab-ink) !important;
+    border-color: var(--htab-line) !important;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: none;
+  }
+
+  [role="tablist"] > [role="tab"].header-tab:nth-child(5n+2),
+  .header-tablist > .header-tab:nth-child(5n+2) {
+    --htab-fill: var(--htab-2-fill);
+    --htab-bg: var(--htab-2-bg);
+    --htab-ink: var(--htab-2-ink);
+    --htab-line: var(--htab-2-line);
+  }
+  [role="tablist"] > [role="tab"].header-tab:nth-child(5n+3),
+  .header-tablist > .header-tab:nth-child(5n+3) {
+    --htab-fill: var(--htab-3-fill);
+    --htab-bg: var(--htab-3-bg);
+    --htab-ink: var(--htab-3-ink);
+    --htab-line: var(--htab-3-line);
+  }
+  [role="tablist"] > [role="tab"].header-tab:nth-child(5n+4),
+  .header-tablist > .header-tab:nth-child(5n+4) {
+    --htab-fill: var(--htab-4-fill);
+    --htab-bg: var(--htab-4-bg);
+    --htab-ink: var(--htab-4-ink);
+    --htab-line: var(--htab-4-line);
+  }
+  [role="tablist"] > [role="tab"].header-tab:nth-child(5n+5),
+  .header-tablist > .header-tab:nth-child(5n+5) {
+    --htab-fill: var(--htab-5-fill);
+    --htab-bg: var(--htab-5-bg);
+    --htab-ink: var(--htab-5-ink);
+    --htab-line: var(--htab-5-line);
+  }
+
+  [role="tablist"] > [role="tab"].header-tab *,
+  .header-tablist > .header-tab * {
+    color: inherit !important;
+  }
+
+  [role="tablist"] > [role="tab"].header-tab[data-state="active"],
+  .header-tablist > .header-tab[data-active="true"] {
+    background: var(--htab-fill) !important;
+    color: #fff !important;
+    border-color: var(--htab-fill) !important;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.22);
+  }
+
+  [role="tablist"] > [role="tab"].header-tab[data-state="active"] *,
+  .header-tablist > .header-tab[data-active="true"] * {
+    color: #fff !important;
+  }
+
+  [role="tablist"] > [role="tab"].header-tab:hover,
+  .header-tablist > .header-tab:hover {
+    box-shadow: inset 0 0 0 1px var(--htab-line);
+  }
+
+  [role="tablist"] > [role="tab"].header-tab[data-state="active"]:hover,
+  .header-tablist > .header-tab[data-active="true"]:hover {
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.22);
+  }
+
+  .header-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--htab-line, var(--htab-4-line));
+    background: var(--htab-bg, var(--htab-4-bg));
+    color: var(--htab-ink, var(--htab-4-ink)) !important;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-transform: capitalize;
+  }
+  .header-chip-calculator {
+    --htab-bg: var(--htab-4-bg);
+    --htab-ink: var(--htab-4-ink);
+    --htab-line: var(--htab-4-line);
+  }
+  .header-chip-guideline {
+    --htab-bg: var(--htab-2-bg);
+    --htab-ink: var(--htab-2-ink);
+    --htab-line: var(--htab-2-line);
+  }
+  .header-chip-page {
+    --htab-bg: var(--htab-3-bg);
+    --htab-ink: var(--htab-3-ink);
+    --htab-line: var(--htab-3-line);
   }
 }
 
