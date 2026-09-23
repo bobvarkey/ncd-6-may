@@ -368,7 +368,7 @@ export default function HypertensionElectrolyteRisk() {
               <label
                 key={med.id}
                 className={`flex items-center gap-2 p-1.5 rounded-md cursor-pointer transition-colors text-xs ${
-                  selectedMeds.has(med.id) ? "bg-orange-500/10 text-orange-400 font-medium" : "hover:bg-muted/50"
+                  selectedMeds.has(med.id) ? "bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 font-medium" : "hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50"
                 }`}
                 onClick={() => toggle(setSelectedMeds, med.id)}
               >
@@ -392,7 +392,7 @@ export default function HypertensionElectrolyteRisk() {
               <label
                 key={com.id}
                 className={`flex items-center gap-2 p-1.5 rounded-md cursor-pointer transition-colors text-xs ${
-                  selectedComorbs.has(com.id) ? "bg-orange-500/10 text-orange-400 font-medium" : "hover:bg-muted/50"
+                  selectedComorbs.has(com.id) ? "bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 font-medium" : "hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50"
                 }`}
                 onClick={() => toggle(setSelectedComorbs, com.id)}
               >
@@ -416,7 +416,7 @@ export default function HypertensionElectrolyteRisk() {
               <label
                 key={sx.id}
                 className={`flex items-center gap-2 p-1.5 rounded-md cursor-pointer transition-colors text-xs ${
-                  selectedSx.has(sx.id) ? "bg-orange-500/10 text-orange-400 font-medium" : "hover:bg-muted/50"
+                  selectedSx.has(sx.id) ? "bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 font-medium" : "hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50"
                 }`}
                 onClick={() => toggle(setSelectedSx, sx.id)}
               >
