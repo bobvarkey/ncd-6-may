@@ -263,6 +263,16 @@ export const drugDoseDetails: DrugDoseDetail[] = [
   { name: "Atenolol", brand: "Tenormin", drugClass: "β₁-selective BB", doseRange: "25–100 mg OD", pearls: "ASCOT showed atenolol inferior to amlodipine for CV outcomes. No longer preferred.", caution: "Less evidence vs newer BBs" },
   { name: "Propranolol", brand: "Inderal", drugClass: "Non-selective BB", doseRange: "40–240 mg BID", pearls: "Non-selective — blocks β₂ receptors. Used for migraine prophylaxis, essential tremor, performance anxiety.", caution: "Avoid in asthma, COPD" },
 
+  // Beta-blocker selection guide
+  {
+    name: "Beta-Blocker Selection Guide",
+    brand: "",
+    drugClass: "Clinical Decision Tool",
+    doseRange: "",
+    pearls: "Beta-blockers are not interchangeable — choose based on patient's phenotype. See image below for comparison.",
+    caution: ""
+  },
+
   // ─── Alpha Blockers ───
   { name: "Prazosin", brand: "Minipress", drugClass: "α₁-blocker", doseRange: "1–10 mg BID/TID", pearls: "First-dose syncope risk — start at bedtime. Also for BPH, PTSD nightmares.", caution: "Orthostatic hypotension" },
   { name: "Doxazosin", brand: "Cardura", drugClass: "α₁-blocker", doseRange: "1–8 mg OD", pearls: "Longer T½ — OD dosing. ALLHAT: increased HF vs chlorthalidone — no longer 1st line.", caution: "Not 1st-line for HTN" },
@@ -439,6 +449,21 @@ export default function HypertensionMedicationGuide() {
           <div className="p-3">
             <ImageLink imageId="htn-rx" label="View HTN Medication Guide →" />
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Beta-Blocker Selection Guide */}
+      <Card className="clinical-card overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Beta-Blocker Selection Guide</CardTitle>
+          <p className="text-sm text-muted-foreground">Choose the right beta-blocker for the right patient</p>
+        </CardHeader>
+        <CardContent className="p-3">
+          <ZoomableImage
+            src="/beta-blocker-selection.jpg"
+            alt="Beta-blocker selection by clinical phenotype"
+            caption="Beta-blockers are not interchangeable — choose based on patient's phenotype"
+          />
         </CardContent>
       </Card>
 
