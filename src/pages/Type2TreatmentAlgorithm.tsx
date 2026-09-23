@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import {
   Activity,
   Syringe,
@@ -507,7 +508,7 @@ export default function Type2TreatmentAlgorithm() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className={`${headerTabListClass} mb-4`}>
         {[
           { id: "algorithm", label: "Treatment Algorithm", icon: Brain },
           { id: "guide", label: "HbA1c-Based Selection", icon: BookOpen },
@@ -516,12 +517,10 @@ export default function Type2TreatmentAlgorithm() {
         ].map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              activeTab === tab.id
-                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
-            }`}
+            data-active={activeTab === tab.id}
+            className={headerTabClass("px-4 py-2")}
           >
             <tab.icon className="h-4 w-4" />
             {tab.label}

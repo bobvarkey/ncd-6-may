@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Ruler, Calculator, Info, ChevronDown, ChevronUp, Home, RotateCcw, Target, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -124,16 +125,14 @@ export default function WaistHeightRatio() {
               </Button>
             </div>
           </div>
-          <div className="flex gap-0.5 pb-2 overflow-x-auto no-print">
+          <div className={`${headerTabListClass} pb-2 overflow-x-auto no-print`}>
             {TABS.map((tab) => (
               <button
                 key={tab.key}
+                type="button"
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
-                  activeTab === tab.key
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
+                data-active={activeTab === tab.key}
+                className={headerTabClass()}
               >
                 {tab.icon}
                 {tab.label}

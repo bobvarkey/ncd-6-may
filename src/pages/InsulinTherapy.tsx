@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { PatientData, EXAMPLE_PATIENT, loadPatient } from "@/lib/patient-data";
 import { InsulinTherapyResult, generateInsulinTherapy } from "@/lib/insulin-therapy";
 import { Target, Pill, Activity, AlertTriangle, ShieldAlert, Syringe, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 
 const InsulinTherapy = () => {
   const [patient, setPatient] = useState<PatientData>(EXAMPLE_PATIENT);
@@ -224,24 +225,20 @@ const InsulinTherapy = () => {
         <p className="text-sm text-primary-foreground/80 mb-4 max-w-2xl">{therapy.rationale}</p>
 
         {/* Type Toggle */}
-        <div className="flex gap-2 mt-4">
+        <div className={`${headerTabListClass} mt-4`}>
           <button
+            type="button"
             onClick={() => setActiveType("type1")}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
-              activeType === "type1"
-                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
-                : "bg-muted text-foreground hover:bg-muted/80 hover:scale-105"
-            }`}
+            data-active={activeType === "type1"}
+            className={headerTabClass("rounded-full px-4 py-2")}
           >
             Type 1 DM
           </button>
           <button
+            type="button"
             onClick={() => setActiveType("type2")}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
-              activeType === "type2"
-                ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-md"
-                : "bg-muted text-foreground hover:bg-muted/80 hover:scale-105"
-            }`}
+            data-active={activeType === "type2"}
+            className={headerTabClass("rounded-full px-4 py-2")}
           >
             Type 2 DM
           </button>

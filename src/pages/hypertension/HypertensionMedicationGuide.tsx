@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, AlertTriangle, ChevronDown, ChevronRight, Stethoscope, Search, X } from "lucide-react";
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
+import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import ZoomableImage from "@/components/ZoomableImage";
 import mraPocketCard from "@/assets/mra-pocket-card.jpg.asset.json";
 
@@ -501,21 +502,19 @@ export default function HypertensionMedicationGuide() {
       </Card>
 
       {/* Navigation Tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div className={headerTabListClass}>
         {[
-          { id: "classes", label: "Drug Classes", icon: Stethoscope, color: "from-pink-500 to-rose-500" },
-          { id: "dosing", label: "Dosing Guide", icon: Stethoscope, color: "from-violet-500 to-purple-500" },
-          { id: "algorithm", label: "By Comorbidity", icon: Heart, color: "from-cyan-500 to-blue-500" },
-          { id: "interactions", label: "Drug Interactions", icon: AlertTriangle, color: "from-amber-500 to-orange-500" },
-        ].map((tab, idx) => (
+          { id: "classes", label: "Drug Classes", icon: Stethoscope },
+          { id: "dosing", label: "Dosing Guide", icon: Stethoscope },
+          { id: "algorithm", label: "By Comorbidity", icon: Heart },
+          { id: "interactions", label: "Drug Interactions", icon: AlertTriangle },
+        ].map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeTab === tab.id
-                ? `bg-gradient-to-r ${tab.color} text-white shadow-lg shadow-primary/25 scale-105`
-                : "bg-muted/60 text-muted-foreground hover:bg-muted/80 hover:scale102"
-            }`}
+            data-active={activeTab === tab.id}
+            className={headerTabClass("px-4 py-2")}
           >
             <tab.icon className="h-4 w-4" />
             {tab.label}

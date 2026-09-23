@@ -161,7 +161,7 @@ export default function CommandPalette() {
                       <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
                     )}
                     <span className="flex-1 truncate">{item.label}</span>
-                    <span className="text-xs text-muted-foreground capitalize shrink-0">
+                    <span className={`header-chip header-chip-${item.category} shrink-0`}>
                       {item.category}
                     </span>
                   </Link>
