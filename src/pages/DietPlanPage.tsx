@@ -51,7 +51,7 @@ const DietPlanPage = () => {
             onClick={() => setCuisine(c)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               cuisine === c
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
                 : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >

@@ -768,10 +768,10 @@ function CoAdministrationSchedule() {
               type="button"
               onClick={() => setScheduleKey(s.key)}
               aria-pressed={scheduleKey === s.key}
-              className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-all ${
                 scheduleKey === s.key
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background"
+                  ? "border-transparent bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
+                  : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background hover:scale-105"
               }`}
             >
               {s.label}
@@ -793,10 +793,10 @@ function CoAdministrationSchedule() {
                 type="button"
                 onClick={() => setTwoVisitOption(o.key)}
                 aria-pressed={twoVisitOption === o.key}
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-all ${
                   twoVisitOption === o.key
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background"
+                    ? "border-transparent bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-md"
+                    : "border-border/60 bg-background/60 text-muted-foreground hover:bg-background hover:scale-105"
                 }`}
               >
                 {o.label}
@@ -809,7 +809,7 @@ function CoAdministrationSchedule() {
           {visits.map((visit) => (
             <div key={visit.label} className="rounded-xl border border-border/60 bg-background/60 overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 border-b border-border/40">
-                <Badge className="bg-primary text-primary-foreground">{visit.label}</Badge>
+                <Badge className="bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md">{visit.label}</Badge>
                 <span className="text-sm font-semibold">{visit.timing}</span>
               </div>
               <div className="p-3">
@@ -1338,7 +1338,7 @@ export default function AdultVaccinations() {
                         />
                         <h3 className="font-semibold text-lg">{vaccine.name}</h3>
                         {KEPT_VACCINE_IDS.has(vaccine.id) && (
-                          <Badge className="bg-primary text-primary-foreground">★ Kept</Badge>
+                          <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md">★ Kept</Badge>
                         )}
                         {getRecommendationBadge(vaccine.recommendation)}
                         {getTypeBadge(vaccine.type)}

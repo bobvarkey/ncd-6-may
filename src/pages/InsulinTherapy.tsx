@@ -229,8 +229,8 @@ const InsulinTherapy = () => {
             onClick={() => setActiveType("type1")}
             className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
               activeType === "type1"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-foreground hover:bg-muted/80"
+                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
+                : "bg-muted text-foreground hover:bg-muted/80 hover:scale-105"
             }`}
           >
             Type 1 DM
@@ -239,8 +239,8 @@ const InsulinTherapy = () => {
             onClick={() => setActiveType("type2")}
             className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
               activeType === "type2"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-foreground hover:bg-muted/80"
+                ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-md"
+                : "bg-muted text-foreground hover:bg-muted/80 hover:scale-105"
             }`}
           >
             Type 2 DM

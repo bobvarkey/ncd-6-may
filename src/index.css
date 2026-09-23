@@ -129,6 +129,22 @@
     --input: 25 30% 92%;
     --ring: 330 78% 55%;                  /* pink */
 
+    /* Vibrant rainbow accents for light theme */
+    --rainbow-red: 350 85% 55%;
+    --rainbow-orange: 25 90% 55%;
+    --rainbow-amber: 40 90% 50%;
+    --rainbow-yellow: 48 90% 55%;
+    --rainbow-lime: 80 65% 50%;
+    --rainbow-green: 150 65% 40%;
+    --rainbow-teal: 170 70% 40%;
+    --rainbow-cyan: 190 80% 50%;
+    --rainbow-sky: 200 85% 50%;
+    --rainbow-blue: 215 85% 55%;
+    --rainbow-indigo: 245 70% 55%;
+    --rainbow-violet: 265 65% 60%;
+    --rainbow-purple: 285 60% 55%;
+    --rainbow-pink: 320 80% 55%;
+
     /* Sunset palette anchors — slightly deeper for AA on white */
     --sunset-coral: 14 95% 52%;
     --sunset-amber: 31 90% 48%;

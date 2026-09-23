@@ -790,7 +790,7 @@ export default function HypertensionTreatment() {
               onClick={() => scrollToSection(s.id)}
               className={`px-3 py-1.5 text-xs rounded-full border transition-all whitespace-nowrap ${
                 activeSection === s.id
-                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                  ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md"
                   : "bg-muted/50 text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
               }`}
             >

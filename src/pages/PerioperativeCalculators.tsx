@@ -619,8 +619,8 @@ const PerioperativeCalculators = () => {
                     }}
                     className={`flex flex-col items-start p-2.5 rounded-lg border transition-all text-left group ${
                       selectorAnswers.surgeryType === type.id 
-                        ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                        : "bg-background border-border hover:border-primary hover:bg-primary/5"
+                        ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md" 
+                        : "bg-background border-border hover:border-primary hover:bg-primary/5 hover:scale-[1.02]"
                     }`}
                   >
                     <span className="text-xs font-bold transition-colors">{type.label}</span>
@@ -650,8 +650,8 @@ const PerioperativeCalculators = () => {
                     }}
                     className={`flex flex-col items-start p-2.5 rounded-lg border transition-all text-left group ${
                       selectorAnswers.clinicalFocus === focus.id 
-                        ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                        : "bg-background border-border hover:border-primary hover:bg-primary/5"
+                        ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white border-transparent shadow-md" 
+                        : "bg-background border-border hover:border-primary hover:bg-primary/5 hover:scale-[1.02]"
                     }`}
                   >
                     <span className="text-xs font-bold transition-colors">{focus.label}</span>
@@ -705,7 +705,7 @@ const PerioperativeCalculators = () => {
                         toggleToolComparison(card.value);
                       }}
                       className={`p-1 rounded-md transition-colors ${
-                        isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted text-muted-foreground"
+                        isSelected ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "hover:bg-muted text-muted-foreground hover:scale-105"
                       }`}
                       title="Add to comparison"
                     >
@@ -1717,8 +1717,10 @@ const PeriopMedManagement = () => {
             <div className="flex flex-wrap gap-1">
               <button
                 onClick={() => setCategoryFilter("all")}
-                className={`text-xs px-2 py-1 rounded-full border transition-colors ${
-                  categoryFilter === "all" ? "bg-primary text-primary-foreground border-primary" : "bg-muted/30 border-border/40 hover:bg-muted/50"
+                className={`text-xs px-3 py-1.5 rounded-full border transition-all duration-200 ${
+                  categoryFilter === "all" 
+                    ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md" 
+                    : "bg-muted/30 border-border/40 hover:bg-muted/50 hover:scale-105"
                 }`}
               >
                 All
@@ -1727,8 +1729,10 @@ const PeriopMedManagement = () => {
                 <button
                   key={key}
                   onClick={() => setCategoryFilter(key)}
-                  className={`text-xs px-2 py-1 rounded-full border transition-colors ${
-                    categoryFilter === key ? "bg-primary text-primary-foreground border-primary" : "bg-muted/30 border-border/40 hover:bg-muted/50"
+                  className={`text-xs px-3 py-1.5 rounded-full border transition-all duration-200 ${
+                    categoryFilter === key 
+                      ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white border-transparent shadow-md scale-105" 
+                      : "bg-muted/30 border-border/40 hover:bg-muted/50 hover:scale-105"
                   }`}
                 >
                   {label}

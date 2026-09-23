@@ -176,8 +176,8 @@ export default function ESRInterpretation() {
                   onClick={() => setSex('male')}
                   className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-all ${
                     sex === 'male'
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'bg-card text-foreground border-border hover:border-muted-foreground'
+                      ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white border-transparent shadow-md'
+                      : 'bg-card text-foreground border-border hover:border-muted-foreground hover:scale-105'
                   }`}
                 >
                   Male
@@ -186,8 +186,8 @@ export default function ESRInterpretation() {
                   onClick={() => setSex('female')}
                   className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-all ${
                     sex === 'female'
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'bg-card text-foreground border-border hover:border-muted-foreground'
+                      ? 'bg-gradient-to-r from-violet-500 to-purple-500 text-white border-transparent shadow-md'
+                      : 'bg-card text-foreground border-border hover:border-muted-foreground hover:scale-105'
                   }`}
                 >
                   Female

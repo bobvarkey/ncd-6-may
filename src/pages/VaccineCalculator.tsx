@@ -338,7 +338,7 @@ export default function VaccineCalculator() {
                   group.list.length > 0 && (
                     <div key={group.label} className="rounded-xl border border-border/60 overflow-hidden">
                       <div className="px-4 py-2.5 bg-primary/10 border-b border-border/40">
-                        <Badge className="bg-primary text-primary-foreground">{group.label}</Badge>
+                        <Badge className="bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md">{group.label}</Badge>
                       </div>
                       <div className="p-3 space-y-2 select-text">
                         {group.list.map((r) => (

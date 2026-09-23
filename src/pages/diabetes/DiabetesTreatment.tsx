@@ -1473,7 +1473,7 @@ export default function DiabetesTreatment() {
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeTab === tab.id
-                ? "bg-primary text-primary-foreground"
+                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
             }`}
           >

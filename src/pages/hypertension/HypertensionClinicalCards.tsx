@@ -354,7 +354,7 @@ export default function HypertensionClinicalCards() {
             onClick={() => setActiveCard(tab.id)}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
               activeCard === tab.id
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
                 : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
