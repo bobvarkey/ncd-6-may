@@ -13,6 +13,8 @@ interface ZoomableImageProps {
   wrapperClassName?: string;
   loading?: "lazy" | "eager";
   triggerType?: "thumbnail" | "none";
+  /** Optional caption shown below the thumbnail */
+  caption?: string;
   /** Optional gallery: when provided, the modal shows next/previous navigation */
   images?: { src: string; alt: string }[];
 }
