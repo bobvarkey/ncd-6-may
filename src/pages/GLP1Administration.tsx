@@ -1,6 +1,6 @@
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Syringe } from "lucide-react";
 

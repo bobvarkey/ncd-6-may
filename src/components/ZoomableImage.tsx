@@ -13,6 +13,8 @@ interface ZoomableImageProps {
   wrapperClassName?: string;
   loading?: "lazy" | "eager";
   triggerType?: "thumbnail" | "none";
+  /** Optional caption shown below the thumbnail */
+  caption?: string;
   /** Optional gallery: when provided, the modal shows next/previous navigation */
   images?: { src: string; alt: string }[];
 }
@@ -25,6 +27,7 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
   wrapperClassName = "",
   loading = "lazy",
   triggerType = "thumbnail",
+  caption,
   images,
 }, ref) => {
   const [open, setOpen] = useState(false);
@@ -242,24 +245,31 @@ const ZoomableImage = forwardRef<{ openModal: (index?: number) => void }, Zoomab
     <>
       {/* Thumbnail trigger */}
       {triggerType === "thumbnail" && (
-        <button
-          type="button"
-          aria-label={`Zoom: ${alt}`}
-          className={`group relative cursor-zoom-in block w-full overflow-hidden ${wrapperClassName}`}
-          onClick={() => { setOpen(true); reset(); }}
-        >
-          <img
-            src={src}
-            alt={alt}
-            loading={loading}
-            className={className}
-            style={style}
-            draggable={false}
-          />
-          <span className="pointer-events-none absolute top-2 right-2 rounded-full bg-black/50 p-1 opacity-0 transition-opacity group-hover:opacity-100">
-            <ZoomIn className="h-4 w-4 text-white" />
-          </span>
-        </button>
+        <figure className="m-0">
+          <button
+            type="button"
+            aria-label={`Zoom: ${alt}`}
+            className={`group relative cursor-zoom-in block w-full overflow-hidden ${wrapperClassName}`}
+            onClick={() => { setOpen(true); reset(); }}
+          >
+            <img
+              src={src}
+              alt={alt}
+              loading={loading}
+              className={className}
+              style={style}
+              draggable={false}
+            />
+            <span className="pointer-events-none absolute top-2 right-2 rounded-full bg-black/50 p-1 opacity-0 transition-opacity group-hover:opacity-100">
+              <ZoomIn className="h-4 w-4 text-white" />
+            </span>
+          </button>
+          {caption && (
+            <figcaption className="px-1 pt-1.5 text-xs text-muted-foreground">
+              {caption}
+            </figcaption>
+          )}
+        </figure>
       )}
 
       {/* Full-screen modal */}
