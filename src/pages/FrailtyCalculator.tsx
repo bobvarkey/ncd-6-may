@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Activity, Copy, Info, RotateCcw } from "lucide-react";
+import { Activity, Copy, Download, Info, RotateCcw } from "lucide-react";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 import { copyToClipboard } from "@/lib/clinical-utils";
 import { ClinicalFrailtyScale } from "@/components/ClinicalFrailtyScale";
@@ -130,19 +130,19 @@ export default function FrailtyCalculator() {
 
   const handleCopy = () => {
     // Generate text from page content - simplified version
-    const text = `${func_name} - Clinical Reference`;
+    const text = "Clinical Frailty Scale - Clinical Reference";
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownload = () => {
-    const text = `${func_name} - Clinical Reference`;
+    const text = "Clinical Frailty Scale - Clinical Reference";
     const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `{func_name.toLowerCase()}-{new Date().toISOString().split("T")[0]}.txt`;
+    a.download = `frailty-calculator-${new Date().toISOString().split("T")[0]}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
