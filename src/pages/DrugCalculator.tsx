@@ -117,6 +117,25 @@ const DrugCalculator = () => {
     toast({ title: "Recommendation copied" });
   };
 
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await copy();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownload = () => {
+    const text = "GLP-1 Drug Calculator - Clinical Reference";
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `drug-calculator-${new Date().toISOString().split("T")[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-6 space-y-6">
       <Seo
