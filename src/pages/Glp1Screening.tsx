@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Syringe, Eye, Home, Printer, Copy, AlertTriangle, CheckCircle2, Info, ShieldAlert } Copy, Download, ;
+import { Syringe, Eye, Home, Printer, Copy, AlertTriangle, CheckCircle2, Info, ShieldAlert } from "lucide-react";
 import Seo from "@/components/Seo";
 import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
 import OpticNerveAssessment from "@/calculators/obesity/OpticNerveAssessment";

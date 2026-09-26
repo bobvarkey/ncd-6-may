@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import {
   UserX, ArrowDown, CheckCircle2, Activity, Heart, Scale, Scissors, Stethoscope,
   Apple, AlertTriangle, Target,
-} Copy, Download, ;
+} from "lucide-react";
 
 const categoryIcon: Record<string, typeof Heart> = {
   lifestyle: Apple,

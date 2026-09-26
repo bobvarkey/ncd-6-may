@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   AlertTriangle, Droplets, FlaskConical, Pill, Syringe, Activity, Copy,
   Download, Clock, ChevronRight, ChevronDown, Zap, Bone,
-} Copy, Download, ;
+} from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 

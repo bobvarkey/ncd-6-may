@@ -9,7 +9,7 @@ import {
   AlertTriangle, Droplets, Stethoscope, FlaskConical,
   HeartPulse, Pill, Activity, Copy,
   Download, ChevronRight, ChevronDown, Bone,
-} Copy, Download, ;
+} from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 

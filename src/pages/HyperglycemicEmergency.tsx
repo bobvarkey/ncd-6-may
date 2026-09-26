@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { AlertTriangle, Activity, Syringe, Droplets, FlaskConical, HeartPulse, Copy, Printer, Download, ChevronDown, Image } Copy, Download, ;
+import { AlertTriangle, Activity, Syringe, Droplets, FlaskConical, HeartPulse, Copy, Printer, Download, ChevronDown, Image } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 import ImageLink from "@/components/ImageLink";

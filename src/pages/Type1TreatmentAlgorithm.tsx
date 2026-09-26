@@ -30,7 +30,9 @@ import {
   Monitor,
   FileText,
   Info,
-, Copy, Download} from "lucide-react";
+  Copy,
+  Download,
+} from "lucide-react";
 import { AbbrText } from "@/components/AbbreviationHover";
 
 // ─── Algorithm Step Component ───
