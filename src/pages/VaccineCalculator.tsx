@@ -59,7 +59,7 @@ const PRIORITY_TONE: Record<Priority, string> = {
 export default function VaccineCalculator() {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {{
+  const handleCopy = () => {
     // Generate text from page content - simplified version
     const text = `${func_name} - Clinical Reference`;
     navigator.clipboard.writeText(text);
@@ -67,9 +67,9 @@ export default function VaccineCalculator() {
     setTimeout(() => setCopied(false), 2000);
   }};
 
-  const handleDownload = () => {{
+  const handleDownload = () => {
     const text = `${func_name} - Clinical Reference`;
-    const blob = new Blob([text], {{ type: "text/plain" }});
+    const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
