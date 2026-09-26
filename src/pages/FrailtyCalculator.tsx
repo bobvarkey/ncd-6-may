@@ -134,7 +134,7 @@ export default function FrailtyCalculator() {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }};
+  };
 
   const handleDownload = () => {
     const text = `${func_name} - Clinical Reference`;
