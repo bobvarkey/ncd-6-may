@@ -1,0 +1,366 @@
+=====================================================
+MEDICAL ASSESSMENT APP - SOURCE CODE BUNDLE
+Generated: 2026-04-25
+=====================================================
+
+PROJECT: Diabetes Buddy → Medical Assessment App (Stroke Scale Focus)
+STRUCTURE: React 18 + TypeScript + Vite + Tailwind CSS + Shadcn UI
+DESIGN: Dark theme with neon fuchsia/cyan gradients, mobile-first (390px)
+
+=====================================================
+FILE: src/pages/LandingPage.tsx
+=====================================================
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Star } from 'lucide-react';
+
+export default function LandingPage() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-16 max-w-[390px] mx-auto">
+        {/* Ambient Blobs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-600 rounded-full blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-40 right-10 w-72 h-72 bg-cyan-400 rounded-full blur-3xl opacity-20 animate-blob" style={{ animationDelay: '2s' }}></div>
+
+        {/* Brain Icon with Glow */}
+        <div className="relative mb-8 z-10">
+          <div className="glow-fuchsia">
+            <div className="text-8xl animate-pulse">🧠</div>
+          </div>
+        </div>
+
+        {/* Headline */}
+        <h1 className="text-4xl font-bold text-center mb-6 font-heading z-10">
+          Every Stroke <span className="text-fuchsia-500 neon-text">Scale</span>. One App.
+        </h1>
+
+        {/* Subtitle */}
+        <p className="text-gray-400 text-center mb-8 max-w-xs z-10">
+          Evidence-based assessments and clinical tools for comprehensive patient evaluation
+        </p>
+
+        {/* Rating */}
+        <div className="flex flex-col items-center gap-2 mb-12 z-10">
+          <div className="flex gap-1">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} size={20} className="fill-yellow-400 text-yellow-400" />
+            ))}
+          </div>
+          <span className="text-sm text-gray-400">49 ratings</span>
+        </div>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col gap-3 w-full max-w-xs z-10 mb-12">
+          <Button
+            onClick={() => navigate('/app')}
+            className="w-full bg-gradient-to-r from-fuchsia-600 to-cyan-500 hover:from-fuchsia-700 hover:to-cyan-600 text-white font-semibold py-6 text-lg"
+          >
+            Get Started Free
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full border-fuchsia-500 text-fuchsia-400 hover:bg-fuchsia-950 py-6 text-lg"
+          >
+            View Pro Plans
+          </Button>
+        </div>
+
+        {/* Bounce Indicator */}
+        <div className="absolute bottom-8 z-10 animate-bounce-slow">
+          <div className="text-3xl">⬇️</div>
+        </div>
+      </section>
+
+      {/* Feature Pills Section */}
+      <section className="py-16 px-6 max-w-[390px] mx-auto">
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { icon: '⚡', label: 'Instant Scoring', color: 'bg-yellow-500/10 border-yellow-500/30' },
+            { icon: '🛡️', label: 'HIPAA Compliant', color: 'bg-cyan-500/10 border-cyan-500/30' },
+            { icon: '📖', label: '54 Validated Scales', color: 'bg-fuchsia-500/10 border-fuchsia-500/30' },
+            { icon: '🌍', label: 'Multilingual', color: 'bg-lime-500/10 border-lime-500/30' },
+          ].map((pill, idx) => (
+            <div key={idx} className={`${pill.color} border rounded-lg p-4 text-center`}>
+              <div className="text-3xl mb-2">{pill.icon}</div>
+              <p className="text-sm font-medium">{pill.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Stats Bar */}
+      <section className="py-12 px-6 border-t border-gray-800 max-w-[390px] mx-auto">
+        <div className="grid grid-cols-4 gap-4 text-center">
+          <div>
+            <p className="text-2xl font-bold text-fuchsia-500">54+</p>
+            <p className="text-xs text-gray-400">Scales</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-cyan-400">9</p>
+            <p className="text-xs text-gray-400">Categories</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-yellow-400">500+</p>
+            <p className="text-xs text-gray-400">Users</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-lime-400">Free</p>
+            <p className="text-xs text-gray-400">Core</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16 px-6 max-w-[390px] mx-auto">
+        <h2 className="text-2xl font-bold mb-8 text-center font-heading">Simple Pricing</h2>
+        <div className="space-y-4">
+          {/* Free Plan */}
+          <div className="border border-gray-800 rounded-lg p-6 bg-gray-950/50">
+            <h3 className="font-semibold mb-4">Free</h3>
+            <p className="text-2xl font-bold mb-4">$0<span className="text-sm text-gray-400">/forever</span></p>
+            <ul className="space-y-2 mb-6 text-sm text-gray-300">
+              <li>✓ Access to 20+ scales</li>
+              <li>✓ Basic scoring</li>
+              <li>✓ Limited exports</li>
+            </ul>
+          </div>
+
+          {/* Pro Plan */}
+          <div className="relative border border-fuchsia-500 rounded-lg p-6 bg-gradient-to-br from-fuchsia-950 to-black">
+            <div className="absolute -top-3 left-4 bg-black px-2">
+              <span className="text-xs font-bold text-fuchsia-500">⭐ RECOMMENDED</span>
+            </div>
+            <h3 className="font-semibold mb-2">Pro</h3>
+            <p className="text-2xl font-bold mb-1">$9.99<span className="text-sm text-gray-400">/year</span></p>
+            <p className="text-xs text-gray-400 line-through mb-4">was $29.99/year</p>
+            <ul className="space-y-2 mb-6 text-sm text-gray-200">
+              <li>✓ All 54+ validated scales</li>
+              <li>✓ Advanced analytics</li>
+              <li>✓ PDF exports</li>
+              <li>✓ Priority support</li>
+            </ul>
+            <Button className="w-full bg-fuchsia-600 hover:bg-fuchsia-700 text-white">
+              Upgrade Now
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Grid */}
+      <section className="py-16 px-6 max-w-[390px] mx-auto">
+        <h2 className="text-2xl font-bold mb-8 text-center font-heading">Assessment Categories</h2>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { icon: '🧠', name: 'Neurology' },
+            { icon: '❤️', name: 'Cardiology' },
+            { icon: '🫁', name: 'Pulmonology' },
+            { icon: '🩺', name: 'Primary Care' },
+            { icon: '🧬', name: 'Genetics' },
+            { icon: '⚕️', name: 'Surgery' },
+          ].map((cat, idx) => (
+            <div key={idx} className="border border-gray-800 rounded-lg p-4 text-center hover:border-fuchsia-500 transition-colors cursor-pointer">
+              <p className="text-3xl mb-2">{cat.icon}</p>
+              <p className="text-sm font-medium">{cat.name}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer CTA */}
+      <section className="py-12 px-6 border-t border-gray-800 bg-gradient-to-r from-fuchsia-600 to-cyan-500 max-w-[390px] mx-auto">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold mb-4 text-white">Ready to get started?</h3>
+          <Button
+            onClick={() => navigate('/app')}
+            className="bg-black hover:bg-gray-900 text-white font-semibold py-3 px-8"
+          >
+            Access Dashboard
+          </Button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+=====================================================
+FILE: src/pages/AssessmentGrid.tsx
+=====================================================
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PaywallModal from '@/components/PaywallModal';
+
+const ASSESSMENTS = [
+  { id: 1, name: 'NIHSS', category: 'Neurology', pro: false, color: 'bg-neon-magenta' },
+  { id: 2, name: 'mRS Scale', category: 'Neurology', pro: true, color: 'bg-neon-cyan' },
+  { id: 3, name: 'GCS', category: 'Neurology', pro: false, color: 'bg-neon-pink' },
+  { id: 4, name: 'TOAST Criteria', category: 'Neurology', pro: true, color: 'bg-neon-lime' },
+  { id: 5, name: 'ASPECTS Score', category: 'Radiology', pro: false, color: 'bg-neon-orange' },
+  { id: 6, name: 'CT Perfusion', category: 'Radiology', pro: true, color: 'bg-neon-violet' },
+  { id: 7, name: 'DRAGON Score', category: 'Prognosis', pro: false, color: 'bg-neon-red' },
+  { id: 8, name: 'SEDAN Score', category: 'Prognosis', pro: true, color: 'bg-neon-yellow' },
+  { id: 9, name: 'MoCA', category: 'Cognition', pro: false, color: 'bg-neon-magenta' },
+  { id: 10, name: 'MMSE', category: 'Cognition', pro: true, color: 'bg-neon-cyan' },
+  { id: 11, name: 'Barthel Index', category: 'Function', pro: false, color: 'bg-neon-pink' },
+  { id: 12, name: 'IADL Scale', category: 'Function', pro: true, color: 'bg-neon-lime' },
+  { id: 13, name: 'mICAHS', category: 'Hemorrhage', pro: false, color: 'bg-neon-orange' },
+  { id: 14, name: 'ICH Score', category: 'Hemorrhage', pro: true, color: 'bg-neon-violet' },
+  { id: 15, name: 'PE Risk Calc', category: 'Thromboembolism', pro: false, color: 'bg-neon-red' },
+  { id: 16, name: 'DVT Score', category: 'Thromboembolism', pro: true, color: 'bg-neon-yellow' },
+];
+
+export default function AssessmentGrid() {
+  const navigate = useNavigate();
+  const [paywallOpen, setPaywallOpen] = useState(false);
+
+  const handleTileClick = (assessment: typeof ASSESSMENTS[0]) => {
+    if (assessment.pro) {
+      setPaywallOpen(true);
+    } else {
+      // Navigate to assessment detail page
+      navigate(`/assessment/${assessment.id}`);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      {/* Sticky Ad Banner */}
+      <div className="sticky top-0 z-20 bg-gradient-to-r from-black via-fuchsia-900 to-black border-b border-fuchsia-500 px-4 py-3 text-center cursor-pointer hover:from-fuchsia-900 hover:via-fuchsia-800 hover:to-fuchsia-900 transition-all">
+        <p className="text-sm font-semibold">
+          <span className="mr-2">⚡</span>
+          Upgrade to Stroke Pro • Unlock all 54+ scales
+        </p>
+      </div>
+
+      {/* Main Grid Container */}
+      <div className="w-full flex justify-center">
+        <div className="w-full max-w-[390px] p-4">
+          {/* Grid Header */}
+          <div className="mb-6 mt-4">
+            <h1 className="text-2xl font-bold font-heading mb-2">Clinical Assessments</h1>
+            <p className="text-gray-400 text-sm">
+              {ASSESSMENTS.filter(a => !a.pro).length} free • {ASSESSMENTS.filter(a => a.pro).length} pro
+            </p>
+          </div>
+
+          {/* Assessment Grid - 2 columns */}
+          <div className="grid grid-cols-2 gap-3">
+            {ASSESSMENTS.map((assessment) => (
+              <button
+                key={assessment.id}
+                onClick={() => handleTileClick(assessment)}
+                className={`relative group overflow-hidden rounded-lg p-4 min-h-[140px] flex flex-col justify-between transition-all duration-300 ${
+                  assessment.color
+                } ${assessment.pro ? 'opacity-60 hover:opacity-70' : 'hover:shadow-lg hover:shadow-fuchsia-500/50'}`}
+              >
+                {/* Background glow on hover */}
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+
+                {/* Content */}
+                <div className="relative z-10">
+                  <h3 className="text-lg font-bold text-white group-hover:text-fuchsia-200 transition-colors">
+                    {assessment.name}
+                  </h3>
+                  <p className="text-xs text-white/60 mt-1">{assessment.category}</p>
+                </div>
+
+                {/* Pro Lock Overlay */}
+                {assessment.pro && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-colors">
+                    <div className="text-center">
+                      <p className="text-2xl mb-1">🔒</p>
+                      <p className="text-xs font-bold text-fuchsia-400">PRO</p>
+                    </div>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Footer Note */}
+          <div className="mt-8 p-4 border border-gray-800 rounded-lg text-center">
+            <p className="text-xs text-gray-400">
+              Free tier includes {ASSESSMENTS.filter(a => !a.pro).length} essential assessments.
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              Pro: All scales + analytics
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Paywall Modal */}
+      <PaywallModal open={paywallOpen} onOpenChange={setPaywallOpen} />
+    </div>
+  );
+}
+
+=====================================================
+FILE: src/components/PaywallModal.tsx
+=====================================================
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+
+interface PaywallModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function PaywallModal({ open, onOpenChange }: PaywallModalProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-black border border-gray-800 max-w-sm">
+        <DialogHeader>
+          <DialogTitle className="text-white">
+            <div className="text-center">
+              <div className="text-4xl mb-4">🔒</div>
+              <h2 className="text-2xl font-bold">Unlock Pro</h2>
+            </div>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="bg-gradient-to-r from-fuchsia-950 to-cyan-950 rounded-lg p-6 my-6 text-center">
+          <p className="text-3xl font-bold text-white mb-2">$9.99</p>
+          <p className="text-sm text-gray-300">Limited time: 67% off yearly</p>
+          <p className="text-xs text-gray-400 line-through">Regular: $29.99/year</p>
+        </div>
+
+        <div className="space-y-3 mb-6">
+          <h3 className="font-semibold text-white mb-4">What you'll get:</h3>
+          {[
+            'Access to all 54+ validated clinical scales',
+            'Advanced analytics & insights',
+            'PDF export & printing',
+            'Priority support',
+            'Offline access',
+            'Custom assessment packs',
+          ].map((feature, idx) => (
+            <div key={idx} className="flex items-start gap-3">
+              <span className="text-fuchsia-500 font-bold">✓</span>
+              <p className="text-sm text-gray-300">{feature}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="space-y-3">
+          <Button className="w-full bg-gradient-to-r from-fuchsia-600 to-cyan-500 hover:from-fuchsia-700 hover:to-cyan-600 text-white font-semibold py-6">
+            Upgrade to Pro
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full border-gray-700 text-gray-300 hover:bg-gray-900"
+            onClick={() => onOpenChange(false)}
+          >
+            Maybe Later
+          </Button>
+        </div>
+
+        <p className="text-xs text-gray-500 text-center mt-4">
+          Secure payment • Cancel anytime • No hidden fees
+        </p>
+      </DialogContent>
+    </Dialog>
+  );
+}

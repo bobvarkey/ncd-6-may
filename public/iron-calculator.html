@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iron Replacement Calculator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #f4f6f9;
+    color: #1a1d23;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #1a3a5c;
+  }
+  .subtitle {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1a3a5c;
+    margin-bottom: 16px;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #4b5563;
+  }
+  .field input, .field select {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: #fff;
+    transition: border-color .15s;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+  }
+
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .checkbox-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.85rem; color: #374151;
+    background: #f9fafb; padding: 6px 12px; border-radius: 8px;
+    border: 1px solid #e5e7eb; cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+  }
+  .checkbox-item:hover { background: #f3f4f6; }
+  .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: #3b82f6; }
+  .checkbox-item.active { background: #eff6ff; border-color: #93c5fd; }
+
+  .tsat-group { display: flex; align-items: center; gap: 8px; }
+  .tsat-group .or-divider { font-size: 0.8rem; color: #9ca3af; font-weight: 500; padding: 0 4px; }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 4px; }
+  .btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-primary { background: #1a3a5c; color: #fff; }
+  .btn-primary:hover { background: #1f4a74; }
+  .btn-secondary { background: #e5e7eb; color: #374151; }
+  .btn-secondary:hover { background: #d1d5db; }
+
+  /* Results */
+  .result-card {
+    display: none;
+    background: linear-gradient(135deg, #1a3a5c 0%, #2563eb 100%);
+    color: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .result-card.visible { display: block; }
+  .result-diagnosis { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+  .result-route { font-size: 1rem; margin-bottom: 16px; opacity: .9; }
+  .result-detail {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    background: rgba(255,255,255,.1); border-radius: 8px; padding: 16px;
+  }
+  .result-detail .item { display: flex; flex-direction: column; gap: 2px; }
+  .result-detail .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .05em; opacity: .7; }
+  .result-detail .value { font-size: 1.1rem; font-weight: 600; }
+
+  .clinical-notes {
+    background: #fefce8;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 0.85rem;
+    color: #92400e;
+    margin-top: 12px;
+  }
+  .clinical-notes strong { color: #78350f; }
+
+  .info-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  .info-table th { text-align: left; padding: 6px 8px; background: #f9fafb; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb; }
+  .info-table td { padding: 6px 8px; border-bottom: 1px solid #f3f4f6; }
+
+  @media (max-width: 600px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .result-detail { grid-template-columns: 1fr; }
+  }
+
+  .unit-hint {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    margin-top: 2px;
+  }
+
+  .inline-note {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>🩸 Iron Replacement Calculator</h1>
+  <div class="subtitle">Evidence-based iron-deficiency diagnosis &amp; dosing (Ganzoni formula)</div>
+
+  <!-- INPUTS -->
+  <div class="card">
+    <h2>Lab Values</h2>
+    <div class="grid-3">
+      <div class="field">
+        <label for="ferritin">Ferritin <span style="color:#ef4444;">*</span></label>
+        <input type="number" id="ferritin" step="0.1" min="0" placeholder="e.g. 15" value="">
+        <span class="unit-hint">ng/mL</span>
+      </div>
+      <div class="field">
+        <label for="hemoglobin">Hemoglobin <span style="color:#ef4444;">*</span></label>
+        <input type="number" id="hemoglobin" step="0.1" min="0" placeholder="e.g. 9.2" value="">
+        <span class="unit-hint">g/dL</span>
+      </div>
+      <div class="field">
+        <label for="weight">Weight <span style="color:#ef4444;">*</span></label>
+        <input type="number" id="weight" step="0.1" min="1" placeholder="e.g. 70" value="">
+        <span class="unit-hint">kg</span>
+      </div>
+    </div>
+    <div class="tsat-group" style="margin-top:12px;">
+      <div class="field" style="flex:1;">
+        <label for="tsat">TSAT (%)</label>
+        <input type="number" id="tsat" step="0.1" min="0" max="100" placeholder="e.g. 12" value="">
+      </div>
+      <span class="or-divider">— OR —</span>
+      <div class="field" style="flex:1;">
+        <label for="serumIron">Serum Iron</label>
+        <input type="number" id="serumIron" step="0.1" min="0" placeholder="e.g. 40" value="">
+        <span class="unit-hint">µg/dL</span>
+      </div>
+      <div class="field" style="flex:1;">
+        <label for="tibc">TIBC</label>
+        <input type="number" id="tibc" step="0.1" min="0" placeholder="e.g. 250" value="">
+        <span class="unit-hint">µg/dL</span>
+      </div>
+    </div>
+    <div class="inline-note" id="tsatCalcNote">Enter TSAT directly, or provide Serum Iron + TIBC to auto-calculate.</div>
+  </div>
+
+  <div class="card">
+    <h2>Clinical Context</h2>
+    <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-bottom:14px;">
+      <div class="checkbox-item">
+        <input type="checkbox" id="inflammation">
+        <label for="inflammation">Inflammation / chronic disease</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="pregnancy">
+        <label for="pregnancy">Pregnancy</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="ckd">
+        <label for="ckd">CKD</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="esa">
+        <label for="esa">On ESA</label>
+      </div>
+    </div>
+    <div class="checkbox-group">
+      <div class="checkbox-item">
+        <input type="checkbox" id="intolerance">
+        <label for="intolerance">Oral iron intolerance / malabsorption / failure</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="rapidCorrection">
+        <label for="rapidCorrection">Need rapid correction (preop / symptomatic)</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="ongoingBloodLoss">
+        <label for="ongoingBloodLoss">Ongoing heavy blood loss</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="result-card" id="resultCard">
+    <div class="result-diagnosis" id="resultDiagnosis"></div>
+    <div class="result-route" id="resultRoute"></div>
+    <div class="result-detail">
+      <div class="item">
+        <span class="label">Calculated TSAT</span>
+        <span class="value" id="resultTSAT">—</span>
+      </div>
+      <div class="item">
+        <span class="label">IV Iron Deficit (Ganzoni)</span>
+        <span class="value" id="resultDeficit">—</span>
+      </div>
+      <div class="item">
+        <span class="label">Recommended Route</span>
+        <span class="value" id="resultRouteVal">—</span>
+      </div>
+      <div class="item">
+        <span class="label">Recommended Dose</span>
+        <span class="value" id="resultDose">—</span>
+      </div>
+    </div>
+    <div class="clinical-notes" id="resultNotes">
+      <strong>⚠️ Clinical notes</strong><br>
+      <span id="resultNotesText"></span>
+    </div>
+  </div>
+
+  <!-- REFERENCE TABLE -->
+  <div class="card">
+    <h2>Diagnostic Thresholds (Reference)</h2>
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>Condition</th>
+          <th>Ferritin (no infl.)</th>
+          <th>Ferritin (with infl.)</th>
+          <th>TSAT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Absolute iron deficiency</td><td>&lt; 30</td><td>&lt; 100</td><td>&lt; 20%</td></tr>
+        <tr><td>Functional iron deficiency</td><td>100–300</td><td>100–300</td><td>&lt; 20%</td></tr>
+        <tr><td>Iron deficiency unlikely</td><td>≥ 300</td><td>≥ 300</td><td>≥ 20%</td></tr>
+      </tbody>
+    </table>
+    <div class="inline-note" style="margin-top:8px;">
+      TSAT = (Serum Iron ÷ TIBC) × 100. IV criteria: Hb &lt; 10, CKD, functional ID, intolerance, rapid correction, ongoing blood loss.
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Utility ──────────────────────────────────────────────
+function id(v) { return document.getElementById(v); }
+function val(v) { return parseFloat(id(v).value); }
+function checked(v) { return id(v).checked; }
+
+function round(v, d) { const f = Math.pow(10, d); return Math.round(v * f) / f; }
+
+// ── TSAT calc ────────────────────────────────────────────
+function getTSAT() {
+  let t = val('tsat');
+  if (!isNaN(t) && t > 0) return t;
+  const si = val('serumIron');
+  const tibc = val('tibc');
+  if (!isNaN(si) && !isNaN(tibc) && tibc > 0) return (si / tibc) * 100;
+  return NaN;
+}
+
+// ── Diagnosis ────────────────────────────────────────────
+function diagnose(ferritin, tsat, inflammation) {
+  const hasInflam = inflammation;
+  const ferritinLow = hasInflam ? ferritin < 100 : ferritin < 30;
+  const ferritinBorderline = !hasInflam && ferritin >= 30 && ferritin < 100;
+  const ferritinFunctional = ferritin >= 100 && ferritin < 300;
+  const ferritinReplete = ferritin >= 300;
+  const tsatLow = tsat < 20;
+  const tsatNormal = tsat >= 20;
+
+  // Special case: low stores but TSAT preserved
+  if (ferritinLow && tsatNormal) {
+    return {
+      diagnosis: 'Early / latent iron deficiency',
+      detail: 'Depleted iron stores with preserved TSAT. Oral replacement recommended.',
+      label: 'early'
+    };
+  }
+  if (ferritinBorderline && tsatLow) {
+    return {
+      diagnosis: 'Absolute iron deficiency (borderline stores)',
+      detail: 'Low-normal ferritin with low TSAT — consistent with absolute iron deficiency.',
+      label: 'absolute'
+    };
+  }
+  if (ferritinBorderline && tsatNormal) {
+    return {
+      diagnosis: 'Borderline iron stores, normal TSAT',
+      detail: 'Ferritin 30–100 suggests marginal stores. Monitor; consider oral iron if symptomatic.',
+      label: 'borderline'
+    };
+  }
+  if (ferritinLow && tsatLow) {
+    return {
+      diagnosis: 'Absolute iron deficiency',
+      detail: 'Low ferritin and low TSAT — definitive iron deficiency.',
+      label: 'absolute'
+    };
+  }
+  if (ferritinFunctional && tsatLow) {
+    if (hasInflam) {
+      return {
+        diagnosis: 'Functional iron deficiency',
+        detail: 'Ferritin 100–300 with low TSAT in setting of inflammation — iron trapped in stores.',
+        label: 'functional'
+      };
+    } else {
+      return {
+        diagnosis: 'Possible functional iron deficiency',
+        detail: 'Ferritin 100–300 with low TSAT without obvious inflammation. Consider other causes.',
+        label: 'functional'
+      };
+    }
+  }
+  if (ferritinFunctional && tsatNormal) {
+    return {
+      diagnosis: 'No iron deficiency',
+      detail: 'Adequate iron stores and normal TSAT.',
+      label: 'none'
+    };
+  }
+  if (ferritinReplete && tsatLow) {
+    return {
+      diagnosis: 'Low TSAT with replete ferritin',
+      detail: 'Consider other causes: anemia of chronic disease, mixed deficiencies, or lab error.',
+      label: 'other'
+    };
+  }
+  if (ferritinReplete && tsatNormal) {
+    return {
+      diagnosis: 'Iron deficiency unlikely',
+      detail: 'Adequate iron stores and normal TSAT.',
+      label: 'none'
+    };
+  }
+  return { diagnosis: 'Unable to classify', detail: 'Check input values.', label: 'unknown' };
+}
+
+// ── Route & Dose ────────────────────────────────────────
+function recommend(dx, hb, weight, pregnancy, ckd, esa, intolerance, rapid, bloodLoss) {
+  const isIV =
+    hb < 10 ||
+    ckd ||
+    dx.label === 'functional' ||
+    intolerance ||
+    rapid ||
+    bloodLoss;
+
+  const route = isIV ? 'IV iron' : 'Oral iron';
+
+  // Target Hb
+  let targetHb;
+  if (pregnancy) targetHb = 11;
+  else if (ckd) targetHb = 12;
+  else if (weight >= 35) targetHb = 14;
+  else targetHb = 13;
+
+  // Iron stores
+  let stores;
+  if (weight >= 35) stores = 500;
+  else stores = 15 * weight;
+
+  // Deficit
+  const rawDeficit = weight * (targetHb - hb) * 2.4 + stores;
+  const deficit = Math.max(0, rawDeficit);
+
+  // Practical IV dose
+  let doseText = '';
+  if (isIV) {
+    if (deficit <= 500) {
+      doseText = `${round(deficit, 0)} mg → 500 mg IV (single dose)`;
+    } else if (deficit <= 1000) {
+      doseText = `${round(deficit, 0)} mg → 1000 mg IV (single or split)`;
+    } else {
+      const rounded = Math.ceil(deficit / 100) * 100; // round up to nearest 100
+      doseText = `${round(deficit, 0)} mg → ${rounded} mg IV, split 1–2 doses (max 1000–1500 mg/week per product)`;
+    }
+  } else {
+    doseText = '40–65 mg elemental iron daily or every other day (e.g., ferrous sulfate 325 mg = 65 mg elemental)';
+  }
+
+  return { route, isIV, deficit, doseText, targetHb };
+}
+
+// ── Main calc ────────────────────────────────────────────
+function calculate() {
+  const ferritin = val('ferritin');
+  const hb = val('hemoglobin');
+  const w = val('weight');
+
+  // Validation
+  let errors = [];
+  if (isNaN(ferritin) || ferritin < 0) errors.push('Ferritin');
+  if (isNaN(hb) || hb < 0) errors.push('Hemoglobin');
+  if (isNaN(w) || w <= 0) errors.push('Weight');
+  if (errors.length) {
+    alert('Please enter valid values for: ' + errors.join(', '));
+    return;
+  }
+
+  const tsat = getTSAT();
+  if (isNaN(tsat)) {
+    alert('Enter TSAT directly, or provide both Serum Iron and TIBC to calculate TSAT.');
+    return;
+  }
+
+  const inflammation = checked('inflammation');
+  const pregnancy = checked('pregnancy');
+  const ckd = checked('ckd');
+  const esa = checked('esa');
+  const intolerance = checked('intolerance');
+  const rapid = checked('rapidCorrection');
+  const bloodLoss = checked('ongoingBloodLoss');
+
+  // Diagnose
+  const dx = diagnose(ferritin, tsat, inflammation);
+
+  // Recommend
+  const rec = recommend(dx, hb, w, pregnancy, ckd, esa, intolerance, rapid, bloodLoss);
+
+  // Build notes
+  let notes = [];
+  if (dx.label === 'none' || dx.label === 'borderline' || dx.label === 'other') {
+    notes.push('This result does not indicate a clear need for iron replacement. Re-evaluate clinical context.');
+  }
+  if (pregnancy) notes.push('Pregnancy: target Hb 11 g/dL. Oral is first-line unless rapid correction needed.');
+  if (ckd) notes.push('CKD: target Hb 12 g/dL. IV iron preferred, especially if on ESA.');
+  if (rec.isIV && hb < 10) notes.push('Hb < 10 g/dL: IV iron indicated for severe anemia.');
+  if (rec.isIV && dx.label === 'functional') notes.push('Functional iron deficiency: IV iron bypasses hepcidin-mediated block.');
+  if (rec.isIV && intolerance) notes.push('Oral iron intolerance/malabsorption/failure: IV iron appropriate.');
+  if (rec.isIV && rapid) notes.push('Rapid correction needed: IV iron for faster Hb rise.');
+  if (rec.isIV && bloodLoss) notes.push('Ongoing heavy blood loss: IV iron to match losses.');
+  if (!pregnancy && !ckd && rec.isIV && rec.deficit > 0) {
+    notes.push(`Ganzoni deficit: ${Math.round(rec.deficit)} mg. Target Hb ${rec.targetHb} g/dL.`);
+  }
+  if (esa && !notes.some(n => n.includes('ESA'))) {
+    notes.push('ESA use: monitor iron status closely; IV iron often needed to support erythropoiesis.');
+  }
+
+  // Display
+  id('resultDiagnosis').textContent = dx.diagnosis;
+  id('resultRoute').textContent = dx.detail;
+  id('resultTSAT').textContent = round(tsat, 1) + '%';
+  id('resultDeficit').textContent = rec.isIV ? Math.round(rec.deficit) + ' mg' : 'N/A (oral route)';
+  id('resultRouteVal').textContent = rec.route;
+  id('resultDose').textContent = rec.doseText;
+  id('resultNotesText').innerHTML = notes.length ? notes.join('<br>') : 'No additional flags.';
+
+  // Show result
+  id('resultCard').classList.add('visible');
+  id('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Reset ────────────────────────────────────────────────
+function resetForm() {
+  ['ferritin','hemoglobin','weight','tsat','serumIron','tibc'].forEach(k => id(k).value = '');
+  ['inflammation','pregnancy','ckd','esa','intolerance','rapidCorrection','ongoingBloodLoss'].forEach(k => id(k).checked = false);
+  id('resultCard').classList.remove('visible');
+}
+
+// ── Auto-calc note on TSAT fields ────────────────────────
+['tsat','serumIron','tibc'].forEach(k => {
+  id(k).addEventListener('input', () => {
+    const t = val('tsat');
+    const si = val('serumIron');
+    const tibc = val('tibc');
+    const note = id('tsatCalcNote');
+    if (!isNaN(t) && t > 0) {
+      note.textContent = '✓ Using direct TSAT entry.';
+    } else if (!isNaN(si) && !isNaN(tibc) && tibc > 0) {
+      const calc = (si / tibc) * 100;
+      note.textContent = `⇢ Calculated TSAT: ${round(calc, 1)}%`;
+    } else {
+      note.textContent = 'Enter TSAT directly, or provide Serum Iron + TIBC to auto-calculate.';
+    }
+  });
+});
+</script>
+
+</body>
+</html>

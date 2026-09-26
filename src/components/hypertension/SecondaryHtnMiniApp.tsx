@@ -1,0 +1,404 @@
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Heart, Wine, Pill, Activity, Zap, Moon, TestTube, Stethoscope, FlaskConical,
+  Droplets, Syringe
+} from "lucide-react";
+import ImageLink from "@/components/ImageLink";
+import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
+import { copyToClipboard } from "@/lib/clinical-utils";
+import { Copy, Check, CheckSquare, Square } from "lucide-react";
+
+interface EvaluationItem {
+  id: string;
+  condition: string;
+  tests: string[];
+  icon: React.ReactNode;
+  category: 'endocrine' | 'renal' | 'lifestyle' | 'vascular' | 'other';
+}
+
+const evaluationItems: EvaluationItem[] = [
+  {
+    id: 'primary-aldosteronism',
+    condition: 'Primary Aldosteronism',
+    tests: ['Aldosterone/renin ratio', 'Saline suppression test', 'Adrenal CT/MRI'],
+    icon: <Droplets className="h-5 w-5" />,
+    category: 'endocrine'
+  },
+  {
+    id: 'reninoma',
+    condition: 'Reninoma (Juxtaglomerular Cell Tumor)',
+    tests: [
+      'Stop ACEi, ARB, MRA meds (interfere with renin measurement)',
+      'CT abdomen with contrast — look for small cortical tumor / complex renal cyst',
+      'MRI kidney with delayed contrast',
+      'Admit 4–6 days prior to RVS for bed rest, final antihypertensive titration, and salt deprivation',
+      'Renal vein renin sampling (Wolley technique): samples before & 20 min after IV enalaprilat 2.5 mg',
+      'Lateralization ratio >1.5 consistent with reninoma',
+      'Plasma renin activity & direct renin concentration (elevated)',
+      'Aldosterone levels (elevated)',
+      'Serum K+ (hypokalemia common, can be normokalemic)',
+      'Age of onset <30 years (typical: severe HTN + hypokalemia in young)'
+    ],
+    icon: <Droplets className="h-5 w-5" />,
+    category: 'endocrine'
+  },
+  {
+    id: 'sleep-apnea',
+    condition: 'Obstructive Sleep Apnea',
+    tests: ['Polysomnography', 'Epworth sleepiness scale', 'Overnight oximetry'],
+    icon: <Moon className="h-5 w-5" />,
+    category: 'other'
+  },
+  {
+    id: 'alcohol-use',
+    condition: 'Alcohol Use',
+    tests: ['Detailed alcohol history', 'AUDIT questionnaire', 'GGT, AST, ALT'],
+    icon: <Wine className="h-5 w-5" />,
+    category: 'lifestyle'
+  },
+  {
+    id: 'nsaid-use',
+    condition: 'NSAID Use',
+    tests: ['Medication history review', 'OTC medication assessment'],
+    icon: <Pill className="h-5 w-5" />,
+    category: 'lifestyle'
+  },
+  {
+    id: 'renovascular',
+    condition: 'Renovascular Disease',
+    tests: ['Renal ultrasound', 'Serum creatinine/BUN', 'Urinalysis with microscopy for RBCs and casts'],
+    icon: <FlaskConical className="h-5 w-5" />,
+    category: 'renal'
+  },
+  {
+    id: 'renal-artery-stenosis',
+    condition: 'Renal Artery Stenosis',
+    tests: ['Renal artery Doppler', 'CT/MR angiography', 'ACE inhibitor test', 'Urine microscopic exam: look for RBCs, RBC casts, granular casts'],
+    icon: <Activity className="h-5 w-5" />,
+    category: 'vascular'
+  },
+  {
+    id: 'thyroid',
+    condition: 'Thyroid Disorders',
+    tests: ['TSH', 'Free T3/T4', 'Thyroid antibodies'],
+    icon: <Zap className="h-5 w-5" />,
+    category: 'endocrine'
+  },
+  {
+    id: 'cushings',
+    condition: "Cushing's Syndrome",
+    tests: [
+      '1 mg overnight DST — preferred (1 mg dexamethasone 23:00 → 08:00 cortisol; ≤50 nmol/L / 1.8 µg/dL rules out)',
+      'Late-night salivary cortisol',
+      '24h urine free cortisol',
+      'Avoid random morning cortisol — too nonspecific for screening',
+    ],
+    icon: <TestTube className="h-5 w-5" />,
+    category: 'endocrine'
+  },
+  {
+    id: 'macs',
+    condition: "MACS (Mild Autonomous Cortisol Secretion)",
+    tests: [
+      '1-mg overnight DST — cortisol > 1.8 µg/dL (> 50 nmol/L) without overt Cushing features',
+      'Confirm ACTH independence with a low or suppressed morning ACTH',
+      'Repeat DST if the result will influence management (e.g., adrenalectomy)',
+    ],
+    icon: <TestTube className="h-5 w-5" />,
+    category: 'endocrine'
+  },
+  {
+    id: 'pheochromocytoma',
+    condition: 'Pheochromocytoma',
+    tests: ['Plasma metanephrines', '24h urinary metanephrines', 'Adrenal CT/MRI', 'Genetic testing'],
+    icon: <Syringe className="h-5 w-5" />,
+    category: 'endocrine'
+  },
+  {
+    id: 'substance-abuse',
+    condition: 'Substance Abuse & Polycythemia',
+    tests: ['Urine toxicology', 'CBC/Hematocrit', 'EPO levels'],
+    icon: <Stethoscope className="h-5 w-5" />,
+    category: 'other'
+  },
+  {
+    id: 'liddles',
+    condition: "Liddle's Syndrome",
+    tests: ['Plasma renin activity (low)', 'Aldosterone levels (low)', 'Serum K+ (hypokalemia)', 'Genetic testing: SCNN1A, SCNN1B, SCNN1G mutations', 'Family history of early-onset HTN', 'Response to amiloride/triamterene (no response to spironolactone)'],
+    icon: <Droplets className="h-5 w-5" />,
+    category: 'endocrine'
+  }
+];
+
+const catColors: Record<string, string> = {
+  endocrine: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
+  renal: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  lifestyle: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+  vascular: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
+  other: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
+};
+
+export default function SecondaryHtnMiniApp() {
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState("evaluation");
+  const [copied, setCopied] = useState(false);
+  const [selectedTests, setSelectedTests] = useState<Set<string>>(new Set());
+
+  const toggle = (id: string) => {
+    const next = new Set(completed);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setCompleted(next);
+  };
+
+  const toggleTest = (test: string) => {
+    const next = new Set(selectedTests);
+    if (next.has(test)) next.delete(test); else next.add(test);
+    setSelectedTests(next);
+  };
+
+  const allTests = evaluationItems.flatMap((item) => item.tests);
+  const allSelected = allTests.length > 0 && allTests.every((t) => selectedTests.has(t));
+
+  const toggleAll = () => {
+    setSelectedTests(allSelected ? new Set() : new Set(allTests));
+  };
+
+  const progress = (completed.size / evaluationItems.length) * 100;
+
+  const buildInvestigationsText = () => {
+    const lines: string[] = [];
+    lines.push("SECONDARY HYPERTENSION EVALUATION — CONDITION-SPECIFIC WORKUP");
+    lines.push("============================================================");
+    lines.push("");
+    evaluationItems.forEach((item, idx) => {
+      const selected = item.tests.filter((t) => selectedTests.has(t));
+      if (selected.length === 0) return;
+      lines.push(`${idx + 1}. ${item.condition} (${item.category})`);
+      selected.forEach((t) => lines.push(`   - ${t}`));
+      lines.push("");
+    });
+    return lines.join("\n");
+  };
+
+  const handleCopy = async () => {
+    if (selectedTests.size === 0) {
+      copyToClipboard("", "Select at least one test first");
+      return;
+    }
+    const ok = await copyToClipboard(buildInvestigationsText(), "Selected investigations copied!");
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <Card className="border-2 border-primary/20">
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <Heart className="h-5 w-5 text-primary" />
+          <CardTitle className="text-lg">Secondary Hypertension Evaluation</CardTitle>
+        </div>
+        <div className="flex items-center gap-3">
+          <Progress value={progress} className="h-2 flex-1" />
+          <span className="text-xs text-muted-foreground whitespace-nowrap">{completed.size}/{evaluationItems.length}</span>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="evaluation">📋 Workup</TabsTrigger>
+            <TabsTrigger value="causes">🔍 Causes</TabsTrigger>
+            <TabsTrigger value="tips">💡 Tips</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="evaluation" className="space-y-2 pt-4">
+            <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+              <span className="text-xs text-muted-foreground">
+                {selectedTests.size > 0 ? `${selectedTests.size} test${selectedTests.size > 1 ? 's' : ''} selected` : 'Select tests to copy'}
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleAll}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/60 transition-colors"
+                >
+                  {allSelected ? <CheckSquare className="h-3.5 w-3.5" /> : <Square className="h-3.5 w-3.5" />}
+                  {allSelected ? "Deselect all" : "Select all"}
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copied ? "Copied!" : "Copy selected to TXT"}
+                </button>
+              </div>
+            </div>
+            {evaluationItems.map((item) => {
+              const done = completed.has(item.id);
+              return (
+                <div
+                  key={item.id}
+                  className={`p-3 rounded-lg border transition-all ${done ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-border hover:border-primary/30'}`}
+                >
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <Checkbox checked={done} onCheckedChange={() => toggle(item.id)} className="mt-1" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className={`p-1 rounded ${catColors[item.category]}`}>{item.icon}</div>
+                        <span className={`text-sm font-medium ${done ? 'line-through text-muted-foreground' : ''}`}>
+                          {item.condition}
+                        </span>
+                        <Badge variant="outline" className={`ml-auto text-[10px] ${catColors[item.category]}`}>
+                          {item.category}
+                        </Badge>
+                      </div>
+                      {!done && (
+                        <div className="flex flex-wrap gap-1">
+                          {item.tests.map((t) => {
+                            const sel = selectedTests.has(t);
+                            return (
+                              <button
+                                key={t}
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); toggleTest(t); }}
+                                className={`text-[10px] px-1.5 py-0.5 rounded border transition-colors ${
+                                  sel
+                                    ? 'bg-primary/20 text-primary border-primary/40'
+                                    : 'bg-muted text-muted-foreground border-transparent hover:border-primary/30'
+                                }`}
+                              >
+                                {sel ? '✓ ' : ''}{t}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                </div>
+              );
+            })}
+
+            {/* Reninoma — detailed protocol card */}
+            <div className="p-4 rounded-lg border-2 border-purple-500/30 bg-purple-500/5 mt-4">
+              <h4 className="text-sm font-semibold flex items-center gap-2 mb-3">
+                <Droplets className="h-4 w-4 text-purple-500" />
+                Reninoma Workup Protocol
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-purple-500 shrink-0 w-5">a.</span>
+                  <span><strong>Stop ACEi, ARB, MRA meds</strong> — these interfere with renin measurement.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-purple-500 shrink-0 w-5">b.</span>
+                  <span><strong>CT abdomen with contrast</strong> — evaluate for renal artery stenosis and reninoma (look for small cortical tumor / complex renal cyst).</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-purple-500 shrink-0 w-5">c.</span>
+                  <span><strong>MRI kidney with delayed contrast</strong> — further characterization if CT inconclusive.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-purple-500 shrink-0 w-5">d.</span>
+                  <span><strong>Admit 4–6 days prior to renal vein sampling (RVS)</strong> for bed rest, final antihypertensive titration, and salt deprivation.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-purple-500 shrink-0 w-5">e.</span>
+                  <span><strong>Renal vein renin sampling per Wolley et al:</strong> After 5 days of salt deprivation and overnight recumbency, simultaneous bilateral renal vein and infrarenal IVC samples are drawn <strong>before</strong> and <strong>20 min after</strong> IV enalaprilat 2.5 mg. A lateralization ratio &gt;1.5 before and after stimulation confirms a unilateral renin-secreting source — typical for reninoma.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-purple-500 shrink-0 w-5">f.</span>
+                  <span><strong>Interpretation:</strong> e.g., right-to-left ratio 1.9 pre-enalaprilat + 2.0 post-enalaprilat → consistent with right renal reninoma (presumed = the imaged complex right renal cyst).</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Cushing's — 1 mg overnight DST interpretation */}
+            <DstInterpretationPanel />
+          </TabsContent>
+
+          <TabsContent value="causes" className="space-y-3 pt-4">
+            <div className="p-3 rounded-lg border bg-muted/20">
+              <h4 className="text-sm font-semibold mb-2">🔬 Common Secondary Causes</h4>
+              <div className="grid gap-2 text-xs">
+                <div className="p-2 rounded bg-purple-500/5 border border-purple-500/20">
+                  <strong>Endocrine:</strong> Primary aldosteronism, Cushing's, <strong>MACS (Mild Autonomous Cortisol Secretion; formerly subclinical Cushing's syndrome)</strong>, pheochromocytoma, thyroid disease, hyperparathyroidism, <strong>Reninoma</strong>, <strong>Liddle's syndrome</strong>
+                </div>
+                <div className="p-2 rounded bg-blue-500/5 border border-blue-500/20">
+                  <strong>Renal:</strong> Renovascular disease (RAS), renal artery stenosis, chronic kidney disease, polycystic kidney
+                </div>
+                <div className="p-2 rounded bg-emerald-500/5 border border-emerald-500/20">
+                  <strong>Lifestyle:</strong> Alcohol &gt;3 drinks/day, NSAIDs, cocaine/amphetamines, oral contraceptives, licorice
+                </div>
+                <div className="p-2 rounded bg-rose-500/5 border border-rose-500/20">
+                  <strong>Vascular:</strong> Coarctation of aorta, vasculitis
+                </div>
+                <div className="p-2 rounded bg-gray-500/5 border border-gray-500/20">
+                  <strong>Other:</strong> OSA, polycythemia, pregnancy (preeclampsia), hypercalcemia
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="tips" className="space-y-3 pt-4">
+            <div className="p-3 rounded-lg border bg-primary/5">
+              <h4 className="text-sm font-semibold mb-2">💡 Clinical Pearls</h4>
+              <ul className="space-y-2 text-xs">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Screen ALL hypertensive patients for primary aldosteronism</strong> — guidelines recommend universal screening, but in practice it rarely happens. A major reason is reluctance to perform an antihypertensive washout. <strong>Washout is NOT required:</strong> take aldosterone, renin and potassium <em>while the patient continues their antihypertensives</em>, then interpret with drug effects in mind (β-blockers/central α₂-agonists can raise ARR → false positives; MRAs, ENaC inhibitors and diuretics raise renin → false negatives). Only re-test off the confounding drug when the result is discordant with clinical suspicion.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Screen for primary aldosteronism</strong> in resistant HTN + hypokalemia (even mild). Aldosterone/renin ratio is the screening test. Confirm with saline suppression or oral salt loading.</span>
+                </li>
+
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Pheochromocytoma:</strong> Measure plasma metanephrines (supine ≥30 min, LC-MS/MS). Avoid TCAs, SNRIs, levodopa 2 weeks before. If positive, CT/MRI abdomen + 123I-MIBG or 68Ga-DOTATATE PET.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>OSA screening:</strong> Snoring, witnessed apneas, daytime sleepiness, BMI &gt;35. Polysomnography is gold standard. CPAP can lower BP 5-10 mmHg.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Drug-induced HTN:</strong> NSAIDs (most common OTC cause), oral contraceptives, steroids, cyclosporine, tacrolimus, erythropoietin, decongestants, TCAs, MAOIs.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Renovascular disease:</strong> Suspect in onset &lt;30y (fibromuscular dysplasia) or &gt;55y (atherosclerotic), worsening renal function with ACEi/ARB, flash pulmonary edema, asymmetric kidneys.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Urine microscopy</strong> is an essential part of secondary HTN workup — check for microscopic hematuria (RBCs), RBC casts (glomerulonephritis), granular/waxy casts (parenchymal disease), and pyuria (infection/pyelonephritis).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Reninoma (juxtaglomerular cell tumor):</strong> Rare cause of severe HTN in young (&lt;30y), marked by high renin, high aldosterone, low K⁺. Small cortical tumor on CT. <strong>Workup:</strong> Stop ACEi/ARB/MRA; CT abdomen with contrast; MRI kidney with delayed contrast; admit 4–6 days before renal vein sampling for bed rest, BP titration &amp; salt deprivation; renal vein renin sampling per <strong>Wolley et al</strong> — samples before &amp; 20 min after IV enalaprilat 2.5 mg; lateralization ratio &gt;1.5 confirms. Treatment: partial/complete nephrectomy.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Renal vein renin sampling — Wolley technique:</strong> After 5 days of salt deprivation and overnight recumbency, simultaneous bilateral renal vein and infrarenal IVC samples are drawn before and 20 minutes after IV enalaprilat 2.5 mg. A right-to-left ratio &gt;1.5 (or left-to-right &gt;1.5) before and after enalaprilat indicates a unilateral renin-secreting source — typically a reninoma (JG cell tumor).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span><strong>Liddle's syndrome:</strong> Autosomal dominant disorder mimicking primary aldosteronism — early-onset HTN, hypokalemia, metabolic alkalosis, but with <strong>low renin AND low aldosterone</strong>. Caused by gain-of-function mutations in ENaC (SCNN1A/B/G). Key diagnostic clue: <strong>no response to spironolactone</strong> but responds to amiloride or triamterene (ENaC blockers). Genetic testing confirms. Treatment: amiloride + low-Na diet.</span>
+                </li>
+              </ul>
+            </div>
+            <div className="flex justify-center pt-2">
+              <ImageLink imageId="haaland-mnemonic" label="View HAALAND Mnemonic →" />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+}

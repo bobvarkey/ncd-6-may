@@ -1,0 +1,786 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  p, span, li, a, button {
+    line-height: 1.6;
+  }
+
+  h1 { @apply text-2xl md:text-3xl font-bold; }
+  h2 { @apply text-xl md:text-2xl font-bold; }
+  h3 { @apply text-lg md:text-xl font-bold; }
+  h4 { @apply text-base md:text-lg font-semibold; }
+
+  :root {
+    /* Pure black & white theme */
+    --background: 0 0% 0%;              /* pure black */
+    --foreground: 0 0% 100%;            /* pure white */
+
+    --card: 0 0% 3%;                    /* barely off-black */
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 3%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 330 78% 58%;             /* Sunset Blaze magenta */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 6%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 249 73% 63%;              /* Sunset Blaze violet */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 12%;
+    --ring: 14 100% 60%;                /* Sunset Blaze coral */
+
+    --radius: 0.625rem;
+
+    /* Sunset Blaze palette anchors */
+    --sunset-coral: 14 100% 60%;        /* #ff6b35 */
+    --sunset-amber: 31 93% 54%;         /* #f7931e */
+    --sunset-magenta: 330 78% 58%;      /* #e84393 */
+    --sunset-violet: 249 73% 63%;       /* #6c5ce7 */
+    /* Header tabs: peach, amber, magenta, teal, violet.
+       Fills stay dark enough for white labels (WCAG AA). */
+    --htab-1-fill: #c2410c;
+    --htab-1-bg: #3d2218;
+    --htab-1-ink: #ffd7c2;
+    --htab-1-line: #e08a5a;
+    --htab-2-fill: #b45309;
+    --htab-2-bg: #3a2a12;
+    --htab-2-ink: #ffe3b8;
+    --htab-2-line: #e0a04a;
+    --htab-3-fill: #be185d;
+    --htab-3-bg: #3a1628;
+    --htab-3-ink: #ffd0e4;
+    --htab-3-line: #e070a0;
+    --htab-4-fill: #0f766e;
+    --htab-4-bg: #0e2c28;
+    --htab-4-ink: #c8f6ee;
+    --htab-4-line: #3dbeb0;
+    --htab-5-fill: #6d28d9;
+    --htab-5-bg: #241848;
+    --htab-5-ink: #e4d9ff;
+    --htab-5-line: #a78bfa;
+    --gradient-sunset: linear-gradient(120deg, #ff6b35 0%, #f7931e 35%, #e84393 70%, #6c5ce7 100%);
+    --gradient-sunset-soft: linear-gradient(120deg, rgba(255,107,53,0.12) 0%, rgba(247,147,30,0.10) 35%, rgba(232,67,147,0.12) 70%, rgba(108,92,231,0.14) 100%);
+
+    /* Clinical result tokens */
+    --success: 152 55% 42%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 85% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 200 65% 50%;
+    --info-foreground: 0 0% 100%;
+
+    --mode-simple: 142 50% 45%;
+    --mode-moderate: 32 85% 50%;
+    --mode-complex: 265 60% 55%;
+
+    /* Sidebar tokens — Sunset Blaze */
+    --sidebar-background: 0 0% 2%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 330 78% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 12%;
+    --sidebar-ring: 14 100% 60%;
+
+    /* Text & link tokens (WCAG 2.2 AA on this surface) */
+    --surface: 0 0% 5%;
+    --surface-foreground: 0 0% 100%;
+    --text-secondary: 0 0% 82%;
+    --link: 200 90% 72%;
+    --link-hover: 200 95% 82%;
+    --focus: 14 100% 60%;
+
+    /* User text-size preference (Settings → Text size) */
+    --user-text-scale: 1;
+  }
+
+  /* ============================================================
+     LIGHT THEME — Sunset Blaze on white surfaces.
+     Activated by <html class="light"> from ThemeProvider.
+     Accent hues (magenta / violet / coral / amber) are preserved
+     so gradients, active pills, and CTAs stay on-brand.
+     ============================================================ */
+  .light {
+    --background: 25 55% 97%;              /* warm peach cream */
+    --foreground: 240 10% 10%;            /* near-black */
+
+    --card: 25 50% 98%;
+    --card-foreground: 240 10% 10%;
+
+    --popover: 25 50% 98%;
+    --popover-foreground: 240 10% 10%;
+
+    --primary: 330 78% 55%;               /* vivid pink */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 25 45% 93%;              /* cream */
+    --secondary-foreground: 240 10% 10%;
+
+    --muted: 25 40% 95%;
+    --muted-foreground: 240 6% 35%;
+
+    --accent: 249 73% 55%;                /* violet, deeper */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 25 30% 88%;
+    --input: 25 30% 92%;
+    --ring: 330 78% 55%;                  /* pink */
+
+    /* Vibrant rainbow accents for light theme */
+    --rainbow-red: 350 85% 55%;
+    --rainbow-orange: 25 90% 55%;
+    --rainbow-amber: 40 90% 50%;
+    --rainbow-yellow: 48 90% 55%;
+    --rainbow-lime: 80 65% 50%;
+    --rainbow-green: 150 65% 40%;
+    --rainbow-teal: 170 70% 40%;
+    --rainbow-cyan: 190 80% 50%;
+    --rainbow-sky: 200 85% 50%;
+    --rainbow-blue: 215 85% 55%;
+    --rainbow-indigo: 245 70% 55%;
+    --rainbow-violet: 265 65% 60%;
+    --rainbow-purple: 285 60% 55%;
+    --rainbow-pink: 320 80% 55%;
+
+    /* Sunset palette anchors — slightly deeper for AA on white */
+    --sunset-coral: 14 95% 52%;
+    --sunset-amber: 31 90% 48%;
+    --sunset-magenta: 330 78% 48%;
+    --sunset-violet: 249 73% 55%;
+    --htab-1-bg: #ffede4;
+    --htab-1-ink: #9a3412;
+    --htab-1-line: #e08a5a;
+    --htab-2-bg: #fff4d6;
+    --htab-2-ink: #92400e;
+    --htab-2-line: #e0a04a;
+    --htab-3-bg: #fde4ef;
+    --htab-3-ink: #9d174d;
+    --htab-3-line: #e070a0;
+    --htab-4-bg: #d9f5f0;
+    --htab-4-ink: #115e59;
+    --htab-4-line: #3dbeb0;
+    --htab-5-bg: #ede9fe;
+    --htab-5-ink: #5b21b6;
+    --htab-5-line: #a78bfa;
+
+    /* Sidebar — soft warm cream with sunset accents */
+    --sidebar-background: 25 50% 98%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-primary: 330 78% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 45% 93%;
+    --sidebar-accent-foreground: 240 10% 10%;
+    --sidebar-border: 25 30% 88%;
+    --sidebar-ring: 330 78% 55%;
+
+    /* Text & link tokens — dark enough for AA on cream */
+    --surface: 25 50% 98%;
+    --surface-foreground: 240 10% 10%;
+    --text-secondary: 240 8% 28%;
+    --link: 214 90% 38%;
+    --link-hover: 214 90% 30%;
+    --focus: 330 78% 55%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply bg-background;
+    font-size: calc(17.5px * var(--user-text-scale, 1));
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+  }
+  @media (min-width: 640px) {
+    html { font-size: calc(18px * var(--user-text-scale, 1)); }
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    line-height: 1.55;
+    max-width: 100%;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+  }
+  #root {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  /* ============================================================
+     Pure Black Theme — uniform white-on-black contrast.
+     Background: #000000, Text: #ffffff.
+     ============================================================ */
+
+  /* Dark surfaces → light text */
+  [class*="bg-primary"], [class*="bg-accent"],
+  [class*="bg-destructive"], [class*="bg-foreground"],
+  [class*="bg-primary"] *, [class*="bg-accent"] *,
+  [class*="bg-destructive"] *, [class*="bg-foreground"] * {
+    color: #fff !important;
+  }
+
+  /* Semantic-token surfaces — inherit foreground (light lavender) */
+  [class*="bg-background"], [class*="bg-card"], [class*="bg-popover"],
+  [class*="bg-muted"], [class*="bg-secondary"], [class*="bg-sidebar"],
+  [class*="bg-sidebar-accent"],
+  [class*="bg-background"] *, [class*="bg-card"] *, [class*="bg-popover"] *,
+  [class*="bg-muted"] *, [class*="bg-secondary"] *, [class*="bg-sidebar"] *,
+  [class*="bg-sidebar-accent"] * {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  /* Always keep muted-foreground visible */
+  .text-muted-foreground, [class*="text-muted-foreground"] {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  /* ============================================================
+     Osteoporosis page — brighter (near-white) and bolder text.
+     Scoped to .osteoporosis-page so the rest of the app is
+     unaffected; placed after the muted-foreground rule above so
+     it wins the !important tie-break.
+     ============================================================ */
+  .osteoporosis-page {
+    font-weight: 500;
+  }
+  .osteoporosis-page strong {
+    font-weight: 700;
+  }
+  .osteoporosis-page .text-muted-foreground[class],
+  .osteoporosis-page [class*="text-muted-foreground"][class] {
+    color: hsl(0 0% 92%) !important;
+  }
+
+  /* Portal surfaces (dialogs, dropdowns, popovers, tooltips, toasts) */
+  [role="dialog"], [role="menu"], [role="listbox"], [role="tooltip"],
+  [data-radix-popper-content-wrapper], [data-sonner-toaster], [data-sonner-toast],
+  [role="dialog"] *, [role="menu"] *, [role="listbox"] *, [role="tooltip"] *,
+  [data-radix-popper-content-wrapper] *, [data-sonner-toaster] *, [data-sonner-toast] * {
+    color: hsl(var(--popover-foreground)) !important;
+  }
+
+  /* Tab label color is owned by the header-tab palette below. */
+
+  /* Clinical context chips */
+  .iron-context-toggle,
+  .iron-context-toggle * {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  /* Preserve explicit foreground tokens on colored buttons / badges */
+  /* Exact class-token matches only — substring matching used to also hit
+     variant classes such as `hover:text-accent-foreground`, which forced
+     white label text on outline/ghost buttons in light mode. */
+  [class~="text-primary-foreground"]    { color: hsl(var(--primary-foreground)) !important; }
+  [class~="text-secondary-foreground"]  { color: hsl(var(--secondary-foreground)) !important; }
+  [class~="text-accent-foreground"]     { color: hsl(var(--accent-foreground)) !important; }
+  [class~="text-destructive-foreground"]{ color: hsl(var(--destructive-foreground)) !important; }
+  [class~="text-card-foreground"]       { color: hsl(var(--card-foreground)) !important; }
+  [class~="text-popover-foreground"]    { color: hsl(var(--popover-foreground)) !important; }
+  [class~="text-white"][class][class]   { color: #fff !important; }
+
+  /* Preserve white text on gradient/solid-color hero regions: descendants
+     of any text-white* ancestor inherit white instead of the aggressive
+     foreground override above. */
+  [class~="text-white"] *:not([class*="text-"]) {
+    color: inherit !important;
+  }
+
+  /* ============================================================
+     Home hero typography — always renders on the fixed Sunset
+     Blaze gradient. Colors are theme-independent (light + dark)
+     and use max specificity to defeat the global !important
+     foreground overrides.
+     ============================================================ */
+  .hero-eyebrow[class][class],
+  .hero-eyebrow[class][class] * {
+    color: #ffffff !important;
+    letter-spacing: 0.04em;
+  }
+  h1.hero-title[class][class],
+  .hero-title[class][class] {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  p.hero-subtitle[class][class],
+  .hero-subtitle[class][class] {
+    color: rgba(255, 255, 255, 0.92) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+  }
+  .hero-badge[class][class],
+  .hero-badge[class][class] * {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  a.hero-link[class][class],
+  .hero-link[class][class],
+  .hero-link[class][class] * {
+    color: #ffffff !important;
+  }
+  a.hero-link-primary[class][class],
+  .hero-link-primary[class][class],
+  .hero-link-primary[class][class] * {
+    color: #c2185b !important;
+    background: #ffffff;
+  }
+
+  /* Form inputs — light text on darker bg-background-ish fields */
+  input, textarea, select {
+    color: hsl(var(--foreground));
+  }
+  input::placeholder, textarea::placeholder {
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 1;
+  }
+  label {
+    color: hsl(var(--foreground));
+  }
+  [data-radix-select-trigger], [data-radix-select-value] {
+    color: hsl(var(--foreground)) !important;
+  }
+  [data-placeholder] {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  /* Tables inherit */
+  thead, tbody, tfoot, tr, th, td { color: inherit; }
+
+  /* ============================================================
+     Mobile sidebar: force fully opaque panel so page content
+     never shows through when the drawer opens.
+     ============================================================ */
+  [data-sidebar="sidebar"][data-mobile="true"],
+  [data-sidebar="sidebar"][data-mobile="true"] > div {
+    background-color: hsl(var(--sidebar-background)) !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* ============================================================
+     Accessibility: visible keyboard focus everywhere, readable
+     secondary text, and no clipping at larger text sizes.
+     ============================================================ */
+  :focus-visible {
+    outline: 2px solid hsl(var(--focus));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Secondary / muted text keeps AA contrast in both themes */
+  .text-secondary { color: hsl(var(--text-secondary)); }
+
+  /* Inline links are distinguishable by more than colour */
+  .prose a, a.link {
+    color: hsl(var(--link));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose a:hover, a.link:hover { color: hsl(var(--link-hover)); }
+
+  /* Larger text-size preference must wrap, not clip */
+  h1, h2, h3, h4, h5, h6, p, li, label, button, a {
+    overflow-wrap: anywhere;
+  }
+
+  /* ============================================================
+     Header tabs — peach / amber / magenta / teal / violet.
+     Selected: solid fill + white. Unselected: tint, colored
+     border, colored label. Applies to every Radix tab and to
+     custom strips marked .header-tablist > .header-tab.
+     ============================================================ */
+  [role="tablist"],
+  .header-tablist {
+    height: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex-wrap: wrap !important;
+    background: hsl(var(--sunset-magenta) / 0.10) !important;
+    border-color: hsl(var(--sunset-coral) / 0.35) !important;
+  }
+
+  [role="tablist"] > [role="tab"].header-tab,
+  .header-tablist > .header-tab {
+    --htab-fill: var(--htab-1-fill);
+    --htab-bg: var(--htab-1-bg);
+    --htab-ink: var(--htab-1-ink);
+    --htab-line: var(--htab-1-line);
+    background: var(--htab-bg) !important;
+    color: var(--htab-ink) !important;
+    border-color: var(--htab-line) !important;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: none;
+  }
+
+  [role="tablist"] > [role="tab"].header-tab:nth-child(5n+2),
+  .header-tablist > .header-tab:nth-child(5n+2) {
+    --htab-fill: var(--htab-2-fill);
+    --htab-bg: var(--htab-2-bg);
+    --htab-ink: var(--htab-2-ink);
+    --htab-line: var(--htab-2-line);
+  }
+  [role="tablist"] > [role="tab"].header-tab:nth-child(5n+3),
+  .header-tablist > .header-tab:nth-child(5n+3) {
+    --htab-fill: var(--htab-3-fill);
+    --htab-bg: var(--htab-3-bg);
+    --htab-ink: var(--htab-3-ink);
+    --htab-line: var(--htab-3-line);
+  }
+  [role="tablist"] > [role="tab"].header-tab:nth-child(5n+4),
+  .header-tablist > .header-tab:nth-child(5n+4) {
+    --htab-fill: var(--htab-4-fill);
+    --htab-bg: var(--htab-4-bg);
+    --htab-ink: var(--htab-4-ink);
+    --htab-line: var(--htab-4-line);
+  }
+  [role="tablist"] > [role="tab"].header-tab:nth-child(5n+5),
+  .header-tablist > .header-tab:nth-child(5n+5) {
+    --htab-fill: var(--htab-5-fill);
+    --htab-bg: var(--htab-5-bg);
+    --htab-ink: var(--htab-5-ink);
+    --htab-line: var(--htab-5-line);
+  }
+
+  [role="tablist"] > [role="tab"].header-tab *,
+  .header-tablist > .header-tab * {
+    color: inherit !important;
+  }
+
+  [role="tablist"] > [role="tab"].header-tab[data-state="active"],
+  .header-tablist > .header-tab[data-active="true"] {
+    background: var(--htab-fill) !important;
+    color: #fff !important;
+    border-color: var(--htab-fill) !important;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.22);
+  }
+
+  [role="tablist"] > [role="tab"].header-tab[data-state="active"] *,
+  .header-tablist > .header-tab[data-active="true"] * {
+    color: #fff !important;
+  }
+
+  [role="tablist"] > [role="tab"].header-tab:hover,
+  .header-tablist > .header-tab:hover {
+    box-shadow: inset 0 0 0 1px var(--htab-line);
+  }
+
+  [role="tablist"] > [role="tab"].header-tab[data-state="active"]:hover,
+  .header-tablist > .header-tab[data-active="true"]:hover {
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.22);
+  }
+
+  .header-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--htab-line, var(--htab-4-line));
+    background: var(--htab-bg, var(--htab-4-bg));
+    color: var(--htab-ink, var(--htab-4-ink)) !important;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-transform: capitalize;
+  }
+  .header-chip-calculator {
+    --htab-bg: var(--htab-4-bg);
+    --htab-ink: var(--htab-4-ink);
+    --htab-line: var(--htab-4-line);
+  }
+  .header-chip-guideline {
+    --htab-bg: var(--htab-2-bg);
+    --htab-ink: var(--htab-2-ink);
+    --htab-line: var(--htab-2-line);
+  }
+  .header-chip-page {
+    --htab-bg: var(--htab-3-bg);
+    --htab-ink: var(--htab-3-ink);
+    --htab-line: var(--htab-3-line);
+  }
+}
+
+@layer components {
+  /* Claymorphism base — soft, rounded, with depth */
+  .clay-card {
+    @apply rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.04] to-white/[0.01] shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-1px_0_rgba(0,0,0,0.2)] transition-all duration-300;
+  }
+  .clay-card:hover {
+    @apply shadow-[0_12px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(0,0,0,0.2)] -translate-y-0.5;
+  }
+  .clay-card-flat {
+    @apply rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] to-white/[0.01] shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.04)];
+  }
+  .clay-button {
+    @apply rounded-xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-[0_4px_12px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.08)] transition-all duration-200 active:shadow-[0_1px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.04)] active:translate-y-0.5;
+  }
+  .clay-input {
+    @apply rounded-xl border border-white/[0.08] bg-gradient-to-br from-black/40 to-black/20 shadow-[inset_0_2px_8px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.04)] transition-all duration-200 focus:shadow-[inset_0_2px_8px_rgba(0,0,0,0.4),0_0_0_1px_rgba(56,189,248,0.3)];
+  }
+  .clay-tab {
+    @apply rounded-xl border border-transparent transition-all duration-200 data-[state=active]:border-white/[0.08] data-[state=active]:bg-gradient-to-br data-[state=active]:from-white/[0.06] data-[state=active]:to-white/[0.02] data-[state=active]:shadow-[0_4px_12px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)];
+  }
+  .clay-sidebar-item {
+    @apply rounded-xl transition-all duration-200 hover:bg-white/[0.04] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] data-[active=true]:bg-gradient-to-br data-[active=true]:from-white/[0.06] data-[active=true]:to-white/[0.02] data-[active=true]:shadow-[0_2px_8px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)];
+  }
+  .clay-badge {
+    @apply rounded-xl border border-white/[0.06] bg-gradient-to-br from-white/[0.05] to-white/[0.01] shadow-[0_2px_6px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.06)];
+  }
+  .clay-section {
+    @apply rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] to-transparent shadow-[0_4px_20px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.04)];
+  }
+
+  /* Keep original clinical-card as alias for backward compat */
+  .clinical-card {
+    @apply clay-card;
+  }
+  .clinical-card:hover {
+    @apply shadow-[0_12px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(0,0,0,0.2)] -translate-y-0.5;
+  }
+
+  /* Focus ring for accessibility */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  .stat-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium;
+  }
+  .section-title {
+    @apply text-sm font-heading font-semibold text-foreground;
+  }
+
+  /* Animated gradient accent bar */
+  .accent-bar {
+    @apply absolute top-0 left-0 right-0 h-1 rounded-t-xl opacity-90;
+    background: var(--gradient-sunset);
+  }
+
+  /* Sunset Blaze utilities */
+  .bg-sunset { background: var(--gradient-sunset); }
+  .bg-sunset-soft { background: var(--gradient-sunset-soft); }
+  .text-sunset {
+    background: var(--gradient-sunset);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .border-sunset {
+    border-image: var(--gradient-sunset) 1;
+  }
+  .ring-sunset {
+    box-shadow: 0 0 0 2px hsl(var(--sunset-magenta) / 0.35);
+  }
+
+  /* Sidebar active pill — vivid pink */
+  .sunset-active {
+    background: hsl(var(--primary)) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 6px 20px -6px hsl(var(--primary) / 0.5);
+  }
+  .sunset-active * { color: #fff !important; }
+
+  /* Smooth card entrance */
+  .card-enter {
+    animation: cardSlideUp 0.3s ease-out;
+  }
+
+  /* Staggered children animation */
+  .stagger-children > * {
+    animation: cardSlideUp 0.3s ease-out both;
+  }
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+  .stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+
+  /* Nav pill styling */
+  .nav-pill {
+    @apply px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200;
+  }
+  .nav-pill-active {
+    @apply ring-1 ring-inset;
+  }
+  .nav-pill-hover {
+    @apply hover:bg-muted/60;
+  }
+
+  /* Result card with data value emphasis */
+  .result-value {
+    @apply text-2xl font-bold tracking-tight tabular-nums;
+  }
+  .result-label {
+    @apply text-[10px] font-semibold text-muted-foreground uppercase tracking-wider;
+  }
+
+  /* Tooltip for abbreviation hover */
+  .abbr-hover {
+    @apply underline decoration-dotted decoration-primary/40 cursor-help;
+  }
+
+  /* Interactive input highlighting */
+  .input-highlight {
+    @apply transition-all duration-200;
+  }
+  .input-highlight:focus {
+    @apply ring-2 ring-primary/30 border-primary;
+  }
+
+  /* Button press effect */
+  .btn-press {
+    @apply active:scale-[0.98] transition-transform duration-100;
+  }
+
+  /* Gradient text for emphasis */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+  }
+
+  /* Skeleton loading state */
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
+  }
+
+  /* Success/result glow */
+  .result-glow {
+    @apply shadow-[0_0_20px_rgba(var(--primary),0.15)];
+  }
+
+  /* Card with colored left border */
+  .card-bordered {
+    @apply border-l-4 rounded-lg;
+  }
+  .card-bordered-success {
+    @apply border-l-success bg-success/5;
+  }
+  .card-bordered-warning {
+    @apply border-l-warning bg-warning/5;
+  }
+  .card-bordered-info {
+    @apply border-l-info bg-info/5;
+  }
+  .card-bordered-danger {
+    @apply border-l-destructive bg-destructive/5;
+  }
+}
+
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes resultPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(var(--primary), 0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.result-pulse {
+  animation: resultPulse 2s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.3s ease-out;
+}
+/* Keep table/tab row scrollers on their own axis so a sideways swipe
+   does not pan the whole page. max-width contains unwrapped flex rows. */
+.overflow-x-auto {
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+
+@media print {
+  aside, nav, .sidebar, button, [role="navigation"] { display: none !important; }
+  main { margin: 0 !important; padding: 0 !important; }
+  .card { border: 1px solid #ccc !important; box-shadow: none !important; }
+  .print-hidden { display: none !important; }
+  .print-force-open [data-state="closed"] > * { display: block !important; }
+}
+
+
+/* Blur main content while sidebar search is active (desktop + mobile). */
+body.sidebar-search-active main {
+  filter: blur(4px);
+  transition: filter 0.2s ease-out;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.sidebar-search-active main { transition: none; }
+}

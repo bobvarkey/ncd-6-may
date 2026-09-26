@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="800" height="500" fill="#fafafa"/>
+  
+  <!-- Title -->
+  <text x="400" y="50" text-anchor="middle" font-size="24" font-weight="700" fill="#1a1a2e">What Is a Standard Drink?</text>
+  
+  <!-- Divider -->
+  <line x1="100" y1="65" x2="700" y2="65" stroke="#e0e0e0" stroke-width="1"/>
+  
+  <!-- Column 1: Beer -->
+  <g transform="translate(80, 90)">
+    <!-- Beer bottle icon -->
+    <rect x="55" y="10" width="30" height="80" rx="5" fill="#f5c842" stroke="#d4a017" stroke-width="2"/>
+    <rect x="60" y="0" width="20" height="15" rx="3" fill="#d4a017"/>
+    <rect x="55" y="10" width="30" height="20" rx="3" fill="#e8b830"/>
+    <text x="70" y="55" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">BEER</text>
+    
+    <text x="70" y="115" text-anchor="middle" font-size="14" font-weight="600" fill="#333">Beer</text>
+    <text x="70" y="135" text-anchor="middle" font-size="12" fill="#555">330–355 mL</text>
+    <text x="70" y="152" text-anchor="middle" font-size="12" fill="#555">(can/bottle at 5% ABV)</text>
+  </g>
+  
+  <!-- Column 2: Wine -->
+  <g transform="translate(310, 90)">
+    <!-- Wine glass icon -->
+    <path d="M40,0 Q70,0 70,20 Q70,35 55,40 L55,80 L25,80 L25,40 Q10,35 10,20 Q10,0 40,0Z" fill="#e8738a" stroke="#c05060" stroke-width="2"/>
+    <line x1="25" y1="80" x2="55" y2="80" stroke="#c05060" stroke-width="2"/>
+    <line x1="20" y1="90" x2="60" y2="90" stroke="#c05060" stroke-width="2"/>
+    <text x="40" y="50" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">WINE</text>
+    
+    <text x="40" y="115" text-anchor="middle" font-size="14" font-weight="600" fill="#333">Wine</text>
+    <text x="40" y="135" text-anchor="middle" font-size="12" fill="#555">100–150 mL</text>
+    <text x="40" y="152" text-anchor="middle" font-size="12" fill="#555">(a glass at 12% ABV)</text>
+  </g>
+  
+  <!-- Column 3: Spirits -->
+  <g transform="translate(540, 90)">
+    <!-- Shot glass icon -->
+    <path d="M25,0 L55,0 L60,80 L20,80Z" fill="#7eb8da" stroke="#4a90b0" stroke-width="2"/>
+    <line x1="20" y1="15" x2="60" y2="15" stroke="#4a90b0" stroke-width="1.5"/>
+    <text x="40" y="50" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">SHOT</text>
+    
+    <text x="40" y="115" text-anchor="middle" font-size="14" font-weight="600" fill="#333">Spirits</text>
+    <text x="40" y="135" text-anchor="middle" font-size="12" fill="#555">30–45 mL</text>
+    <text x="40" y="152" text-anchor="middle" font-size="12" fill="#555">(one peg/shot at 40% ABV)</text>
+  </g>
+  
+  <!-- Divider -->
+  <line x1="100" y1="270" x2="700" y2="270" stroke="#e0e0e0" stroke-width="1"/>
+  
+  <!-- Footer info -->
+  <text x="400" y="300" text-anchor="middle" font-size="13" fill="#444" font-weight="500">1 standard drink = ~14 g pure alcohol (US) or ~10 g (India &amp; other countries)</text>
+  
+  <!-- Sources -->
+  <text x="400" y="330" text-anchor="middle" font-size="10" fill="#888">Sources: NIAAA, WHO, Healthline</text>
+  
+  <!-- Bottom note -->
+  <rect x="100" y="360" width="600" height="100" rx="8" fill="#f0f4ff" stroke="#d0d8f0" stroke-width="1"/>
+  <text x="400" y="385" text-anchor="middle" font-size="12" font-weight="600" fill="#3a4a7a">Standard Drink Equivalents</text>
+  <text x="400" y="405" text-anchor="middle" font-size="11" fill="#555">One US standard drink (14 g alcohol) ≈</text>
+  <text x="400" y="425" text-anchor="middle" font-size="11" fill="#555">12 oz (355 mL) beer · 5 oz (150 mL) wine · 1.5 oz (45 mL) spirits</text>
+  <text x="400" y="448" text-anchor="middle" font-size="11" fill="#555">One Indian standard drink (10 g alcohol) ≈</text>
+  <text x="400" y="468" text-anchor="middle" font-size="11" fill="#555">285 mL beer · 100 mL wine · 30 mL spirits</text>
+</svg>

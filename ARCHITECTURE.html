@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCD Rx — Architecture Map</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0f0f1a; color: #e0e0e0; overflow: hidden; height: 100vh; }
+#app { width: 100%; height: 100vh; position: relative; }
+
+/* Header bar */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(15,15,26,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.header h1 span { color: #6366f1; }
+.header .sub { font-size: 12px; color: #888; }
+.header .counts { display: flex; gap: 12px; font-size: 11px; }
+.header .counts .tag { 
+  background: rgba(255,255,255,0.06); border-radius: 6px; padding: 3px 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Legend overlay */
+.legend {
+  position: fixed; bottom: 24px; left: 24px; z-index: 100;
+  background: rgba(15,15,26,0.9); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+  padding: 14px 18px;
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: 11px;
+}
+.legend-row { display: flex; align-items: center; gap: 8px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Detail panel */
+.detail-panel {
+  position: fixed; right: -420px; top: 60px; bottom: 0;
+  width: 400px; z-index: 90;
+  background: rgba(20,20,35,0.96); backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(255,255,255,0.08);
+  padding: 24px; overflow-y: auto;
+  transition: right 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.detail-panel.open { right: 0; }
+.detail-panel .close {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: none; color: #888; cursor: pointer;
+  font-size: 20px;
+}
+.detail-panel .node-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.detail-panel .node-type { font-size: 11px; color: #6366f1; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+.detail-panel .node-desc { font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 16px; }
+.detail-panel .section-title { font-size: 12px; font-weight: 600; color: #6366f1; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-top: 16px; }
+.detail-panel .conn-list { display: flex; flex-direction: column; gap: 4px; }
+.detail-panel .conn-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px; border-radius: 6px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer; font-size: 12px; transition: 0.15s;
+}
+.detail-panel .conn-item:hover { background: rgba(255,255,255,0.08); }
+.detail-panel .conn-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.detail-panel .conn-label { color: #888; font-size: 10px; margin-left: auto; }
+
+/* Search */
+.search-box {
+  position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 101;
+  width: 320px;
+}
+.search-box input {
+  width: 100%; padding: 8px 14px; border-radius: 8px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  color: #fff; font-size: 13px; outline: none;
+  transition: 0.2s;
+}
+.search-box input:focus { border-color: #6366f1; background: rgba(255,255,255,0.1); }
+.search-box input::placeholder { color: #666; }
+
+/* Stats */
+.stats-bar {
+  position: fixed; top: 60px; left: 50%; transform: translateX(-50%); z-index: 80;
+  display: flex; gap: 6px; font-size: 10px; color: #555;
+}
+
+/* Zoom controls */
+.zoom-controls {
+  position: fixed; bottom: 24px; right: 24px; z-index: 100;
+  display: flex; gap: 6px;
+}
+.zoom-controls button {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.08);
+  color: #ccc; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: 0.15s;
+}
+.zoom-controls button:hover { background: rgba(255,255,255,0.12); }
+
+/* Tooltip on hover (graph-native) */
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<div class="header">
+  <div>
+    <h1>NCD <span>Rx</span> · Architecture Map</h1>
+    <div class="sub">Interactive dependency graph — click any node to drill in</div>
+  </div>
+  <div class="counts">
+    <span class="tag" id="count-pages">0 pages</span>
+    <span class="tag" id="count-calc">0 calculators</span>
+    <span class="tag" id="count-routes">0 routes</span>
+    <span class="tag" id="count-comps">0 components</span>
+  </div>
+</div>
+
+<div class="search-box">
+  <input id="search" type="text" placeholder="Search nodes by name or type..." />
+</div>
+
+<div class="legend">
+  <div class="legend-row"><span class="legend-dot" style="background:#f87171;"></span> Pages</div>
+  <div class="legend-row"><span class="legend-dot" style="background:#60a5fa;"></span> Route</div>
+  <div class="legend-row"><span class="legend-dot" style="background:#34d399;"></span> Calculator</div>
+  <div class="legend-row"><span class="legend-dot" style="background:#a78bfa;"></span> Component</div>
+  <div class="legend-row"><span class="legend-dot" style="background:#fbbf24;"></span> Mode Selector</div>
+</div>
+
+<div class="detail-panel" id="detail-panel">
+  <button class="close" onclick="closeDetail()">✕</button>
+  <div class="node-title" id="detail-title"></div>
+  <div class="node-type" id="detail-type"></div>
+  <div class="node-desc" id="detail-desc"></div>
+  <div class="section-title">File</div>
+  <div id="detail-file" style="font-size:12px;color:#888;font-family:monospace;margin-bottom:12px;"></div>
+  <div class="section-title">Connections</div>
+  <div class="conn-list" id="detail-conns"></div>
+  <div class="section-title" id="sub-title" style="display:none;">Sub-Components</div>
+  <div class="conn-list" id="detail-subs"></div>
+</div>
+
+<div class="zoom-controls">
+  <button onclick="zoomIn()">+</button>
+  <button onclick="zoomOut()">−</button>
+  <button onclick="resetZoom()">⟲</button>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// ─── Data ───
+const nodes = [
+  // Mode Selector
+  { id: "ModeSelector", label: "ModeSelector", type: "selector", desc: "Landing page with 3 difficulty cards. Routes to Easy / Moderate / Complex modes.", file: "src/pages/ModeSelector.tsx" },
+
+  // Easy Mode
+  { id: "EasyMode", label: "EasyMode", type: "page", desc: "Simple calculators for all 4 NCDs. Diabetes, HTN, Lipids, Obesity with minimal inputs.", file: "src/pages/EasyMode.tsx" },
+  { id: "DiabetesCalc", label: "DiabetesCalc", type: "calc", desc: "FBG / HbA1c → treatment recommendation. Metformin first-line, insulin if HbA1c ≥ 9.", file: "EasyMode.tsx (inline)", parent: "EasyMode" },
+  { id: "HypertensionCalc", label: "HypertensionCalc", type: "calc", desc: "BP classification (Grade 1-3) + drug recommendation (ACEi/ARB if CKD/DM, CCB otherwise).", file: "EasyMode.tsx (inline)", parent: "EasyMode" },
+  { id: "LipidsCalc", label: "LipidsCalc", type: "calc", desc: "Risk category → LDL target. Risk modifiers: ASCVD, DM, CKD, FH, smoking, HTN.", file: "EasyMode.tsx (inline)", parent: "EasyMode" },
+  { id: "ObesityCalc", label: "ObesityCalc", type: "calc", desc: "BMI (Indian cutoffs) + category + GLP-1 RA recommendation with comorbidity tooltip.", file: "EasyMode.tsx (inline)", parent: "EasyMode" },
+
+  // Moderate Mode
+  { id: "ModerateMode", label: "ModerateMode", type: "page", desc: "Guideline-integrated recommendations with risk stratification and comorbidity-based algorithms.", file: "src/pages/ModerateMode.tsx" },
+  { id: "DiabetesModerate", label: "DiabetesModerate", type: "calc", desc: "Medication algorithm with SGLT2i/GLP-1 for comorbidities. Insulin titration suggestions.", file: "ModerateMode.tsx (inline)", parent: "ModerateMode" },
+  { id: "HypertensionModerate", label: "HypertensionModerate", type: "calc", desc: "ESC treatment algorithm + drug interaction checker + secondary HTN screening.", file: "ModerateMode.tsx (inline)", parent: "ModerateMode" },
+  { id: "LipidsModerate", label: "LipidsModerate", type: "calc", desc: "ASCVD risk score with 5 risk factors. Live risk preview with LDL target per category.", file: "ModerateMode.tsx (inline)", parent: "ModerateMode" },
+  { id: "ObesityModerate", label: "ObesityModerate", type: "calc", desc: "BMI + waist-height ratio + GLP-1 algorithm with comorbidity-based medication selection.", file: "ModerateMode.tsx (inline)", parent: "ModerateMode" },
+
+  // Complex Mode pages
+  { id: "Home", label: "Home", type: "page", desc: "Complex mode dashboard with all calculators, patient profile, OCR upload, EMR note, abbreviation legend.", file: "src/pages/Home.tsx" },
+  { id: "DiabetesTab", label: "Diabetes Tab", type: "page", desc: "Overview + Assessment + Treatment in collapsible sections. HbA1c interpretation, BMI calc, insulin ref.", file: "src/pages/diabetes/DiabetesTab.tsx" },
+  { id: "DiabetesAssessment", label: "Diabetes Assessment", type: "page", desc: "HbA1c interpretation, insulin calculators, BMI calculator, hypoglycemia risk assessment.", file: "src/pages/diabetes/DiabetesAssessment.tsx" },
+  { id: "DiabetesOverview", label: "Diabetes Overview", type: "page", desc: "Pathophysiology, ADA diagnostic criteria, risk stratification, treatment targets.", file: "src/pages/diabetes/DiabetesOverview.tsx" },
+  { id: "DiabetesTreatment", label: "Diabetes Treatment", type: "page", desc: "Medication algorithm (7 steps), GLP-1 guide, insulin reference with US/India brand names.", file: "src/pages/diabetes/DiabetesTreatment.tsx" },
+  { id: "HypertensionTab", label: "Hypertension Tab", type: "page", desc: "Overview + Assessment + Treatment tabs for hypertension management.", file: "src/pages/hypertension/HypertensionTab.tsx" },
+  { id: "HypertensionAssessment", label: "HTN Assessment", type: "page", desc: "BP classification, GFR calculator (CKD-EPI 2021), drug interaction checker, secondary HTN algorithm.", file: "src/pages/hypertension/HypertensionAssessment.tsx" },
+  { id: "HypertensionOverview", label: "HTN Overview", type: "page", desc: "BP staging, target organ damage, secondary causes, ESC/ESH guideline summary.", file: "src/pages/hypertension/HypertensionOverview.tsx" },
+  { id: "HypertensionTreatment", label: "HTN Treatment", type: "page", desc: "Medication algorithm (4-step), potency table, guideline summary for special populations.", file: "src/pages/hypertension/HypertensionTreatment.tsx" },
+  { id: "LipidsTab", label: "Lipids Tab", type: "page", desc: "Overview + Risk Assessment (LAI 2023) + Treatment tabs. Live EHR/VHR/HR/MOD/LOW classification.", file: "src/pages/lipids/LipidsTab.tsx" },
+  { id: "LipidsAssessment", label: "Lipids Assessment", type: "page", desc: "LAI 2023 classification: patient profile, lab values, 6 risk modifier groups, AHA PREVENT risk, auto-classification.", file: "src/pages/lipids/LipidsAssessment.tsx" },
+  { id: "LipidsOverview", label: "Lipids Overview", type: "page", desc: "CPR framework (Confirm-Personalize-Reinforce), CV risk measures, lipoprotein particles.", file: "src/pages/lipids/LipidsOverview.tsx" },
+  { id: "LipidsTreatment", label: "Lipids Treatment", type: "page", desc: "Per-category treatment plans (EHR-A/B/C, VHR-A/B/C, HR, MOD, LOW) with drug doses, mechanisms, monitoring.", file: "src/pages/lipids/LipidsTreatment.tsx" },
+
+  // Calculators
+  { id: "InsulinTitration", label: "Insulin Titration", type: "calc", desc: "3 protocols (ADA Simple, Treat-to-Target, Conservative). 3-day FBG averaging, dose adjustment rules.", file: "src/calculators/diabetes/InsulinTitration.tsx" },
+  { id: "HypoRisk", label: "Hypoglycemia Risk", type: "calc", desc: "Hypoglycemia risk calculator with risk factors assessment.", file: "src/calculators/diabetes/HypoRisk.tsx" },
+  { id: "SlidingScale", label: "Sliding Scale Insulin", type: "calc", desc: "Correction dose algorithm based on current glucose levels.", file: "src/calculators/diabetes/SlidingScale.tsx" },
+  { id: "RenalDosing", label: "Renal Dose Adjustment", type: "calc", desc: "Diabetes medication dose adjustment per eGFR range.", file: "src/calculators/diabetes/RenalDosing.tsx" },
+  { id: "MedicationAlgorithm", label: "DM Medication Algorithm", type: "calc", desc: "Full diabetes medication decision tree with SGLT2i/GLP-1 branching.", file: "src/calculators/diabetes/DiabetesMedicationAlgorithm.tsx" },
+  { id: "AscvdRisk", label: "ASCVD Risk (Full)", type: "calc", desc: "Comprehensive ASCVD risk assessment with sub-checklist for modifiers, CAC guide, Lp(a) stratification.", file: "src/calculators/lipids/AscvdRisk.tsx" },
+  { id: "LipidPanel", label: "Lipid Panel Analysis", type: "calc", desc: "Lipid panel interpretation with calculated parameters.", file: "src/calculators/lipids/LipidPanel.tsx" },
+  { id: "GfrCalculator", label: "GFR Calculator", type: "calc", desc: "CKD-EPI 2021 race-free equation. Auto-calculates from creatinine, age, sex.", file: "src/calculators/htn/GfrCalculator.tsx" },
+  { id: "DrugInteractions", label: "Drug Interaction Checker", type: "calc", desc: "Antihypertensive drug interaction checker with severity classification and recommendations.", file: "src/calculators/htn/DrugInteractions.tsx" },
+  { id: "HTNAlgorithm", label: "HTN Treatment Algorithm", type: "calc", desc: "ESC/ESH 2024 stepwise treatment algorithm for hypertension.", file: "src/calculators/htn/AntihypertensiveTreatmentAlgorithm.tsx" },
+  { id: "PotencyTable", label: "Antihypertensive Potency", type: "calc", desc: "Potency comparison table for all antihypertensive classes.", file: "src/calculators/htn/AntihypertensivePotencyTable.tsx" },
+  { id: "BMICalcStandalone", label: "BMI Calculator", type: "calc", desc: "Standalone BMI calculator with Indian and WHO cutoffs.", file: "src/calculators/obesity/BmiCalculator.tsx" },
+  { id: "WaistHeight", label: "Waist-Height Ratio", type: "calc", desc: "Waist-to-height ratio as a cardiometabolic risk marker.", file: "src/calculators/obesity/WaistHeightRatio.tsx" },
+  { id: "GLP1Algorithm", label: "GLP-1 Obesity Algorithm", type: "calc", desc: "GLP-1 RA treatment algorithm for obesity based on BMI and comorbidities.", file: "src/calculators/obesity/GLP1ObesityAlgorithm.tsx" },
+  { id: "PREVENT", label: "PREVENT Risk", type: "calc", desc: "AHA PREVENT 10-year ASCVD risk equations (Khan et al. 2024). Sex-specific coefficients.", file: "src/lib/prevent.ts" },
+
+  // Shared components
+  { id: "TabNavigation", label: "Tab Navigation", type: "comp", desc: "Top navigation bar for Complex mode: Home, Diabetes, HTN, Lipids tabs + bottom mode selector.", file: "src/components/TabNavigation.tsx" },
+  { id: "SectionCard", label: "Section Card", type: "comp", desc: "Reusable collapsible card component with tone-based color schemes (primary, danger, warning, etc.).", file: "src/components/ui/section-card.tsx" },
+  { id: "AbbreviationHover", label: "Abbreviation Hover", type: "comp", desc: "171 medical abbreviations with hover-over definitions. Used across all pages.", file: "src/components/AbbreviationHover.tsx" },
+  { id: "EducationSection", label: "Education Section", type: "comp", desc: "Reusable educational content block with images and guideline references.", file: "src/components/calculator/EducationSection.tsx" },
+  { id: "CacLdlTargetGuide", label: "CAC-LDL Target Guide", type: "comp", desc: "CAC-based LDL-C target guide per ACC/AHA guidelines with 4-tier risk stratification.", file: "src/components/calculator/CacLdlTargetGuide.tsx" },
+  { id: "RiskFactorChip", label: "Risk Factor Chip", type: "comp", desc: "Toggleable risk factor chip component used in ASCVD risk assessment.", file: "src/components/ui/risk-factor-chip.tsx" },
+  { id: "LabInput", label: "Lab Input", type: "comp", desc: "Specialized lab value input component with unit conversion support.", file: "src/components/ui/lab-input.tsx" },
+
+  // App Shell
+  { id: "AppShell", label: "App Shell (App.tsx)", type: "route", desc: "Root React component. All routing defined here: / → ModeSelector, /easy, /moderate, /home, and all sub-routes.", file: "src/App.tsx" },
+  { id: "RouteHome", label: "Route: / → ModeSelector", type: "route", desc: "Root path — renders the ModeSelector landing page.", file: "src/App.tsx" },
+  { id: "RouteEasy", label: "Route: /easy → EasyMode", type: "route", desc: "Easy mode with simple 4-NCD calculators.", file: "src/App.tsx" },
+  { id: "RouteModerate", label: "Route: /moderate → ModerateMode", type: "route", desc: "Moderate mode with guideline-integrated calculators.", file: "src/App.tsx" },
+  { id: "RouteHomePage", label: "Route: /home → Home", type: "route", desc: "Complex mode dashboard — full app.", file: "src/App.tsx" },
+  { id: "RouteDiabetes", label: "Route: /diabetes → DiabetesTab", type: "route", desc: "Diabetes management with 3 collapsible sections.", file: "src/App.tsx" },
+  { id: "RouteHypertension", label: "Route: /hypertension → HypertensionTab", type: "route", desc: "HTN management with 3 tabs.", file: "src/App.tsx" },
+  { id: "RouteLipids", label: "Route: /lipids → LipidsTab", type: "route", desc: "Lipid management with Overview/Assessment/Treatment tabs.", file: "src/App.tsx" },
+
+  // Libraries
+  { id: "clinicalConstants", label: "Clinical Constants", type: "comp", desc: "Shared clinical data: ASCVD items, CKD/TOD/FH criteria, LAI risk modifiers, PREVENT equations.", file: "src/lib/clinicalConstants.ts" },
+  { id: "preventLib", label: "PREVENT Library", type: "comp", desc: "AHA PREVENT equations implementation. 23-term logistic regression, sex-specific coefficients.", file: "src/lib/prevent.ts" },
+];
+
+const edges = [
+  // Routes to pages
+  { source: "AppShell", target: "RouteHome", label: "root" },
+  { source: "AppShell", target: "RouteEasy", label: "/easy" },
+  { source: "AppShell", target: "RouteModerate", label: "/moderate" },
+  { source: "AppShell", target: "RouteHomePage", label: "/home" },
+  { source: "AppShell", target: "RouteDiabetes", label: "/diabetes" },
+  { source: "AppShell", target: "RouteHypertension", label: "/hypertension" },
+  { source: "AppShell", target: "RouteLipids", label: "/lipids" },
+
+  // ModeSelector → modes
+  { source: "ModeSelector", target: "EasyMode", label: "navigate" },
+  { source: "ModeSelector", target: "ModerateMode", label: "navigate" },
+  { source: "ModeSelector", target: "RouteHomePage", label: "navigate" },
+
+  // EasyMode → inline calculators
+  { source: "EasyMode", target: "DiabetesCalc", label: "contains" },
+  { source: "EasyMode", target: "HypertensionCalc", label: "contains" },
+  { source: "EasyMode", target: "LipidsCalc", label: "contains" },
+  { source: "EasyMode", target: "ObesityCalc", label: "contains" },
+  { source: "EasyMode", target: "AbbreviationHover", label: "uses" },
+  { source: "LipidsCalc", target: "clinicalConstants", label: "imports" },
+
+  // ModerateMode → inline calculators
+  { source: "ModerateMode", target: "DiabetesModerate", label: "contains" },
+  { source: "ModerateMode", target: "HypertensionModerate", label: "contains" },
+  { source: "ModerateMode", target: "LipidsModerate", label: "contains" },
+  { source: "ModerateMode", target: "ObesityModerate", label: "contains" },
+  { source: "ModerateMode", target: "AbbreviationHover", label: "uses" },
+
+  // TabNavigation → Complex pages
+  { source: "TabNavigation", target: "Home", label: "Home tab" },
+  { source: "TabNavigation", target: "DiabetesTab", label: "Diabetes tab" },
+  { source: "TabNavigation", target: "HypertensionTab", label: "HTN tab" },
+  { source: "TabNavigation", target: "LipidsTab", label: "Lipids tab" },
+
+  // Diabetes tab subs
+  { source: "DiabetesTab", target: "DiabetesOverview", label: "Overview" },
+  { source: "DiabetesTab", target: "DiabetesAssessment", label: "Assessment" },
+  { source: "DiabetesTab", target: "DiabetesTreatment", label: "Treatment" },
+  { source: "DiabetesAssessment", target: "clinicalConstants", label: "imports" },
+
+  // HTN tab subs
+  { source: "HypertensionTab", target: "HypertensionOverview", label: "Overview" },
+  { source: "HypertensionTab", target: "HypertensionAssessment", label: "Assessment" },
+  { source: "HypertensionTab", target: "HypertensionTreatment", label: "Treatment" },
+  { source: "HypertensionAssessment", target: "GfrCalculator", label: "imports" },
+  { source: "HypertensionAssessment", target: "DrugInteractions", label: "imports" },
+  { source: "HypertensionAssessment", target: "HTNAlgorithm", label: "imports" },
+
+  // Lipids tab subs
+  { source: "LipidsTab", target: "LipidsOverview", label: "Overview" },
+  { source: "LipidsTab", target: "LipidsAssessment", label: "Assessment" },
+  { source: "LipidsTab", target: "LipidsTreatment", label: "Treatment" },
+  { source: "LipidsAssessment", target: "PREVENT", label: "imports" },
+  { source: "LipidsAssessment", target: "clinicalConstants", label: "imports" },
+  { source: "LipidsTreatment", target: "clinicalConstants", label: "imports" },
+
+  // Complex Home page → calculators
+  { source: "Home", target: "AscvdRisk", label: "imports" },
+  { source: "Home", target: "InsulinTitration", label: "links" },
+  { source: "Home", target: "SlidingScale", label: "links" },
+  { source: "Home", target: "GfrCalculator", label: "links" },
+  { source: "Home", target: "DrugInteractions", label: "links" },
+  { source: "Home", target: "BMICalcStandalone", label: "links" },
+  { source: "Home", target: "SectionCard", label: "uses" },
+  { source: "Home", target: "RiskFactorChip", label: "uses" },
+  { source: "Home", target: "AbbreviationHover", label: "uses" },
+
+  // Cross-module dependencies
+  { source: "AscvdRisk", target: "clinicalConstants", label: "imports" },
+  { source: "AscvdRisk", target: "PREVENT", label: "imports" },
+  { source: "AscvdRisk", target: "CacLdlTargetGuide", label: "imports" },
+  { source: "AscvdRisk", target: "EducationSection", label: "imports" },
+  { source: "AscvdRisk", target: "SectionCard", label: "uses" },
+  { source: "AscvdRisk", target: "RiskFactorChip", label: "uses" },
+  { source: "AscvdRisk", target: "LabInput", label: "uses" },
+
+  // Component dependencies
+  { source: "SectionCard", target: "TabNavigation", label: "shared" },
+];
+
+// ─── Build graph ───
+const width = document.getElementById('app').clientWidth;
+const height = document.getElementById('app').clientHeight;
+
+const colorByType = {
+  page: '#f87171',      // red
+  route: '#60a5fa',     // blue
+  calc: '#34d399',       // green
+  comp: '#a78bfa',       // purple
+  selector: '#fbbf24',   // yellow
+};
+
+const svg = d3.select('#app').append('svg')
+  .attr('width', width)
+  .attr('height', height);
+
+const g = svg.append('g');
+
+// Zoom
+const zoom = d3.zoom()
+  .scaleExtent([0.2, 3])
+  .on('zoom', (event) => g.attr('transform', event.transform));
+svg.call(zoom);
+
+const simulation = d3.forceSimulation(nodes)
+  .force('link', d3.forceLink(edges).id(d => d.id).distance(180).strength(0.3))
+  .force('charge', d3.forceManyBody().strength(-500))
+  .force('center', d3.forceCenter(width / 2, height / 2))
+  .force('collision', d3.forceCollide(60));
+
+// Arrow marker
+svg.append('defs').selectAll('marker')
+  .data(['arrow']).enter().append('marker')
+  .attr('id', 'arrow')
+  .attr('viewBox', '0 -5 10 10')
+  .attr('refX', 28)
+  .attr('refY', 0)
+  .attr('markerWidth', 8)
+  .attr('markerHeight', 8)
+  .attr('orient', 'auto')
+  .append('path')
+  .attr('d', 'M0,-5L10,0L0,5')
+  .attr('fill', 'rgba(255,255,255,0.15)');
+
+const link = g.append('g').selectAll('line')
+  .data(edges).enter().append('line')
+  .attr('stroke', 'rgba(255,255,255,0.12)')
+  .attr('stroke-width', 1.5)
+  .attr('marker-end', 'url(#arrow)');
+
+const linkLabel = g.append('g').selectAll('text')
+  .data(edges).enter().append('text')
+  .text(d => d.label)
+  .attr('font-size', 8)
+  .attr('fill', 'rgba(255,255,255,0.25)')
+  .attr('text-anchor', 'middle')
+  .attr('dy', -4);
+
+const node = g.append('g').selectAll('g')
+  .data(nodes).enter().append('g')
+  .attr('cursor', 'pointer')
+  .on('click', (event, d) => showDetail(d));
+
+// Circles
+node.append('circle')
+  .attr('r', d => d.type === 'selector' ? 28 : d.type === 'route' ? 20 : 22)
+  .attr('fill', d => colorByType[d.type] || '#666')
+  .attr('stroke', 'rgba(255,255,255,0.2)')
+  .attr('stroke-width', 2)
+  .attr('opacity', 0.85);
+
+// Labels
+node.append('text')
+  .text(d => d.label.length > 20 ? d.label.slice(0,18) + '…' : d.label)
+  .attr('text-anchor', 'middle')
+  .attr('dy', d => d.type === 'selector' ? 42 : 38)
+  .attr('fill', '#ccc')
+  .attr('font-size', d => d.type === 'selector' ? 12 : 11)
+  .attr('font-weight', d => d.type === 'selector' ? 700 : 500);
+
+// Search filter
+document.getElementById('search').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  node.style('opacity', d => !q || d.id.toLowerCase().includes(q) || d.label.toLowerCase().includes(q) ? 1 : 0.1);
+  link.style('opacity', d => {
+    if (!q) return 1;
+    const src = d.source.id?.toLowerCase() || '';
+    const tgt = d.target.id?.toLowerCase() || '';
+    return src.includes(q) || tgt.includes(q) ? 0.4 : 0.05;
+  });
+  linkLabel.style('opacity', d => {
+    if (!q) return 1;
+    const src = d.source.id?.toLowerCase() || '';
+    const tgt = d.target.id?.toLowerCase() || '';
+    return src.includes(q) || tgt.includes(q) ? 1 : 0;
+  });
+});
+
+simulation.on('tick', () => {
+  link
+    .attr('x1', d => d.source.x)
+    .attr('y1', d => d.source.y)
+    .attr('x2', d => d.target.x)
+    .attr('y2', d => d.target.y);
+  linkLabel
+    .attr('x', d => (d.source.x + d.target.x) / 2)
+    .attr('y', d => (d.source.y + d.target.y) / 2);
+  node.attr('transform', d => `translate(${d.x},${d.y})`);
+});
+
+// ─── Detail panel ───
+function showDetail(d) {
+  document.getElementById('detail-title').textContent = d.label;
+  document.getElementById('detail-type').textContent = d.type.toUpperCase();
+  document.getElementById('detail-desc').textContent = d.desc || 'No description';
+  document.getElementById('detail-file').textContent = d.file || '—';
+  document.getElementById('detail-panel').classList.add('open');
+
+  // Connections
+  const conns = [];
+  edges.forEach(e => {
+    if (e.source.id === d.id) conns.push({ id: e.target.id, label: e.label, dir: '→' });
+    if (e.target.id === d.id) conns.push({ id: e.source.id, label: e.label, dir: '←' });
+  });
+  const list = document.getElementById('detail-conns');
+  list.innerHTML = '';
+  if (conns.length === 0) {
+    list.innerHTML = '<div style="font-size:12px;color:#555;">No connections defined</div>';
+  } else {
+    conns.forEach(c => {
+      const n = nodes.find(n => n.id === c.id);
+      const div = document.createElement('div');
+      div.className = 'conn-item';
+      div.innerHTML = `
+        <span class="conn-dot" style="background:${colorByType[n?.type] || '#666'}"></span>
+        <span>${c.dir} ${c.id}</span>
+        <span class="conn-label">${c.label} · ${n?.type || '?'}</span>
+      `;
+      div.onclick = () => {
+        const target = nodes.find(n => n.id === c.id);
+        if (target) showDetail(target);
+      };
+      list.appendChild(div);
+    });
+  }
+
+  // Sub-compoents (parent-child)
+  const subs = nodes.filter(n => n.parent === d.id);
+  const subTitle = document.getElementById('sub-title');
+  const subList = document.getElementById('detail-subs');
+  subList.innerHTML = '';
+  if (subs.length > 0) {
+    subTitle.style.display = 'block';
+    subs.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'conn-item';
+      div.innerHTML = `
+        <span class="conn-dot" style="background:${colorByType[s.type] || '#666'}"></span>
+        <span>${s.label}</span>
+        <span class="conn-label">${s.type}</span>
+      `;
+      div.onclick = () => showDetail(s);
+      subList.appendChild(div);
+    });
+  } else {
+    subTitle.style.display = 'none';
+  }
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('open');
+}
+
+function zoomIn() {
+  svg.transition().duration(300).call(zoom.scaleBy, 1.3);
+}
+function zoomOut() {
+  svg.transition().duration(300).call(zoom.scaleBy, 0.7);
+}
+function resetZoom() {
+  svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+}
+
+// ─── Update counts ───
+document.getElementById('count-pages').textContent = nodes.filter(n => n.type === 'page').length + ' pages';
+document.getElementById('count-calc').textContent = nodes.filter(n => n.type === 'calc').length + ' calculators';
+document.getElementById('count-routes').textContent = nodes.filter(n => n.type === 'route').length + ' routes';
+document.getElementById('count-comps').textContent = nodes.filter(n => n.type === 'comp').length + ' components';
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "Clinical Tools — Evidence-Based Decision Support",
+  "short_name": "Clinical Tools",
+  "description": "Clinical calculators, algorithms and prescribing guides, usable offline at the point of care.",
+  "start_url": "/home",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#e84393",
+  "icons": [
+    {
+      "src": "/placeholder.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

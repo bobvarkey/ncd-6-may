@@ -1,0 +1,1 @@
+export { default as CommandPalette, useRecentPages, useFavorites } from "./CommandPalette";
