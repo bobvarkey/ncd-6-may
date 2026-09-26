@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageSquare, CheckCircle2 } from "lucide-react";
+import { MessageSquare, CheckCircle2 } Copy, Download, ;
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 

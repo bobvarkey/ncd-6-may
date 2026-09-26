@@ -1,4 +1,4 @@
-import { Shield, Trash2 } from "lucide-react";
+import { Shield, Trash2 } Copy, Download, ;
 import { Link } from "react-router-dom";
 import { SectionCard } from "@/components/ui/section-card";
 

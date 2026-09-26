@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, AlertCircle, Stethoscope, FileSearch } from "lucide-react";
+import { ArrowRight, AlertCircle, Stethoscope, FileSearch , Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 
 const flowchartPath = "/fatigue-flowchart.jpg";

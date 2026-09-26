@@ -1,7 +1,7 @@
 import Seo from "@/components/Seo";
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import { useState, useEffect, useRef } from "react";
-import { Pill, FlaskConical, Search, AlertTriangle, ChevronDown, Calculator, Filter } from "lucide-react";
+import { Pill, FlaskConical, Search, AlertTriangle, ChevronDown, Calculator, Filter , Copy, Download} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";

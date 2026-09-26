@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
 import { useNavigate } from "react-router-dom";
-import { Syringe, Heart, Dna, Scale, ArrowLeft, Calculator } from "lucide-react";
+import { Syringe, Heart, Dna, Scale, ArrowLeft, Calculator } Copy, Download, ;
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

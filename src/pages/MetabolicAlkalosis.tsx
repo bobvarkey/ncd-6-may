@@ -10,7 +10,7 @@ import {
   Info,
   RotateCcw,
   Syringe,
-} from "lucide-react";
+, Copy, Download} from "lucide-react";
 
 type UrineChloride = "low" | "high" | null;
 type VolumeStatus = "hypovolemic" | "hypervolemic" | null;

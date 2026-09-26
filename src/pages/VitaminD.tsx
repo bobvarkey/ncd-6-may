@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
-import { Sun, Bone } from "lucide-react";
+import { Sun, Bone , Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import ZoomableImage from "@/components/ZoomableImage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

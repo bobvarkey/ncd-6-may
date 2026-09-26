@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { BookOpen, ArrowLeft } from "lucide-react";
+import { BookOpen, ArrowLeft } Copy, Download, ;
 import { GLOSSARY } from "@/data/glossary";
 import { GlossaryTerm } from "@/components/GlossaryTerm";
 

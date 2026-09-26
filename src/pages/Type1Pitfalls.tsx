@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlertTriangle, Droplet, TableProperties, Clock, Monitor, Syringe, Activity, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, Droplet, TableProperties, Clock, Monitor, Syringe, Activity, ChevronDown, ChevronUp , Copy, Download} from "lucide-react";
 
 interface EducationSection {
   id: string;

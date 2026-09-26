@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import BackToHome from "@/components/BackToHome";
 import Seo from "@/components/Seo";
-import { AlertTriangle, Activity, Download, Copy, Image, Printer } from "lucide-react";
+import { AlertTriangle, Activity, Download, Copy, Image, Printer } Copy, Download, ;
 import { downloadTextFile, copyToClipboard } from "@/lib/clinical-utils";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";

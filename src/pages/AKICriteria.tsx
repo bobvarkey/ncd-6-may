@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Calculator, RotateCcw, ArrowLeftRight, AlertTriangle, Info,
   Activity, Droplets, Gauge, Stethoscope, Heart, TrendingUp, FlaskConical
-} from "lucide-react";
+, Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 
 type CreatinineUnit = "mgdl" | "umol";

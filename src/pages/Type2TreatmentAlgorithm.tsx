@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
@@ -23,7 +24,7 @@ import {
   Monitor,
   Thermometer,
   MessageSquare,
-} from "lucide-react";
+, Copy, Download} from "lucide-react";
 import { AbbrText } from "@/components/AbbreviationHover";
 
 // ─── Algorithm Step Component ───

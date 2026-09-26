@@ -1,5 +1,5 @@
 import { SectionCard } from "@/components/ui/section-card";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle } Copy, Download, ;
 
 export default function DisclaimerPage() {
   const version = "1.0";

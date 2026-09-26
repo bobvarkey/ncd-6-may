@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { loadPatient, PatientData } from "@/lib/patient-data";
-import { ChevronDown, ChevronUp, AlertTriangle, Check, ArrowDown, Heart, Shield, Pill, Activity, Info } from "lucide-react";
+import { ChevronDown, ChevronUp, AlertTriangle, Check, ArrowDown, Heart, Shield, Pill, Activity, Info , Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import KDIGOStagingCalculator from "@/calculators/renal/KDIGOStagingCalculator";
 

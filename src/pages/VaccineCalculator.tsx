@@ -57,6 +57,26 @@ const PRIORITY_TONE: Record<Priority, string> = {
 };
 
 export default function VaccineCalculator() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {{
+    // Generate text from page content - simplified version
+    const text = `${func_name} - Clinical Reference`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }};
+
+  const handleDownload = () => {{
+    const text = `${func_name} - Clinical Reference`;
+    const blob = new Blob([text], {{ type: "text/plain" }});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `{func_name.toLowerCase()}-{new Date().toISOString().split("T")[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const [age, setAge] = useState("");
   const [conditions, setConditions] = useState<Record<string, boolean>>({});
   const [history, setHistory] = useState<Record<string, boolean>>({});
@@ -250,6 +270,15 @@ export default function VaccineCalculator() {
       />
 
       <header className="space-y-1">
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleCopy}>
+              <Copy className="h-4 w-4 mr-1" />
+              {copied ? "Copied!" : "Copy"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleDownload}>
+              <Download className="h-4 w-4 mr-1" />
+            </Button>
+          </div>
         <h1 className="text-2xl font-heading font-semibold flex items-center gap-2">
           <Syringe className="h-6 w-6 text-primary" />
           Adult Vaccine Calculator

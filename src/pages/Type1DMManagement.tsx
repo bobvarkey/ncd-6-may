@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { PatientData, EXAMPLE_PATIENT, loadPatient } from "@/lib/patient-data";
 import { Type1Management, generateType1Management } from "@/lib/type1-management";
-import { AlertTriangle, Heart, Activity, Droplet, Pill, Shield, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, Heart, Activity, Droplet, Pill, Shield, ChevronDown, ChevronUp , Copy, Download} from "lucide-react";
 
 export default function Type1DMManagement() {
   const [patient, setPatient] = useState<PatientData>(EXAMPLE_PATIENT);

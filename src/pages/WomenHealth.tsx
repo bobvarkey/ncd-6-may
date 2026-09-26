@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { Stethoscope, FlaskConical, Activity, Scan, ClipboardList,
   BookOpen, GitBranch, FileText, Heart, ArrowRight, RotateCcw, CheckCircle2, ChevronDown, ChevronUp, Info, Sparkles
-} from "lucide-react";
+, Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 

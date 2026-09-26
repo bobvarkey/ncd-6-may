@@ -16,7 +16,7 @@ import {
   Brain,
   Bean,
   Dumbbell,
-} from "lucide-react";
+} Copy, Download, ;
 
 type ElectrolyteKey =
   | "hyponatremia" | "hypernatremia"

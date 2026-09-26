@@ -14,7 +14,7 @@ import fragilityFractureFirstLineV2 from "@/assets/fragility-fracture-first-line
 
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Image, Home, ChevronDown, ChevronUp, ExternalLink, Search } from "lucide-react";
+import { Image, Home, ChevronDown, ChevronUp, ExternalLink, Search } Copy, Download, ;
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { PatientData, EXAMPLE_PATIENT, loadPatient } from "@/lib/patient-data";
 import { InsulinTherapyResult, generateInsulinTherapy } from "@/lib/insulin-therapy";
-import { Target, Pill, Activity, AlertTriangle, ShieldAlert, Syringe, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
+import { Target, Pill, Activity, AlertTriangle, ShieldAlert, Syringe, TrendingUp, ChevronDown, ChevronUp , Copy, Download} from "lucide-react";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 
 const InsulinTherapy = () => {

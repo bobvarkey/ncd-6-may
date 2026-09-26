@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { PatientData, EXAMPLE_PATIENT, loadPatient } from "@/lib/patient-data";
 import { CuisineType } from "@/lib/food-data";
 import { generate7DayPlan, DayPlan } from "@/lib/diet-generator";
-import { RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
+import { RefreshCw, ChevronDown, ChevronUp , Copy, Download} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 

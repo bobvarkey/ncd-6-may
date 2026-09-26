@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { loadPatient, getCKDStage } from "@/lib/patient-data";
-import { AlertTriangle, Shield, CheckCircle, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, Shield, CheckCircle, Info, ChevronDown, ChevronUp , Copy, Download} from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

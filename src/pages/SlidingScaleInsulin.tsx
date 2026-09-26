@@ -12,12 +12,13 @@ import {
   CorrectionScale,
 } from "@/lib/sliding-scale-logic";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";;
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Activity, Syringe, Info, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, Activity, Syringe, Info, ShieldAlert, CheckCircle2 , Copy, Download} from "lucide-react";
 
 const sevColor: Record<string, string> = {
   critical: "bg-destructive/10 text-destructive border-destructive/30",

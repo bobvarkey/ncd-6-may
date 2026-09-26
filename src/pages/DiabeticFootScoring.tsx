@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Activity, AlertTriangle, CheckCircle2, RotateCcw } from "lucide-react";
+import { Activity, AlertTriangle, CheckCircle2, RotateCcw , Copy, Download} from "lucide-react";
 import Seo from "@/components/Seo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

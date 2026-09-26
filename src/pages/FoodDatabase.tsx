@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FOOD_CATEGORIES, KERALA_FOODS, FoodCategory } from "@/lib/food-data";
-import { Search } from "lucide-react";
+import { Search , Copy, Download} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 

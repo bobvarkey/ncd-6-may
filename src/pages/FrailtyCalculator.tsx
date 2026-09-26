@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Activity, Copy, Info, RotateCcw } from "lucide-react";
+import { Activity, Copy, Info, RotateCcw } Copy, Download, ;
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 import { copyToClipboard } from "@/lib/clinical-utils";
 import { ClinicalFrailtyScale } from "@/components/ClinicalFrailtyScale";
@@ -126,6 +126,26 @@ function bandName(score: number): string {
 }
 
 export default function FrailtyCalculator() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {{
+    // Generate text from page content - simplified version
+    const text = `${func_name} - Clinical Reference`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }};
+
+  const handleDownload = () => {{
+    const text = `${func_name} - Clinical Reference`;
+    const blob = new Blob([text], {{ type: "text/plain" }});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `{func_name.toLowerCase()}-{new Date().toISOString().split("T")[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const [answers, setAnswers] = useState<Record<string, AnswerValue>>({});
 
   const setAnswer = (id: string, value: AnswerValue) =>
@@ -169,6 +189,15 @@ export default function FrailtyCalculator() {
       />
 
       <header className="space-y-1">
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleCopy}>
+              <Copy className="h-4 w-4 mr-1" />
+              {copied ? "Copied!" : "Copy"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleDownload}>
+              <Download className="h-4 w-4 mr-1" />
+            </Button>
+          </div>
         <h1 className="text-2xl font-heading font-semibold flex items-center gap-2">
           <Activity className="h-6 w-6 text-primary" />
           Clinical Frailty Scale Calculator

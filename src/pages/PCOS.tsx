@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
-import { Sun, Stethoscope, FlaskConical, Activity, Scan, ClipboardList, BookOpen, GitBranch, Users, FileText } from "lucide-react";
+import { Sun, Stethoscope, FlaskConical, Activity, Scan, ClipboardList, BookOpen, GitBranch, Users, FileText , Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 
 export default function PCOS() {

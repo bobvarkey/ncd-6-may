@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calculator, Copy, Syringe, AlertTriangle } from "lucide-react";
+import { Calculator, Copy, Syringe, AlertTriangle } Copy, Download, ;
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { GLP1_PRODUCTS, SITE_ROTATION } from "@/data/glp1-schedules";
@@ -125,6 +125,15 @@ const DrugCalculator = () => {
       />
 
       <header className="space-y-1">
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleCopy}>
+              <Copy className="h-4 w-4 mr-1" />
+              {copied ? "Copied!" : "Copy"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleDownload}>
+              <Download className="h-4 w-4 mr-1" />
+            </Button>
+          </div>
         <h1 className="flex items-center gap-2 text-2xl font-semibold">
           <Calculator className="h-6 w-6 text-primary" />
           Drug Calculator

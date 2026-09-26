@@ -25,7 +25,7 @@ import {
   AlertCircle,
   ExternalLink,
   Image as ImageIcon
-} from "lucide-react";
+, Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";

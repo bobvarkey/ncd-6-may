@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { User, Save, RotateCcw, Sparkles, X, Plus, TrendingDown, Calculator, Heart, Brain, FileText } from "lucide-react";
+import { User, Save, RotateCcw, Sparkles, X, Plus, TrendingDown, Calculator, Heart, Brain, FileText } Copy, Download, ;
 
 const BLANK_PATIENT: PatientData = {
   name: "", age: 0, gender: "M", heightCm: 0, weightKg: 0, bmi: 0,

@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Heart, Apple, Activity, Brain, Droplet, Pill, TrendingUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Heart, Apple, Activity, Brain, Droplet, Pill, TrendingUp , Copy, Download} from "lucide-react";
 import { useState } from "react";
 
 interface EducationSection {

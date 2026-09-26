@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlertTriangle, Pill, Syringe, TrendingUp, Plus, ShieldAlert, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, Pill, Syringe, TrendingUp, Plus, ShieldAlert, ChevronDown, ChevronUp , Copy, Download} from "lucide-react";
 
 interface EducationSection {
   id: string;
