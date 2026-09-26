@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { Bone, BrickWall, ShieldCheck, Info, ClipboardList, Scan } from "lucide-react";
+import { Bone, BrickWall, ShieldCheck, Info, ClipboardList, Scan, FlaskConical } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OsteoporosisAlgorithm from "@/components/bone-health/OsteoporosisAlgorithm";
 import BoneHealthGuidedApp from "@/components/bone-health/BoneHealthGuidedApp";
 import DexaBmdTesting from "@/components/bone-health/DexaBmdTesting";
+import ZoledronicProtocol from "@/components/bone-health/ZoledronicProtocol";
 
 const tabs = [
   { id: "assessment", label: "Assessment", icon: ClipboardList },
   { id: "dexa", label: "DEXA scan", icon: Scan },
+  { id: "zoledronic", label: "Zoledronic infusion", icon: FlaskConical },
 ] as const;
+
+
 
 type TabId = (typeof tabs)[number]["id"];
 
@@ -141,6 +145,10 @@ export default function BoneHealth() {
 
           <TabsContent value="dexa" className="mt-0 pt-3">
             <DexaBmdTesting />
+          </TabsContent>
+
+          <TabsContent value="zoledronic" className="mt-0 pt-3 space-y-6">
+            <ZoledronicProtocol />
           </TabsContent>
         </Tabs>
       </div>
