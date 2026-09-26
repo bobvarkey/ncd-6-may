@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sun, Bone } from "lucide-react";
+import { Link } from "react-router-dom";
 import ImageLink from "@/components/ImageLink";
 import ZoomableImage from "@/components/ZoomableImage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -80,6 +81,12 @@ export default function VitaminD() {
               </h2>
             </CardHeader>
             <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground px-1">
+                Interactive fracture-risk algorithm (JSON v3):{" "}
+                <Link to="/osteoporosis" className="text-primary underline underline-offset-2">
+                  Open Bone health / Osteoporosis tool →
+                </Link>
+              </p>
               <figure className="space-y-3">
                 <ZoomableImage
                   src={osteoporosisTreatment.url}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -584,7 +585,13 @@ function FragilityFractures() {
             </div>
           </div>
 
-          <div className="flex justify-center py-2">
+          <div className="flex flex-wrap justify-center gap-3 py-2">
+            <Link
+              to="/osteoporosis"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 underline decoration-dotted underline-offset-2"
+            >
+              Open interactive bone-health algorithm →
+            </Link>
             <ImageLink imageId="structured-hypercortisolism-screen" label="View Structured Hypercortisolism Screen →" />
           </div>
         </CardContent>

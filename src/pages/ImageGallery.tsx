@@ -142,7 +142,20 @@ const IMAGE_CATALOG: ImageEntry[] = [
     category: "Endocrinology & Osteoporosis",
     description: "Visual clinical guide for first-line osteoporosis treatment (Bisphosphonates). Includes clinical situation matching (ambulant vs dysphagia vs poor adherence), treatment selection (Alendronate, Risedronate, Zoledronic acid, Denosumab), and route/risk categorization.",
     sourcePages: [
-      { label: "Vitamin D", path: "/vitamin-d" }
+      { label: "Vitamin D", path: "/vitamin-d" },
+      { label: "Bone health / Osteoporosis", path: "/osteoporosis" }
+    ]
+  },
+  {
+    id: "osteoporosis-algorithm-flowchart-v3",
+    src: "/images/osteoporosis-algorithm-flowchart-v3.png",
+    label: "Bone health and osteoporosis algorithm flowchart (v3)",
+    category: "Endocrinology & Osteoporosis",
+    description: "Version 3 educational flowchart: prevention, screening, BMD versus fracture risk, initial high/very-high/low classification, special-scenario review, treatment pathways and follow-up. Companion to the interactive bone-health tool.",
+    sourcePages: [
+      { label: "Bone health / Osteoporosis", path: "/osteoporosis" },
+      { label: "Vitamin D", path: "/vitamin-d" },
+      { label: "Geriatrics", path: "/geriatrics?tab=fractures" }
     ]
   },
 ];
