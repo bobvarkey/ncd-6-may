@@ -9,7 +9,7 @@ import {
   AlertTriangle, Droplets, FlaskConical,
   HeartPulse, Brain, Syringe, Activity, Copy,
   Download, Clock, ShieldAlert, ChevronRight, ChevronDown, Search,
-} Copy, Download, ;
+} from "lucide-react";
 import { downloadTextFile, parseClinicalValue } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 

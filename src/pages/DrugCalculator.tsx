@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calculator, Copy, Syringe, AlertTriangle } Copy, Download, ;
+import { Calculator, Copy, Syringe, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { GLP1_PRODUCTS, SITE_ROTATION } from "@/data/glp1-schedules";

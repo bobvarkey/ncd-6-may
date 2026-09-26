@@ -1,5 +1,5 @@
 import { SectionCard } from "@/components/ui/section-card";
-import { Scale } Copy, Download, ;
+import { Scale } from "lucide-react";
 
 export default function TermsOfService() {
   const version = "1.0";

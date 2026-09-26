@@ -8,7 +8,7 @@ import {
   Settings as SettingsIcon, LayoutDashboard, Pizza, Pill, CalendarDays, TrendingDown,
   ShieldAlert, HeartPulse, Bean, BookOpen, TableProperties, BookMarked, TriangleAlert as WarningTriangle,
   MessageSquare, Trash2, Images, Eye, ArrowLeft,
-} Copy, Download, ;
+} from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
 import LabScoreCalculator from "@/components/LabScoreCalculator";

@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Activity, Copy, Info, RotateCcw } Copy, Download, ;
+import { Activity, Copy, Info, RotateCcw } from "lucide-react";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 import { copyToClipboard } from "@/lib/clinical-utils";
 import { ClinicalFrailtyScale } from "@/components/ClinicalFrailtyScale";
