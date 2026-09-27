@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Check, X, Crown, Sparkles } from 'lucide-react';
+import { Check, Crown, Sparkles, Loader2 } from 'lucide-react';
+import { openCheckout, formatAmount, plans } from '@/payments';
 
 interface PaywallModalProps {
   open: boolean;
@@ -9,14 +11,40 @@ interface PaywallModalProps {
 }
 
 export default function PaywallModal({ open, onOpenChange, onStartTrial }: PaywallModalProps) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Get the popular Pro Monthly plan
+  const proPlan = plans.find(p => p.id === 'pro-monthly') || plans[1];
+
   const handleStartTrial = () => {
-    if (onStartTrial) {
-      onStartTrial();
-    } else {
-      // Store trial start in localStorage
-      localStorage.setItem('trial_started', new Date().toISOString());
-      localStorage.setItem('trial_active', 'true');
-      onOpenChange(false);
+    // Store trial start in localStorage
+    localStorage.setItem('trial_started', new Date().toISOString());
+    localStorage.setItem('trial_active', 'true');
+    onOpenChange(false);
+  };
+
+  const handleSubscribeNow = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await openCheckout(proPlan.id, undefined);
+      
+      if (response) {
+        // Payment successful - activate subscription
+        localStorage.setItem('subscription_active', 'true');
+        localStorage.setItem('subscription_plan', proPlan.id);
+        onOpenChange(false);
+        alert('Payment successful! Welcome to NCD-6-May Pro!');
+      } else {
+        setError('Payment was not completed. Please try again.');
+      }
+    } catch (err: any) {
+      console.error('Payment error:', err);
+      setError(err.message || 'Payment failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,7 +78,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
               ₹0<span className="text-lg font-normal text-muted-foreground">/3 days</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Then ₹501/month ($4.99) — Cancel anytime
+              Then {formatAmount(proPlan)} — Cancel anytime
             </p>
           </div>
 
@@ -72,17 +100,40 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
             ))}
           </div>
 
+          {error && (
+            <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
+
           {/* Buttons */}
           <div className="space-y-3 pt-4">
             <Button 
               className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-semibold py-6"
+              onClick={handleSubscribeNow}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                `Subscribe Now - ${formatAmount(proPlan)}`
+              )}
+            </Button>
+            
+            <Button
+              variant="outline"
+              className="w-full border-border text-muted-foreground hover:bg-card"
               onClick={handleStartTrial}
             >
               Start Free 3-Day Trial
             </Button>
+            
             <Button
-              variant="outline"
-              className="w-full border-border text-muted-foreground hover:bg-card"
+              variant="ghost"
+              className="w-full text-muted-foreground hover:bg-transparent"
               onClick={() => onOpenChange(false)}
             >
               Maybe Later
