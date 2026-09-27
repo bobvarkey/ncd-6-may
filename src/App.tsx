@@ -309,14 +309,13 @@ const App = () => {
   };
 
   // Show paywall as full-screen gate before app loads
-  // User MUST choose Pro Access or Free Trial to access the app
   if (showPaywall && !appReady) {
     return (
       <div className="min-h-screen bg-background">
         <PaywallModal 
           open={true} 
-          onOpenChange={() => {
-            // Don't allow closing without choosing - keep showing paywall
+          onOpenChange={(open) => {
+            if (!open) handleTrialOrPro();
           }} 
           onStartTrial={handleTrialOrPro}
         />
