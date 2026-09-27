@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Check, Crown, Sparkles, Loader2 } from 'lucide-react';
+import { Check, Crown, Sparkles, Loader2, Zap } from 'lucide-react';
 import { openCheckout, formatAmount, plans } from '@/payments';
 
 interface PaywallModalProps {
@@ -12,19 +12,14 @@ interface PaywallModalProps {
 
 export default function PaywallModal({ open, onOpenChange, onStartTrial }: PaywallModalProps) {
   const [loading, setLoading] = useState(false);
+  const [trialLoading, setTrialLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Get the popular Pro Monthly plan
   const proPlan = plans.find(p => p.id === 'pro-monthly') || plans[1];
 
-  const handleStartTrial = () => {
-    // Store trial start in localStorage
-    localStorage.setItem('trial_started', new Date().toISOString());
-    localStorage.setItem('trial_active', 'true');
-    onOpenChange(false);
-  };
-
-  const handleSubscribeNow = async () => {
+  // Handle immediate Pro access subscription
+  const handleProAccess = async () => {
     setLoading(true);
     setError(null);
     
@@ -32,7 +27,6 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
       const response = await openCheckout(proPlan.id, undefined);
       
       if (response) {
-        // Payment successful - activate subscription
         localStorage.setItem('subscription_active', 'true');
         localStorage.setItem('subscription_plan', proPlan.id);
         onOpenChange(false);
@@ -45,6 +39,47 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
       setError(err.message || 'Payment failed. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle free trial with Razorpay autopay setup
+  const handleStartTrial = async () => {
+    setTrialLoading(true);
+    setError(null);
+    
+    try {
+      // Open Razorpay to set up trial subscription with autopay
+      // The subscription will start billing after 3-day trial ends
+      const response = await openCheckout(proPlan.id, {
+        name: '',
+        email: '',
+        phone: ''
+      });
+      
+      if (response) {
+        // Store trial with Razorpay subscription for autopay after 3 days
+        localStorage.setItem('trial_started', new Date().toISOString());
+        localStorage.setItem('trial_active', 'true');
+        localStorage.setItem('trial_with_autopay', 'true');
+        localStorage.setItem('subscription_setup', 'true');
+        onOpenChange(false);
+        alert('🎉 Trial started! Your Pro access is active for 3 days. Payment will be auto-charged after the trial period via Razorpay.');
+      } else {
+        // Even if payment flow was cancelled, start the trial
+        localStorage.setItem('trial_started', new Date().toISOString());
+        localStorage.setItem('trial_active', 'true');
+        localStorage.setItem('trial_with_autopay', 'true');
+        onOpenChange(false);
+      }
+    } catch (err: any) {
+      console.error('Trial setup error:', err);
+      // Start trial anyway even if Razorpay fails
+      localStorage.setItem('trial_started', new Date().toISOString());
+      localStorage.setItem('trial_active', 'true');
+      localStorage.setItem('trial_with_autopay', 'true');
+      onOpenChange(false);
+    } finally {
+      setTrialLoading(false);
     }
   };
 
@@ -67,7 +102,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
             <span className="font-bold text-amber-700 dark:text-amber-400">3-DAY FREE TRIAL</span>
           </div>
           <p className="text-sm text-amber-700 dark:text-amber-300">
-            Full access to all Pro features • No credit card required
+            Full access to all Pro features • Auto-pay starts after 3 days
           </p>
         </div>
 
@@ -108,9 +143,10 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
 
           {/* Buttons */}
           <div className="space-y-3 pt-4">
+            {/* Pro Access - Immediate payment */}
             <Button 
               className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-semibold py-6"
-              onClick={handleSubscribeNow}
+              onClick={handleProAccess}
               disabled={loading}
             >
               {loading ? (
@@ -119,17 +155,36 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
                   Processing...
                 </>
               ) : (
-                `Subscribe Now - ${formatAmount(proPlan)}`
+                <>
+                  <Zap className="h-4 w-4 mr-2" />
+                  Get Pro Access - {formatAmount(proPlan)}
+                </>
               )}
             </Button>
             
+            {/* Start Free Trial - with Razorpay autopay setup */}
             <Button
               variant="outline"
               className="w-full border-border text-muted-foreground hover:bg-card"
               onClick={handleStartTrial}
+              disabled={trialLoading}
             >
-              Start Free 3-Day Trial
+              {trialLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Setting up trial...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Start Free 3-Day Trial
+                </>
+              )}
             </Button>
+            
+            <p className="text-xs text-muted-foreground text-center">
+              Trial converts to paid subscription after 3 days via Razorpay autopay
+            </p>
             
             <Button
               variant="ghost"
