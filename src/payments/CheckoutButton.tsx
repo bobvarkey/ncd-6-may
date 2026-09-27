@@ -50,7 +50,7 @@ export function CheckoutButton({
     return (
       <Button 
         variant="outline" 
-        size={size} 
+        size={size === 'md' ? 'default' : size} 
         className={`bg-green-50 border-green-200 text-green-700 ${className}`}
         disabled
       >
@@ -63,7 +63,7 @@ export function CheckoutButton({
   return (
     <Button
       variant={variant}
-      size={size}
+      size={size === 'md' ? 'default' : size}
       onClick={handleClick}
       disabled={loading}
       className={className}
