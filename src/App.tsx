@@ -1,5 +1,6 @@
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import PaywallModal from "@/components/PaywallModal";
 import { injectMock } from "@/lib/wrapper/mock-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -256,8 +257,37 @@ const withNav = (element: ReactNode, title: string) => (
 );
 
 const App = () => {
+  const [showPaywall, setShowPaywall] = useState(false);
+  
   useEffect(() => {
     injectMock();
+    
+    // Check if user has seen paywall or is in trial
+    const trialActive = localStorage.getItem('trial_active');
+    const trialStarted = localStorage.getItem('trial_started');
+    const paywallSeen = localStorage.getItem('paywall_seen');
+    
+    // Show paywall if never seen and no active trial
+    if (!paywallSeen && !trialActive) {
+      // Delay showing paywall slightly for better UX
+      const timer = setTimeout(() => {
+        setShowPaywall(true);
+        localStorage.setItem('paywall_seen', 'true');
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+    
+    // Check if trial expired (3 days)
+    if (trialStarted) {
+      const trialStart = new Date(trialStarted);
+      const now = new Date();
+      const daysSinceTrial = (now.getTime() - trialStart.getTime()) / (1000 * 60 * 60 * 24);
+      if (daysSinceTrial > 3) {
+        localStorage.removeItem('trial_active');
+        localStorage.removeItem('trial_started');
+        setShowPaywall(true);
+      }
+    }
   }, []);
 
   return (
@@ -440,6 +470,7 @@ const App = () => {
         </Suspense>
         </RouteErrorBoundary>
         </OfflineProvider>
+        <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} />
         <BackToHome />
       </BrowserRouter>
     </TooltipProvider>
