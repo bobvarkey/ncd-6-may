@@ -259,44 +259,69 @@ const withNav = (element: ReactNode, title: string) => (
 );
 
 const App = () => {
-  const [showPaywall, setShowPaywall] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(true); // Start with paywall visible
+  const [isLoading, setIsLoading] = useState(true);
+  const [appReady, setAppReady] = useState(false);
   
   useEffect(() => {
     injectMock();
-    const openHandler = () => setShowPaywall(true);
-    window.addEventListener(OPEN_PAYWALL_EVENT, openHandler);
-    if (hasProAccess()) return () => window.removeEventListener(OPEN_PAYWALL_EVENT, openHandler);
     
-    // Check if user has seen paywall or is in trial
+    // Check if user has Pro access or active trial
+    const subscriptionActive = localStorage.getItem('subscription_active');
     const trialActive = localStorage.getItem('trial_active');
     const trialStarted = localStorage.getItem('trial_started');
-    const paywallSeen = localStorage.getItem('paywall_seen');
-    
-    // Show paywall if never seen and no active trial
-    // Show paywall on each visit for free users (no trial, no Pro)
-    if (!trialActive && !trialStarted) {
-      void paywallSeen;
-      // Delay showing paywall slightly for better UX
-      const timer = setTimeout(() => {
-        setShowPaywall(true);
-        localStorage.setItem('paywall_seen', 'true');
-      }, 1500);
-      return () => { clearTimeout(timer); window.removeEventListener(OPEN_PAYWALL_EVENT, openHandler); };
-    }
     
     // Check if trial expired (3 days)
+    let trialExpired = false;
     if (trialStarted) {
       const trialStart = new Date(trialStarted);
       const now = new Date();
       const daysSinceTrial = (now.getTime() - trialStart.getTime()) / (1000 * 60 * 60 * 24);
       if (daysSinceTrial > 3) {
+        trialExpired = true;
         localStorage.removeItem('trial_active');
         localStorage.removeItem('trial_started');
-        setShowPaywall(true);
+        localStorage.removeItem('trial_with_autopay');
       }
     }
-    return () => window.removeEventListener(OPEN_PAYWALL_EVENT, openHandler);
+    
+    // Show paywall if no subscription and no active trial (or trial expired)
+    const hasAccess = subscriptionActive || (trialActive && !trialExpired);
+    
+    if (hasAccess) {
+      setShowPaywall(false);
+    }
+    
+    // Simulate app loading
+    const loadTimer = setTimeout(() => {
+      setIsLoading(false);
+      if (hasAccess) {
+        setAppReady(true);
+      }
+    }, 800);
+    
+    return () => clearTimeout(loadTimer);
   }, []);
+  
+  const handleTrialOrPro = () => {
+    setShowPaywall(false);
+    setAppReady(true);
+  };
+
+  // Show paywall as full-screen gate before app loads
+  if (showPaywall && !appReady) {
+    return (
+      <div className="min-h-screen bg-background">
+        <PaywallModal 
+          open={true} 
+          onOpenChange={(open) => {
+            if (!open) handleTrialOrPro();
+          }} 
+          onStartTrial={handleTrialOrPro}
+        />
+      </div>
+    );
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
