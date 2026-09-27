@@ -84,8 +84,8 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-card border border-border max-w-md p-0 overflow-hidden">
+    <Dialog open={open} onOpenChange={() => {}}>
+      <DialogContent className="bg-card border border-border max-w-md p-0 overflow-hidden" closeable={false}>
         {/* Header with gradient */}
         <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-6 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4">
@@ -185,14 +185,6 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
             <p className="text-xs text-muted-foreground text-center">
               Trial converts to paid subscription after 3 days via Razorpay autopay
             </p>
-            
-            <Button
-              variant="ghost"
-              className="w-full text-muted-foreground hover:bg-transparent"
-              onClick={() => onOpenChange(false)}
-            >
-              Maybe Later
-            </Button>
           </div>
 
           <p className="text-xs text-muted-foreground text-center">
