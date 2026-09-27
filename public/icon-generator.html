@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate PWA Icons</title>
+</head>
+<body>
+  <h1>Creating placeholder icons...</h1>
+  <canvas id="c" width="192" height="192" style="display:none"></canvas>
+  <canvas id="c512" width="512" height="512" style="display:none"></canvas>
+  <script>
+    const sizes = [
+      {w:192,s:'icon-192.png'},
+      {w:512,s:'icon-512.png'},
+      {w:96,s:'icon-96.png'}
+    ];
+    sizes.forEach(sz => {
+      const c = document.createElement('canvas');
+      c.width = c.height = sz.w;
+      const ctx = c.getContext('2d');
+      // Background
+      ctx.fillStyle = '#0ea5e9';
+      ctx.fillRect(0,0,sz.w,sz.w);
+      // Circle
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(sz.w/2, sz.w/2, sz.w*0.35, 0, Math.PI*2);
+      ctx.fill();
+      // Text
+      ctx.fillStyle = '#0ea5e9';
+      ctx.font = `bold ${sz.w*0.3}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('NCD', sz.w/2, sz.w/2);
+      
+      const link = document.createElement('a');
+      link.download = sz.s;
+      link.href = c.toDataURL('image/png');
+      link.click();
+    });
+    console.log('Icons generated!');
+  </script>
+</body>
+</html>

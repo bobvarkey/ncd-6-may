@@ -1,18 +1,60 @@
 {
-  "name": "Clinical Tools — Evidence-Based Decision Support",
-  "short_name": "Clinical Tools",
-  "description": "Clinical calculators, algorithms and prescribing guides, usable offline at the point of care.",
-  "start_url": "/home",
+  "name": "NCD-6-May - Clinical Decision Support",
+  "short_name": "NCD-6-May",
+  "description": "Clinical calculators, algorithms and prescribing guides for NCD management. Evidence-based decision support usable offline at point of care.",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#e84393",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0ea5e9",
+  "categories": ["medical", "health", "productivity"],
   "icons": [
     {
-      "src": "/placeholder.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Hypertension",
+      "short_name": "HTN",
+      "url": "/hypertension",
+      "icons": [{ "src": "/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Diabetes",
+      "short_name": "DM",
+      "url": "/diabetes",
+      "icons": [{ "src": "/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Bone Health",
+      "short_name": "Bone",
+      "url": "/bone-health",
+      "icons": [{ "src": "/icon-96.png", "sizes": "96x96" }]
     }
   ]
 }
