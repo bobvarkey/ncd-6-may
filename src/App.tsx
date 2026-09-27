@@ -1,6 +1,7 @@
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
 import { useEffect, useState } from "react";
 import PaywallModal from "@/components/PaywallModal";
+import { OPEN_PAYWALL_EVENT, hasProAccess } from "@/lib/subscription";
 import { injectMock } from "@/lib/wrapper/mock-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -97,6 +98,7 @@ class RouteErrorBoundary extends Component<{ children: ReactNode }, { hasError: 
 // Lazy-loaded page components
 const Home = lazyWithModuleRetry(() => import("@/pages/Home"));
 const Settings = lazyWithModuleRetry(() => import("@/pages/Settings"));
+const Subscription = lazyWithModuleRetry(() => import("@/pages/Subscription"));
 const Diabetes = lazyWithModuleRetry(() => import("@/pages/Diabetes"));
 const Hypertension = lazyWithModuleRetry(() => import("@/pages/Hypertension"));
 const Lipids = lazyWithModuleRetry(() => import("@/pages/Lipids"));
@@ -261,6 +263,9 @@ const App = () => {
   
   useEffect(() => {
     injectMock();
+    const openHandler = () => setShowPaywall(true);
+    window.addEventListener(OPEN_PAYWALL_EVENT, openHandler);
+    if (hasProAccess()) return () => window.removeEventListener(OPEN_PAYWALL_EVENT, openHandler);
     
     // Check if user has seen paywall or is in trial
     const trialActive = localStorage.getItem('trial_active');
@@ -268,13 +273,15 @@ const App = () => {
     const paywallSeen = localStorage.getItem('paywall_seen');
     
     // Show paywall if never seen and no active trial
-    if (!paywallSeen && !trialActive) {
+    // Show paywall on each visit for free users (no trial, no Pro)
+    if (!trialActive && !trialStarted) {
+      void paywallSeen;
       // Delay showing paywall slightly for better UX
       const timer = setTimeout(() => {
         setShowPaywall(true);
         localStorage.setItem('paywall_seen', 'true');
       }, 1500);
-      return () => clearTimeout(timer);
+      return () => { clearTimeout(timer); window.removeEventListener(OPEN_PAYWALL_EVENT, openHandler); };
     }
     
     // Check if trial expired (3 days)
@@ -288,6 +295,7 @@ const App = () => {
         setShowPaywall(true);
       }
     }
+    return () => window.removeEventListener(OPEN_PAYWALL_EVENT, openHandler);
   }, []);
 
   return (
@@ -343,6 +351,7 @@ const App = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
           <Route path="/settings" element={withNav(<Settings />, "Settings")} />
+          <Route path="/subscription" element={withNav(<Subscription />, "Subscription")} />
           <Route path="/diabetes" element={withNav(<Diabetes />, "Diabetes")} />
           <Route path="/hypertension" element={withNav(<Hypertension />, "Hypertension")} />
           <Route path="/lipids" element={withNav(<Lipids />, "Lipids")} />
