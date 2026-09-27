@@ -50,7 +50,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
               ₹0<span className="text-lg font-normal text-muted-foreground">/3 days</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Then ₹799/month — Cancel anytime
+              Then ₹501/month ($4.99) — Cancel anytime
             </p>
           </div>
 
