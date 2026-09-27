@@ -14,7 +14,9 @@ import {
   Syringe,
   Activity,
   Wind,
-, Copy, Download} from "lucide-react";
+  Copy,
+  Download,
+} from "lucide-react";
 
 // ── Metabolic Alkalosis Component ──
 

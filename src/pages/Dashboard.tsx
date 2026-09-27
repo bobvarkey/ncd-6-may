@@ -1,6 +1,6 @@
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import { useState, useEffect, useMemo } from "react";
-import { Activity, Heart, Brain, TrendingDown, AlertTriangle, Pill, ChevronRight } Copy, Download, ;
+import { Activity, Heart, Brain, TrendingDown, AlertTriangle, Pill, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PatientData, loadPatient, EXAMPLE_PATIENT, getBMICategory } from "@/lib/patient-data";
 import { generateMedRecommendations } from "@/lib/med-logic";

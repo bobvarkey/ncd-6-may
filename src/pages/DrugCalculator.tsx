@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calculator, Copy, Syringe, AlertTriangle } Copy, Download, ;
+import { Calculator, Copy, Download, Syringe, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { GLP1_PRODUCTS, SITE_ROTATION } from "@/data/glp1-schedules";
@@ -115,6 +115,25 @@ const DrugCalculator = () => {
     ].filter(Boolean);
     await navigator.clipboard.writeText(lines.join("\n"));
     toast({ title: "Recommendation copied" });
+  };
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await copy();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownload = () => {
+    const text = "GLP-1 Drug Calculator - Clinical Reference";
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `drug-calculator-${new Date().toISOString().split("T")[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (

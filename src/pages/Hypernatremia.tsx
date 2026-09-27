@@ -10,7 +10,7 @@ import {
   HeartPulse, Pill, Syringe, Copy,
   Download, Clock, ShieldAlert, ChevronRight, ChevronDown,
   Calculator, Thermometer,
-} Copy, Download, ;
+} from "lucide-react";
 import { downloadTextFile, parseClinicalValue } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 
