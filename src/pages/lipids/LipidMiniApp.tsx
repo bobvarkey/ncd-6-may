@@ -19,6 +19,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
+import SubclinicalAtherosclerosisExplainer from "@/components/lipids/SubclinicalAtherosclerosisExplainer";
+
 import {
   Activity,
   Target,
