@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
 import { useEffect, useState } from "react";
 import PaywallModal from "@/components/PaywallModal";
-import { OPEN_PAYWALL_EVENT, hasAppAccess, hasProAccess, pruneExpiredTrial } from "@/payments";
+import { OPEN_PAYWALL_EVENT, pruneExpiredTrial } from "@/payments";
 import { injectMock } from "@/lib/wrapper/mock-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -259,58 +259,28 @@ const withNav = (element: ReactNode, title: string) => (
 );
 
 const App = () => {
-  const [showPaywall, setShowPaywall] = useState(true); // Start with paywall visible
-  const [appReady, setAppReady] = useState(false);
-  
+  // Paywall is no longer a startup gate — the app opens directly.
+  // It can still be opened on demand (e.g. from the Subscription page).
+  const [showPaywall, setShowPaywall] = useState(false);
+
   useEffect(() => {
     injectMock();
 
     // Clear any trial that has passed its 3-day window.
     pruneExpiredTrial();
 
-    // Re-open the paywall when another screen requests it (e.g. Subscription).
-    const openHandler = () => {
-      setShowPaywall(true);
-      setAppReady(false);
-    };
+    // Open the paywall when another screen requests it (e.g. Subscription).
+    const openHandler = () => setShowPaywall(true);
     window.addEventListener(OPEN_PAYWALL_EVENT, openHandler);
 
-    // Paid subscription OR an active trial unlocks the app.
-    const hasAccess = hasAppAccess();
-
-    if (hasAccess) {
-      setShowPaywall(false);
-    }
-
-    const loadTimer = setTimeout(() => {
-      setAppReady(hasAccess);
-    }, 800);
-
     return () => {
-      clearTimeout(loadTimer);
       window.removeEventListener(OPEN_PAYWALL_EVENT, openHandler);
     };
   }, []);
 
   const handleTrialOrPro = () => {
     setShowPaywall(false);
-    setAppReady(true);
   };
-
-  // Show paywall as full-screen gate before app loads
-  if (showPaywall && !appReady) {
-    return (
-      <div className="min-h-screen bg-background">
-        <PaywallModal 
-          open={true} 
-          onOpenChange={(open) => {
-            if (!open) handleTrialOrPro();
-          }} 
-          onStartTrial={handleTrialOrPro}
-        />
-      </div>
-    );
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
