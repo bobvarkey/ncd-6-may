@@ -396,7 +396,13 @@ export default function LipidsAssessment({ onClassificationChange, onNavigateToT
                       </div>
                     </label>
                   ))}
+                  {group.title === "Established ASCVD" && (
+                    <div className="mt-2 border-t border-border pt-2">
+                      <SubclinicalAtherosclerosisExplainer />
+                    </div>
+                  )}
                 </CollapsibleContent>
+
               </Collapsible>
             );
           })}
