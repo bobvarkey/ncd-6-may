@@ -240,6 +240,53 @@ export default function SubclinicalAtherosclerosisExplainer({ compact = false, c
               CAC 0 means no calcified coronary plaque detected — non-calcified coronary atherosclerosis is not excluded.
             </p>
           </div>
+
+          {/* CAC caveat — when to use, and when not to */}
+          <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
+            <p className="font-semibold text-foreground">Coronary artery calcium (CAC) scoring — caveat</p>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              CAC scoring is most useful from{' '}
+              <strong className="text-foreground">ages 40 to 75</strong> — particularly for someone without known
+              cardiovascular disease or symptoms when their estimated risk is borderline or intermediate and the
+              decision to start a statin remains uncertain. It is a <strong className="text-foreground">decision
+              aid</strong>, not a routine screening test for everyone in that age range.
+              <sup className="ml-0.5">[1][2]</sup>
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+              <li>
+                <strong className="text-foreground">Under 40:</strong> Not routinely recommended. Calcification may not
+                yet be detectable, so a score of zero is less reassuring; testing can be considered selectively when
+                there is a strong family history of premature cardiovascular disease or other major risk factors.
+                <sup className="ml-0.5">[3][4][5]</sup>
+              </li>
+              <li>
+                <strong className="text-foreground">Ages 76–80:</strong> May still help in selected people when the
+                statin decision is uncertain, particularly if a zero score would change the plan.
+                <sup className="ml-0.5">[2][6]</sup>
+              </li>
+              <li>
+                <strong className="text-foreground">Over 80:</strong> No routine age-based recommendation; whether the
+                result would actually change care becomes especially important.
+                <sup className="ml-0.5">[1][7]</sup>
+              </li>
+            </ul>
+            <p className="mt-2 text-xs text-muted-foreground">
+              The practical question is less “Am I the right age?” than{' '}
+              <strong className="text-foreground">“Would the result change treatment?”</strong> CAC is generally less
+              useful when cardiovascular disease is already established or the indication for preventive treatment is
+              already clear.<sup className="ml-0.5">[2][8]</sup>
+            </p>
+            <div className="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-[10px] text-muted-foreground">
+              <span>[1] Major Global Coronary Artery Calcium Guidelines — jacc.org</span>
+              <span>[2] NLA scientific statement on CAC scoring — lipidjournal.com</span>
+              <span>[3] CAC interpretation update — pmc.ncbi.nlm.nih.gov</span>
+              <span>[4] CAC scoring in young adults — pmc.ncbi.nlm.nih.gov</span>
+              <span>[5] Calcium Score Test — my.clevelandclinic.org</span>
+              <span>[6] Navigating CV risk assessment in older patients — acc.org</span>
+              <span>[7] Coronary calcium score review for clinicians — pmc.ncbi.nlm.nih.gov</span>
+              <span>[8] CAC scoring in individuals at risk — pmc.ncbi.nlm.nih.gov</span>
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

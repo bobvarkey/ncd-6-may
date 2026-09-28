@@ -6,6 +6,7 @@
 //   - KEY_SECRET lives exclusively in the serverless functions (api/*.ts).
 
 import { getPlan } from './plans';
+import type { UserEntitlement } from './entitlements';
 
 declare global {
   interface Window {
@@ -16,6 +17,29 @@ declare global {
 // Client-safe publishable key. Set VITE_RAZORPAY_KEY_ID in .env / Vercel env.
 export const RAZORPAY_KEY_ID =
   (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || '';
+
+const DEVICE_ID_STORAGE_KEY = 'ncd-device-id';
+
+/**
+ * Stable per-install device id (localStorage UUID). Sent to create-order so
+ * the SERVER can bind the order -> device, and used to read the entitlement
+ * from /api/entitlements/me. Not a secret — just a stable identifier.
+ */
+export function getOrCreateDeviceId(): string {
+  try {
+    let id = localStorage.getItem(DEVICE_ID_STORAGE_KEY);
+    if (!id) {
+      id =
+        typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `dev_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
+      localStorage.setItem(DEVICE_ID_STORAGE_KEY, id);
+    }
+    return id;
+  } catch {
+    return 'anon-device';
+  }
+}
 
 export interface RazorpayResponse {
   razorpay_payment_id: string;
@@ -68,12 +92,13 @@ export async function createRazorpayOrder(
 
   const res = await fetch('/api/create-order', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-ncd-device-id': getOrCreateDeviceId(),
+    },
     body: JSON.stringify({
-      amount: plan.amount,
-      currency: plan.currency === 'INR' ? 'INR' : plan.currency,
-      receipt: `rcpt_${Date.now()}_${planId}`,
       planId,
+      deviceId: getOrCreateDeviceId(),
       userInfo,
     }),
   });
@@ -105,7 +130,10 @@ export async function verifyRazorpayPayment(
 ): Promise<VerifyResult> {
   const res = await fetch('/api/verify-payment', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-ncd-device-id': getOrCreateDeviceId(),
+    },
     body: JSON.stringify(response),
   });
 
@@ -120,6 +148,24 @@ export async function verifyRazorpayPayment(
     orderId: data.razorpay_order_id,
     paymentId: data.razorpay_payment_id,
   };
+}
+
+/**
+ * Read THIS device's entitlement from server-side truth.
+ * GET /api/entitlements/me — returns null when never entitled / free tier.
+ */
+export async function fetchMyEntitlement(): Promise<UserEntitlement | null> {
+  try {
+    const res = await fetch('/api/entitlements/me', {
+      method: 'GET',
+      headers: { 'x-ncd-device-id': getOrCreateDeviceId() },
+    });
+    if (!res.ok) return null;
+    const data = await res.json().catch(() => ({}));
+    return (data?.entitlement as UserEntitlement) || null;
+  } catch {
+    return null;
+  }
 }
 
 /**

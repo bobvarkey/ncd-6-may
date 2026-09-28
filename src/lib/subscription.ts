@@ -41,9 +41,20 @@ export function saveSubscription(sub: LocalSubscription | null) {
 }
 
 /** Record a verified payment as an active Pro subscription. */
-export function grantProAccess(planId: string, paymentId?: string): void {
+export function grantProAccess(
+  planId: string,
+  paymentId?: string,
+  validUntil?: string
+): void {
   const startedAt = new Date();
-  const renewsAt = new Date(startedAt.getTime() + 30 * MS_PER_DAY);
+  // Prefer the SERVER-computed expiry (/api/entitlements/me → validUntil);
+  // fall back to plan-duration heuristic, then 30 days.
+  const serverExpiry = validUntil ? new Date(validUntil).getTime() : NaN;
+  const isYearlyOrLifetime = /year|lifetime/.test(planId);
+  const days = isYearlyOrLifetime ? 365 : 30;
+  const renewsAt = Number.isFinite(serverExpiry)
+    ? new Date(serverExpiry)
+    : new Date(startedAt.getTime() + days * MS_PER_DAY);
   saveSubscription({
     planId,
     status: "active",

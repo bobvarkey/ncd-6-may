@@ -10,6 +10,8 @@
  */
 
 import Razorpay from 'razorpay';
+import { plans as PLAN_CATALOG } from '../src/payments/plans';
+import { bindOrder } from './_entitlements-store';
 
 export const config = {
   runtime: 'nodejs',
@@ -20,6 +22,7 @@ type OrderBody = {
   currency?: string;
   receipt?: string;
   planId?: string;
+  deviceId?: string;
   userInfo?: {
     name?: string;
     email?: string;
@@ -37,8 +40,6 @@ type ApiResponse = {
   json: (payload: unknown) => ApiResponse;
   setHeader: (name: string, value: string) => void;
 };
-
-const MIN_AMOUNT_PAISE = 100;
 
 function parseBody(raw: unknown): OrderBody {
   if (!raw) return {};
@@ -71,44 +72,44 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   }
 
   const body = parseBody(req.body);
-  const amount = Number(body.amount);
   const currency = (body.currency || 'INR').toUpperCase();
   const receipt =
     body.receipt ||
     `rcpt_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
 
-  // Validate amount (Razorpay minimum is 100 paise = ₹1)
-  if (!Number.isFinite(amount) || Number.isNaN(amount)) {
-    return res.status(400).json({ success: false, error: 'amount is required' });
-  }
-
-  if (!Number.isInteger(amount)) {
+  // SECURITY: the client never dictates price. planId must resolve to the
+  // server-side plan catalog and the catalog's amount/currency are used.
+  // A tampered client sending amount: 100 for a ₹6,999 plan is rejected.
+  const plan = PLAN_CATALOG.find((p) => p.id === body.planId);
+  if (!plan) {
     return res.status(400).json({
       success: false,
-      error: 'amount must be an integer in paise (no decimals)',
+      error: 'Unknown or missing planId — choose a valid plan',
     });
   }
 
-  if (amount < MIN_AMOUNT_PAISE) {
-    return res.status(400).json({
-      success: false,
-      error: `amount must be at least ${MIN_AMOUNT_PAISE} paise`,
-    });
-  }
+  const amount = plan.amount;
 
   try {
     const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
 
     const order = await razorpay.orders.create({
       amount,
-      currency,
+      currency: plan.currency,
       receipt,
       notes: {
-        planId: body.planId || '',
+        planId: plan.id,
+        planAmountPaise: String(plan.amount),
         userName: body.userInfo?.name || '',
         userEmail: body.userInfo?.email || '',
+        deviceId: body.deviceId || '',
       },
     });
+
+    // Record the order → (plan, device) binding server-side. The verify
+    // endpoint trusts THIS record (plus Razorpay's own order notes), not
+    // anything the client claims afterwards.
+    bindOrder(order.id, plan.id, body.deviceId || '');
 
     return res.status(200).json({
       success: true,

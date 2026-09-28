@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check, Crown, Sparkles, Loader2, Zap } from 'lucide-react';
-import { openCheckout, formatAmount, plans, grantProAccess, startFreeTrial } from '@/payments';
+import { openCheckout, formatAmount, plans, grantProAccess, startFreeTrial, fetchMyEntitlement } from '@/payments';
 
 interface PaywallModalProps {
   open: boolean;
@@ -26,8 +26,20 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
       const response = await openCheckout(proPlan.id);
 
       if (response) {
-        // Payment verified server-side (HMAC signature matched).
-        grantProAccess(proPlan.id, response.razorpay_payment_id);
+        // Payment verified server-side (HMAC signature matched) and the
+        // entitlement now lives on the server (/api/entitlements/me).
+        // Refresh the local mirror from server truth; fall back to the
+        // requested plan if the fetch hiccups.
+        const serverEntitlement = await fetchMyEntitlement();
+        if (serverEntitlement?.validUntil) {
+          grantProAccess(
+            serverEntitlement.planId || proPlan.id,
+            response.razorpay_payment_id,
+            serverEntitlement.validUntil
+          );
+        } else {
+          grantProAccess(proPlan.id, response.razorpay_payment_id);
+        }
         onOpenChange(false);
       } else {
         // Cancelled / dismissed / failed / verification failed.

@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import LipidsOverview from "./LipidsOverview";
 import LipidMiniApp from "./LipidMiniApp";
-import LipidsComprehensiveAlgorithm from "./LipidsComprehensiveAlgorithm";
 
 export type LAIResult = {
   cat: "EHR" | "VHR" | "HR" | "MOD" | "LOW";
@@ -112,7 +111,7 @@ export default function LipidsTab() {
     </div>
   );
 
-  const sectionOrder = ["mini", "overview", "algorithm"];
+  const sectionOrder = ["mini", "overview"];
 
   const sections = [
     {
@@ -128,13 +127,6 @@ export default function LipidsTab() {
       icon: <BookOpen />,
       description: "Guideline summaries, pathophysiology, and patient education resources",
       component: <LipidsOverview />,
-    },
-    {
-      id: "algorithm",
-      title: "Comprehensive Algorithm",
-      icon: <Sparkles />,
-      description: "Advanced lipid testing interpretation, CV phenotype identification, and root cause evaluation",
-      component: <LipidsComprehensiveAlgorithm />,
     },
   ];
 

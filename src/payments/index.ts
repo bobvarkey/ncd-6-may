@@ -4,6 +4,8 @@ export {
   openCheckout,
   loadRazorpayScript,
   verifyRazorpayPayment,
+  fetchMyEntitlement,
+  getOrCreateDeviceId,
   RAZORPAY_KEY_ID,
   type RazorpayResponse,
   type CreateOrderResponse,
