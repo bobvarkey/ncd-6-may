@@ -177,7 +177,7 @@ export default function SubclinicalAtherosclerosisExplainer({ compact = false, c
           </div>
 
           {/* Clinical events that reclassify */}
-          <div className="rounded-lg border border-danger/30 bg-danger/5 p-3">
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
             <p className="font-semibold text-foreground">Events that make it clinical ASCVD (not subclinical)</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {CLINICAL_EVENTS.map((e) => (
