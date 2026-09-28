@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
 import { useEffect, useState } from "react";
 import PaywallModal from "@/components/PaywallModal";
-import { OPEN_PAYWALL_EVENT, hasProAccess } from "@/lib/subscription";
+import { OPEN_PAYWALL_EVENT, hasAppAccess, hasProAccess, pruneExpiredTrial } from "@/payments";
 import { injectMock } from "@/lib/wrapper/mock-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -260,49 +260,38 @@ const withNav = (element: ReactNode, title: string) => (
 
 const App = () => {
   const [showPaywall, setShowPaywall] = useState(true); // Start with paywall visible
-  const [isLoading, setIsLoading] = useState(true);
   const [appReady, setAppReady] = useState(false);
   
   useEffect(() => {
     injectMock();
-    
-    // Check if user has Pro access or active trial
-    const subscriptionActive = localStorage.getItem('subscription_active');
-    const trialActive = localStorage.getItem('trial_active');
-    const trialStarted = localStorage.getItem('trial_started');
-    
-    // Check if trial expired (3 days)
-    let trialExpired = false;
-    if (trialStarted) {
-      const trialStart = new Date(trialStarted);
-      const now = new Date();
-      const daysSinceTrial = (now.getTime() - trialStart.getTime()) / (1000 * 60 * 60 * 24);
-      if (daysSinceTrial > 3) {
-        trialExpired = true;
-        localStorage.removeItem('trial_active');
-        localStorage.removeItem('trial_started');
-        localStorage.removeItem('trial_with_autopay');
-      }
-    }
-    
-    // Show paywall if no subscription and no active trial (or trial expired)
-    const hasAccess = subscriptionActive || (trialActive && !trialExpired);
-    
+
+    // Clear any trial that has passed its 3-day window.
+    pruneExpiredTrial();
+
+    // Re-open the paywall when another screen requests it (e.g. Subscription).
+    const openHandler = () => {
+      setShowPaywall(true);
+      setAppReady(false);
+    };
+    window.addEventListener(OPEN_PAYWALL_EVENT, openHandler);
+
+    // Paid subscription OR an active trial unlocks the app.
+    const hasAccess = hasAppAccess();
+
     if (hasAccess) {
       setShowPaywall(false);
     }
-    
-    // Simulate app loading
+
     const loadTimer = setTimeout(() => {
-      setIsLoading(false);
-      if (hasAccess) {
-        setAppReady(true);
-      }
+      setAppReady(hasAccess);
     }, 800);
-    
-    return () => clearTimeout(loadTimer);
+
+    return () => {
+      clearTimeout(loadTimer);
+      window.removeEventListener(OPEN_PAYWALL_EVENT, openHandler);
+    };
   }, []);
-  
+
   const handleTrialOrPro = () => {
     setShowPaywall(false);
     setAppReady(true);
@@ -504,7 +493,11 @@ const App = () => {
         </Suspense>
         </RouteErrorBoundary>
         </OfflineProvider>
-        <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} />
+        <PaywallModal
+          open={showPaywall}
+          onOpenChange={setShowPaywall}
+          onStartTrial={handleTrialOrPro}
+        />
         <BackToHome />
       </BrowserRouter>
     </TooltipProvider>

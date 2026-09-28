@@ -11,6 +11,7 @@ interface CheckoutButtonProps {
   variant?: 'default' | 'outline' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  label?: string;
 }
 
 export function CheckoutButton({
@@ -20,7 +21,8 @@ export function CheckoutButton({
   onError,
   variant = 'default',
   size = 'md',
-  className = ''
+  className = '',
+  label,
 }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -28,14 +30,15 @@ export function CheckoutButton({
   const handleClick = async () => {
     setLoading(true);
     setSuccess(false);
-    
+
     try {
       const response = await openCheckout(plan.id, userInfo);
-      
+
       if (response) {
         setSuccess(true);
         onSuccess?.();
       } else {
+        // User cancelled, dismissed the modal, payment failed, or verification failed.
         onError?.('Payment was not completed');
       }
     } catch (error: any) {
@@ -48,9 +51,9 @@ export function CheckoutButton({
 
   if (success) {
     return (
-      <Button 
-        variant="outline" 
-        size={size === 'md' ? 'default' : size} 
+      <Button
+        variant="outline"
+        size={size === 'md' ? 'default' : size}
         className={`bg-green-50 border-green-200 text-green-700 ${className}`}
         disabled
       >
@@ -69,7 +72,7 @@ export function CheckoutButton({
       className={className}
     >
       {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-      {formatAmount(plan)}
+      {loading ? 'Processing…' : label || formatAmount(plan)}
     </Button>
   );
 }

@@ -1,7 +1,11 @@
 // Razorpay Payment Integration for India
-// Uses Razorpay Checkout (web)
+// Uses Razorpay Standard Web Checkout against Vercel serverless API routes.
+//
+// SECURITY:
+//   - Only the KEY_ID is used client-side (exposed via VITE_RAZORPAY_KEY_ID).
+//   - KEY_SECRET lives exclusively in the serverless functions (api/*.ts).
 
-import { Plan, getPlan } from './plans';
+import { getPlan } from './plans';
 
 declare global {
   interface Window {
@@ -9,31 +13,9 @@ declare global {
   }
 }
 
-// TODO: Replace with your actual key from https://dashboard.razorpay.com
-// Get from: Settings → API Keys
-export const RAZORPAY_KEY_ID = 'rzp_test_TOeYFxit1nCgDC';
-// ⚠️ Keep this secret! Never expose in frontend code in production
-// Use environment variables in backend
-export const RAZORPAY_KEY_SECRET = 'PQaOA1qdQpxVQtVgmKdoeL4e';
-
-export interface RazorpayOptions {
-  key: string;
-  amount: number;
-  currency: string;
-  name: string;
-  description: string;
-  order_id?: string;
-  prefill?: {
-    name?: string;
-    email?: string;
-    contact?: string;
-  };
-  theme?: {
-    color?: string;
-    hide_topbar?: boolean;
-  };
-  handler?: (response: RazorpayResponse) => void;
-}
+// Client-safe publishable key. Set VITE_RAZORPAY_KEY_ID in .env / Vercel env.
+export const RAZORPAY_KEY_ID =
+  (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || '';
 
 export interface RazorpayResponse {
   razorpay_payment_id: string;
@@ -44,10 +26,18 @@ export interface RazorpayResponse {
 export interface CreateOrderResponse {
   success: boolean;
   orderId?: string;
+  amount?: number;
+  currency?: string;
   error?: string;
 }
 
-// Load Razorpay script lazily
+export interface VerifyResult {
+  verified: boolean;
+  orderId?: string;
+  paymentId?: string;
+}
+
+// Load Razorpay checkout script lazily
 export function loadRazorpayScript(): Promise<void> {
   return new Promise((resolve, reject) => {
     if (window.Razorpay) {
@@ -58,13 +48,15 @@ export function loadRazorpayScript(): Promise<void> {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Failed to load Razorpay'));
+    script.onerror = () => reject(new Error('Failed to load Razorpay checkout'));
     document.head.appendChild(script);
   });
 }
 
-// Create order via backend API
-// TODO: Implement this endpoint in your backend
+/**
+ * Create an order via the serverless backend.
+ * POST /api/create-order
+ */
 export async function createRazorpayOrder(
   planId: string,
   userInfo?: { name?: string; email?: string; phone?: string }
@@ -74,54 +66,67 @@ export async function createRazorpayOrder(
     return { success: false, error: 'Invalid plan' };
   }
 
-  try {
-    // Call your backend to create order
-    // POST /api/payments/razorpay/create-order
-    const response = await fetch('/api/payments/razorpay/create-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        planId,
-        amount: plan.amount,
-        currency: plan.currency,
-        userInfo
-      })
-    });
+  const res = await fetch('/api/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      amount: plan.amount,
+      currency: plan.currency === 'INR' ? 'INR' : plan.currency,
+      receipt: `rcpt_${Date.now()}_${planId}`,
+      planId,
+      userInfo,
+    }),
+  });
 
-    const data = await response.json();
-    return { success: true, orderId: data.orderId };
-  } catch (error) {
-    // For demo/testing: create order client-side (NOT recommended for production)
-    console.warn('Using demo order creation - implement backend for production');
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok || !data?.success || !data?.order_id) {
     return {
-      success: true,
-      orderId: `demo_${Date.now()}_${planId}`
+      success: false,
+      error: data?.error || `Failed to create order (HTTP ${res.status})`,
     };
   }
+
+  return {
+    success: true,
+    orderId: data.order_id,
+    amount: data.amount,
+    currency: data.currency,
+  };
 }
 
-// Verify payment via backend
-// TODO: Implement this endpoint in your backend
+/**
+ * Verify the payment signature via the serverless backend.
+ * POST /api/verify-payment
+ * Returns verified: true only when the HMAC-SHA256 signature matches.
+ */
 export async function verifyRazorpayPayment(
   response: RazorpayResponse
-): Promise<{ verified: boolean; entitlement?: any }> {
-  try {
-    // POST /api/payments/razorpay/verify
-    const res = await fetch('/api/payments/razorpay/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(response)
-    });
+): Promise<VerifyResult> {
+  const res = await fetch('/api/verify-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(response),
+  });
 
-    const data = await res.json();
-    return { verified: data.verified, entitlement: data.entitlement };
-  } catch (error) {
-    console.error('Payment verification failed:', error);
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok || !data?.verified) {
     return { verified: false };
   }
+
+  return {
+    verified: true,
+    orderId: data.razorpay_order_id,
+    paymentId: data.razorpay_payment_id,
+  };
 }
 
-// Open Razorpay checkout
+/**
+ * Open Razorpay Standard Checkout.
+ * Resolves with the verified payment response, or null if the user
+ * cancelled / the payment failed / verification failed.
+ */
 export async function openCheckout(
   planId: string,
   userInfo?: { name?: string; email?: string; phone?: string }
@@ -129,6 +134,12 @@ export async function openCheckout(
   const plan = getPlan(planId);
   if (!plan) {
     throw new Error('Invalid plan');
+  }
+
+  if (!RAZORPAY_KEY_ID) {
+    throw new Error(
+      'Razorpay is not configured. Set VITE_RAZORPAY_KEY_ID in the environment.'
+    );
   }
 
   await loadRazorpayScript();
@@ -141,33 +152,35 @@ export async function openCheckout(
   return new Promise((resolve) => {
     const razorpay = new window.Razorpay({
       key: RAZORPAY_KEY_ID,
-      amount: plan.amount,
-      currency: plan.currency,
+      amount: orderResult.amount ?? plan.amount,
+      currency: orderResult.currency ?? plan.currency,
       name: 'NCD-6-May',
       description: plan.description,
       order_id: orderResult.orderId,
       prefill: {
         name: userInfo?.name || '',
         email: userInfo?.email || '',
-        contact: userInfo?.phone || ''
+        contact: userInfo?.phone || '',
       },
       theme: {
-        color: '#0ea5e9', // Primary color
-        hide_topbar: false
+        color: '#0ea5e9',
+        hide_topbar: false,
       },
       handler: async (rzpResponse: RazorpayResponse) => {
-        // Verify payment
-        const verification = await verifyRazorpayPayment(rzpResponse);
-        if (verification.verified) {
-          resolve(rzpResponse);
-        } else {
-          // Payment verification failed
+        try {
+          const verification = await verifyRazorpayPayment(rzpResponse);
+          resolve(verification.verified ? rzpResponse : null);
+        } catch {
           resolve(null);
         }
-      }
+      },
+      modal: {
+        ondismiss: () => resolve(null),
+      },
     });
 
-    razorpay.on('payment.failed', () => {
+    razorpay.on('payment.failed', (payload: unknown) => {
+      console.error('Razorpay payment.failed:', payload);
       resolve(null);
     });
 

@@ -30,3 +30,8 @@ The-Big-Four-NCD-app/
 
 # Build artifacts
 *.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.*.local
