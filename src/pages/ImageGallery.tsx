@@ -1,4 +1,6 @@
 import haalandMnemonic from "@/assets/haaland-mnemonic.png.asset.json";
+import subclinicalAtherosclerosis from "@/assets/subclinical-atherosclerosis.png.asset.json";
+
 import kdigoAkiAkd from "@/assets/kdigo-2026-aki-akd-guideline.png.asset.json";
 import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
 import acuteDiarrhoeaClassification from "@/assets/acute-diarrhoea-classification.jpg.asset.json";
