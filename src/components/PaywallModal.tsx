@@ -65,25 +65,25 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
           <p className="text-white/80 text-sm">Clinical Decision Support</p>
         </div>
 
-        {/* Free Trial Banner */}
+        {/* Choice banner */}
         <div className="bg-amber-50 dark:bg-amber-950/30 px-6 py-4 text-center border-b">
           <div className="flex items-center justify-center gap-2 mb-1">
             <Sparkles className="w-5 h-5 text-amber-600" />
-            <span className="font-bold text-amber-700 dark:text-amber-400">3-DAY FREE TRIAL</span>
+            <span className="font-bold text-amber-700 dark:text-amber-400">
+              BUY NOW OR TRY FREE FOR 3 DAYS
+            </span>
           </div>
           <p className="text-sm text-amber-700 dark:text-amber-300">
-            Full access to all Pro features • No card required
+            Full access to all Pro features
           </p>
         </div>
 
         <div className="p-6 space-y-4">
           {/* Pricing */}
           <div className="text-center mb-6">
-            <p className="text-4xl font-bold text-foreground">
-              ₹0<span className="text-lg font-normal text-muted-foreground">/3 days</span>
-            </p>
+            <p className="text-4xl font-bold text-foreground">{formatAmount(proPlan)}</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Then {formatAmount(proPlan)} — Cancel anytime
+              Or start with a 3-day free trial — cancel anytime
             </p>
           </div>
 
@@ -144,7 +144,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
             </Button>
 
             <p className="text-xs text-muted-foreground text-center">
-              Free trial gives 3 days of access — no payment collected. Upgrade anytime.
+              Buy directly for instant Pro, or try free for 3 days — no payment collected during trial.
             </p>
           </div>
 
