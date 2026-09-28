@@ -18,6 +18,16 @@ declare global {
 export const RAZORPAY_KEY_ID =
   (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || '';
 
+/**
+ * Base URL for the payment API. Empty = same-origin (the SPA's own host
+ * serves /api/*). Set VITE_API_BASE_URL when the serverless functions are
+ * hosted separately (e.g. https://api.ncdapp.store on Vercel while the
+ * SPA stays on Lovable) — no trailing slash.
+ */
+const API_BASE = (
+  (import.meta as any).env?.VITE_API_BASE_URL || ''
+).replace(/\/+$/, '');
+
 const DEVICE_ID_STORAGE_KEY = 'ncd-device-id';
 
 /**
@@ -90,7 +100,7 @@ export async function createRazorpayOrder(
     return { success: false, error: 'Invalid plan' };
   }
 
-  const res = await fetch('/api/create-order', {
+  const res = await fetch(`${API_BASE}/api/create-order`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -128,7 +138,7 @@ export async function createRazorpayOrder(
 export async function verifyRazorpayPayment(
   response: RazorpayResponse
 ): Promise<VerifyResult> {
-  const res = await fetch('/api/verify-payment', {
+  const res = await fetch(`${API_BASE}/api/verify-payment`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -156,7 +166,7 @@ export async function verifyRazorpayPayment(
  */
 export async function fetchMyEntitlement(): Promise<UserEntitlement | null> {
   try {
-    const res = await fetch('/api/entitlements/me', {
+    const res = await fetch(`${API_BASE}/api/entitlements/me`, {
       method: 'GET',
       headers: { 'x-ncd-device-id': getOrCreateDeviceId() },
     });

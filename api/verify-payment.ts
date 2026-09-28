@@ -16,6 +16,7 @@
 import crypto from 'node:crypto';
 import Razorpay from 'razorpay';
 import { getOrderBinding, grantEntitlement } from './_entitlements-store';
+import { handlePreflight } from './_cors';
 
 export const config = {
   runtime: 'nodejs',
@@ -36,7 +37,8 @@ type ApiRequest = {
 type ApiResponse = {
   status: (code: number) => ApiResponse;
   json: (payload: unknown) => ApiResponse;
-  setHeader: (name: string, value: string) => void;
+  setHeader: (name: string, value: string) => ApiResponse;
+  end: (chunk?: string) => ApiResponse;
 };
 
 function parseBody(raw: unknown): VerifyBody {
@@ -62,6 +64,10 @@ function safeEqual(a: string, b: string): boolean {
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   res.setHeader('Allow', 'POST');
   res.setHeader('Content-Type', 'application/json');
+
+  if (handlePreflight(req, res)) {
+    return;
+  }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });

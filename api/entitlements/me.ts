@@ -11,6 +11,7 @@
  */
 
 import { getEntitlement } from '../_entitlements-store';
+import { setCors } from '../_cors';
 
 export const config = {
   runtime: 'nodejs',
@@ -24,10 +25,14 @@ type ApiRequest = {
 
 type ApiResponse = {
   status: (code: number) => ApiResponse;
-  json: (data: unknown) => void;
+  json: (data: unknown) => ApiResponse;
+  setHeader: (name: string, value: string) => ApiResponse;
+  end: (chunk?: string) => ApiResponse;
 };
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
+  setCors(res);
+
   if (req.method !== 'GET') {
     return res.status(405).json({ success: false, error: 'GET only' });
   }

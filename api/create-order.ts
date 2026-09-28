@@ -12,6 +12,7 @@
 import Razorpay from 'razorpay';
 import { plans as PLAN_CATALOG } from '../src/payments/plans';
 import { bindOrder } from './_entitlements-store';
+import { handlePreflight } from './_cors';
 
 export const config = {
   runtime: 'nodejs',
@@ -38,7 +39,8 @@ type ApiRequest = {
 type ApiResponse = {
   status: (code: number) => ApiResponse;
   json: (payload: unknown) => ApiResponse;
-  setHeader: (name: string, value: string) => void;
+  setHeader: (name: string, value: string) => ApiResponse;
+  end: (chunk?: string) => ApiResponse;
 };
 
 function parseBody(raw: unknown): OrderBody {
@@ -56,6 +58,10 @@ function parseBody(raw: unknown): OrderBody {
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   res.setHeader('Allow', 'POST');
   res.setHeader('Content-Type', 'application/json');
+
+  if (handlePreflight(req, res)) {
+    return;
+  }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
