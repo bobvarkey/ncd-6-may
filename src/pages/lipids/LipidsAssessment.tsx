@@ -23,6 +23,8 @@ import { toast } from "sonner";
 import { calculatePrevent, type PreventResult } from "@/lib/prevent";
 import type { LAIResult } from "./LipidsTab";
 import ImageLink from "@/components/ImageLink";
+import SubclinicalAtherosclerosisExplainer from "@/components/lipids/SubclinicalAtherosclerosisExplainer";
+
 
 // ─── LAI 2023 Classification ───
 const MODIFIER_GROUPS = [
@@ -396,7 +398,13 @@ export default function LipidsAssessment({ onClassificationChange, onNavigateToT
                       </div>
                     </label>
                   ))}
+                  {group.title === "Established ASCVD" && (
+                    <div className="mt-2 border-t border-border pt-2">
+                      <SubclinicalAtherosclerosisExplainer />
+                    </div>
+                  )}
                 </CollapsibleContent>
+
               </Collapsible>
             );
           })}
