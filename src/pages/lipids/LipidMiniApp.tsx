@@ -1127,10 +1127,22 @@ export default function LipidMiniApp() {
                         <p className="text-xs text-muted-foreground mt-1">Carotid artery disease (&gt;50% stenosis), aortic aneurysm, or prior carotid revascularization</p>
                       </div>
                       <p className="text-xs text-muted-foreground italic">Per LAI 2023: DM + ASCVD = Extreme Risk (EHR-A or EHR-B depending on additional features)</p>
+                      <div className="rounded-lg border border-border bg-muted/20 p-3">
+                        <p className="font-semibold text-foreground">Plaque on imaging but no event?</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          That is <strong>subclinical atherosclerosis</strong>, not established ASCVD. Open the explainer for
+                          the full definition, decision algorithm, territory criteria and flowchart.
+                        </p>
+                        <div className="mt-2">
+                          <SubclinicalAtherosclerosisExplainer />
+                        </div>
+                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
+                <SubclinicalAtherosclerosisExplainer compact />
               </div>
+
               <div className="flex gap-2">
                 <Chip active={i.dmAscvd === "no"} onClick={() => set("dmAscvd", "no")}>No</Chip>
                 <Chip active={i.dmAscvd === "yes"} onClick={() => set("dmAscvd", "yes")}>Yes</Chip>
