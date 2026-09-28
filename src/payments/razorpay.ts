@@ -14,9 +14,13 @@ declare global {
   }
 }
 
-// Client-safe publishable key. Set VITE_RAZORPAY_KEY_ID in .env / Vercel env.
+// Client-safe publishable key. VITE_RAZORPAY_KEY_ID wins when set (Lovable
+// env vars / local .env). The fallback below is the TEST-mode key id —
+// Razorpay key ids are public by design (checkout.js embeds key_id in the
+// page source). NEVER bake RAZORPAY_KEY_SECRET: it stays env-only on the
+// API host.
 export const RAZORPAY_KEY_ID =
-  (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || '';
+  (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || 'rzp_test_ThFQWnkWMsff4g';
 
 /**
  * Base URL for the payment API. Empty = same-origin (the SPA's own host
@@ -207,7 +211,7 @@ export async function openCheckout(
 
   return new Promise((resolve) => {
     const razorpay = new window.Razorpay({
-      key: RAZORPAY_KEY_ID,
+      key: (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || RAZORPAY_KEY_ID,
       amount: orderResult.amount ?? plan.amount,
       currency: orderResult.currency ?? plan.currency,
       name: 'NCD-6-May',
