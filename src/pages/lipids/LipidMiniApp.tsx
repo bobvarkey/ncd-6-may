@@ -1539,53 +1539,6 @@ export default function LipidMiniApp() {
         </div>
       </SectionCard>
 
-      {/* AHA PREVENT 10-year risk + AHA recommendation */}
-      {i.scenario !== "" && (
-        <SectionCard
-          title="AHA PREVENT 10-Year Risk"
-          icon={<TrendingUp className="h-4 w-4" />}
-          tone="primary"
-        >
-          <p className="text-xs text-muted-foreground mb-3">
-            Age 30–79, TC, HDL, SBP, BMI, eGFR required.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div><Label className="text-xs">Age</Label><Input type="number" value={age} onChange={(e) => setAge(e.target.value)} className="h-9 text-xs" /></div>
-            <div><Label className="text-xs">Sex</Label>
-              <Select value={sex} onValueChange={setSex}>
-                <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div><Label className="text-xs">Total Chol</Label><Input type="number" value={tcInput} onChange={(e) => setTcInput(e.target.value)} className="h-9 text-xs" /></div>
-            <div><Label className="text-xs">HDL</Label><Input type="number" value={hdlInput} onChange={(e) => setHdlInput(e.target.value)} className="h-9 text-xs" /></div>
-            <div><Label className="text-xs">SBP</Label><Input type="number" value={sbpInput} onChange={(e) => setSbpInput(e.target.value)} className="h-9 text-xs" /></div>
-            <div><Label className="text-xs">BMI</Label><Input type="number" step="0.1" value={bmiInput} onChange={(e) => setBmiInput(e.target.value)} className="h-9 text-xs" /></div>
-            <div><Label className="text-xs">eGFR</Label><Input type="number" value={egfrInput} onChange={(e) => setEgfrInput(e.target.value)} className="h-9 text-xs" /></div>
-          </div>
-          <div className="flex flex-wrap gap-3 mt-2">
-            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={bpMed} onChange={(e) => setBpMed(e.target.checked)} className="rounded" /> BP Meds</label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={onStatin} onChange={(e) => setOnStatin(e.target.checked)} className="rounded" /> On Statin</label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={diabetes} onChange={(e) => setDiabetes(e.target.checked)} className="rounded" /> Diabetes</label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={smoking} onChange={(e) => setSmoking(e.target.checked)} className="rounded" /> Smoker</label>
-          </div>
-          {preventResult?.valid ? (
-            <div className="mt-3 p-3 rounded-lg border border-primary/30 bg-primary/5">
-              <span className="font-semibold text-lg">{preventResult.riskPct}%</span>
-              <span className="ml-2 text-xs font-semibold">({preventResult.category}) 10-yr ASCVD</span>
-              <p className="text-xs text-muted-foreground mt-1">{aha.note}</p>
-            </div>
-          ) : (
-            <div className="mt-3 text-xs text-muted-foreground">
-              {preventResult?.warnings?.length ? preventResult.warnings.join("; ") : "Enter values to compute AHA PREVENT risk."}
-            </div>
-          )}
-        </SectionCard>
-      )}
-
       {/* Result */}
       {result && (
         <SectionCard
@@ -1734,6 +1687,53 @@ export default function LipidMiniApp() {
               </div>
             )}
           </div>
+        </SectionCard>
+      )}
+
+      {/* AHA PREVENT 10-year risk + AHA recommendation */}
+      {i.scenario !== "" && (
+        <SectionCard
+          title="AHA PREVENT 10-Year Risk"
+          icon={<TrendingUp className="h-4 w-4" />}
+          tone="primary"
+        >
+          <p className="text-xs text-muted-foreground mb-3">
+            Age 30–79, TC, HDL, SBP, BMI, eGFR required.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div><Label className="text-xs">Age</Label><Input type="number" value={age} onChange={(e) => setAge(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">Sex</Label>
+              <Select value={sex} onValueChange={setSex}>
+                <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div><Label className="text-xs">Total Chol</Label><Input type="number" value={tcInput} onChange={(e) => setTcInput(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">HDL</Label><Input type="number" value={hdlInput} onChange={(e) => setHdlInput(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">SBP</Label><Input type="number" value={sbpInput} onChange={(e) => setSbpInput(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">BMI</Label><Input type="number" step="0.1" value={bmiInput} onChange={(e) => setBmiInput(e.target.value)} className="h-9 text-xs" /></div>
+            <div><Label className="text-xs">eGFR</Label><Input type="number" value={egfrInput} onChange={(e) => setEgfrInput(e.target.value)} className="h-9 text-xs" /></div>
+          </div>
+          <div className="flex flex-wrap gap-3 mt-2">
+            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={bpMed} onChange={(e) => setBpMed(e.target.checked)} className="rounded" /> BP Meds</label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={onStatin} onChange={(e) => setOnStatin(e.target.checked)} className="rounded" /> On Statin</label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={diabetes} onChange={(e) => setDiabetes(e.target.checked)} className="rounded" /> Diabetes</label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked={smoking} onChange={(e) => setSmoking(e.target.checked)} className="rounded" /> Smoker</label>
+          </div>
+          {preventResult?.valid ? (
+            <div className="mt-3 p-3 rounded-lg border border-primary/30 bg-primary/5">
+              <span className="font-semibold text-lg">{preventResult.riskPct}%</span>
+              <span className="ml-2 text-xs font-semibold">({preventResult.category}) 10-yr ASCVD</span>
+              <p className="text-xs text-muted-foreground mt-1">{aha.note}</p>
+            </div>
+          ) : (
+            <div className="mt-3 text-xs text-muted-foreground">
+              {preventResult?.warnings?.length ? preventResult.warnings.join("; ") : "Enter values to compute AHA PREVENT risk."}
+            </div>
+          )}
         </SectionCard>
       )}
     </div>
