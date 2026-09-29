@@ -260,6 +260,34 @@ const LAI_MODIFIER_GROUPS = [
       { id: "enh_pcos", label: "Premature menopause / PMOS / Pre-eclampsia", qualifier: "Premature menopause: natural ovarian failure before age 40; surgical/iatrogenic menopause before age 45" },
     ],
   },
+  {
+    title: "Subclinical Atherosclerosis (LAI 2023 imaging)",
+    icon: <ScanLine className="h-4 w-4" />,
+    items: [
+      { id: "laiSub_cacs_ge100", label: "CACS ≥100", qualifier: "Very High Risk — target LDL-C <50 mg/dL (LAI 2023)" },
+      { id: "laiSub_cacs_1_99_ge75", label: "CACS 1–99 and ≥75th percentile", qualifier: "For age, sex and race — Very High Risk, LDL-C <50 mg/dL" },
+      { id: "laiSub_plaque_nonstenotic_coronary", label: "Non-stenotic coronary plaque", qualifier: "Imaging-detected, no luminal narrowing >50% — Very High Risk, LDL-C <50 mg/dL" },
+      { id: "laiSub_plaque_nonstenotic_carotid", label: "Non-stenotic carotid plaque", qualifier: "Ultrasound/CCTA-detected carotid plaque — Very High Risk, LDL-C <50 mg/dL" },
+      { id: "laiSub_plaque_nonstenotic_femoral", label: "Non-stenotic femoral plaque", qualifier: "Femoral ultrasound plaque — Very High Risk, LDL-C <50 mg/dL" },
+      { id: "laiSub_cacs_1_99_lt75", label: "CACS 1–99, <75th percentile", qualifier: "High-Risk feature — target LDL-C <70 mg/dL" },
+      { id: "laiSub_cacs_gte300", label: "CACS ≥300 (Extreme risk, category A)", qualifier: "Extreme Risk category A — LDL-C <50 mg/dL, optional ≤30 mg/dL" },
+      { id: "laiSub_plaque_stenotic_coronary", label: "Stenotic (>50%) coronary plaque", qualifier: "Constitutes ASCVD per LAI 2016 → classify as established disease" },
+      { id: "laiSub_plaque_stenotic_carotid", label: "Stenotic (>50%) carotid plaque", qualifier: "Constitutes ASCVD per LAI 2016 → classify as established disease" },
+      { id: "laiSub_plaque_stenotic_femoral", label: "Stenotic (>50%) femoral plaque", qualifier: "Constitutes ASCVD per LAI 2016 → classify as established disease" },
+      { id: "laiSub_low_abi", label: "Low ABI (<0.9)", qualifier: "With stenotic plaque constitutes ASCVD per LAI 2016" },
+    ],
+  },
+  {
+    title: "Screening for Subclinical Atherosclerosis — Who to Image (age ≥30)",
+    icon: <ScanLine className="h-4 w-4" />,
+    items: [
+      { id: "laiScreen_mod_or_higher", label: "Moderate/High risk per LAI algorithm", qualifier: "Assessment recommended when treatment decisions remain uncertain after risk scoring" },
+      { id: "laiScreen_fhx_uncertain", label: "Family history of premature ASCVD / uncertain FHx", qualifier: "Screening for subclinical atherosclerosis reasonable (CACS, carotid/femoral US)" },
+      { id: "laiScreen_fh_suspected", label: "Suspected or diagnosed familial hypercholesterolemia", qualifier: "Imaging aids risk stratification in FH" },
+      { id: "laiSub_multiRF", label: "Multiple ASCVD risk factors", qualifier: "≥2 risk factors — imaging may reclassify risk upward" },
+      { id: "laiSub_statin_reluctant", label: "Reluctance for / intolerance to statin therapy", qualifier: "Plaque imaging can resolve statin-decision uncertainty" },
+    ],
+  },
 ];
 
 function classifyLAI(
@@ -272,12 +300,39 @@ function classifyLAI(
   const sa = !!southAsian;
   const dm = !!hasDiabetes;
 
-  const hasASCVD = h("ascvd_cad") || h("ascvd_cva") || h("ascvd_pad");
-  const hasPolyvascular = h("ascvd_polyvascular");
+  const hasCKD = h("ckd_3b") || h("ckd_4") || h("ckd_albuminuria");
+
+  // ── LAI 2023 subclinical atherosclerosis imaging criteria ──
+  // Per LAI 2023 consensus: because no validated clinical risk score exists for Indians,
+  // the following imaging abnormalities designate VERY HIGH ASCVD risk (LDL-C <50 mg/dL):
+  //   • CACS ≥100
+  //   • CACS 1–99 and >75th percentile for age, sex, race
+  //   • Non-stenotic coronary, carotid or femoral arterial plaque
+  // Stenotic (>50%) plaque or ABI <0.9 already constitutes ASCVD (2016 LAI) →
+  // classified as established disease here.
+  // CACS 1–99 <75th %ile → High Risk (LDL <70). CACS ≥300 → Extreme Risk, cat A.
+  const sub = (id: string) => !!checked["laiSub_" + id];
+  const subVhr =
+    sub("cacs_ge100") ||
+    sub("cacs_1_99_ge75") ||
+    sub("plaque_nonstenotic_coronary") ||
+    sub("plaque_nonstenotic_carotid") ||
+    sub("plaque_nonstenotic_femoral");
+
+  const subClinicalASCVD =
+    sub("plaque_stenotic_coronary") ||
+    sub("plaque_stenotic_carotid") ||
+    sub("plaque_stenotic_femoral") ||
+    sub("low_abi");
+
+  const cacLt75 = sub("cacs_1_99_lt75");
+  const cacExtreme = sub("cacs_gte300");
+  const hasFH = h("fh_clinical") || h("fh_genetic") || h("fh_xanthoma");
+
+  const hasASCVD = subClinicalASCVD || h("ascvd_cad") || h("ascvd_cva") || h("ascvd_pad");
+  const hasPolyvascular = h("ascvd_polyvascular") || (subClinicalASCVD && subVhr);
   const hasRecurrentLowLdl = h("ascvd_recurrent_lowldl");
   const hasDMTOD = h("dmtod_retinopathy") || h("dmtod_nephropathy") || h("dmtod_neuropathy");
-  const hasCKD = h("ckd_3b") || h("ckd_4") || h("ckd_albuminuria");
-  const hasFH = h("fh_clinical") || h("fh_genetic") || h("fh_xanthoma");
 
   const ldlVhr = sa ? 160 : 190;
   const ldlHr = sa ? 130 : 160;
@@ -285,6 +340,9 @@ function classifyLAI(
 
   const hrfCount = ["hrf_lpa", "hrf_apob", "hrf_mets", "hrf_cac", "hrf_nafld", "hrf_extreme"].filter(k => h(k)).length + (sa ? 1 : 0);
   const enhCount = ["enh_fhx", "enh_hscrp", "enh_lpa_minor", "enh_autoimmune", "enh_hiv", "enh_pcos"].filter(k => h(k)).length;
+
+  // LAI 2023: CACS ≥300 → Extreme Risk, category A (LDL <50, optional ≤30)
+  if (cacExtreme) return { cat: "EHR", sub: "A", label: "Extreme High Risk A (CACS ≥300)" };
 
   if (hasASCVD) {
     if (hasRecurrentLowLdl || hrfCount >= 2) return { cat: "EHR", sub: "C", label: "Extreme High Risk C" };
@@ -295,7 +353,12 @@ function classifyLAI(
   if (hasDMTOD && (hrfCount >= 1 || enhCount >= 2)) return { cat: "VHR", sub: "C", label: "Very High Risk C" };
   if (hasDMTOD) return { cat: "VHR", sub: "B", label: "Very High Risk B" };
   if (hasCKD || hasFH || ldl >= ldlVhr) return { cat: "VHR", sub: "C", label: "Very High Risk C" };
+  // LAI 2023: subclinical atherosclerosis (CACS ≥100, CACS 1–99 ≥75th %ile, or
+  // non-stenotic coronary/carotid/femoral plaque) → Very High Risk, target LDL <50 mg/dL
+  if (subVhr) return { cat: "VHR", sub: "A", label: "Very High Risk A (subclinical atherosclerosis)" };
   if (sa && dm) return { cat: "VHR", sub: "B", label: "Very High Risk B (South Asian + Diabetes)" };
+  // LAI 2023: CACS 1–99 <75th %ile → High Risk, target LDL <70 mg/dL
+  if (cacLt75) return { cat: "HR", sub: "", label: "High Risk (CACS 1–99, <75th %ile)" };
   if (enhCount >= 3) return { cat: "HR", sub: "", label: "High Risk" };
   if (h("enh_fhx") && (enhCount >= 2 || hrfCount >= 1)) return { cat: "HR", sub: "", label: "High Risk" };
   if (age >= 40 && (enhCount >= 2 || hrfCount >= 1)) return { cat: "HR", sub: "", label: "High Risk" };
@@ -409,7 +472,7 @@ function classifyDm(i: Inputs): RiskGroup {
   return "HR";
 }
 
-function buildResult(i: Inputs): Result | null {
+function buildResult(i: Inputs, checked: Record<string, boolean>): Result | null {
   if (!i.scenario) return null;
 
   // Recurrent override
@@ -677,6 +740,18 @@ function buildResult(i: Inputs): Result | null {
     notes: [
       "Aim to reach LDL, non-HDL, and Apo-B targets at the earliest.",
       ...(i.southAsian ? ["LAI 2023: South Asian ethnicity increases ASCVD risk ~2×. Consider lower LDL threshold for therapy initiation (≥100 mg/dL) and more aggressive targets."] : []),
+      ...([i.southAsian && "LAI 2023: South Asians — screen for subclinical atherosclerosis (CACS, carotid/femoral US) from age 30 when treatment decisions are uncertain; no validated clinical risk score exists for Indians."].filter(Boolean) as string[]),
+      ...(checked["laiSub_cacs_ge100"] || checked["laiSub_cacs_1_99_ge75"] || checked["laiSub_plaque_nonstenotic_coronary"] || checked["laiSub_plaque_nonstenotic_carotid"] || checked["laiSub_plaque_nonstenotic_femoral"]
+        ? ["LAI 2023: Subclinical atherosclerosis detected on imaging → Very High Risk. Intensive LDL-C lowering to <50 mg/dL warranted. If CACS ≥100: add antiplatelets and guideline-directed therapy for comorbidities."]
+        : []),
+      ...(checked["laiSub_cacs_gte300"] ? ["LAI 2023: CACS ≥300 → Extreme Risk category A. Target LDL-C <50 mg/dL, optional ≤30 mg/dL."] : []),
+      ...(checked["laiSub_cacs_1_99_lt75"] ? ["LAI 2023: CACS 1–99 <75th percentile → High-Risk feature. Target LDL-C <70 mg/dL."] : []),
+      ...((checked["laiSub_plaque_stenotic_coronary"] || checked["laiSub_plaque_stenotic_carotid"] || checked["laiSub_plaque_stenotic_femoral"] || checked["laiSub_low_abi"])
+        ? ["LAI 2023/2016: Stenotic (>50%) plaque or low ABI (<0.9) constitutes established ASCVD → secondary-prevention intensity therapy."]
+        : []),
+      ...(checked["laiScreen_mod_or_higher"] || checked["laiScreen_fhx_uncertain"] || checked["laiScreen_fh_suspected"] || checked["laiSub_multiRF"] || checked["laiSub_statin_reluctant"]
+        ? ["LAI 2023: Recommend assessing subclinical atherosclerosis (age ≥30) when treatment decisions are uncertain after risk scoring — CACS first; carotid/femoral plaque US if CACS unavailable (ESC class IIa-B)."]
+        : []),
     ],
   };
 }
@@ -898,7 +973,7 @@ export default function LipidMiniApp() {
   const preventPct = preventResult?.valid ? parseFloat(preventResult.riskPct) : null;
   const aha = ahaRec(preventPct, diabetes, l);
 
-  const result = useMemo(() => buildResult(i), [i]);
+  const result = useMemo(() => buildResult(i, checked), [i, checked]);
   const showLabs = i.scenario !== "";
   const showGeneralRF = i.scenario === "general" || i.scenario === "htg";
   const showHighRiskFeatures =
@@ -1220,6 +1295,15 @@ export default function LipidMiniApp() {
                 <Chip active={i.dmMods === "tod_or_2rf"} onClick={() => set("dmMods", "tod_or_2rf")}>TOD or ≥2 RF</Chip>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* LAI 2023 South Asian Risk Modifier — available in EVERY scenario */}
+        {showLabs && i.scenario !== "secondary" && (
+          <div className="mb-4 flex flex-wrap gap-2">
+            <Chip active={i.southAsian} onClick={() => set("southAsian", !i.southAsian)}>
+              South Asian ethnicity (incl. South-East Asian)
+            </Chip>
           </div>
         )}
 
