@@ -287,6 +287,68 @@ export default function SubclinicalAtherosclerosisExplainer({ compact = false, c
               <span>[8] CAC scoring in individuals at risk — pmc.ncbi.nlm.nih.gov</span>
             </div>
           </div>
+          {/* LAI 2023 — who to screen (age ≥30) */}
+          <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3">
+            <p className="font-semibold text-foreground">Who to assess for subclinical atherosclerosis (age ≥30) — LAI 2023</p>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Assessment is recommended for persons aged ≥30 years for whom treatment decisions may be uncertain after
+              consideration of risk scoring, additional risk factors and high-risk features — especially:
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+              <li>Individuals in the <strong className="text-foreground">moderate-risk or high-risk group</strong> per the LAI risk algorithm</li>
+              <li><strong className="text-foreground">Family history of premature ASCVD</strong> or uncertain family history</li>
+              <li>Suspected or diagnosed <strong className="text-foreground">familial hypercholesterolemia (FH)</strong></li>
+              <li>Individuals with <strong className="text-foreground">multiple ASCVD risk factors</strong></li>
+              <li>Individuals with <strong className="text-foreground">reluctance for or intolerance to statin therapy</strong></li>
+            </ul>
+            <p className="mt-2 text-xs text-muted-foreground">
+              CACS is the preferred first-line test; carotid or femoral plaque ultrasound is reasonable if CACS is not
+              available or feasible (ESC class IIa-B). ACC/AHA: CACS ≥100 or ≥75th percentile → moderate-to-high
+              intensity statin ± ezetimibe for LDL-C &lt;70 mg/dL; consider PCSK9i if CACS ≥1000.
+              <sup className="ml-0.5">[LAI 2023 §subclinical]</sup>
+            </p>
+          </div>
+
+          {/* LAI 2023 very-high-risk designations — LDL-C <50 mg/dL */}
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+            <p className="font-semibold text-foreground">LAI 2023: imaging findings designating VERY HIGH ASCVD risk</p>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Because no validated clinical risk score is currently available for Indians, LAI designates the following
+              abnormalities as indicative of <strong className="text-foreground">very high ASCVD risk</strong>, warranting
+              intensive LDL-C lowering to <strong className="text-foreground">&lt;50 mg/dL</strong>:
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+              <li><strong className="text-foreground">CACS ≥100</strong></li>
+              <li><strong className="text-foreground">CACS 1–99 and &gt;75th percentile</strong> for age, sex and race</li>
+              <li><strong className="text-foreground">Non-stenotic</strong> coronary, carotid or femoral arterial plaque</li>
+            </ul>
+            <p className="mt-2 text-xs text-muted-foreground">
+              <strong className="text-foreground">Stenotic (&gt;50%)</strong> coronary/carotid/femoral plaques and low
+              ABI (&lt;0.9) represent <strong className="text-foreground">established ASCVD</strong> (already very-high
+              risk per 2016 LAI recommendations).
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+              <li>CACS 1–99 &lt;75th percentile → <strong className="text-foreground">High-Risk feature</strong>, target LDL-C &lt;70 mg/dL</li>
+              <li>CACS ≥300 → <strong className="text-foreground">Extreme Risk, category A</strong>, target LDL-C &lt;50 mg/dL, optional ≤30 mg/dL</li>
+              <li>Any CACS &gt;0 in a young patient: some experts include in very-high-risk group (LDL-C &lt;50 mg/dL) — personal opinion, shared decision-making</li>
+            </ul>
+          </div>
+
+          {/* Why more aggressive in Indians */}
+          <div className="rounded-lg border border-border bg-muted/20 p-3">
+            <p className="font-semibold text-foreground">Why the more intensified approach in Indians?</p>
+            <ul className="mt-1.5 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+              <li>Indians develop ASCVD at a younger age — most primary-prevention candidates are young or middle-aged</li>
+              <li>At these ages atherosclerosis is less abundant, but its <strong className="text-foreground">mere presence indicates high lifetime ASCVD risk</strong></li>
+              <li>North-India study (n=380, mean age 52.8y): 34.2% had coronary plaque, mostly non-obstructive (74.6%); only 7.1% had CACS 100–299 and 2.4% CACS ≥300 — 72.3% of plaque-positive subjects had CACS &lt;100</li>
+              <li>Higher CACS-only thresholds would miss a significant proportion of high-risk Indian subjects</li>
+              <li>Mendelian randomization: <strong className="text-foreground">early intervention is several-fold more effective</strong> than delayed intervention after plaque accumulation</li>
+              <li>LDL-C &lt;50 mg/dL offers the greatest opportunity for plaque regression and stabilization</li>
+              <li>CACS ≥100 → institute antiplatelets and guideline-directed medical therapy for comorbidities</li>
+              <li>MASALA vs MESA: CACS progression in South Asian women similar to other ethnic groups; South Asian men similar to white men</li>
+              <li>Statins: widely available, inexpensive in India, excellent safety profile — most common side-effects reversible on discontinuation</li>
+            </ul>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
