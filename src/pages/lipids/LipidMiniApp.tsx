@@ -1820,6 +1820,69 @@ export default function LipidMiniApp() {
           )}
         </SectionCard>
       )}
+
+      {/* CAC Management — LAI 2023 coronary artery calcium management pathway */}
+      <SectionCard
+        title="CAC Management"
+        icon={<ScanLine className="h-4 w-4" />}
+        tone="accent"
+        collapsible={true}
+        badge={
+          <Badge variant="outline" className="ml-2 border-accent/40 text-accent">
+            LAI 2023
+          </Badge>
+        }
+      >
+        <div className="space-y-3">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Coronary artery calcium (CACS) stratifies risk when treatment decisions are
+            uncertain — assessed from age ≥30, CACS first, carotid/femoral plaque
+            ultrasound if CACS unavailable (ESC class IIa-B). Stenotic (&gt;50%) plaque
+            or ABI &lt;0.9 = established ASCVD (very-high risk per LAI 2016).
+          </p>
+          {[
+            {
+              tier: "CACS 0",
+              tone: "border-success/40 bg-success/[0.05]",
+              title: "Low plaque burden",
+              body: "No statin justified by CAC alone; manage by standard risk scoring. Repeat in 5–10 years if risk factors persist.",
+            },
+            {
+              tier: "CACS 1–99, <75th percentile",
+              tone: "border-warning/40 bg-warning/[0.05]",
+              title: "High-Risk feature — target LDL-C <70 mg/dL",
+              body: "CACS 1–99 below the 75th percentile for age, sex and race is a high-risk feature: statin + risk-factor management to LDL-C <70 mg/dL (LAI 2023).",
+            },
+            {
+              tier: "CACS ≥100, or 1–99 at ≥75th percentile",
+              tone: "border-destructive/40 bg-destructive/[0.05]",
+              title: "Very High Risk — target LDL-C <50 mg/dL",
+              body: "LAI 2023 designates CACS ≥100, or CACS 1–99 above the 75th percentile for age/sex/race, or non-stenotic coronary/carotid/femoral plaque as very high ASCVD risk: intensive LDL-C lowering to <50 mg/dL; add antiplatelet + guideline-directed therapy for comorbidities when CACS ≥100.",
+            },
+            {
+              tier: "CACS ≥300",
+              tone: "border-destructive/60 bg-destructive/[0.08]",
+              title: "Extreme Risk, category A — LDL-C <50 mg/dL, optional ≤30",
+              body: "CACS ≥300 = extreme risk group (category A): target <50 mg/dL, optionally ≤30 mg/dL. Consider PCSK9i if CACS ≥1000 (ACC approach after moderate-to-high intensity statin ± ezetimibe).",
+            },
+          ].map((t) => (
+            <div key={t.tier} className={`rounded-lg border p-3 ${t.tone}`}>
+              <div className="font-semibold text-sm text-foreground">
+                {t.tier} <span className="font-normal text-foreground/80">— {t.title}</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{t.body}</p>
+            </div>
+          ))}
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Indians develop ASCVD younger, so Western thresholds are less applicable —
+            aggressive early intervention is advocated, and LDL-C &lt;50 mg/dL is
+            reasonable for plaque regression/stabilization. Some experts treat any
+            CACS &gt;0 as very-high risk in young patients (personal opinion,
+            unvalidated — clinical judgment + shared decision-making). Statins are
+            widely available, inexpensive, and have excellent safety data in India.
+          </p>
+        </div>
+      </SectionCard>
     </div>
   );
 }
