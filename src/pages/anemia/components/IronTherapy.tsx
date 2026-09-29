@@ -411,6 +411,20 @@ export default function IronTherapy() {
                     is first-line; IV iron (preferably FCM 1000 mg) is reserved for moderate-to-severe RLS with oral failure,
                     malabsorption, or need for rapid response.
                   </p>
+                  <div className="rounded-xl border border-purple-500/30 bg-purple-500/5 p-3 mb-3">
+                    <p className="text-xs font-semibold text-foreground mb-1.5">Updated RLS Foundation Treatment Algorithm — IV Iron Criteria</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      The updated RLS Foundation Treatment Algorithm recommends considering <strong className="text-foreground">intravenous (IV)
+                      iron for chronic, persistent RLS if serum ferritin is up to 300 µg/L and TSAT is below 45%</strong>.
+                      This broadens previous limits because newer studies show patients with ferritin <strong className="text-foreground">100–300 µg/L
+                      respond just as well to IV iron</strong> as those with lower levels.
+                    </p>
+                    <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
+                      <li>• <strong className="text-foreground">Testing:</strong> check iron levels (serum ferritin and TSAT) in the <strong className="text-foreground">morning</strong>, at least <strong className="text-foreground">24 hours after stopping iron supplements and food</strong></li>
+                      <li>• <strong className="text-foreground">Oral iron:</strong> often considered first if ferritin is <strong className="text-foreground">below 75 µg/L</strong>, as long as the body can absorb and tolerate it</li>
+                      <li>• <strong className="text-foreground">IV iron:</strong> recommended if ferritin is <strong className="text-foreground">75–300 µg/L and TSAT &lt; 45%</strong>; also used if oral iron fails, causes significant GI side-effects, or a <strong className="text-foreground">very fast response</strong> is needed due to severe symptoms</li>
+                    </ul>
+                  </div>
                   <div className="grid grid-cols-1 gap-3">
                     <div className="rounded-xl border border-border overflow-hidden bg-white">
                       <img
@@ -430,7 +444,8 @@ export default function IronTherapy() {
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                    Source: Allen RP et al., IRLSSG iron therapy consensus algorithms.
+                    Source: Allen RP et al., IRLSSG iron therapy consensus algorithms; Updated RLS Foundation Treatment
+                    Algorithm (IV iron considered for chronic persistent RLS at ferritin ≤300 µg/L, TSAT &lt;45%).
                   </p>
                 </div>
               </div>
