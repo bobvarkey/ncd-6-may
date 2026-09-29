@@ -1502,42 +1502,6 @@ export default function LipidMiniApp() {
           </div>
         )}
 
-        {/* LAI 2023 South Asian Risk Modifier — prominent callout */}
-        {showHighRiskFeatures && i.southAsian && (
-          <div className="mb-4 p-3 rounded-lg border-2 border-orange-500/30 bg-gradient-to-r from-orange-500/10 to-amber-500/5">
-            <div className="flex items-center gap-2 mb-2">
-              <AlertTriangle className="h-4 w-4 text-orange-400" />
-              <span className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
-                LAI 2023 — South Asian Risk Modifier
-              </span>
-            </div>
-            <p className="text-xs text-foreground leading-relaxed mb-2">
-              South Asian ethnicity is an independent risk modifier per LAI 2023. It <strong>increases ASCVD risk by ~2×</strong> compared to non-South Asians at the same LDL level. This means:
-            </p>
-            <ul className="space-y-1 text-xs text-foreground">
-              <li className="flex items-start gap-1.5">
-                <span className="text-orange-400 mt-0.5">•</span>
-                <span>Lower LDL thresholds for initiating therapy (LDL ≥100 mg/dL may warrant statin in South Asians vs ≥130 in others)</span>
-              </li>
-              <li className="flex items-start gap-1.5">
-                <span className="text-orange-400 mt-0.5">•</span>
-                <span>More aggressive targets: South Asians with ASCVD are automatically EHR-A even without other high-risk features</span>
-              </li>
-              <li className="flex items-start gap-1.5">
-                <span className="text-orange-400 mt-0.5">•</span>
-                <span>Earlier screening recommended (from age 20 vs 40 in general population)</span>
-              </li>
-              <li className="flex items-start gap-1.5">
-                <span className="text-orange-400 mt-0.5">•</span>
-                <span>Higher prevalence of metabolic syndrome, low HDL, high TG, and Lp(a) elevation</span>
-              </li>
-            </ul>
-            <p className="text-[10px] text-muted-foreground mt-1.5 italic">
-              Source: Lipid Association of India (LAI) 2023 Expert Consensus Statement
-            </p>
-          </div>
-        )}
-
         {/* Polyvascular disease — direct EHR-B criterion */}
         {showHighRiskFeatures && (
           <div className="mb-4">
@@ -1794,6 +1758,29 @@ export default function LipidMiniApp() {
                   <p key={idx} className="text-xs text-muted-foreground">• {n}</p>
                 ))}
               </div>
+            )}
+
+            {i.southAsian && (
+              <aside className="rounded-lg border border-warning/40 bg-warning/5 p-3" aria-label="LAI 2023 South Asian risk modifier note">
+                <div className="mb-2 flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-warning" />
+                  <p className="text-xs font-bold uppercase tracking-wider text-warning">
+                    LAI 2023 — South Asian Risk Modifier
+                  </p>
+                </div>
+                <p className="mb-2 text-xs leading-relaxed text-foreground">
+                  South Asian ethnicity is an independent risk modifier per LAI 2023. It increases ASCVD risk by ~2× compared to non-South Asians at the same LDL level. This means:
+                </p>
+                <ul className="list-disc space-y-1 pl-4 text-xs text-foreground">
+                  <li>Lower LDL thresholds for initiating therapy (LDL ≥100 mg/dL may warrant statin in South Asians vs ≥130 in others)</li>
+                  <li>More aggressive targets: South Asians with ASCVD are automatically EHR-A even without other high-risk features</li>
+                  <li>Earlier screening recommended (from age 20 vs 40 in general population)</li>
+                  <li>Higher prevalence of metabolic syndrome, low HDL, high TG, and Lp(a) elevation</li>
+                </ul>
+                <p className="mt-2 text-[10px] italic text-muted-foreground">
+                  Source: Lipid Association of India (LAI) 2023 Expert Consensus Statement
+                </p>
+              </aside>
             )}
           </div>
         </SectionCard>
