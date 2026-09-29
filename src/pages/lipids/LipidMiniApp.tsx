@@ -65,6 +65,7 @@ type DmAscvd = "no" | "yes";
 type DmModifiers = "none" | "tod_or_2rf";
 type CacRange = "" | "0" | "1-99_lt75" | "1-99_ge75" | "100-299" | ">=300";
 type SecondaryType = "stroke" | "pad" | "ascvd";
+type Ethnicity = "" | "south-asian" | "south-east-asian" | "other";
 
 type Inputs = {
   scenario: Scenario | "";
@@ -88,6 +89,7 @@ type Inputs = {
   lpaHigh: boolean;
   metSyn: boolean;
   naflFibrosis: boolean;
+  ethnicity: Ethnicity;
   southAsian: boolean;
   polyvascular: boolean;
   // ACS specifics
@@ -124,6 +126,7 @@ const EMPTY: Inputs = {
   lpaHigh: false,
   metSyn: false,
   naflFibrosis: false,
+  ethnicity: "",
   southAsian: false,
   polyvascular: false,
   acsGroup: "",
@@ -918,6 +921,16 @@ export default function LipidMiniApp() {
   const [i, setI] = useState<Inputs>(EMPTY);
   const set = <K extends keyof Inputs>(k: K, v: Inputs[K]) =>
     setI((p) => ({ ...p, [k]: v }));
+  const setEthnicity = (ethnicity: Ethnicity) =>
+    setI((p) => ({
+      ...p,
+      ethnicity,
+      southAsian: ethnicity === "south-asian" || ethnicity === "south-east-asian",
+    }));
+  const ethnicityLabel =
+    i.ethnicity === "south-asian" ? "South Asian" :
+    i.ethnicity === "south-east-asian" ? "South East Asian" :
+    i.ethnicity === "other" ? "Other ethnicity" : "Not selected";
 
   // ── LAI Risk Modifier group checkboxes (full LAI 2023 groups) ──
   const [checked, setChecked] = useState<Record<string, boolean>>({});
@@ -1004,6 +1017,7 @@ export default function LipidMiniApp() {
       `Generated: ${date}`,
       ``,
       `Scenario: ${i.scenario.toUpperCase()}`,
+      `Ethnicity: ${ethnicityLabel}`,
       `Risk classification: ${result.groupLabel} [${result.group}]`,
       ``,
       `LABS (selected ranges):`,
@@ -1131,14 +1145,37 @@ export default function LipidMiniApp() {
 
         {/* Labs — only after scenario chosen */}
         {showLabs && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <RangeField label="LDL-C" fieldKey="ldl" value={i.ldl} onChange={(v) => set("ldl", v)} />
-            <RangeField label="HDL-C" fieldKey="hdl" value={i.hdl} onChange={(v) => set("hdl", v)} />
-            <RangeField label="Triglycerides" fieldKey="tg" value={i.tg} onChange={(v) => set("tg", v)} />
-            <RangeField label="Total cholesterol" fieldKey="totalChol" value={i.totalChol} onChange={(v) => set("totalChol", v)} />
-            <RangeField label="Apo-B" fieldKey="apoB" value={i.apoB} onChange={(v) => set("apoB", v)} />
-            <RangeField label="Lp(a)" fieldKey="lpa" value={i.lpa} onChange={(v) => set("lpa", v)} />
-            <RangeField label="hsCRP" fieldKey="hsCrp" value={i.hsCrp} onChange={(v) => set("hsCrp", v)} />
+          <div className="mb-4 space-y-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <RangeField label="LDL-C" fieldKey="ldl" value={i.ldl} onChange={(v) => set("ldl", v)} />
+              <RangeField label="HDL-C" fieldKey="hdl" value={i.hdl} onChange={(v) => set("hdl", v)} />
+              <RangeField label="Triglycerides" fieldKey="tg" value={i.tg} onChange={(v) => set("tg", v)} />
+              <RangeField label="Total cholesterol" fieldKey="totalChol" value={i.totalChol} onChange={(v) => set("totalChol", v)} />
+              <RangeField label="Apo-B" fieldKey="apoB" value={i.apoB} onChange={(v) => set("apoB", v)} />
+              <RangeField label="Lp(a)" fieldKey="lpa" value={i.lpa} onChange={(v) => set("lpa", v)} />
+              <RangeField label="hsCRP" fieldKey="hsCrp" value={i.hsCrp} onChange={(v) => set("hsCrp", v)} />
+            </div>
+            <div className="max-w-sm space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Ethnicity</Label>
+              <Select value={i.ethnicity} onValueChange={(value) => setEthnicity(value as Ethnicity)}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="Select ethnicity" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="south-asian">South Asian / Indian subcontinent</SelectItem>
+                  <SelectItem value="south-east-asian">South East Asian</SelectItem>
+                  <SelectItem value="other">Other ethnicity</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {i.southAsian && (
+              <div className="rounded-lg border border-warning/30 bg-warning/5 p-3">
+                <p className="text-sm font-semibold text-foreground">LAI 2023 recommendations active</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {ethnicityLabel} ethnicity applies the LAI risk-enhanced pathway, including earlier treatment thresholds, LAI LDL-C targets, and imaging guidance.
+                </p>
+              </div>
+            )}
           </div>
         )}
 
@@ -1298,15 +1335,6 @@ export default function LipidMiniApp() {
           </div>
         )}
 
-        {/* LAI 2023 South Asian Risk Modifier — available in EVERY scenario */}
-        {showLabs && i.scenario !== "secondary" && (
-          <div className="mb-4 flex flex-wrap gap-2">
-            <Chip active={i.southAsian} onClick={() => set("southAsian", !i.southAsian)}>
-              South Asian ethnicity (incl. South-East Asian)
-            </Chip>
-          </div>
-        )}
-
         {/* Secondary prevention context-aware block */}
         {showSecondaryBlock && (
           <div className="mb-4 space-y-3">
@@ -1332,9 +1360,6 @@ export default function LipidMiniApp() {
               </Chip>
               <Chip active={i.secondaryRecurrent} onClick={() => set("secondaryRecurrent", !i.secondaryRecurrent)}>
                 Recurrent event despite therapy
-              </Chip>
-              <Chip active={i.southAsian} onClick={() => set("southAsian", !i.southAsian)}>
-                South Asian ethnicity
               </Chip>
             </div>
           </div>
@@ -1611,7 +1636,7 @@ export default function LipidMiniApp() {
             })}
           </div>
 
-          {laiClass && totalChecked > 0 && (
+          {laiClass && (totalChecked > 0 || i.southAsian) && (
             <div className="mt-4 rounded-lg border p-3 border-warning/30 bg-warning/5">
               <p className="text-xs font-semibold text-warning mb-1">LAI 2023 Classification</p>
               <p className="text-sm font-bold text-foreground">
@@ -1674,7 +1699,7 @@ export default function LipidMiniApp() {
             </div>
 
             {/* Dual AHA + LAI recommendations */}
-            {(totalChecked > 0 || preventResult?.valid) && (
+            {(totalChecked > 0 || i.southAsian || preventResult?.valid) && (
               <div className="rounded-xl border border-border overflow-hidden">
                 <div className="px-4 py-2 bg-muted/40 border-b border-border flex items-center gap-2">
                   <Info className="h-4 w-4 text-primary" />
@@ -1697,7 +1722,7 @@ export default function LipidMiniApp() {
                       <BookOpen className="h-3.5 w-3.5 text-warning" />
                       <p className="text-xs font-bold text-warning">LAI 2023 {i.southAsian && <span className="ml-1 text-[10px] font-semibold text-muted-foreground">(preferred)</span>}</p>
                     </div>
-                    {totalChecked > 0 ? (
+                    {totalChecked > 0 || i.southAsian ? (
                       <>
                         <p className="text-sm font-semibold text-foreground">{laiRec.title}</p>
                         <p className="text-xs text-muted-foreground">LDL target: {laiDetails.ldl} mg/dL</p>
