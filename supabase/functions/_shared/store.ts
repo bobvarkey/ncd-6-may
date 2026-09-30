@@ -36,12 +36,12 @@ export interface OrderBinding {
   order_id: string;
   plan_id: string;
   plan_amount_paise: number;
-  device_id: string;
+  user_id: string;
   created_at?: string;
 }
 
 export interface EntitlementRow {
-  device_id: string;
+  user_id: string;
   plan_id: string;
   payment_id: string | null;
   status: 'active' | 'expired';
@@ -55,13 +55,13 @@ export async function bindOrder(b: {
   orderId: string;
   planId: string;
   planAmountPaise: number;
-  deviceId: string;
+  userId: string;
 }): Promise<void> {
   const res = await pgRequest('POST', 'payment_order_bindings', {
     order_id: b.orderId,
     plan_id: b.planId,
     plan_amount_paise: b.planAmountPaise,
-    device_id: b.deviceId,
+    user_id: b.userId,
   });
   if (!res.ok) {
     const text = await res.text();
@@ -75,7 +75,7 @@ export async function getOrderBinding(orderId: string): Promise<OrderBinding | n
     'GET',
     'payment_order_bindings',
     undefined,
-    `?order_id=eq.${encodeURIComponent(orderId)}&select=order_id,plan_id,plan_amount_paise,device_id&limit=1`,
+    `?order_id=eq.${encodeURIComponent(orderId)}&select=order_id,plan_id,plan_amount_paise,user_id&limit=1`,
   );
   if (!res.ok) throw new Error(`getOrderBinding failed: ${res.status}`);
   const rows = await res.json();
@@ -87,13 +87,19 @@ export async function getOrderBinding(orderId: string): Promise<OrderBinding | n
  * new window ends later than the existing one (renewals never shorten).
  */
 export async function grantEntitlement(
-  deviceId: string,
+  userId: string,
   planId: string,
   paymentId: string,
   durationDays: number,
 ): Promise<EntitlementRow> {
   const now = new Date();
-  const existing = await getEntitlementRow(deviceId, planId);
+  const duplicate = await pgRequest('GET', 'entitlements', undefined,
+    `?payment_id=eq.${encodeURIComponent(paymentId)}&select=user_id,plan_id,payment_id,status,valid_until&limit=1`);
+  if (!duplicate.ok) throw new Error(`payment id lookup failed: ${duplicate.status}`);
+  const duplicateRows: EntitlementRow[] = await duplicate.json();
+  if (duplicateRows.length > 0) return duplicateRows[0];
+
+  const existing = await getEntitlementRow(userId, planId);
   let validUntil = new Date(now.getTime() + durationDays * 86_400_000);
   if (existing && existing.status === 'active') {
     const currentEnd = new Date(existing.valid_until).getTime();
@@ -103,7 +109,7 @@ export async function grantEntitlement(
     }
   }
   const row: EntitlementRow = {
-    device_id: deviceId,
+    user_id: userId,
     plan_id: planId,
     payment_id: paymentId,
     status: 'active',
@@ -120,14 +126,14 @@ export async function grantEntitlement(
 
 /** Raw row lookup (used by grant stacking). */
 async function getEntitlementRow(
-  deviceId: string,
+  userId: string,
   planId: string,
 ): Promise<EntitlementRow | null> {
   const res = await pgRequest(
     'GET',
     'entitlements',
     undefined,
-    `?device_id=eq.${encodeURIComponent(deviceId)}&plan_id=eq.${encodeURIComponent(planId)}&select=device_id,plan_id,payment_id,status,valid_until&limit=1`,
+    `?user_id=eq.${encodeURIComponent(userId)}&plan_id=eq.${encodeURIComponent(planId)}&select=user_id,plan_id,payment_id,status,valid_until&limit=1`,
   );
   if (!res.ok) throw new Error(`getEntitlementRow failed: ${res.status}`);
   const rows = await res.json();
@@ -138,12 +144,12 @@ async function getEntitlementRow(
  * GET /api/entitlements/me — active entitlements for one device.
  * Expired rows are auto-marked (status='expired') on read.
  */
-export async function getMyEntitlements(deviceId: string): Promise<EntitlementRow[]> {
+export async function getMyEntitlements(userId: string): Promise<EntitlementRow[]> {
   const res = await pgRequest(
     'GET',
     'entitlements',
     undefined,
-    `?device_id=eq.${encodeURIComponent(deviceId)}&select=device_id,plan_id,payment_id,status,valid_until,created_at,updated_at`,
+    `?user_id=eq.${encodeURIComponent(userId)}&select=user_id,plan_id,payment_id,status,valid_until,created_at,updated_at`,
   );
   if (!res.ok) throw new Error(`getMyEntitlements failed: ${res.status}`);
   const rows: EntitlementRow[] = await res.json();
@@ -152,7 +158,7 @@ export async function getMyEntitlements(deviceId: string): Promise<EntitlementRo
   const expiredHere = rows.filter((r) => r.status === 'active' && r.valid_until <= now);
   for (const r of expiredHere) {
     await pgRequest('PATCH', 'entitlements', { status: 'expired' },
-      `?device_id=eq.${encodeURIComponent(r.device_id)}&plan_id=eq.${encodeURIComponent(r.plan_id)}`);
+      `?user_id=eq.${encodeURIComponent(r.user_id)}&plan_id=eq.${encodeURIComponent(r.plan_id)}`);
   }
   return active;
 }

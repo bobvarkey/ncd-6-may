@@ -6,7 +6,7 @@
 import { jsonRes, errRes, findPlan, getDeviceId } from './payment-helpers.ts';
 import { bindOrder } from './store.ts';
 
-export async function createOrder(req: Request) {
+export async function createOrder(req: Request, authenticatedUserId?: string) {
   let body: any;
   try {
     body = await req.json();
@@ -15,9 +15,9 @@ export async function createOrder(req: Request) {
   }
 
   const planId: string = body?.planId || '';
-  const deviceId: string = getDeviceId(req) || body?.deviceId || '';
+  const userId: string = authenticatedUserId || body?.userId || '';
   if (!planId) return errRes(400, 'Missing planId');
-  if (!deviceId) return errRes(400, 'Missing deviceId (x-ncd-device-id header or body)');
+  if (!userId) return errRes(401, 'Sign in required');
 
   const keyId = Deno.env.get('RAZORPAY_KEY_ID') || '';
   const keySecret = Deno.env.get('RAZORPAY_KEY_SECRET') || '';
@@ -34,7 +34,7 @@ export async function createOrder(req: Request) {
       amount: plan.amountPaise,
       currency: plan.currency,
       receipt: `ncd-${planId}-${Date.now()}`,
-      notes: { planId, deviceId },
+      notes: { planId, userId },
     }),
   });
 
@@ -49,7 +49,7 @@ export async function createOrder(req: Request) {
       orderId: order.id,
       planId,
       planAmountPaise: plan.amountPaise,
-      deviceId,
+      userId,
     });
   } catch (e) {
     return errRes(502, `Binding persistence failed: ${(e as Error).message}`);
