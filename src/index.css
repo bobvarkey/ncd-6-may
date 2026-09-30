@@ -114,6 +114,19 @@
 
     /* User text-size preference (Settings → Text size) */
     --user-text-scale: 1;
+
+    /* OsteoCare brand, mist and tier tokens */
+    --brand: 16 84% 62%;
+    --brand-deep: 14 78% 44%;
+    --brand-foreground: 0 0% 100%;
+    --mist: 210 16% 16%;
+    --mist-foreground: 0 0% 100%;
+    --tier-very-high: 0 72% 42%;
+    --tier-very-high-foreground: 0 0% 100%;
+    --tier-high: 26 82% 42%;
+    --tier-high-foreground: 0 0% 100%;
+    --tier-unclassified: 220 12% 40%;
+    --tier-unclassified-foreground: 0 0% 100%;
   }
 
   /* ============================================================
@@ -205,6 +218,19 @@
     --link: 214 90% 38%;
     --link-hover: 214 90% 30%;
     --focus: 330 78% 55%;
+
+    /* OsteoCare brand, mist and tier tokens */
+    --brand: 16 84% 52%;
+    --brand-deep: 14 78% 38%;
+    --brand-foreground: 0 0% 100%;
+    --mist: 210 20% 94%;
+    --mist-foreground: 220 20% 18%;
+    --tier-very-high: 0 72% 40%;
+    --tier-very-high-foreground: 0 0% 100%;
+    --tier-high: 26 82% 38%;
+    --tier-high-foreground: 0 0% 100%;
+    --tier-unclassified: 220 12% 36%;
+    --tier-unclassified-foreground: 0 0% 100%;
   }
 
   /* Lipid mini-app: repeatable clinical colors make every option easy to scan. */
@@ -848,4 +874,21 @@ body.sidebar-search-active main {
 }
 @media (prefers-reduced-motion: reduce) {
   body.sidebar-search-active main { transition: none; }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .glass {
+    background-color: hsl(var(--card) / 0.72);
+    backdrop-filter: blur(12px);
+  }
+  .glass-strong {
+    background-color: hsl(var(--card) / 0.9);
+    backdrop-filter: blur(20px);
+  }
+  .field-bg {
+    background-color: hsl(var(--muted) / 0.45);
+  }
 }
