@@ -1,9 +1,8 @@
-// Razorpay Payment Integration for India
-// Uses Razorpay Standard Web Checkout against Vercel serverless API routes.
+// Razorpay Payment Integration for signed-in accounts.
 //
 // SECURITY:
-//   - Only the KEY_ID is used client-side (exposed via VITE_RAZORPAY_KEY_ID).
-//   - KEY_SECRET lives exclusively in the serverless functions (api/*.ts).
+//   - The checkout key id is returned by the authenticated Cloud function.
+//   - KEY_SECRET lives exclusively in encrypted Cloud secrets.
 
 import { getPlan } from './plans';
 import type { UserEntitlement } from './entitlements';
@@ -12,47 +11,6 @@ import { supabase } from '@/integrations/supabase/client';
 declare global {
   interface Window {
     Razorpay: any;
-  }
-}
-
-// Client-safe publishable key. VITE_RAZORPAY_KEY_ID wins when set (Lovable
-// env vars / local .env). The fallback below is the TEST-mode key id —
-// Razorpay key ids are public by design (checkout.js embeds key_id in the
-// page source). NEVER bake RAZORPAY_KEY_SECRET: it stays env-only on the
-// API host.
-export const RAZORPAY_KEY_ID =
-  (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || 'rzp_test_ThFQWnkWMsff4g';
-
-/**
- * Base URL for the payment API. Empty = same-origin (the SPA's own host
- * serves /api/*). Set VITE_API_BASE_URL when the serverless functions are
- * hosted separately (e.g. https://api.ncdapp.store on Vercel while the
- * SPA stays on Lovable) — no trailing slash.
- */
-const API_BASE = (
-  (import.meta as any).env?.VITE_API_BASE_URL || ''
-).replace(/\/+$/, '');
-
-const DEVICE_ID_STORAGE_KEY = 'ncd-device-id';
-
-/**
- * Stable per-install device id (localStorage UUID). Sent to create-order so
- * the SERVER can bind the order -> device, and used to read the entitlement
- * from /api/entitlements/me. Not a secret — just a stable identifier.
- */
-export function getOrCreateDeviceId(): string {
-  try {
-    let id = localStorage.getItem(DEVICE_ID_STORAGE_KEY);
-    if (!id) {
-      id =
-        typeof crypto !== 'undefined' && 'randomUUID' in crypto
-          ? crypto.randomUUID()
-          : `dev_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
-      localStorage.setItem(DEVICE_ID_STORAGE_KEY, id);
-    }
-    return id;
-  } catch {
-    return 'anon-device';
   }
 }
 
@@ -175,12 +133,6 @@ export async function openCheckout(
     throw new Error('Invalid plan');
   }
 
-  if (!RAZORPAY_KEY_ID) {
-    throw new Error(
-      'Razorpay is not configured. Set VITE_RAZORPAY_KEY_ID in the environment.'
-    );
-  }
-
   await loadRazorpayScript();
 
   const orderResult = await createRazorpayOrder(planId, userInfo);
@@ -190,7 +142,7 @@ export async function openCheckout(
 
   return new Promise((resolve) => {
     const razorpay = new window.Razorpay({
-      key: orderResult.keyId || RAZORPAY_KEY_ID,
+      key: orderResult.keyId,
       amount: orderResult.amount ?? plan.amount,
       currency: orderResult.currency ?? plan.currency,
       name: 'NCD-6-May',

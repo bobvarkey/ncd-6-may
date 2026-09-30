@@ -60,5 +60,5 @@ export async function verifyPayment(req: Request, authenticatedUserId?: string) 
     planDurationDays(binding.plan_id),
   );
 
-  return jsonRes({ verified: true, planId: binding.plan_id, deviceId: binding.device_id });
+  return jsonRes({ verified: true, planId: binding.plan_id });
 }
