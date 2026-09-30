@@ -867,11 +867,8 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-1 text-xs font-medium transition-all ${
-        active
-          ? "border-primary bg-primary/15 text-primary"
-          : "border-border bg-card text-muted-foreground hover:bg-muted/40"
-      }`}
+      aria-pressed={active}
+      className="lipid-color-chip rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       {children}
     </button>
@@ -884,34 +881,41 @@ function ScenarioCard({
   icon,
   title,
   subtitle,
+  tone,
 }: {
   active: boolean;
   onClick: () => void;
   icon: React.ReactNode;
   title: string;
   subtitle: string;
+  tone: "danger" | "success" | "warning" | "info" | "accent" | "primary";
 }) {
+  const tones = {
+    danger: "border-destructive/45 bg-destructive/10 text-destructive hover:border-destructive/80 hover:bg-destructive/15",
+    success: "border-success/45 bg-success/10 text-success hover:border-success/80 hover:bg-success/15",
+    warning: "border-warning/45 bg-warning/10 text-warning hover:border-warning/80 hover:bg-warning/15",
+    info: "border-info/45 bg-info/10 text-info hover:border-info/80 hover:bg-info/15",
+    accent: "border-accent/45 bg-accent/10 text-accent hover:border-accent/80 hover:bg-accent/15",
+    primary: "border-primary/45 bg-primary/10 text-primary hover:border-primary/80 hover:bg-primary/15",
+  };
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`text-left rounded-xl border p-3 transition-all ${
-        active
-          ? "border-primary bg-primary/[0.08] shadow-sm"
-          : "border-border bg-card hover:bg-muted/30"
-      }`}
+      aria-pressed={active}
+      className={cn(
+        "group relative overflow-hidden rounded-xl border-2 p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        tones[tone],
+        active && "ring-2 ring-current ring-offset-2 ring-offset-background shadow-md"
+      )}
     >
       <div className="flex items-center gap-2 mb-1">
-        <span
-          className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-            active ? "bg-primary/20 text-primary" : "bg-muted text-foreground"
-          }`}
-        >
+        <span className={cn("flex h-8 w-8 items-center justify-center rounded-lg bg-current/15", active && "bg-current/25")}>
           {icon}
         </span>
-        <span className="text-sm font-semibold text-foreground">{title}</span>
+        <span className="text-sm font-bold text-foreground">{title}</span>
       </div>
-      <p className="text-xs text-muted-foreground leading-snug">{subtitle}</p>
+      <p className="text-xs font-medium text-muted-foreground leading-snug">{subtitle}</p>
     </button>
   );
 }
@@ -1105,6 +1109,7 @@ export default function LipidMiniApp() {
             icon={<AlertTriangle className="h-3.5 w-3.5" />}
             title="ACS"
             subtitle="Acute coronary syndrome / post-ACS"
+            tone="danger"
           />
           <ScenarioCard
             active={i.scenario === "dm"}
@@ -1112,6 +1117,7 @@ export default function LipidMiniApp() {
             icon={<Droplet className="h-3.5 w-3.5" />}
             title="Diabetes"
             subtitle="DM ± ASCVD"
+            tone="success"
           />
           <ScenarioCard
             active={i.scenario === "htg"}
@@ -1119,6 +1125,7 @@ export default function LipidMiniApp() {
             icon={<Activity className="h-3.5 w-3.5" />}
             title="Hypertriglyceridemia"
             subtitle="TG-driven track"
+            tone="warning"
           />
           <ScenarioCard
             active={i.scenario === "general"}
@@ -1126,6 +1133,7 @@ export default function LipidMiniApp() {
             icon={<Stethoscope className="h-3.5 w-3.5" />}
             title="Primary prevention"
             subtitle="LAI risk stratification"
+            tone="info"
           />
           <ScenarioCard
             active={i.scenario === "secondary"}
@@ -1133,6 +1141,7 @@ export default function LipidMiniApp() {
             icon={<Heart className="h-3.5 w-3.5" />}
             title="Secondary prevention"
             subtitle="Stroke, PAD, or established ASCVD"
+            tone="accent"
           />
           <ScenarioCard
             active={i.scenario === "recurrent"}
@@ -1140,6 +1149,7 @@ export default function LipidMiniApp() {
             icon={<RotateCcw className="h-3.5 w-3.5" />}
             title="Recurrent event"
             subtitle="Event despite LDL ~30"
+            tone="primary"
           />
         </div>
 
@@ -1185,7 +1195,7 @@ export default function LipidMiniApp() {
             <Label className="text-xs text-muted-foreground mb-1.5 block">
               Pre-admission statin status
             </Label>
-            <div className="flex flex-wrap gap-2">
+            <div className="lipid-color-choices flex flex-wrap gap-2">
               <Chip active={i.acsGroup === "naive"} onClick={() => set("acsGroup", "naive")}>
                 Group 1 — Statin-naive
               </Chip>
@@ -1257,7 +1267,7 @@ export default function LipidMiniApp() {
                 <SubclinicalAtherosclerosisExplainer compact />
               </div>
 
-              <div className="flex gap-2">
+              <div className="lipid-color-choices flex gap-2">
                 <Chip active={i.dmAscvd === "no"} onClick={() => set("dmAscvd", "no")}>No</Chip>
                 <Chip active={i.dmAscvd === "yes"} onClick={() => set("dmAscvd", "yes")}>Yes</Chip>
               </div>
@@ -1327,7 +1337,7 @@ export default function LipidMiniApp() {
                   </DialogContent>
                 </Dialog>
               </div>
-              <div className="flex gap-2">
+              <div className="lipid-color-choices flex gap-2">
                 <Chip active={i.dmMods === "none"} onClick={() => set("dmMods", "none")}>None / 0–1 RF</Chip>
                 <Chip active={i.dmMods === "tod_or_2rf"} onClick={() => set("dmMods", "tod_or_2rf")}>TOD or ≥2 RF</Chip>
               </div>
@@ -1342,7 +1352,7 @@ export default function LipidMiniApp() {
               <Label className="text-sm font-semibold text-foreground mb-2 block">
                 Established atherosclerotic condition
               </Label>
-              <div className="flex flex-wrap gap-2">
+              <div className="lipid-color-choices flex flex-wrap gap-2">
                 <Chip active={i.secondaryType === "stroke"} onClick={() => set("secondaryType", "stroke")}>
                   Ischemic stroke / TIA
                 </Chip>
@@ -1354,7 +1364,7 @@ export default function LipidMiniApp() {
                 </Chip>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="lipid-color-choices flex flex-wrap gap-2">
               <Chip active={i.secondaryPolyvascular} onClick={() => set("secondaryPolyvascular", !i.secondaryPolyvascular)}>
                 Polyvascular disease (≥2 vascular beds)
               </Chip>
@@ -1413,7 +1423,7 @@ export default function LipidMiniApp() {
                 </DialogContent>
               </Dialog>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="lipid-color-choices flex flex-wrap gap-2">
               <Chip active={i.ageMale45OrFemale55} onClick={() => set("ageMale45OrFemale55", !i.ageMale45OrFemale55)}>
                 Age ≥45 ♂ / ≥55 ♀
               </Chip>
@@ -1479,7 +1489,7 @@ export default function LipidMiniApp() {
                 </DialogContent>
               </Dialog>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="lipid-color-choices flex flex-wrap gap-2">
               <Chip active={i.famHxPremature} onClick={() => set("famHxPremature", !i.famHxPremature)}>
                 FHx premature ASCVD
               </Chip>
@@ -1508,7 +1518,7 @@ export default function LipidMiniApp() {
             <Label className="text-xs text-muted-foreground mb-1.5 block">
               Polyvascular disease (≥2 beds) — <span className="text-destructive font-semibold">direct EHR-B</span>
             </Label>
-            <div className="flex flex-wrap gap-2">
+            <div className="lipid-color-choices flex flex-wrap gap-2">
               <Chip active={i.polyvascular} onClick={() => set("polyvascular", !i.polyvascular)}>
                 Polyvascular disease (≥2 beds)
               </Chip>
@@ -1522,7 +1532,7 @@ export default function LipidMiniApp() {
             <Label className="text-xs text-muted-foreground mb-1.5 block">
               CAC score (if available)
             </Label>
-            <div className="flex flex-wrap gap-2">
+            <div className="lipid-color-choices flex flex-wrap gap-2">
               <Chip active={i.cac === ""} onClick={() => set("cac", "")}>Not done</Chip>
               <Chip active={i.cac === "0"} onClick={() => set("cac", "0")}>0</Chip>
               <Chip active={i.cac === "1-99_lt75"} onClick={() => set("cac", "1-99_lt75")}>
@@ -1565,23 +1575,33 @@ export default function LipidMiniApp() {
             Select applicable LAI 2023 risk modifiers for full risk classification.
           </p>
           <div className="space-y-2">
-            {LAI_MODIFIER_GROUPS.map((group) => {
+            {LAI_MODIFIER_GROUPS.map((group, groupIndex) => {
               const count = modifierCounts[group.title];
+              const modifierTones = [
+                "border-destructive/60 bg-destructive/10 text-destructive",
+                "border-success/60 bg-success/10 text-success",
+                "border-info/60 bg-info/10 text-info",
+                "border-accent/60 bg-accent/10 text-accent",
+                "border-warning/60 bg-warning/10 text-warning",
+                "border-primary/60 bg-primary/10 text-primary",
+              ];
+              const modifierTone = modifierTones[groupIndex % modifierTones.length];
               return (
-                <Collapsible key={group.title} defaultOpen={count > 0 || group.title === "Established ASCVD"}>
+                <Collapsible key={group.title} defaultOpen={count > 0 || group.title === "Established ASCVD"} className="group/modifier">
                   <CollapsibleTrigger asChild>
-                    <button className="flex w-full items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-2.5 hover:bg-muted/50 transition-colors">
+                    <button className={cn("flex w-full items-center justify-between rounded-lg border-l-4 border-y border-r px-4 py-2.5 transition-all hover:brightness-125 data-[state=open]:rounded-b-none data-[state=open]:shadow-sm", modifierTone)}>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-foreground">{group.title}</span>
+                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-current/15">{group.icon}</span>
+                        <span className="text-sm font-bold text-foreground">{group.title}</span>
                         {count > 0 && <Badge variant="secondary" className="text-xs">{count}/{group.items.length}</Badge>}
                       </div>
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/modifier:rotate-180" />
                     </button>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-1 border-x border-b border-border rounded-b-lg bg-card p-3">
+                  <CollapsibleContent className="lipid-color-checklist space-y-1 border-x border-b border-border rounded-b-lg bg-card p-3">
                     {group.items.map((item) => (
-                      <label key={item.id} className={cn("flex cursor-pointer items-start gap-2.5 rounded-md px-3 py-2 transition-colors", checked[item.id] ? "bg-danger/5 ring-1 ring-danger/20" : "hover:bg-muted/50")}>
-                        <Checkbox checked={!!checked[item.id]} onCheckedChange={() => toggleChecked(item.id)} className="mt-0.5" />
+                      <label key={item.id} className="lipid-color-check flex cursor-pointer items-start gap-2.5 rounded-lg border px-3 py-2 transition-all">
+                        <Checkbox checked={!!checked[item.id]} onCheckedChange={() => toggleChecked(item.id)} className="mt-0.5 border-current data-[state=checked]:bg-current data-[state=checked]:text-primary-foreground" />
                         <div>
                           <span className="text-sm text-foreground font-medium">{item.label}</span>
                           <p className="text-xs text-muted-foreground">{item.qualifier}</p>
