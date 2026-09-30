@@ -17,7 +17,7 @@ import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, Link } from "react-router-dom";
-import { ArrowLeft, Home as HomeIcon, UserRound } from "lucide-react";
+import { ArrowLeft, Crown, Home as HomeIcon, UserRound } from "lucide-react";
 import { useAuth } from "@/auth/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { LabAutoCalculator } from "@/components/LabAutoCalculator";
