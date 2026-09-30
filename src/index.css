@@ -406,6 +406,7 @@
   [class~="text-accent-foreground"]     { color: hsl(var(--accent-foreground)) !important; }
   [class~="text-destructive-foreground"]{ color: hsl(var(--destructive-foreground)) !important; }
   [class~="text-card-foreground"]       { color: hsl(var(--card-foreground)) !important; }
+  [class~="text-brand-foreground"]      { color: hsl(var(--brand-foreground)) !important; }
   [class~="text-popover-foreground"]    { color: hsl(var(--popover-foreground)) !important; }
   [class~="text-white"][class][class]   { color: #fff !important; }
 
