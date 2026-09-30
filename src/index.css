@@ -207,6 +207,71 @@
     --focus: 330 78% 55%;
   }
 
+  /* Lipid mini-app: repeatable clinical colors make every option easy to scan. */
+  .lipid-color-chip {
+    border-color: hsl(var(--info) / 0.55);
+    background: hsl(var(--info) / 0.1);
+    color: hsl(var(--info));
+  }
+
+  .lipid-color-choices > .lipid-color-chip:nth-child(6n + 2) {
+    border-color: hsl(var(--success) / 0.55);
+    background: hsl(var(--success) / 0.1);
+    color: hsl(var(--success));
+  }
+
+  .lipid-color-choices > .lipid-color-chip:nth-child(6n + 3) {
+    border-color: hsl(var(--warning) / 0.55);
+    background: hsl(var(--warning) / 0.1);
+    color: hsl(var(--warning));
+  }
+
+  .lipid-color-choices > .lipid-color-chip:nth-child(6n + 4) {
+    border-color: hsl(var(--accent) / 0.55);
+    background: hsl(var(--accent) / 0.1);
+    color: hsl(var(--accent));
+  }
+
+  .lipid-color-choices > .lipid-color-chip:nth-child(6n + 5) {
+    border-color: hsl(var(--primary) / 0.55);
+    background: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+  }
+
+  .lipid-color-choices > .lipid-color-chip:nth-child(6n + 6) {
+    border-color: hsl(var(--destructive) / 0.55);
+    background: hsl(var(--destructive) / 0.1);
+    color: hsl(var(--destructive));
+  }
+
+  .lipid-color-chip:hover {
+    filter: brightness(1.2);
+  }
+
+  .lipid-color-chip[aria-pressed="true"] {
+    filter: brightness(1.25);
+    font-weight: 700;
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+  }
+
+  .lipid-color-check {
+    border-color: hsl(var(--info) / 0.25);
+    background: hsl(var(--info) / 0.05);
+    color: hsl(var(--info));
+  }
+
+  .lipid-color-checklist > .lipid-color-check:nth-child(6n + 2) { border-color: hsl(var(--success) / 0.25); background: hsl(var(--success) / 0.05); color: hsl(var(--success)); }
+  .lipid-color-checklist > .lipid-color-check:nth-child(6n + 3) { border-color: hsl(var(--warning) / 0.25); background: hsl(var(--warning) / 0.05); color: hsl(var(--warning)); }
+  .lipid-color-checklist > .lipid-color-check:nth-child(6n + 4) { border-color: hsl(var(--accent) / 0.25); background: hsl(var(--accent) / 0.05); color: hsl(var(--accent)); }
+  .lipid-color-checklist > .lipid-color-check:nth-child(6n + 5) { border-color: hsl(var(--primary) / 0.25); background: hsl(var(--primary) / 0.05); color: hsl(var(--primary)); }
+  .lipid-color-checklist > .lipid-color-check:nth-child(6n + 6) { border-color: hsl(var(--destructive) / 0.25); background: hsl(var(--destructive) / 0.05); color: hsl(var(--destructive)); }
+
+  .lipid-color-check:hover,
+  .lipid-color-check:has([data-state="checked"]) {
+    border-color: currentColor;
+    background: color-mix(in hsl, currentColor 16%, transparent);
+  }
+
   * {
     @apply border-border;
   }
