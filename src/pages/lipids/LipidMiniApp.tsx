@@ -1601,7 +1601,7 @@ export default function LipidMiniApp() {
                   <CollapsibleContent className="lipid-color-checklist space-y-1 border-x border-b border-border rounded-b-lg bg-card p-3">
                     {group.items.map((item) => (
                       <label key={item.id} className="lipid-color-check flex cursor-pointer items-start gap-2.5 rounded-lg border px-3 py-2 transition-all">
-                        <Checkbox checked={!!checked[item.id]} onCheckedChange={() => toggleChecked(item.id)} className="mt-0.5 border-current data-[state=checked]:bg-current data-[state=checked]:text-primary-foreground" />
+                        <Checkbox checked={!!checked[item.id]} onCheckedChange={() => toggleChecked(item.id)} className="mt-0.5 border-current data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" />
                         <div>
                           <span className="text-sm text-foreground font-medium">{item.label}</span>
                           <p className="text-xs text-muted-foreground">{item.qualifier}</p>
