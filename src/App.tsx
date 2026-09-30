@@ -149,6 +149,7 @@ const GLP1Administration = lazyWithModuleRetry(() => import("@/pages/GLP1Adminis
 const DrugSchedule = lazyWithModuleRetry(() => import("@/pages/DrugSchedule"));
 const Glp1Screening = lazyWithModuleRetry(() => import("@/pages/Glp1Screening"));
 const GLP1PreInitiationScreenerCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/GLP1PreInitiationScreener"));
+const VisceralFatUltrasoundCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/VisceralFatUltrasound"));
 const WomenHealth = lazyWithModuleRetry(() => import("@/pages/WomenHealth"));
 const Fatigue = lazyWithModuleRetry(() => import("@/pages/Fatigue"));
 const VitaminD = lazyWithModuleRetry(() => import("@/pages/VitaminD"));
@@ -407,6 +408,7 @@ const App = () => {
           <Route path="/htn/potency-table" element={withNav(<AntihypertensivePotencyTableCalc />, "Potency Table")} />
           <Route path="/obesity/bmi-calculator" element={withNav(<BmiCalculatorCalc />, "BMI Calculator")} />
           <Route path="/obesity/waist-height-ratio" element={withNav(<WaistHeightRatioCalc />, "Waist-Height Ratio")} />
+          <Route path="/obesity/visceral-fat-ultrasound" element={withNav(<VisceralFatUltrasoundCalc />, "Visceral Fat Ultrasound")} />
           <Route path="/obesity/glp1-dosing" element={withNav(<GLP1Administration />, "GLP-1 Doses & Schedules")} />
           <Route path="/obesity/glp1-algorithm" element={withNav(<GLP1ObesityAlgorithmCalc />, "GLP-1 Algorithm")} />
           <Route path="/obesity/glp1-assessment" element={withNav(<GLP1AssessmentCalc />, "GLP-1 Assessment")} />
