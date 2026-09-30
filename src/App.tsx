@@ -17,9 +17,8 @@ import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, Link } from "react-router-dom";
-import { ArrowLeft, Crown, Home as HomeIcon, UserRound } from "lucide-react";
+import { ArrowLeft, Home as HomeIcon, UserRound } from "lucide-react";
 import { useAuth } from "@/auth/AuthProvider";
-import { Button } from "@/components/ui/button";
 import { LabAutoCalculator } from "@/components/LabAutoCalculator";
 
 const moduleLoadErrorPattern = /Importing a module script failed|Failed to fetch dynamically imported module|error loading dynamically imported module|Load failed|Loading chunk \d+ failed/i;
@@ -258,22 +257,12 @@ const AppHeader = ({ title }: { title: string }) => {
 };
 
 const PageShell = ({ title, children }: { title: string; children: ReactNode }) => {
-  const { pathname } = useLocation();
-  const { user, access, loading } = useAuth();
-  const publicPaths = new Set(["/login", "/subscription", "/privacy", "/terms", "/disclaimer", "/delete-account"]);
-  const mayOpen = publicPaths.has(pathname) || Boolean(access?.access);
   return (
     <div className="min-h-screen flex flex-col w-full min-w-0 overflow-x-clip">
       <AppHeader title={title} />
       <main className="flex-1 overflow-y-auto overflow-x-clip p-4 md:p-6 max-w-4xl mx-auto w-full min-w-0">
-        {loading ? <RouteLoading /> : mayOpen ? <><LabAutoCalculator />{children}</> : (
-          <section className="mx-auto max-w-lg space-y-4 py-16 text-center">
-            <Crown className="mx-auto h-10 w-10 text-primary" />
-            <h1 className="text-2xl font-heading font-semibold">{user ? "Your trial has ended" : "Sign in to continue"}</h1>
-            <p className="text-muted-foreground">{user ? "Choose Pro to keep using Clinical Tools." : "Start a free three-day trial or choose Pro for immediate access."}</p>
-            <Button asChild><Link to={user ? "/subscription" : `/login?next=${encodeURIComponent(pathname)}`}>{user ? "View Pro plan" : "Sign in or create account"}</Link></Button>
-          </section>
-        )}
+        <LabAutoCalculator />
+        {children}
       </main>
     </div>
   );
