@@ -4,6 +4,7 @@ injectMock();
 import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
+import { AuthProvider } from "./auth/AuthProvider";
 import "./index.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { registerServiceWorker } from "./pwa";
@@ -16,7 +17,9 @@ if (import.meta.env.PROD) {
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
     <ThemeProvider>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </ThemeProvider>
   </HelmetProvider>
 );

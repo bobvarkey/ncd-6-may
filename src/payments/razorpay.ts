@@ -7,6 +7,7 @@
 
 import { getPlan } from './plans';
 import type { UserEntitlement } from './entitlements';
+import { supabase } from '@/integrations/supabase/client';
 
 declare global {
   interface Window {
@@ -66,6 +67,7 @@ export interface CreateOrderResponse {
   orderId?: string;
   amount?: number;
   currency?: string;
+  keyId?: string;
   error?: string;
 }
 
@@ -104,33 +106,22 @@ export async function createRazorpayOrder(
     return { success: false, error: 'Invalid plan' };
   }
 
-  const res = await fetch(`${API_BASE}/api/create-order`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-ncd-device-id': getOrCreateDeviceId(),
-    },
-    body: JSON.stringify({
-      planId,
-      deviceId: getOrCreateDeviceId(),
-      userInfo,
-    }),
+  const { data, error } = await supabase.functions.invoke('payment-api', {
+    body: { action: 'create-order', planId },
   });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok || !data?.success || !data?.order_id) {
+  if (error || !data?.orderId) {
     return {
       success: false,
-      error: data?.error || `Failed to create order (HTTP ${res.status})`,
+      error: data?.error || error?.message || 'Failed to create order',
     };
   }
 
   return {
     success: true,
-    orderId: data.order_id,
+    orderId: data.orderId,
     amount: data.amount,
     currency: data.currency,
+    keyId: data.keyId,
   };
 }
 
@@ -142,25 +133,17 @@ export async function createRazorpayOrder(
 export async function verifyRazorpayPayment(
   response: RazorpayResponse
 ): Promise<VerifyResult> {
-  const res = await fetch(`${API_BASE}/api/verify-payment`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-ncd-device-id': getOrCreateDeviceId(),
-    },
-    body: JSON.stringify(response),
+  const { data, error } = await supabase.functions.invoke('payment-api', {
+    body: { action: 'verify-payment', ...response },
   });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok || !data?.verified) {
+  if (error || !data?.verified) {
     return { verified: false };
   }
 
   return {
     verified: true,
-    orderId: data.razorpay_order_id,
-    paymentId: data.razorpay_payment_id,
+    orderId: response.razorpay_order_id,
+    paymentId: response.razorpay_payment_id,
   };
 }
 
@@ -170,13 +153,9 @@ export async function verifyRazorpayPayment(
  */
 export async function fetchMyEntitlement(): Promise<UserEntitlement | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/entitlements/me`, {
-      method: 'GET',
-      headers: { 'x-ncd-device-id': getOrCreateDeviceId() },
-    });
-    if (!res.ok) return null;
-    const data = await res.json().catch(() => ({}));
-    return (data?.entitlement as UserEntitlement) || null;
+    const { data, error } = await supabase.functions.invoke('payment-api', { body: { action: 'access-status' } });
+    if (error || !data?.planId) return null;
+    return { userId: '', planId: data.planId, status: data.status, validUntil: data.validUntil, features: [] } as UserEntitlement;
   } catch {
     return null;
   }
@@ -211,7 +190,7 @@ export async function openCheckout(
 
   return new Promise((resolve) => {
     const razorpay = new window.Razorpay({
-      key: (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || RAZORPAY_KEY_ID,
+      key: orderResult.keyId || RAZORPAY_KEY_ID,
       amount: orderResult.amount ?? plan.amount,
       currency: orderResult.currency ?? plan.currency,
       name: 'NCD-6-May',

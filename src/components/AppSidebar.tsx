@@ -29,7 +29,8 @@ const SECTIONS: Section[] = [
       { title: "Summary", url: "/summary", icon: FileText },
       { title: "Progress", url: "/progress", icon: TrendingDown },
       { title: "Image Gallery", url: "/images", icon: Images, keywords: "figures diagrams algorithms" },
-      { title: "Settings", url: "/settings", icon: SettingsIcon, keywords: "offline mode theme dark light text size accessibility sync" },
+       { title: "Settings", url: "/settings", icon: SettingsIcon, keywords: "offline mode theme dark light text size accessibility sync" },
+       { title: "Account & Subscription", url: "/subscription", icon: User, keywords: "login sign in pro plan trial payment" },
     ],
   },
   {

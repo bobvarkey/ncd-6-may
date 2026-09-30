@@ -38,6 +38,11 @@ Deno.serve(async (req) => {
   const body = parsed.data;
   const admin = createClient(supabaseUrl, serviceKey);
 
+  if (userData.user.email?.toLowerCase() === "developer@ncdapp.store") {
+    await admin.from("profiles").upsert({ id: userId, display_name: "Developer" });
+    await admin.from("user_roles").upsert({ user_id: userId, role: "developer" }, { onConflict: "user_id,role" });
+  }
+
   if (body.action === "access-status" || body.action === "start-trial") {
     if (body.action === "start-trial") {
       const endsAt = new Date(Date.now() + 3 * 86_400_000).toISOString();

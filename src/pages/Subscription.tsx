@@ -1,112 +1,76 @@
 import { useEffect, useState } from "react";
-import { Crown, CalendarClock, XCircle, RotateCcw } from "lucide-react";
+import { CalendarClock, Crown, LogIn, LogOut, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
-import {
-  getSubscription, saveSubscription, hasProAccess, getTrialInfo, openPaywall, type LocalSubscription,
-} from "@/lib/subscription";
+import { useAuth } from "@/auth/AuthProvider";
+import { openPaywall } from "@/lib/subscription";
 
-const fmt = (d: string | Date) =>
-  new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+const fmt = (value: string) => new Date(value).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
 
 export default function Subscription() {
-  const { toast } = useToast();
-  const [sub, setSub] = useState<LocalSubscription | null>(getSubscription());
-  const trial = getTrialInfo();
+  const { user, access, loading, refreshAccess, startTrial, signOut } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const sync = () => setSub(getSubscription());
-    window.addEventListener("ncd-subscription-change", sync);
-    return () => window.removeEventListener("ncd-subscription-change", sync);
-  }, []);
+  useEffect(() => { if (user) void refreshAccess(); }, [user, refreshAccess]);
 
-  const isPro = hasProAccess(sub);
-
-  const cancel = () => {
-    if (!sub) return;
-    saveSubscription({ ...sub, status: "cancelled" });
-    toast({ title: "Subscription cancelled", description: `You keep Pro until ${fmt(sub.renewsAt)}.` });
+  const beginTrial = async () => {
+    setBusy(true);
+    setError(null);
+    try { await startTrial(); }
+    catch (err) { setError(err instanceof Error ? err.message : "Unable to start trial."); }
+    finally { setBusy(false); }
   };
-  const resume = () => {
-    if (!sub) return;
-    saveSubscription({ ...sub, status: "active" });
-    toast({ title: "Subscription resumed" });
-  };
+
+  if (loading) return <main className="mx-auto max-w-2xl p-4"><p className="text-muted-foreground">Loading account…</p></main>;
+
+  if (!user) return (
+    <main className="mx-auto max-w-2xl p-4">
+      <Card>
+        <CardHeader><CardTitle>Account & subscription</CardTitle><CardDescription>Sign in to start your trial, pay securely, or review your access.</CardDescription></CardHeader>
+        <CardContent><Button asChild><Link to="/login?next=/subscription"><LogIn className="mr-2 h-4 w-4" />Sign in or create account</Link></Button></CardContent>
+      </Card>
+    </main>
+  );
+
+  const trialActive = Boolean(access?.trialEndsAt && new Date(access.trialEndsAt) > new Date());
+  const paidActive = Boolean(access?.status === "active" && access.validUntil && new Date(access.validUntil) > new Date());
+  const privileged = access?.role === "developer" || access?.role === "admin";
 
   return (
-    <main className="max-w-2xl mx-auto p-4 space-y-4">
-      <h1 className="text-2xl font-bold">Subscription</h1>
+    <main className="mx-auto max-w-2xl space-y-4 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div><h1 className="text-2xl font-bold">Account & subscription</h1><p className="text-sm text-muted-foreground">{user.email}</p></div>
+        <Button variant="outline" onClick={() => void signOut()}><LogOut className="mr-2 h-4 w-4" />Sign out</Button>
+      </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Crown className="h-5 w-5 text-primary" /> Your plan
-            {isPro ? (
-              <Badge>{sub?.status === "cancelled" ? "Cancelled" : "Pro – Active"}</Badge>
-            ) : trial ? (
-              <Badge variant="secondary">Free trial</Badge>
-            ) : (
-              <Badge variant="outline">Free</Badge>
-            )}
+          <CardTitle className="flex flex-wrap items-center gap-2"><Crown className="h-5 w-5 text-primary" />Your access
+            <Badge>{privileged ? "Developer" : paidActive ? "Pro – Active" : trialActive ? "Free trial" : "No active access"}</Badge>
           </CardTitle>
-          <CardDescription>NCD Pro Monthly — ₹501/month ($4.99)</CardDescription>
+          <CardDescription>Clinical Tools Pro — ₹501/month ($4.99)</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
-          {isPro && sub ? (
-            <>
-              <p className="flex items-center gap-2">
-                <CalendarClock className="h-4 w-4" />
-                {sub.status === "cancelled"
-                  ? `Access ends on ${fmt(sub.renewsAt)} — no further charges.`
-                  : `Renews on ${fmt(sub.renewsAt)} for ₹501 ($4.99).`}
-              </p>
-              <p className="text-muted-foreground">Member since {fmt(sub.startedAt)}</p>
-            </>
-          ) : trial ? (
-            <p>Your free trial ends on {fmt(trial.ends)}. Then ₹501/month ($4.99).</p>
-          ) : (
-            <p>You're on the free plan. Upgrade to unlock all Pro tools.</p>
-          )}
+          {privileged && <p className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" />Developer access is active.</p>}
+          {!privileged && paidActive && access?.validUntil && <p className="flex items-center gap-2"><CalendarClock className="h-4 w-4" />Access valid until {fmt(access.validUntil)}.</p>}
+          {!privileged && !paidActive && trialActive && access?.trialEndsAt && <p className="flex items-center gap-2"><CalendarClock className="h-4 w-4" />Your three-day trial ends on {fmt(access.trialEndsAt)}.</p>}
+          {!access?.trialStartedAt && !paidActive && !privileged && <p>Choose a free three-day trial or pay now for immediate Pro access.</p>}
+          {access?.trialStartedAt && !trialActive && !paidActive && !privileged && <p>Your free trial has ended. Subscribe to continue using Pro tools.</p>}
+          {error && <p role="alert" className="text-destructive">{error}</p>}
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Manage</CardTitle>
-          <CardDescription>Cancel anytime — you keep Pro until the end of the paid period.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-2">
-          {!isPro && <Button onClick={openPaywall}><Crown className="h-4 w-4 mr-2" />View Pro plan</Button>}
-          {isPro && sub?.status === "active" && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive"><XCircle className="h-4 w-4 mr-2" />Cancel subscription</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Cancel Pro?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    You won't be charged again. Pro stays available until {sub && fmt(sub.renewsAt)}.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Keep Pro</AlertDialogCancel>
-                  <AlertDialogAction onClick={cancel}>Cancel subscription</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-          {isPro && sub?.status === "cancelled" && (
-            <Button onClick={resume}><RotateCcw className="h-4 w-4 mr-2" />Resume subscription</Button>
-          )}
-        </CardContent>
-      </Card>
+      {!access?.access && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {!access?.trialStartedAt && <Button variant="outline" disabled={busy} onClick={() => void beginTrial()}>Start free 3-day trial</Button>}
+          <Button onClick={openPaywall}>Pay ₹501/month</Button>
+        </div>
+      )}
+
+      {paidActive && <p className="text-sm text-muted-foreground">This checkout currently purchases a 30-day access period. No automatic renewal or in-app cancellation is enabled yet.</p>}
     </main>
   );
 }
