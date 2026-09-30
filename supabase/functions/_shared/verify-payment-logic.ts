@@ -6,7 +6,7 @@
 import { jsonRes, errRes, hmacHex, safeEqualHex, planDurationDays } from './payment-helpers.ts';
 import { getOrderBinding, grantEntitlement } from './store.ts';
 
-export async function verifyPayment(req: Request) {
+export async function verifyPayment(req: Request, authenticatedUserId?: string) {
   let body: any;
   try {
     body = await req.json();
@@ -26,6 +26,9 @@ export async function verifyPayment(req: Request) {
 
   const binding = await getOrderBinding(razorpayOrderId);
   if (!binding) return errRes(404, `No binding for order ${razorpayOrderId}`);
+  if (!authenticatedUserId || binding.user_id !== authenticatedUserId) {
+    return errRes(403, 'This order does not belong to the signed-in account');
+  }
 
   const expected = await hmacHex(keySecret, `${razorpayOrderId}|${razorpayPaymentId}`);
   if (!safeEqualHex(expected, razorpaySignature)) {
@@ -51,7 +54,7 @@ export async function verifyPayment(req: Request) {
   }
 
   await grantEntitlement(
-    binding.device_id,
+    binding.user_id,
     binding.plan_id,
     razorpayPaymentId,
     planDurationDays(binding.plan_id),

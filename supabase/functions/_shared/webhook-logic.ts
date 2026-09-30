@@ -42,7 +42,7 @@ export async function razorpayWebhook(req: Request) {
       const binding = orderId ? await getOrderBinding(orderId) : null;
       if (binding && paymentId) {
         const planId = binding.plan_id;
-        await grantEntitlement(binding.device_id, planId, paymentId, planDurationDays(planId));
+        await grantEntitlement(binding.user_id, planId, paymentId, planDurationDays(planId));
         return new Response(JSON.stringify({ ok: true, granted: { orderId, paymentId, planId } }), { status: 200 });
       }
       return new Response(JSON.stringify({ ok: true, skipped: 'no binding for order' }), { status: 200 });
