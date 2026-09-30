@@ -1,6 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
-import { z } from "npm:zod@3.23.8";
+import { z } from "npm:zod@3.25.76";
 import { createOrder } from "../_shared/create-order-logic.ts";
 import { verifyPayment } from "../_shared/verify-payment-logic.ts";
 
