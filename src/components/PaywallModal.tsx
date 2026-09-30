@@ -3,6 +3,8 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check, Crown, Sparkles, Loader2, Zap } from 'lucide-react';
 import { openCheckout, formatAmount, plans, grantProAccess, startFreeTrial, fetchMyEntitlement } from '@/payments';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/auth/AuthProvider';
 
 interface PaywallModalProps {
   open: boolean;
@@ -11,6 +13,8 @@ interface PaywallModalProps {
 }
 
 export default function PaywallModal({ open, onOpenChange, onStartTrial }: PaywallModalProps) {
+  const navigate = useNavigate();
+  const { user, startTrial: startAccountTrial, refreshAccess } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,6 +23,11 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
 
   /** Immediate Pro access — real Razorpay payment + server-side verification. */
   const handleProAccess = async () => {
+    if (!user) {
+      onOpenChange(false);
+      navigate('/login?next=/subscription');
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -40,6 +49,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
         } else {
           grantProAccess(proPlan.id, response.razorpay_payment_id);
         }
+        await refreshAccess();
         onOpenChange(false);
       } else {
         // Cancelled / dismissed / failed / verification failed.
@@ -59,10 +69,24 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
    * True autopay requires Razorpay Subscriptions (plan + subscription_id),
    * which is a separate integration. This trial simply expires locally.
    */
-  const handleStartTrial = () => {
-    startFreeTrial();
-    onStartTrial?.();
-    onOpenChange(false);
+  const handleStartTrial = async () => {
+    if (!user) {
+      onOpenChange(false);
+      navigate('/login?next=/subscription');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      await startAccountTrial();
+      startFreeTrial();
+      onStartTrial?.();
+      onOpenChange(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to start your trial.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
