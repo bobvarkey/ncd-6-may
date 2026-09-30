@@ -78,7 +78,10 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
     setLoading(true);
     setError(null);
     try {
-      await startAccountTrial();
+      const accountAccess = await startAccountTrial();
+      if (!accountAccess.access) {
+        throw new Error('This account has already used its free trial. Choose Pro to continue.');
+      }
       startFreeTrial();
       onStartTrial?.();
       onOpenChange(false);

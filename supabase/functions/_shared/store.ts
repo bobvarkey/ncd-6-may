@@ -115,7 +115,9 @@ export async function grantEntitlement(
     status: 'active',
     valid_until: validUntil.toISOString(),
   };
-  const res = await pgRequest('POST', 'entitlements', row);
+  const res = existing
+    ? await pgRequest('PATCH', 'entitlements', row, `?user_id=eq.${encodeURIComponent(userId)}&plan_id=eq.${encodeURIComponent(planId)}`)
+    : await pgRequest('POST', 'entitlements', row);
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`grantEntitlement failed: ${res.status} ${text}`);
