@@ -1,10 +1,11 @@
-# Temporarily remove sign-in requirement
+# Fix build and reorder quick access
 
 ## Changes
-- Remove the shared account/trial gate from clinical pages so every tool opens without signing in.
-- Keep the existing login, subscription, trial, and payment code available but inactive for tool access.
-- Update the architecture note to record that clinical routes are temporarily public.
+- Remove the build instability caused by generated analysis output being treated as an app entry, without changing app behavior.
+- Reorder the home quick-access row to show Obesity earlier.
+- Place cSDH Risk and Renal eGFR as the final quick-access items, keeping their existing calculator destinations.
+- Keep the wider clinical section groupings unchanged.
 
 ## Verification
-- Confirm a signed-out visitor can open a clinical page directly.
-- Check the app build and existing tests.
+- Confirm the current build diagnostics report success.
+- Open the home page and verify the visible quick-access order and links.
