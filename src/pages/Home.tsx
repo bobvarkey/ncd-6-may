@@ -15,6 +15,8 @@ import LabScoreCalculator from "@/components/LabScoreCalculator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
 
 import { useLabContext } from "@/components/SmartLabelUpload/GlobalLabContext";
@@ -826,9 +828,266 @@ const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Drop
   { to: "/obesity/bmi-calculator", label: "Obesity", desc: "BMI, GLP-1 & weight care", Icon: Weight, tone: "violet" },
   { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart, tone: "rose" },
   { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet, tone: "amber" },
-  { to: "/perioperative-calculators#csdh", label: "cSDH Risk", desc: "Neuro-perioperative plan", Icon: Brain, tone: "indigo" },
-  { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator, tone: "orange" },
 ];
+
+// ── Metabolic Syndrome (IDF 2006) — selectable criteria with metric + imperial inputs ──
+const METABOLIC_WAIST_CUTOFFS = [
+  { id: "europid", label: "Europid / North American", male: 94, female: 80 },
+  { id: "southasian", label: "South Asian / Chinese", male: 90, female: 80 },
+  { id: "japanese", label: "Japanese", male: 85, female: 90 },
+];
+
+function MetabolicCriterionRow({ checked, onChecked, title, detail, children }: {
+  checked: boolean;
+  onChecked: (v: boolean) => void;
+  title: string;
+  detail: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className={cn(
+      "rounded-xl border p-3 transition-colors",
+      checked ? "border-fuchsia-400/50 bg-fuchsia-500/10" : "border-border/60 bg-card/40",
+    )}>
+      <label className="flex items-start gap-3 cursor-pointer">
+        <Checkbox checked={checked} onCheckedChange={(v) => onChecked(v === true)} className="mt-0.5" />
+        <span className="min-w-0">
+          <span className="block text-sm font-medium leading-snug">{title}</span>
+          <span className="block text-xs text-muted-foreground mt-0.5">{detail}</span>
+        </span>
+      </label>
+      {children ? <div className="mt-2.5 pl-8">{children}</div> : null}
+    </div>
+  );
+}
+
+function MetabolicSyndromePanel() {
+  const [sex, setSex] = useState<"male" | "female">("male");
+  const [ethnic, setEthnic] = useState("southasian");
+  const [unit, setUnit] = useState<"metric" | "imperial">("metric");
+  const [met, setMet] = useState<Record<string, boolean>>({
+    waist: false, triglycerides: false, hdl: false, bp: false, glucose: false,
+  });
+  const [waistValue, setWaistValue] = useState("");
+  const [tg, setTg] = useState({ mgdl: "", mmol: "" });
+  const [hdl, setHdl] = useState({ mgdl: "", mmol: "" });
+  const [sbp, setSbp] = useState("");
+  const [dbp, setDbp] = useState("");
+  const [fpg, setFpg] = useState({ mgdl: "", mmol: "" });
+
+  const num = (s: string) => {
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? n : null;
+  };
+  const cutoff = METABOLIC_WAIST_CUTOFFS.find((c) => c.id === ethnic)
+    ?? { id: "southasian", label: "South Asian / Chinese", male: 90, female: 80 };
+  const waistCutoff = sex === "male" ? cutoff.male : cutoff.female;
+  const count = Object.values(met).filter(Boolean).length;
+  const dx = met.waist && count >= 3;
+
+  const toggleCriterion = (id: string, v: boolean) => setMet((p) => ({ ...p, [id]: v }));
+
+  // Waist value is entered in the active unit; convert for display in the other.
+  const waistCm = (() => {
+    const n = num(waistValue);
+    if (n === null) return null;
+    return unit === "metric" ? n : n * 2.54;
+  })();
+
+  // Re-evaluate the waist criterion when sex/ethnicity cutoffs change.
+  React.useEffect(() => {
+    if (waistCm !== null) setMet((p) => ({ ...p, waist: waistCm >= waistCutoff }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sex, ethnic]);
+
+  const onWaistChange = (raw: string) => {
+    setWaistValue(raw);
+    const n = num(raw);
+    if (n === null) { setMet((p) => ({ ...p, waist: false })); return; }
+    const cm = unit === "metric" ? n : n * 2.54;
+    setMet((p) => ({ ...p, waist: cm >= waistCutoff }));
+  };
+
+  const switchUnit = (u: "metric" | "imperial") => {
+    const n = num(waistValue);
+    if (n !== null) setWaistValue((u === "metric" ? n * 2.54 : n / 2.54).toFixed(1));
+    setUnit(u);
+  };
+
+  const onTgChange = (which: "mgdl" | "mmol", raw: string) => {
+    setTg((p) => ({ ...p, [which]: raw, [which === "mgdl" ? "mmol" : "mgdl"]: "" }));
+    const n = num(raw);
+    if (n === null) return;
+    const mgdl = which === "mgdl" ? n : n / 0.01129;
+    setMet((p) => ({ ...p, triglycerides: mgdl >= 150 }));
+  };
+
+  const onHdlChange = (which: "mgdl" | "mmol", raw: string) => {
+    setHdl((p) => ({ ...p, [which]: raw, [which === "mgdl" ? "mmol" : "mgdl"]: "" }));
+    const n = num(raw);
+    if (n === null) return;
+    const mgdl = which === "mgdl" ? n : n / 0.02586;
+    setMet((p) => ({ ...p, hdl: mgdl < (sex === "male" ? 40 : 50) }));
+  };
+
+  const onBpChange = (which: "s" | "d", raw: string) => {
+    const s = num(which === "s" ? raw : sbp);
+    const d = num(which === "d" ? raw : dbp);
+    if (which === "s") setSbp(raw); else setDbp(raw);
+    if (s === null && d === null) return;
+    setMet((p) => ({ ...p, bp: (s !== null && s >= 130) || (d !== null && d >= 85) }));
+  };
+
+  const onFpgChange = (which: "mgdl" | "mmol", raw: string) => {
+    setFpg((p) => ({ ...p, [which]: raw, [which === "mgdl" ? "mmol" : "mgdl"]: "" }));
+    const n = num(raw);
+    if (n === null) return;
+    const mgdl = which === "mgdl" ? n : n * 18.018;
+    setMet((p) => ({ ...p, glucose: mgdl >= 100 }));
+  };
+
+  const reset = () => {
+    setMet({ waist: false, triglycerides: false, hdl: false, bp: false, glucose: false });
+    setWaistValue("");
+    setTg({ mgdl: "", mmol: "" });
+    setHdl({ mgdl: "", mmol: "" });
+    setSbp("");
+    setDbp("");
+    setFpg({ mgdl: "", mmol: "" });
+  };
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <FlaskConical className="h-5 w-5 text-fuchsia-400" />
+          Metabolic Syndrome — IDF 2006
+          <Badge variant="secondary" className="ml-1">5 criteria</Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className={cn("rounded-xl border p-4", dx ? "border-rose-400/50 bg-rose-500/10" : "border-border bg-muted/30")}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-sm font-semibold">{dx ? "Metabolic syndrome present" : "Not yet diagnostic"}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                IDF: central obesity (waist) mandatory + ≥2 additional criteria — {count}/5 selected.
+              </p>
+            </div>
+            <Button type="button" variant="ghost" size="sm" className="h-7 shrink-0" onClick={reset}>Reset</Button>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <span>Waist cutoff:</span>
+          <select
+            value={ethnic}
+            onChange={(e) => setEthnic(e.target.value)}
+            className="h-7 rounded-lg border border-border bg-background px-2 text-xs"
+          >
+            {METABOLIC_WAIST_CUTOFFS.map((c) => (
+              <option key={c.id} value={c.id}>{c.label}</option>
+            ))}
+          </select>
+          <div className="flex overflow-hidden rounded-lg border border-border">
+            {(["male", "female"] as const).map((s) => (
+              <Button key={s} type="button" variant={sex === s ? "default" : "ghost"} size="sm" className="h-7 px-2.5 rounded-none" onClick={() => setSex(s)}>
+                {s === "male" ? "Men" : "Women"}
+              </Button>
+            ))}
+          </div>
+          <div className="flex overflow-hidden rounded-lg border border-border">
+            {(["metric", "imperial"] as const).map((u) => (
+              <Button key={u} type="button" variant={unit === u ? "default" : "ghost"} size="sm" className="h-7 px-2.5 rounded-none" onClick={() => switchUnit(u)}>
+                {u === "metric" ? "cm · mmol/L" : "in · mg/dL"}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <MetabolicCriterionRow
+          checked={met.waist}
+          onChecked={(v) => toggleCriterion("waist", v)}
+          title="Central obesity — raised waist circumference (mandatory)"
+          detail={`Cutoff ${waistCutoff} cm (${(waistCutoff / 2.54).toFixed(1)} in) for ${sex === "male" ? "men" : "women"} — ${cutoff.label}; South/Central Americans use South Asian cutoffs`}
+        >
+          <div className="flex items-center gap-2">
+            <Input
+              inputMode="decimal"
+              value={waistValue}
+              onChange={(e) => onWaistChange(e.target.value)}
+              placeholder={unit === "metric" ? "Waist (cm)" : "Waist (in)"}
+              className="w-36"
+            />
+            <span className="text-xs text-muted-foreground">
+              {unit === "metric"
+                ? waistCm !== null ? `≈ ${(waistCm / 2.54).toFixed(1)} in` : "centimetres"
+                : waistCm !== null ? `≈ ${waistCm.toFixed(1)} cm` : "inches"}
+              {" · meets cutoff auto-ticks"}
+            </span>
+          </div>
+        </MetabolicCriterionRow>
+
+        <MetabolicCriterionRow
+          checked={met.triglycerides}
+          onChecked={(v) => toggleCriterion("triglycerides", v)}
+          title="Raised triglycerides (or specific treatment)"
+          detail="≥150 mg/dL (1.7 mmol/L)"
+        >
+          <div className="flex items-center gap-2">
+            <Input inputMode="decimal" value={tg.mgdl} onChange={(e) => onTgChange("mgdl", e.target.value)} placeholder="mg/dL" className="w-28" />
+            <Input inputMode="decimal" value={tg.mmol} onChange={(e) => onTgChange("mmol", e.target.value)} placeholder="mmol/L" className="w-28" />
+            <span className="text-xs text-muted-foreground">either unit</span>
+          </div>
+        </MetabolicCriterionRow>
+
+        <MetabolicCriterionRow
+          checked={met.hdl}
+          onChecked={(v) => toggleCriterion("hdl", v)}
+          title="Reduced HDL cholesterol (or specific treatment)"
+          detail={`Men <40 mg/dL (1.03 mmol/L); women <50 mg/dL (1.29 mmol/L) — currently ${sex === "male" ? "men" : "women"}`}
+        >
+          <div className="flex items-center gap-2">
+            <Input inputMode="decimal" value={hdl.mgdl} onChange={(e) => onHdlChange("mgdl", e.target.value)} placeholder="mg/dL" className="w-28" />
+            <Input inputMode="decimal" value={hdl.mmol} onChange={(e) => onHdlChange("mmol", e.target.value)} placeholder="mmol/L" className="w-28" />
+            <span className="text-xs text-muted-foreground">either unit</span>
+          </div>
+        </MetabolicCriterionRow>
+
+        <MetabolicCriterionRow
+          checked={met.bp}
+          onChecked={(v) => toggleCriterion("bp", v)}
+          title="Raised blood pressure (or on antihypertensive treatment)"
+          detail="SBP ≥130 mmHg or DBP ≥85 mmHg"
+        >
+          <div className="flex items-center gap-2">
+            <Input inputMode="numeric" value={sbp} onChange={(e) => onBpChange("s", e.target.value)} placeholder="Systolic" className="w-28" />
+            <span className="text-xs text-muted-foreground">/</span>
+            <Input inputMode="numeric" value={dbp} onChange={(e) => onBpChange("d", e.target.value)} placeholder="Diastolic" className="w-28" />
+            <span className="text-xs text-muted-foreground">mmHg</span>
+          </div>
+        </MetabolicCriterionRow>
+
+        <MetabolicCriterionRow
+          checked={met.glucose}
+          onChecked={(v) => toggleCriterion("glucose", v)}
+          title="Raised fasting plasma glucose (or previously diagnosed type 2 diabetes)"
+          detail="≥100 mg/dL (5.6 mmol/L) — IDF 2006 lowered the threshold from 110 mg/dL"
+        >
+          <div className="flex items-center gap-2">
+            <Input inputMode="decimal" value={fpg.mgdl} onChange={(e) => onFpgChange("mgdl", e.target.value)} placeholder="mg/dL" className="w-28" />
+            <Input inputMode="decimal" value={fpg.mmol} onChange={(e) => onFpgChange("mmol", e.target.value)} placeholder="mmol/L" className="w-28" />
+            <span className="text-xs text-muted-foreground">either unit</span>
+          </div>
+        </MetabolicCriterionRow>
+
+        <p className="text-xs text-muted-foreground">
+          Tick a criterion manually when the patient is on specific treatment for it — treatment counts even if currently controlled (IDF 2006). Waist cutoffs auto-tick from the input; untick to override.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
 
 function QuickAccessPanel() {
   return (
@@ -888,13 +1147,6 @@ export default function Home() {
       tone: "indigo",
     },
     {
-      title: "cSDH Risk Assessment",
-      description: "Structured perioperative assessment for chronic subdural hematoma",
-      icon: <Brain className="h-4 w-4" />,
-      to: "/infections?tab=csdh",
-      tone: "violet",
-    },
-    {
       title: "Meal Planner",
       description: "7-day diet plans for Kerala, Indian, Asian, and international cuisines",
       icon: <UtensilsCrossed className="h-4 w-4" />,
@@ -914,13 +1166,6 @@ export default function Home() {
       icon: <Syringe className="h-4 w-4" />,
       to: "/insulin-titration",
       tone: "rose",
-    },
-    {
-      title: "GFR + KDIGO Staging",
-      description: "Calculate eGFR using CKD-EPI 2021 and KDIGO staging with UACR",
-      icon: <Activity className="h-4 w-4" />,
-      to: "/renal-dosing#egfr",
-      tone: "orange",
     },
     {
       title: "Mehran CIN Score",
@@ -1000,6 +1245,9 @@ export default function Home() {
             <TabsTrigger value="quick-actions" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.violet.tab)}>
               <Calculator className="h-4 w-4 mr-1.5 shrink-0" /> Quick Actions
             </TabsTrigger>
+            <TabsTrigger value="metabolic" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.fuchsia.tab)}>
+              <FlaskConical className="h-4 w-4 mr-1.5 shrink-0" /> Metabolic Syndrome
+            </TabsTrigger>
             <TabsTrigger value="cardiometabolic" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.rose.tab)}>
               <Heart className="h-4 w-4 mr-1.5 shrink-0" /> Cardiometabolic & Renal
             </TabsTrigger>
@@ -1024,6 +1272,11 @@ export default function Home() {
                 ))}
               </div>
             </section>
+          </TabsContent>
+
+          {/* Metabolic Syndrome tab — IDF 2006, selectable criteria, metric + imperial */}
+          <TabsContent value="metabolic" className="mt-4">
+            <MetabolicSyndromePanel />
           </TabsContent>
 
           {/* Cardiometabolic & Renal tab */}
