@@ -5,3 +5,4 @@
 - Clinical routes are account-gated in the shared page shell; only account and legal pages remain public, so expired trials cannot bypass access through direct links.
 - Generated build reports belong under `dist/`, never the project root, so Vite cannot mistake them for application entry pages.
 - Shared search datasets live in data-only modules rather than lazy route components, preserving route code-splitting and lowering build memory use.
+- Dependency installation uses the single tracked Bun lockfile and pre-build scripts run with Bun directly, preventing package-manager drift and network-dependent tool resolution.
