@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => {
   plugins: [
     react(),
     mode === "development" && componentTagger(),
-    analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "stats.html" }),
+    analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "dist/stats.html" }),
     // Offline support (opt-in at runtime via Settings → Offline Mode).
     VitePWA({
       strategies: "generateSW",
