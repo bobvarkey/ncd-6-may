@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { NumberField, PillSelect, PillMultiselect, parseNumberInput } from "./controls";
 
@@ -31,14 +32,14 @@ describe("parseNumberInput", () => {
   it("is what NumberField calls, so a partial entry never emits NaN", () => {
     const onChange = vi.fn();
     const { rerender } = render(<NumberField value={null} onChange={onChange} unit="mg" />);
-    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "20" } });
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "20" } });
     expect(onChange).toHaveBeenCalledWith(20);
     // NumberField is controlled, so the parent must actually take the new value before
     // the next change is a real change -- otherwise React restores the DOM to the
     // unchanged prop and the second fireEvent dispatches nothing.
     rerender(<NumberField value={20} onChange={onChange} unit="mg" />);
     onChange.mockClear();
-    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "" } });
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "" } });
     expect(onChange).toHaveBeenCalledWith(null);
     expect(onChange).not.toHaveBeenCalledWith(NaN);
   });
@@ -103,5 +104,67 @@ describe("PillSelect", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Yes" }));
     expect(onChange).toHaveBeenCalledWith("yes");
+  });
+});
+
+describe("NumberField keeps the raw entry so intermediate states survive", () => {
+  // The existing NumberField test above uses a bare vi.fn(), which cannot see this
+  // defect at all: the field is never written back to, so the keystroke React would
+  // otherwise erase is never erased. The behaviour only exists when a parent owns the
+  // value, so these tests render one -- a T-score is negative and decimal, and a
+  // number input cannot carry "2." or "-" long enough for the next keystroke to land.
+  function StatefulNumberField({ initial = null }: { initial?: number | null }) {
+    const [value, setValue] = useState<number | null>(initial);
+    return (
+      <>
+        <NumberField value={value} onChange={setValue} placeholder="T-score" />
+        <output data-testid="parent-value">{JSON.stringify(value)}</output>
+      </>
+    );
+  }
+
+  const field = () => screen.getByPlaceholderText("T-score") as HTMLInputElement;
+  const held = () => screen.getByTestId("parent-value").textContent;
+
+  /**
+   * Types one character at a time, each landing after whatever the field currently
+   * shows -- which is what a person does. Assigning the whole value at once would
+   * model a paste, and a paste of "2.5" cannot expose this defect.
+   */
+  function type(chars: string) {
+    for (const ch of chars) {
+      fireEvent.change(field(), { target: { value: field().value + ch } });
+    }
+  }
+
+  it("keeps a decimal point typed into an empty field", () => {
+    render(<StatefulNumberField />);
+    type("2.");
+    // "2." parses to 2, so the parent is right to hold 2 -- but the field must still
+    // show "2." or the next keystroke replaces the decimal point instead of extending it.
+    expect(held()).toBe("2");
+    expect(field().value).toBe("2.");
+    type("5");
+    expect(held()).toBe("2.5");
+    expect(field().value).toBe("2.5");
+  });
+
+  it("keeps a minus sign typed into an empty field", () => {
+    render(<StatefulNumberField />);
+    type("-2.5");
+    expect(held()).toBe("-2.5");
+    expect(field().value).toBe("-2.5");
+  });
+
+  it("keeps a minus sign that replaces an existing value", () => {
+    render(<StatefulNumberField initial={5} />);
+    // Select-all then type "-": the whole field is replaced in one change. This is the
+    // branch where "null -> null" cannot hide the loss, because the field was not empty.
+    fireEvent.change(field(), { target: { value: "-" } });
+    expect(held()).toBe("null");
+    expect(field().value).toBe("-");
+    type("2.5");
+    expect(held()).toBe("-2.5");
+    expect(field().value).toBe("-2.5");
   });
 });

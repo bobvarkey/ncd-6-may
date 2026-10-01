@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { label } from "@/lib/osteo/logic";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 export function Field({
   title,
@@ -179,23 +179,48 @@ export function NumberField({
   onChange,
   unit,
   placeholder,
-  step,
 }: {
   value: number | null;
   onChange: (v: number | null) => void;
   unit?: string;
   placeholder?: string;
+  /**
+   * Accepted for interface compatibility only. The field is `type="text"` so that a
+   * half-typed "-" or "2." is not discarded as it is entered, and a text input has no
+   * use for `step`. Callers may keep passing it; it is intentionally not forwarded.
+   */
   step?: string;
 }) {
+  // The DOM holds the raw text, never the parsed number. `type="number"` cannot carry
+  // an intermediate state -- the HTML value sanitization returns "" for both "2." and
+  // "-" -- so parsing out of the DOM on every keystroke and writing the result back
+  // erases the decimal point or the minus sign before the next character can land.
+  // A T-score is negative and decimal, so those intermediates have to survive.
+  const [draft, setDraft] = useState(() => (value === null ? "" : String(value)));
+  const [lastValue, setLastValue] = useState(value);
+
+  if (value !== lastValue) {
+    // The parent changed the value on its own (a reset, a derived default). Adopt it,
+    // unless the text already in the field means exactly that number -- a parent
+    // echoing back 2 because it parsed "2." must not delete the ".".
+    setLastValue(value);
+    if (parseNumberInput(draft) !== value) {
+      setDraft(value === null ? "" : String(value));
+    }
+  }
+
   return (
     <div className="flex max-w-[14rem] items-center gap-2 rounded-xl bg-card/70 px-3 py-2 ring-1 ring-border focus-within:ring-2 focus-within:ring-ring">
       <input
-        type="number"
+        type="text"
         inputMode="decimal"
-        step={step ?? "any"}
-        value={value === null ? "" : String(value)}
+        value={draft}
         placeholder={placeholder ?? "Blank = unknown"}
-        onChange={(e) => onChange(parseNumberInput(e.target.value))}
+        onChange={(e) => {
+          const raw = e.target.value;
+          setDraft(raw);
+          onChange(parseNumberInput(raw));
+        }}
         className="tabular w-full bg-transparent text-base font-medium outline-none placeholder:text-sm placeholder:font-normal placeholder:text-muted-foreground"
       />
       {unit ? <span className="shrink-0 text-xs text-muted-foreground">{unit}</span> : null}
