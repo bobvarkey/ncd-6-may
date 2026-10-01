@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Pill, X, FileText } from "lucide-react";
-import { RENAL_DATA } from "@/calculators/diabetes/RenalDosing";
+import { RENAL_DATA } from "@/calculators/diabetes/renal-dosing-data";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import { ANTICOAGULANTS_DATA } from "@/calculators/diabetes/anticoagulants-data";
 import { ADDITIONAL_MEDS_DATA } from "@/calculators/diabetes/additional-meds-data";
 import { ALL_MEDICATIONS } from "@/calculators/obesity/medication-database";
 
 const OBESITY_MEDS = Object.values(ALL_MEDICATIONS).flat();
-import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMedicationGuide";
+import { drugDoseDetails as HTN_MEDS } from "@/data/hypertension-medications";
 import { GLOSSARY } from "@/data/glossary";
 
 // Normalize HTN meds into the same shape used by the search (drug/drugClass/normalDose).
