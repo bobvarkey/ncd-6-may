@@ -26,9 +26,15 @@ export default defineConfig(({ mode }) => {
   server: {
     host: "::",
     port: 8080,
+    warmup: {
+      clientFiles: ["./index.html", "./src/main.tsx"],
+    },
     hmr: {
       overlay: false,
     },
+  },
+  optimizeDeps: {
+    entries: ["index.html"],
   },
   plugins: [
     react(),
