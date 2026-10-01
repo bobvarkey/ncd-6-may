@@ -26,20 +26,14 @@ export default defineConfig(({ mode }) => {
   server: {
     host: "::",
     port: 8080,
-    warmup: {
-      clientFiles: ["./index.html", "./src/main.tsx"],
-    },
     hmr: {
       overlay: false,
     },
   },
-  optimizeDeps: {
-    entries: ["index.html"],
-  },
   plugins: [
     react(),
     mode === "development" && componentTagger(),
-    analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "dist/stats.html" }),
+    analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "stats.html" }),
     // Offline support (opt-in at runtime via Settings → Offline Mode).
     VitePWA({
       strategies: "generateSW",

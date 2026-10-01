@@ -1,4 +1,4 @@
-import type { DoseEntry } from "./renal-dosing-data";
+import type { DoseEntry } from "./RenalDosing";
 
 export const ANTIBIOTICS_DATA: DoseEntry[] = [
   // ── Penicillins ──

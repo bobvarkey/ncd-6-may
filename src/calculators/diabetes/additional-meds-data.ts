@@ -1,4 +1,4 @@
-import type { DoseEntry } from "./renal-dosing-data";
+import type { DoseEntry } from "./RenalDosing";
 
 // Additional medications across specialties for unified search:
 // Hypertension, Lipids, Thyroid, Obesity, Anemia/Blood, Acid suppression.

@@ -100,6 +100,7 @@ class RouteErrorBoundary extends Component<{ children: ReactNode }, { hasError: 
 const Home = lazyWithModuleRetry(() => import("@/pages/Home"));
 const Settings = lazyWithModuleRetry(() => import("@/pages/Settings"));
 const Subscription = lazyWithModuleRetry(() => import("@/pages/Subscription"));
+const Login = lazyWithModuleRetry(() => import("@/pages/Login"));
 const Diabetes = lazyWithModuleRetry(() => import("@/pages/Diabetes"));
 const Hypertension = lazyWithModuleRetry(() => import("@/pages/Hypertension"));
 const Lipids = lazyWithModuleRetry(() => import("@/pages/Lipids"));
@@ -241,16 +242,14 @@ const AppHeader = ({ title }: { title: string }) => {
       <span className="ml-3 text-sm font-heading font-semibold text-sunset truncate">{title}</span>
       <div className="ml-auto mr-2 flex items-center gap-2">
         <OfflineStatusBadge className="hidden sm:inline-flex" />
-        {user && (
-          <Link
-            to="/subscription"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-muted"
-            aria-label="Account and subscription"
-            title="Account"
-          >
-            <UserRound className="h-4 w-4" />
-          </Link>
-        )}
+        <Link
+          to={user ? "/subscription" : "/login"}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-muted"
+          aria-label={user ? "Account and subscription" : "Sign in"}
+          title={user ? "Account" : "Sign in"}
+        >
+          <UserRound className="h-4 w-4" />
+        </Link>
         <ThemeToggle />
       </div>
     </header>
@@ -272,16 +271,6 @@ const PageShell = ({ title, children }: { title: string; children: ReactNode }) 
 const withNav = (element: ReactNode, title: string) => (
   <PageShell title={title}>{element}</PageShell>
 );
-
-const OpenAppRedirect = () => {
-  const { search } = useLocation();
-  const requestedPath = new URLSearchParams(search).get("next");
-  const destination = requestedPath?.startsWith("/") && !requestedPath.startsWith("//")
-    ? requestedPath
-    : "/home";
-
-  return <Navigate to={destination} replace />;
-};
 
 const App = () => {
   // Paywall is no longer a startup gate — the app opens directly.
@@ -360,7 +349,7 @@ const App = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
           <Route path="/settings" element={withNav(<Settings />, "Settings")} />
-          <Route path="/login" element={<OpenAppRedirect />} />
+          <Route path="/login" element={withNav(<Login />, "Account")} />
           <Route path="/subscription" element={withNav(<Subscription />, "Subscription")} />
           <Route path="/diabetes" element={withNav(<Diabetes />, "Diabetes")} />
           <Route path="/hypertension" element={withNav(<Hypertension />, "Hypertension")} />
