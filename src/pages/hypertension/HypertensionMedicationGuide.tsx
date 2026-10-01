@@ -7,6 +7,7 @@ import ImageLink from "@/components/ImageLink";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import ZoomableImage from "@/components/ZoomableImage";
 import mraPocketCard from "@/assets/mra-pocket-card.jpg.asset.json";
+import { drugDoseDetails } from "@/data/hypertension-medications";
 
 /** Extract frequency tag from a dose range string like "8–16 mg OD" -> "OD" */
 function extractCardFreq(dose: string): string {
@@ -209,8 +210,6 @@ const medicationClasses: MedicationClass[] = [
     color: "bg-accent/10 border-accent/30",
   },
 ];
-
-import { drugDoseDetails } from "@/data/hypertension-medications";
 
 const treatmentAlgorithm = [
   {

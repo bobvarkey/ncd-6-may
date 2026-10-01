@@ -8,7 +8,10 @@ import {
 import { ANTIBIOTICS_DATA } from "./antibiotics-data";
 import { ANTICOAGULANTS_DATA } from "./anticoagulants-data";
 import { ADDITIONAL_MEDS_DATA } from "./additional-meds-data";
+import { RENAL_DATA, type DoseEntry } from "./renal-dosing-data";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
+
+export { RENAL_DATA, type DoseEntry } from "./renal-dosing-data";
 
 // Infer frequency from dose string
 function inferFrequency(dose: string): string {
@@ -22,10 +25,6 @@ function inferFrequency(dose: string): string {
   if (d.includes("once") || d.includes("single")) return "OD";
   return "—";
 }
-
-import { RENAL_DATA, type DoseEntry } from "./renal-dosing-data";
-export { RENAL_DATA, type DoseEntry } from "./renal-dosing-data";
-
 
 export const ALL_RENAL_DATA: DoseEntry[] = [...RENAL_DATA, ...ANTIBIOTICS_DATA, ...ANTICOAGULANTS_DATA, ...ADDITIONAL_MEDS_DATA];
 export { eGFRColumns, cellStyle, inferFrequency };
