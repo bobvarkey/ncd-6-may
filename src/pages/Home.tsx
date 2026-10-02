@@ -356,6 +356,7 @@ const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
       { title: "Prediabetes", url: "/prediabetes", icon: HeartPulse, tone: "amber" },
       { title: "Hypo Risk Score", url: "/hypo-risk", icon: ShieldAlert, tone: "rose" },
       { title: "Renal Dosing", url: "/renal-dosing", icon: FlaskConical, tone: "orange", keywords: "egfr ckd mehran pci cin" },
+      { title: "KDIGO eGFR", url: "/gfr-calculator", icon: Calculator, tone: "cyan", keywords: "ckd-epi bsa kidney function" },
       { title: "CKD Guideline", url: "/ckd-guideline", icon: Bean, tone: "cyan", keywords: "kdigo" },
     ],
   },
@@ -380,8 +381,8 @@ const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
     tone: "teal",
     icon: Stethoscope,
     items: [
-      { title: "Perioperative Tools", url: "/perioperative-calculators", icon: Stethoscope, tone: "indigo", keywords: "rcri asa mallampati caprini apgar med management" },
-      { title: "cSDH Risk", url: "/perioperative-calculators#csdh", icon: Brain, tone: "violet", keywords: "chronic subdural hematoma neurosurgery neuro assessment" },
+      { title: "Perioperative Scores", url: "/perioperative-calculators", icon: Stethoscope, tone: "indigo", keywords: "rcri asa mallampati caprini apgar stop-bang" },
+      { title: "cSDH", url: "/perioperative-calculators#csdh", icon: Brain, tone: "violet", keywords: "chronic subdural hematoma perioperative plan neurosurgery" },
       { title: "AKI / AKD Criteria", url: "/aki-criteria", icon: Activity, tone: "orange", keywords: "acute kidney injury renal kdigo rifle akd" },
     ],
   },
@@ -891,7 +892,7 @@ export default function Home() {
       title: "cSDH Risk Assessment",
       description: "Structured perioperative assessment for chronic subdural hematoma",
       icon: <Brain className="h-4 w-4" />,
-      to: "/infections?tab=csdh",
+      to: "/perioperative-calculators#csdh",
       tone: "violet",
     },
     {

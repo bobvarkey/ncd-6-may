@@ -69,6 +69,7 @@ const SECTIONS: Section[] = [
       { title: "Prediabetes", url: "/prediabetes", icon: HeartPulse },
       { title: "Hypo Risk Score", url: "/hypo-risk", icon: ShieldAlert },
       { title: "Renal Dosing", url: "/renal-dosing", icon: FlaskConical, keywords: "egfr ckd mehran pci cin" },
+      { title: "KDIGO eGFR", url: "/gfr-calculator", icon: Calculator, keywords: "ckd-epi bsa kidney function" },
       { title: "CKD Guideline", url: "/ckd-guideline", icon: Bean, keywords: "kdigo" },
       { title: "Bone Health", url: "/bone-health", icon: Bone, keywords: "osteoporosis fracture risk assessment romosozumab teriparatide denosumab bisphosphonate" },
     ],
@@ -92,8 +93,8 @@ const SECTIONS: Section[] = [
     label: "Perioperative & Acute",
     color: "text-[#00b894]",
     items: [
-      { title: "Perioperative Tools", url: "/perioperative-calculators", icon: Stethoscope, keywords: "rcri asa mallampati caprini apgar med management" },
-      { title: "cSDH Risk", url: "/perioperative-calculators#csdh", icon: Brain, keywords: "chronic subdural hematoma neurosurgery neuro assessment" },
+      { title: "Perioperative Scores", url: "/perioperative-calculators", icon: Stethoscope, keywords: "rcri asa mallampati caprini apgar stop-bang" },
+      { title: "cSDH", url: "/perioperative-calculators#csdh", icon: Brain, keywords: "chronic subdural hematoma perioperative plan neurosurgery" },
       { title: "AKI / AKD Criteria", url: "/aki-criteria", icon: Activity, keywords: "acute kidney injury renal kdigo rifle akd" },
     ],
   },
