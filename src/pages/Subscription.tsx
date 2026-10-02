@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { CalendarClock, Crown, LogIn, LogOut, ShieldCheck } from "lucide-react";
+import { CalendarClock, Copy, Crown, LogIn, LogOut, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,15 @@ export default function Subscription() {
     try { await startTrial(); }
     catch (err) { setError(err instanceof Error ? err.message : "Unable to start trial."); }
     finally { setBusy(false); }
+  };
+
+  const copyUserId = async () => {
+    try {
+      await navigator.clipboard.writeText(user?.id ?? "");
+      toast.success("Auth user ID copied");
+    } catch {
+      toast.error("Unable to copy auth user ID");
+    }
   };
 
   if (loading) return <main className="mx-auto max-w-2xl p-4"><p className="text-muted-foreground">Loading account…</p></main>;
@@ -72,9 +82,14 @@ export default function Subscription() {
             <CardDescription>Immutable authentication user ID for the currently signed-in account.</CardDescription>
           </CardHeader>
           <CardContent>
-            <code className="block overflow-x-auto rounded-lg border bg-muted p-3 font-mono text-sm tabular-nums text-foreground">
-              {user.id}
-            </code>
+            <div className="flex items-center gap-2 rounded-lg border bg-muted p-2">
+              <code className="min-w-0 flex-1 overflow-x-auto px-1 font-mono text-sm tabular-nums text-foreground">
+                {user.id}
+              </code>
+              <Button variant="outline" size="icon" onClick={() => void copyUserId()} title="Copy auth user ID" aria-label="Copy auth user ID">
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
