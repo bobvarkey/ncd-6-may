@@ -825,8 +825,8 @@ const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Drop
   { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets, tone: "teal" },
   { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart, tone: "rose" },
   { to: "/lipids",       label: "Lipids",       desc: "ASCVD risk & LDL targets",    Icon: Droplet, tone: "amber" },
-  { to: "/infections?tab=csdh", label: "Chronic Subdural hematoma (cSDH) Peri-operative plan", desc: "\n",  Icon: Brain, tone: "indigo" },
-  { to: "/renal-dosing#egfr", label: "Renal eGFR", desc: "KDIGO eGFR + UACR",        Icon: Calculator, tone: "orange" },
+  { to: "/obesity/bmi-calculator", label: "Body weight issues", desc: "BMI, obesity & GLP-1 tools", Icon: Weight, tone: "violet" },
+  { to: "/anemia?tab=iron", label: "Iron Calculator", desc: "Iron deficit & replacement", Icon: Syringe, tone: "orange" },
   { to: "/gfr-calculator",    label: "eGFR + BSA",  desc: "CKD-EPI with optional BSA", Icon: Activity, tone: "cyan" },
 ];
 
