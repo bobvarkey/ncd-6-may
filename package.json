@@ -2,6 +2,7 @@
   "name": "ncd-combined",
   "private": true,
   "version": "1.0.0",
+  "packageManager": "bun@1.3.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,8 +15,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "predev": "bunx tsx scripts/generate-sitemap.ts",
-    "prebuild": "bunx tsx scripts/generate-sitemap.ts"
+    "predev": "node scripts/generate-sitemap.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs",
+    "validate": "bun run typecheck && bun run test && bun run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
