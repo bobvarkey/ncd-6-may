@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  Activity, AirVent, Bandage, BookOpen, Bone, Bug, Calculator, Dna, Droplet, Droplets,
+  Activity, AirVent, Bandage, BookOpen, Bone, Brain, Bug, Calculator, Dna, Droplet, Droplets,
   Eye, Filter, Flame, Gem, Heart, Image, Microscope, Moon, Pill, Search, Shield,
   Stethoscope, Sun, Syringe, Thermometer, Timer, TrendingDown, User, UtensilsCrossed, Weight, Zap,
 } from "lucide-react";
@@ -94,7 +94,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/frailty-calculator", label: "Frailty Calculator", icon: User, tone: "fuchsia" },
       { path: "/vaccine-calculator", label: "Vaccine Calculator", icon: Syringe, tone: "emerald" },
       { path: "/perioperative-calculators", label: "Perioperative Scores", icon: Stethoscope, tone: "indigo", keywords: "rcri asa mallampati caprini apgar stop-bang" },
-      { path: "/perioperative-calculators#csdh", label: "cSDH", icon: Dna, tone: "violet", keywords: "chronic subdural hematoma perioperative plan neurosurgery" },
+      { path: "/perioperative-calculators#csdh", label: "cSDH", icon: Brain, tone: "violet", keywords: "chronic subdural hematoma perioperative plan neurosurgery" },
     ],
   },
   {
