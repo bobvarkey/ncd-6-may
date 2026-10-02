@@ -63,6 +63,22 @@ export default function Subscription() {
         </CardContent>
       </Card>
 
+      {privileged && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ShieldCheck className="h-4 w-4 text-primary" />Developer diagnostic
+            </CardTitle>
+            <CardDescription>Immutable authentication user ID for the currently signed-in account.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <code className="block overflow-x-auto rounded-lg border bg-muted p-3 font-mono text-sm tabular-nums text-foreground">
+              {user.id}
+            </code>
+          </CardContent>
+        </Card>
+      )}
+
       {!access?.access && (
         <div className="grid gap-3 sm:grid-cols-2">
           {!access?.trialStartedAt && <Button variant="outline" disabled={busy} onClick={() => void beginTrial()}>Start free 3-day trial</Button>}
