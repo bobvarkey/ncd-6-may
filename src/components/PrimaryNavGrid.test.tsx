@@ -83,7 +83,7 @@ describe("PrimaryNavGrid collapsible sections", () => {
   it("keeps deep-link tile hrefs intact", () => {
     renderGrid();
     fireEvent.click(sectionTrigger("Renal, blood & electrolytes"));
-    const renal = screen.getByRole("link", { name: /egfr calculator/i });
+    const renal = screen.getByRole("link", { name: /kdigo egfr/i });
     expect(renal).toHaveAttribute("href", "/gfr-calculator");
 
     const anemiaTab = screen.getByRole("link", { name: /iron calculator/i });
@@ -93,6 +93,10 @@ describe("PrimaryNavGrid collapsible sections", () => {
     const liver = screen.getByRole("link", { name: /liver/i });
     expect(liver).toHaveAttribute("href", "/liver");
     expect(screen.queryByRole("link", { name: /liver auto-calc/i })).not.toBeInTheDocument();
+
+    fireEvent.click(sectionTrigger("Respiratory, infection & general"));
+    expect(screen.getByRole("link", { name: /^perioperative scores/i })).toHaveAttribute("href", "/perioperative-calculators");
+    expect(screen.getByRole("link", { name: /^csdh/i })).toHaveAttribute("href", "/perioperative-calculators#csdh");
   });
 
   it("exposes a chevron affordance on each section header", () => {
