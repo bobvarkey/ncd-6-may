@@ -1,8 +1,75 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   setEntitlementUntil, revokeEntitlement, subscriptionEntityToRow,
   recordTrialConsumed, getActiveEntitlement, getBillingSubscription,
+  claimWebhookEvent, finishWebhookEvent,
 } from '../../supabase/functions/_shared/subscription-store.ts';
+
+describe('claimWebhookEvent', () => {
+  const ROW = {
+    dedupe_key: 'k1', razorpay_event_id: 'evt_1', event_type: 'subscription.charged',
+    razorpay_subscription_id: 'sub_1', razorpay_payment_id: 'pay_1',
+    signature_present: true, signature_valid: true,
+    outcome: 'no_change', detail: null, http_status: 200,
+  };
+
+  it('reclaims a redelivery whose earlier attempt never finished', async () => {
+    const calls: { url: string; init: RequestInit }[] = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      // The UNIQUE(dedupe_key) constraint wins against the redelivery...
+      if (init.method === 'POST') return new Response('duplicate key value', { status: 409 });
+      // ...but the existing row never finished, so the retry may still process it.
+      return new Response(JSON.stringify([{ dedupe_key: 'k1' }]), { status: 200 });
+    });
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    // Without the reclaim this is answered as a duplicate and Razorpay's one retry
+    // of a delivery whose processing threw is swallowed by our own lock.
+    await expect(claimWebhookEvent(ROW)).resolves.toBe('claimed');
+
+    const insert = JSON.parse(String(calls[0].init.body));
+    expect(insert.detail).toBe('claimed'); // the in-flight marker
+    expect(calls[1].url).toContain('dedupe_key=eq.k1');
+    expect(calls[1].url).toContain('or=(detail.eq.claimed,outcome.eq.error)');
+    const prefer = String((calls[1].init.headers as Record<string, string>).Prefer);
+    expect(prefer).toContain('return=representation');
+  });
+
+  it('treats a redelivery of a finished event as a duplicate', async () => {
+    vi.stubGlobal('fetch', async (_url: string, init: RequestInit) => {
+      if (init.method === 'POST') return new Response('duplicate key value', { status: 409 });
+      // Nothing matched: the row is settled, so this delivery has been handled.
+      return new Response('[]', { status: 200 });
+    });
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    await expect(claimWebhookEvent(ROW)).resolves.toBe('duplicate');
+  });
+
+  it('reports an error, and never throws, when the reclaim itself fails', async () => {
+    vi.stubGlobal('fetch', async (_url: string, init: RequestInit) =>
+      init.method === 'POST' ? new Response('dup', { status: 409 }) : new Response('', { status: 500 }));
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    await expect(claimWebhookEvent(ROW)).resolves.toBe('error');
+  });
+
+  it('always writes detail on finish, so a settled row cannot look reclaimable', async () => {
+    const calls: { url: string; init: RequestInit }[] = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response('', { status: 200 });
+    });
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    await finishWebhookEvent('k1', 'no_change', undefined as unknown as string, 200);
+
+    const body = JSON.parse(String(calls[0].init.body));
+    expect('detail' in body).toBe(true);
+    expect(body.detail).toBeNull();
+  });
+});
 
 describe('subscriptionEntityToRow', () => {
   it('converts unix timestamps to ISO strings', () => {

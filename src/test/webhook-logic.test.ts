@@ -52,6 +52,9 @@ async function deliver(raw: string, overrides: Record<string, unknown> = {}, eve
       grants.push({ u, p, until, pay });
     },
     revokeEntitlement: async (u: string) => { revokes.push(u); },
+    // Every dep the handler can reach must be stubbed here: an omission sends the
+    // un-overridden path to the real store function and its real fetch.
+    setCancelAtPeriodEnd: async () => {},
     recordTrialConsumed: async () => {},
     ...overrides,
   };
@@ -246,26 +249,37 @@ describe('razorpayWebhook', () => {
 
   it('records a rejection when the webhook secret is not configured', async () => {
     vi.stubGlobal('Deno', { env: { get: () => '' } });
+    const claimed: any[] = [];
     const finishes: string[] = [];
     const req = new Request('http://x/razorpay-webhook', {
       method: 'POST', headers: { 'x-razorpay-signature': 'x' }, body: CHARGED,
     });
     const res = await razorpayWebhook(req, {
-      claimWebhookEvent: async () => 'claimed',
+      claimWebhookEvent: async (row: any) => { claimed.push(row); return 'claimed'; },
       finishWebhookEvent: async (_k: string, o: string) => { finishes.push(o); },
     } as never);
     expect(res.status).toBe(200);
+    // The row must be INSERTED before it is stamped: a lone PATCH against a
+    // never-inserted row matches nothing and the rejection goes unrecorded.
+    expect(claimed).toHaveLength(1);
+    expect(claimed[0].signature_present).toBe(true);
+    expect(claimed[0].signature_valid).toBe(false);
     expect(finishes).toContain('secret_missing');
   });
 
   it('records unparseable but correctly signed JSON without granting', async () => {
+    const claimed: any[] = [];
     const finishes: string[] = [];
     const grants: unknown[] = [];
     const { res } = await deliver('{not json', {
+      claimWebhookEvent: async (row: any) => { claimed.push(row); return 'claimed'; },
       finishWebhookEvent: async (_k: string, o: string) => { finishes.push(o); },
       setEntitlementUntil: async (...a: unknown[]) => { grants.push(a); },
     });
     expect(res.status).toBe(200);
+    expect(claimed).toHaveLength(1);
+    expect(claimed[0].signature_valid).toBe(true); // signed, just malformed
+    expect(claimed[0].event_type).toBeNull();
     expect(finishes).toContain('invalid_json');
     expect(grants).toHaveLength(0);
   });
@@ -275,11 +289,33 @@ describe('razorpayWebhook', () => {
       entity: 'event', event: 'payment.captured',
       payload: { payment: { entity: { id: 'pay_1' } } },
     });
+    const claimed: any[] = [];
     const finishes: string[] = [];
     await deliver(raw, {
+      claimWebhookEvent: async (row: any) => { claimed.push(row); return 'claimed'; },
       finishWebhookEvent: async (_k: string, o: string) => { finishes.push(o); },
     });
+    expect(claimed).toHaveLength(1);
+    expect(claimed[0].signature_valid).toBe(true);
+    expect(claimed[0].event_type).toBe('payment.captured');
     expect(finishes).toContain('unhandled_event');
+  });
+
+  it('still writes a ledger row when the handler itself throws', async () => {
+    const claimed: any[] = [];
+    const finishes: string[] = [];
+    const req = new Request('http://x/razorpay-webhook', { method: 'POST', body: CHARGED });
+    const res = await razorpayWebhook(req, {
+      getSecret: () => { throw new Error('boom'); },
+      claimWebhookEvent: async (row: any) => { claimed.push(row); return 'claimed'; },
+      finishWebhookEvent: async (_k: string, o: string) => { finishes.push(o); },
+    } as never);
+    // 200-always still holds — but the one 200 path that used to leave no trace
+    // now leaves one, so a crash is visible in the ledger like every other outcome.
+    expect(res.status).toBe(200);
+    expect(claimed).toHaveLength(1);
+    expect(claimed[0].dedupe_key).toMatch(/^unexpected\|/);
+    expect(finishes).toContain('error');
   });
 
   it('keeps the trial date when a sparse authorization entity omits it', async () => {

@@ -251,6 +251,13 @@ export async function hasConsumedTrial(userId: string): Promise<boolean> {
  * Atomic dedup. The UNIQUE(dedupe_key) constraint is the lock: a concurrent second
  * delivery of the same event loses the insert and is reported as a duplicate.
  * Never throws — a ledger failure must not change the webhook's response.
+ *
+ * The insert marks the row `claimed`, which makes an unfinished attempt
+ * distinguishable from a settled one. Razorpay retries a delivery exactly when it
+ * got no 2xx, but we answer 200 even for a delivery whose processing threw, so the
+ * ledger's `error` row is the only signal that the work did not happen — and the
+ * retry must be allowed to do it. A redelivery therefore reclaims the row when the
+ * previous attempt never finished, and is a true duplicate only once it has.
  */
 export async function claimWebhookEvent(
   row: WebhookEventRow,
@@ -259,11 +266,23 @@ export async function claimWebhookEvent(
     const res = await pg('POST', 'webhook_events', {
       ...row,
       outcome: 'no_change', // placeholder; overwritten by finishWebhookEvent
+      detail: 'claimed', // in-flight marker; finishWebhookEvent always clears it
     });
     if (res.ok) return 'claimed';
-    if (res.status === 409) return 'duplicate';
-    console.error('claimWebhookEvent failed', res.status, await res.text());
-    return 'error';
+    if (res.status !== 409) {
+      console.error('claimWebhookEvent failed', res.status, await res.text());
+      return 'error';
+    }
+    // Redelivery. return=representation is what makes the two cases distinguishable:
+    // a non-empty body means the row was still unfinished and is ours to process.
+    const reclaim = await pg('PATCH', 'webhook_events', { detail: 'claimed' },
+      `?dedupe_key=eq.${encodeURIComponent(row.dedupe_key)}` +
+      '&or=(detail.eq.claimed,outcome.eq.error)', 'return=representation');
+    if (!reclaim.ok) {
+      console.error('claimWebhookEvent reclaim failed', reclaim.status, await reclaim.text());
+      return 'error';
+    }
+    return (await reclaim.json()).length > 0 ? 'claimed' : 'duplicate';
   } catch (e) {
     console.error('claimWebhookEvent threw', (e as Error).message);
     return 'error';
@@ -278,7 +297,10 @@ export async function finishWebhookEvent(
   httpStatus: number,
 ): Promise<void> {
   try {
-    await pg('PATCH', 'webhook_events', { outcome, detail, http_status: httpStatus },
+    // detail is written even when null: the column doubles as the in-flight marker,
+    // and a settled row left holding `claimed` would look reclaimable forever.
+    await pg('PATCH', 'webhook_events',
+      { outcome, detail: detail ?? null, http_status: httpStatus },
       `?dedupe_key=eq.${encodeURIComponent(dedupeKey)}`);
   } catch (e) {
     console.error('finishWebhookEvent threw', (e as Error).message);
@@ -289,6 +311,12 @@ export async function finishWebhookEvent(
  * The cycle-end cancellation flag. Nothing else writes it: the cancel flow only
  * tells Razorpay, and the column defaults to false, so a subscription winding down
  * to current_end would otherwise report `cancelAtPeriodEnd: false` forever.
+ *
+ * Intentionally write-once — there is no reset. The flag is set only while an
+ * access-bearing cycle remains, and the subscription id it belongs to is never
+ * reused, so a stale `true` is unreachable: `cancelled` is terminal for the webhook,
+ * a later cycle for the same id cannot arrive, and a fresh subscription is a new id
+ * and a new row. A reset path would add a write that nothing needs.
  */
 export async function setCancelAtPeriodEnd(
   subscriptionId: string,

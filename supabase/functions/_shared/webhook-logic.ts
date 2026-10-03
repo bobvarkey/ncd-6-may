@@ -11,7 +11,7 @@
  *   3. Dedup on SIGNED content. The X-Razorpay-Event-Id header is not covered by
  *      the signature, so it is recorded for correlation and never trusted.
  */
-import { hmacHex, safeEqualHex, getSecret, planByRazorpayPlanId } from './payment-helpers.ts';
+import { hmacHex, safeEqualHex, getSecret, planByRazorpayPlanId, toHex } from './payment-helpers.ts';
 import {
   claimWebhookEvent, finishWebhookEvent, getSubscriptionByRazorpayId,
   applySubscriptionEntity, setEntitlementUntil, setCancelAtPeriodEnd,
@@ -46,7 +46,7 @@ const TERMINAL = new Set(['cancelled', 'completed', 'expired']);
 
 async function sha256Hex(input: string): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+  return toHex(new Uint8Array(digest));
 }
 
 /** Dedup on signed content: event type + subscription id + payment id. */
@@ -91,6 +91,40 @@ function unverifiedKey(raw: string, reason: string): Promise<string> {
   return sha256Hex(`unverified|${reason}|${raw}`);
 }
 
+/**
+ * The last line of the 200-always decision. This delivery never got as far as a
+ * body-derived key — the body itself may be what threw — so the row carries a
+ * synthetic one: it exists to be visible in the ledger, not to dedupe anything.
+ * Wrapped, because a ledger failure here must not turn the 200 into a 500.
+ */
+async function recordUnexpected(deps: WebhookDeps, message: string): Promise<void> {
+  try {
+    const key = `unexpected|${Date.now()}|${Math.random().toString(36).slice(2)}`;
+    await deps.claimWebhookEvent({
+      dedupe_key: key, razorpay_event_id: null, event_type: null,
+      razorpay_subscription_id: null, razorpay_payment_id: null,
+      signature_present: false, signature_valid: false,
+      outcome: 'no_change', detail: message, http_status: 200,
+    });
+    await deps.finishWebhookEvent(key, 'error', message, 200);
+  } catch (e) {
+    console.error('recordUnexpected threw', (e as Error).message);
+  }
+}
+
+/**
+ * Run post-response work without awaiting it. On Deno Deploy a bare floating
+ * promise can be killed when the isolate goes idle once the response is flushed;
+ * EdgeRuntime.waitUntil is what keeps it alive. Where that global does not exist
+ * (Vitest, or any non-Deno runtime), a plain void is the best available.
+ */
+function runDetached(task: Promise<void>): void {
+  const edge = (globalThis as { EdgeRuntime?: { waitUntil(p: Promise<unknown>): void } })
+    .EdgeRuntime;
+  if (edge?.waitUntil) edge.waitUntil(task);
+  else void task;
+}
+
 export async function razorpayWebhook(
   req: Request,
   overrides: Partial<WebhookDeps> = {},
@@ -99,14 +133,17 @@ export async function razorpayWebhook(
   // No path below is meant to throw, and this is the last line of the 200-always
   // decision: an unexpected throw must not become a non-2xx and spend the retry
   // window that ends with Razorpay disabling the webhook.
-  const res = await handleDelivery(req, deps).catch((e) => {
-    console.error('razorpayWebhook threw', (e as Error).message);
-    return ok({ error: (e as Error).message });
+  const res = await handleDelivery(req, deps).catch(async (e) => {
+    const message = (e as Error).message;
+    console.error('razorpayWebhook threw', message);
+    await recordUnexpected(deps, message.slice(0, 200));
+    return ok({ error: message });
   });
-  // Retention, once per delivery, fire-and-forget: forged deliveries are
-  // unauthenticated and unbounded, so the ledger needs a ceiling. Never awaited
-  // and never throws, so it cannot change the response.
-  void pruneWebhookEvents();
+  // Retention once per delivery, detached and never awaited or thrown from, so it
+  // cannot change the response. Every delivery already pays an INSERT, so the DELETE
+  // is the same order of cost, index-scoped on received_at — no separate sweep is
+  // warranted, even though forged deliveries mean the flood is unbounded.
+  runDetached(pruneWebhookEvents());
   return res;
 }
 
@@ -129,16 +166,9 @@ async function handleDelivery(req: Request, deps: WebhookDeps): Promise<Response
     // dedupe key is a hash of the raw body so attacker traffic is countable and
     // still deduplicated against itself, but it is NOT an identity. The rejection
     // is stamped rejected_signature so it stays visible in the ledger.
-    const key = await unverifiedKey(raw, 'signature');
-    const claim = await deps.claimWebhookEvent({
-      dedupe_key: key, razorpay_event_id: null, event_type: null,
-      razorpay_subscription_id: null, razorpay_payment_id: null,
-      signature_present: Boolean(signature), signature_valid: false,
-      outcome: 'no_change', detail: 'signature mismatch', http_status: 200,
-    });
-    if (claim !== 'duplicate') {
-      await deps.finishWebhookEvent(key, 'rejected_signature', 'signature mismatch', 200);
-    }
+    await recordStandalone(deps, await unverifiedKey(raw, 'signature'), 'rejected_signature',
+      'signature mismatch',
+      { signature_present: Boolean(signature), signature_valid: false });
     return ok({ skipped: 'signature mismatch' });
   }
 

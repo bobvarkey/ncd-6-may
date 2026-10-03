@@ -104,6 +104,13 @@ export function getDeviceId(req: Request): string | null {
   }
 }
 
+/** Lowercase hex of a digest — the encoding Razorpay signatures use. */
+export function toHex(bytes: Uint8Array): string {
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 /** HMAC-SHA256 hex digest — Razorpay signature format. */
 export async function hmacHex(secret: string, payload: string): Promise<string> {
   const enc = new TextEncoder();
@@ -115,9 +122,7 @@ export async function hmacHex(secret: string, payload: string): Promise<string> 
     ['sign'],
   );
   const sig = await crypto.subtle.sign('HMAC', key, enc.encode(payload));
-  return Array.from(new Uint8Array(sig))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
+  return toHex(new Uint8Array(sig));
 }
 
 /** Timing-safe string comparison for hex signatures. */
