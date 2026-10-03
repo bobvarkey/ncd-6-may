@@ -314,7 +314,22 @@ export default function OsteoCareAssessment() {
                     options={STANDALONE_OPTIONS}
                     value={view.standalone_risk_factors}
                     exclusive={NONE_IDENTIFIED}
-                    onChange={(v) => set("standalone_risk_factors", v)}
+                    onChange={(v) =>
+                      // "None identified" is a claim about all three groups, not just
+                      // this one: claiming it must clear the causes and confirmed
+                      // risks, and their free text with them so a stale answer cannot
+                      // reappear. The CKD rung is deliberately kept (Gate 5 reads it).
+                      v.includes(NONE_IDENTIFIED)
+                        ? setStored({
+                            ...view,
+                            standalone_risk_factors: v,
+                            bone_loss_conditions: [],
+                            bone_loss_other_text: "",
+                            other_confirmed_risks: [],
+                            other_risks_other_text: "",
+                          })
+                        : set("standalone_risk_factors", v)
+                    }
                   />
                 </Field>
 
@@ -325,7 +340,20 @@ export default function OsteoCareAssessment() {
                   <PillMultiselect
                     options={BONE_LOSS_CONDITIONS}
                     value={view.bone_loss_conditions}
-                    onChange={(v) => set("bone_loss_conditions", v)}
+                    onChange={(v) =>
+                      // Any real cause denies a standing "None identified" claim. The
+                      // chip is in another group, so PillMultiselect's own exclusion
+                      // cannot reach it; drop it here instead.
+                      v.length
+                        ? setStored({
+                            ...view,
+                            bone_loss_conditions: v,
+                            standalone_risk_factors: view.standalone_risk_factors.filter(
+                              (f) => f !== NONE_IDENTIFIED,
+                            ),
+                          })
+                        : set("bone_loss_conditions", v)
+                    }
                   />
                 </Field>
                 {view.bone_loss_conditions.includes("other_specify") ? (
@@ -362,7 +390,19 @@ export default function OsteoCareAssessment() {
                   <PillMultiselect
                     options={OTHER_CONFIRMED_RISKS}
                     value={view.other_confirmed_risks}
-                    onChange={(v) => set("other_confirmed_risks", v)}
+                    onChange={(v) =>
+                      // As with 4b: a confirmed risk denies "None identified", which
+                      // lives in another group and is invisible to the control.
+                      v.length
+                        ? setStored({
+                            ...view,
+                            other_confirmed_risks: v,
+                            standalone_risk_factors: view.standalone_risk_factors.filter(
+                              (f) => f !== NONE_IDENTIFIED,
+                            ),
+                          })
+                        : set("other_confirmed_risks", v)
+                    }
                   />
                 </Field>
                 {view.other_confirmed_risks.includes("other_specify") ? (

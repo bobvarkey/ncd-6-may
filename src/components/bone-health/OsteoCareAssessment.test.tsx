@@ -44,9 +44,36 @@ describe("OsteoCareAssessment", () => {
   it("adds the frailty risk when CFS is 5 or more", () => {
     render(<OsteoCareAssessment />);
     openGates();
-    fireEvent.click(screen.getByRole("button", { name: "CFS 6" }));
+    // CFS 5, not 6: the test names the >= 5 boundary, so it must sit on it.
+    fireEvent.click(screen.getByRole("button", { name: "CFS 5" }));
     // Scoped to the frailty note: /records/i alone also matches the Gate 4b hint.
-    expect(screen.getByText(/CFS 6 records/i)).toBeTruthy();
+    expect(screen.getByText(/CFS 5 records/i)).toBeTruthy();
+  });
+
+  it("clears the None identified claim when a bone-loss condition is ticked", () => {
+    render(<OsteoCareAssessment />);
+    openGates();
+    fireEvent.click(screen.getByRole("button", { name: "None identified" }));
+    expect(screen.getByRole("button", { name: "None identified" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    fireEvent.click(screen.getByRole("button", { name: /chronic kidney disease/i }));
+    expect(screen.getByRole("button", { name: "None identified" }).getAttribute("aria-pressed")).toBe(
+      "false",
+    );
+  });
+
+  it("clears a bone-loss condition when None identified is ticked", () => {
+    render(<OsteoCareAssessment />);
+    openGates();
+    fireEvent.click(screen.getByRole("button", { name: /chronic kidney disease/i }));
+    expect(
+      screen.getByRole("button", { name: /chronic kidney disease/i }).getAttribute("aria-pressed"),
+    ).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "None identified" }));
+    expect(
+      screen.getByRole("button", { name: /chronic kidney disease/i }).getAttribute("aria-pressed"),
+    ).toBe("false");
   });
 
   it("persists the assessment and restores it on remount", () => {
