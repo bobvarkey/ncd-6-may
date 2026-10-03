@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { openCheckout, formatAmount, type Plan } from './index';
+import { openSubscriptionCheckout, formatAmount, type Plan } from './index';
 import { Check, Loader2 } from 'lucide-react';
 
 interface CheckoutButtonProps {
@@ -32,7 +32,7 @@ export function CheckoutButton({
     setSuccess(false);
 
     try {
-      const response = await openCheckout(plan.id, userInfo);
+      const response = await openSubscriptionCheckout(plan.id, { userInfo });
 
       if (response) {
         setSuccess(true);

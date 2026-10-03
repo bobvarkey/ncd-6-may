@@ -1,12 +1,15 @@
 // Payment Module Entry Point
 export { plans, getPlan, formatAmount, type Plan } from './plans';
 export {
-  openCheckout,
+  openSubscriptionCheckout,
+  createSubscription,
+  verifySubscriptionCheckout,
+  buildCheckoutOptions,
   loadRazorpayScript,
-  verifyRazorpayPayment,
   fetchMyEntitlement,
-  type RazorpayResponse,
-  type CreateOrderResponse,
+  type RazorpaySubscriptionResponse,
+  type CreateSubscriptionResult,
+  type UserInfo,
   type VerifyResult,
 } from './razorpay';
 export {
