@@ -195,6 +195,20 @@ Razorpay ids are not guessable.
   This is deliberate — see §3.3, the same file. The Deno entry cannot be imported by the test runner
   at all, because Vite rejects its `npm:` specifiers before any module mock can intercept.
 
+### 3.6 The test suite flakes under parallel load — re-run before believing a failure
+
+Not a defect in this integration, but you will hit it, so it is written down. Running the full
+suite (`bun run vitest run`, 32 files / 260 tests) fails roughly one test in every second or third
+run, and **the failing test differs between runs** — `PrimaryNavGrid.test.tsx`'s deep-link tiles and
+`IronStudiesCombined.test.tsx` were the two observed. Each passes 3/3 when run in isolation, and
+both files are byte-identical to `main`.
+
+So: a single red run tells you nothing. Re-run, and only investigate a failure that reproduces.
+This predates the branch and is not attributable to it — though the branch does add four test
+files, which raises parallel load, so if you want certainty before merging, run the suite a few
+times on `main` as well. Making these tests deterministic is a separate piece of work; the usual
+causes are shared timers and jsdom state under parallel workers.
+
 ---
 
 ## 4. On the delivery ledger
