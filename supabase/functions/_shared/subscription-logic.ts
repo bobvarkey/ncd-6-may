@@ -14,7 +14,7 @@ import {
   bindSubscription, getLiveSubscriptionForUser as realGetLive,
   hasConsumedTrial as realHasConsumed, getSubscriptionByRazorpayId,
   applySubscriptionEntity, setEntitlementUntil, revokeEntitlement,
-  recordTrialConsumed, getActiveEntitlement, ts,
+  recordTrialConsumed, getActiveEntitlement, getBillingSubscription, ts,
   type SubscriptionRow,
   type RazorpaySubscriptionEntity,
 } from './subscription-store.ts';
@@ -34,6 +34,7 @@ export interface SubscriptionDeps {
   setEntitlementUntil(userId: string, planId: string, untilIso: string, paymentId: string | null): Promise<void>;
   recordTrialConsumed(userId: string, endsAtIso: string): Promise<void>;
   getActiveEntitlement(userId: string): Promise<{ plan_id: string; valid_until: string; status: string } | null>;
+  getBillingSubscription(userId: string): Promise<SubscriptionRow | null>;
   revokeEntitlement(userId: string, planId: string): Promise<void>;
 }
 
@@ -47,6 +48,7 @@ const defaultDeps: SubscriptionDeps = {
   setEntitlementUntil,
   recordTrialConsumed,
   getActiveEntitlement,
+  getBillingSubscription,
   revokeEntitlement,
 };
 
@@ -55,6 +57,19 @@ function razorpayAuth(): string | null {
   const secret = getSecret('RAZORPAY_KEY_SECRET');
   if (!id || !secret) return null;
   return `Basic ${btoa(`${id}:${secret}`)}`;
+}
+
+/**
+ * The status-describing detail for a non-ok Razorpay response. Reading the body is
+ * itself I/O, so a failed read collapses to an empty detail rather than rejecting
+ * and masking the status it was meant to explain.
+ */
+async function razorpayErrorDetail(res: Response): Promise<string> {
+  try {
+    return (await res.text()).slice(0, 300);
+  } catch {
+    return '';
+  }
 }
 
 export async function createSubscription(
@@ -145,12 +160,7 @@ export async function createSubscription(
     return errRes(502, `Razorpay request failed: ${(e as Error).message}`);
   }
   if (!res.ok) {
-    let detail = '';
-    try {
-      detail = (await res.text()).slice(0, 300);
-    } catch {
-      // Body read failed; the status alone still identifies the failure.
-    }
+    const detail = await razorpayErrorDetail(res);
     return errRes(502, `Razorpay subscription creation failed: ${res.status} ${detail}`);
   }
   // Wrapped like the fetch above: a body read is I/O too, and must surface as a
@@ -357,12 +367,7 @@ export async function cancelSubscription(
     return errRes(502, `Razorpay request failed: ${(e as Error).message}`);
   }
   if (!res.ok) {
-    let detail = '';
-    try {
-      detail = (await res.text()).slice(0, 300);
-    } catch {
-      // Body read failed; the status alone still identifies the failure.
-    }
+    const detail = await razorpayErrorDetail(res);
     return errRes(502, `Razorpay cancellation failed: ${res.status} ${detail}`);
   }
 
@@ -373,19 +378,30 @@ export async function cancelSubscription(
     return errRes(502, `Razorpay cancellation returned invalid JSON: ${(e as Error).message}`);
   }
 
+  // Razorpay documents the cancel response as the full subscription entity and the
+  // sample carries current_end, but the docs never promise the response is
+  // exhaustive (several documented params are absent from that sample).
+  // applySubscriptionEntity PATCHes current_end to null when the entity omits it,
+  // which would erase the very date the access policy is built on. So a missing
+  // current_end is filled from the row we already hold; a field Razorpay does
+  // return still wins.
+  const patchEntity: RazorpaySubscriptionEntity =
+    entity.current_end == null && row.current_end
+      ? { ...entity, current_end: Math.floor(new Date(row.current_end).getTime() / 1000) }
+      : entity;
+
   let updated: SubscriptionRow | null;
   try {
-    updated = await deps.applySubscriptionEntity(entity);
+    updated = await deps.applySubscriptionEntity(patchEntity);
   } catch (e) {
     return errRes(502, `Subscription sync failed: ${(e as Error).message}`);
   }
-  const current = updated ?? row;
   // Access is intentionally NOT revoked here: the customer paid through
   // current_end. Expiry is handled by the clock in billingStatus, and the
   // subscription.cancelled webhook confirms it at cycle end.
   return jsonRes({
     cancelled: true,
-    accessUntil: current.current_end,
+    accessUntil: updated?.current_end ?? row.current_end,
     cancelAtPeriodEnd: true,
   });
 }
@@ -395,6 +411,11 @@ export async function cancelSubscription(
  * which computes expiry on read — a row still marked 'active' whose `valid_until`
  * has passed reports as no access. The subscription's own dates describe the next
  * charge, which may outlive access for a cancelled subscription.
+ *
+ * Reads through getBillingSubscription, not getLiveSubscriptionForUser: the live
+ * reader deliberately excludes cancelled/halted rows so a lapsed user can
+ * re-subscribe, but the billing screen must still show a cancelled row that is
+ * winding down until current_end.
  */
 export async function billingStatus(
   req: Request,
@@ -407,7 +428,7 @@ export async function billingStatus(
   let entitlement: { plan_id: string; valid_until: string; status: string } | null;
   try {
     [row, entitlement] = await Promise.all([
-      deps.getLiveSubscriptionForUser(userId),
+      deps.getBillingSubscription(userId),
       deps.getActiveEntitlement(userId),
     ]);
   } catch (e) {

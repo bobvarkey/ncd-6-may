@@ -146,6 +146,25 @@ export async function getLiveSubscriptionForUser(userId: string): Promise<Subscr
 }
 
 /**
+ * The subscription the billing screen should describe. The predicate differs from
+ * getLiveSubscriptionForUser on purpose: that one answers "may this account start a
+ * new subscription?" and so must exclude halted/cancelled so a lapsed user can
+ * re-subscribe, while this one answers "what should we show the user about the
+ * subscription they have?" and must include every row that still grants access.
+ * Per the policy table that is every status except completed/expired — a cancelled
+ * row still grants access until current_end. Most recent row first.
+ */
+export async function getBillingSubscription(userId: string): Promise<SubscriptionRow | null> {
+  const res = await pg('GET', 'subscriptions', undefined,
+    `?user_id=eq.${encodeURIComponent(userId)}` +
+    `&status=not.in.(completed,expired)` +
+    `&select=${SUBSCRIPTION_COLUMNS}&order=created_at.desc&limit=1`);
+  if (!res.ok) throw new Error(`getBillingSubscription failed: ${res.status}`);
+  const rows = await res.json();
+  return rows[0] ?? null;
+}
+
+/**
  * Sync our row from Razorpay's entity. Razorpay is the authority for status and
  * dates, so this overwrites rather than reconciles: a late-arriving event for an
  * older cycle must not overwrite a newer one, which is why callers pass only the

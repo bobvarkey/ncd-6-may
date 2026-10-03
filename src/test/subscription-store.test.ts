@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   setEntitlementUntil, revokeEntitlement, subscriptionEntityToRow,
-  recordTrialConsumed, getActiveEntitlement,
+  recordTrialConsumed, getActiveEntitlement, getBillingSubscription,
 } from '../../supabase/functions/_shared/subscription-store.ts';
 
 describe('subscriptionEntityToRow', () => {
@@ -79,6 +79,23 @@ describe('recordTrialConsumed', () => {
     vi.stubGlobal('Deno', { env: { get: () => 'x' } });
 
     await expect(recordTrialConsumed('u1', '2027-01-01T00:00:00.000Z')).resolves.toBeUndefined();
+  });
+});
+
+describe('getBillingSubscription', () => {
+  it('includes winding-down statuses and excludes only completed and expired', async () => {
+    const calls: { url: string; init: RequestInit }[] = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response('[]', { status: 200 });
+    });
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    await getBillingSubscription('u1');
+
+    // Cancelled/halted/pending rows still grant access, so billing must see them.
+    expect(calls[0].url).toContain('status=not.in.(completed,expired)');
+    expect(calls[0].url).toContain('user_id=eq.u1');
   });
 });
 
