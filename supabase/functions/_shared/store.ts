@@ -6,13 +6,21 @@
  * functions by Lovable Cloud). Service role bypasses RLS.
  */
 
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
-const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+/**
+ * Lazy env read. Deno-guarded so Vitest (which has no Deno global) can import
+ * this module; tests stub `Deno` via vi.stubGlobal. Behaviour is unchanged from
+ * the module-scope reads it replaces, only the read time moves.
+ */
+function env(name: string): string {
+  const deno = (globalThis as { Deno?: { env: { get(k: string): string | undefined } } }).Deno;
+  return deno?.env.get(name) ?? '';
+}
 
 function headers(): Record<string, string> {
+  const key = env('SUPABASE_SERVICE_ROLE_KEY');
   return {
-    Authorization: `Bearer ${SERVICE_KEY}`,
-    apikey: SERVICE_KEY,
+    Authorization: `Bearer ${key}`,
+    apikey: key,
     'Content-Type': 'application/json',
     Prefer: 'resolution=merge-duplicates,return=representation',
   };
@@ -24,7 +32,7 @@ async function pgRequest(
   body?: unknown,
   query = '',
 ): Promise<Response> {
-  const url = `${SUPABASE_URL}/rest/v1/${path}${query}`;
+  const url = `${env('SUPABASE_URL')}/rest/v1/${path}${query}`;
   return fetch(url, {
     method,
     headers: headers(),
