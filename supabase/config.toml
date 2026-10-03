@@ -1,1 +1,11 @@
 project_id = "dhwpbfqxypbbljygtlih"
+
+# Razorpay calls this endpoint server-to-server and cannot present a Supabase JWT.
+# It authenticates by HMAC signature over the raw body instead (webhook-logic.ts).
+[functions.razorpay-webhook]
+verify_jwt = false
+
+# Every user-facing function keeps JWT verification. Stated explicitly so a future
+# default change cannot silently open them.
+[functions.payment-api]
+verify_jwt = true

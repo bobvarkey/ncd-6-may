@@ -4,7 +4,6 @@
 //   - The checkout key id is returned by the authenticated Cloud function.
 //   - KEY_SECRET lives exclusively in encrypted Cloud secrets.
 
-import { getPlan } from './plans';
 import type { UserEntitlement } from './entitlements';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -14,25 +13,33 @@ declare global {
   }
 }
 
-export interface RazorpayResponse {
+export interface RazorpaySubscriptionResponse {
   razorpay_payment_id: string;
-  razorpay_order_id: string;
+  razorpay_subscription_id: string;
   razorpay_signature: string;
 }
 
-export interface CreateOrderResponse {
+export interface CreateSubscriptionResult {
   success: boolean;
-  orderId?: string;
-  amount?: number;
-  currency?: string;
+  subscriptionId?: string;
   keyId?: string;
+  planId?: string;
+  planName?: string;
+  amountPaise?: number;
+  interval?: 'monthly' | 'yearly';
+  isTrial?: boolean;
+  /** ISO date of the first charge. Non-null exactly when isTrial is true. */
+  firstChargeAt?: string | null;
   error?: string;
 }
 
+export interface UserInfo { name?: string; email?: string; phone?: string }
+
 export interface VerifyResult {
   verified: boolean;
-  orderId?: string;
+  subscriptionId?: string;
   paymentId?: string;
+  error?: string;
 }
 
 // Load Razorpay checkout script lazily
@@ -52,62 +59,112 @@ export function loadRazorpayScript(): Promise<void> {
 }
 
 /**
- * Create an order via the serverless backend.
- * POST /api/create-order
+ * Create a Razorpay subscription server-side. The plan id is the only thing the
+ * browser may choose: the server resolves the amount, currency, interval and
+ * trial length from its own catalog, so the client can never name a price.
  */
-export async function createRazorpayOrder(
+export async function createSubscription(
   planId: string,
-  userInfo?: { name?: string; email?: string; phone?: string }
-): Promise<CreateOrderResponse> {
-  const plan = getPlan(planId);
-  if (!plan) {
-    return { success: false, error: 'Invalid plan' };
-  }
-
+  opts: { trial?: boolean } = {},
+): Promise<CreateSubscriptionResult> {
   const { data, error } = await supabase.functions.invoke('payment-api', {
-    body: { action: 'create-order', planId },
+    body: { action: 'create-subscription', planId, trial: opts.trial === true },
   });
-  if (error || !data?.orderId) {
-    return {
-      success: false,
-      error: data?.error || error?.message || 'Failed to create order',
-    };
+  if (error || !data?.subscriptionId) {
+    return { success: false, error: data?.error || error?.message || 'Failed to create subscription' };
   }
-
-  return {
-    success: true,
-    orderId: data.orderId,
-    amount: data.amount,
-    currency: data.currency,
-    keyId: data.keyId,
-  };
+  return { success: true, ...data };
 }
 
 /**
- * Verify the payment signature via the serverless backend.
- * POST /api/verify-payment
- * Returns verified: true only when the HMAC-SHA256 signature matches.
+ * Verify the Checkout signature server-side. A subscription only counts as
+ * authorised once the server's HMAC-SHA256 check passes; the client never
+ * decides that for itself.
  */
-export async function verifyRazorpayPayment(
-  response: RazorpayResponse
+export async function verifySubscriptionCheckout(
+  r: RazorpaySubscriptionResponse,
 ): Promise<VerifyResult> {
   const { data, error } = await supabase.functions.invoke('payment-api', {
-    body: { action: 'verify-payment', ...response },
+    body: { action: 'verify-subscription', ...r },
   });
-  if (error || !data?.verified) {
-    return { verified: false };
-  }
+  if (error || !data?.verified) return { verified: false, error: data?.error };
+  return { verified: true, subscriptionId: r.razorpay_subscription_id, paymentId: r.razorpay_payment_id };
+}
 
+export interface CheckoutInput {
+  keyId: string;
+  subscriptionId: string;
+  planName: string;
+  prefill?: UserInfo;
+}
+
+/**
+ * Pure. Deliberately omits `amount` and `currency`: Razorpay reads both from the
+ * plan attached to the subscription, and passing them from the client would make
+ * the browser a price authority. Also carries no secret — only the public key id.
+ */
+export function buildCheckoutOptions(input: CheckoutInput): Record<string, unknown> {
   return {
-    verified: true,
-    orderId: response.razorpay_order_id,
-    paymentId: response.razorpay_payment_id,
+    key: input.keyId,
+    subscription_id: input.subscriptionId,
+    name: 'NCD Rx',
+    description: input.planName,
+    prefill: {
+      name: input.prefill?.name ?? '',
+      email: input.prefill?.email ?? '',
+      contact: input.prefill?.phone ?? '',
+    },
+    theme: { color: '#0ea5e9', hide_topbar: false },
   };
 }
 
 /**
- * Read THIS device's entitlement from server-side truth.
- * GET /api/entitlements/me — returns null when never entitled / free tier.
+ * Open Razorpay Subscriptions Checkout. Resolves with the verified response, or
+ * null if the user cancelled / the payment failed / verification failed. The
+ * options come from `buildCheckoutOptions`, so no price is ever sent from here.
+ */
+export async function openSubscriptionCheckout(
+  planId: string,
+  opts: { trial?: boolean; userInfo?: UserInfo } = {},
+): Promise<RazorpaySubscriptionResponse | null> {
+  await loadRazorpayScript();
+
+  const created = await createSubscription(planId, { trial: opts.trial });
+  if (!created.success || !created.subscriptionId || !created.keyId) {
+    throw new Error(created.error || 'Failed to create subscription');
+  }
+
+  return new Promise((resolve) => {
+    const razorpay = new window.Razorpay({
+      ...buildCheckoutOptions({
+        keyId: created.keyId!,
+        subscriptionId: created.subscriptionId!,
+        planName: created.planName ?? 'Pro',
+        prefill: opts.userInfo,
+      }),
+      handler: async (rzpResponse: RazorpaySubscriptionResponse) => {
+        try {
+          const verification = await verifySubscriptionCheckout(rzpResponse);
+          resolve(verification.verified ? rzpResponse : null);
+        } catch {
+          resolve(null);
+        }
+      },
+      modal: { ondismiss: () => resolve(null) },
+    });
+
+    razorpay.on('payment.failed', (payload: unknown) => {
+      console.error('Razorpay payment.failed:', payload);
+      resolve(null);
+    });
+
+    razorpay.open();
+  });
+}
+
+/**
+ * Read THIS user's entitlement from server-side truth.
+ * `payment-api` action `access-status` — returns null when never entitled / free tier.
  */
 export async function fetchMyEntitlement(): Promise<UserEntitlement | null> {
   try {
@@ -119,62 +176,37 @@ export async function fetchMyEntitlement(): Promise<UserEntitlement | null> {
   }
 }
 
-/**
- * Open Razorpay Standard Checkout.
- * Resolves with the verified payment response, or null if the user
- * cancelled / the payment failed / verification failed.
- */
-export async function openCheckout(
-  planId: string,
-  userInfo?: { name?: string; email?: string; phone?: string }
-): Promise<RazorpayResponse | null> {
-  const plan = getPlan(planId);
-  if (!plan) {
-    throw new Error('Invalid plan');
-  }
+export interface BillingStatus {
+  planId: string | null;
+  planName: string | null;
+  status: string | null;
+  isTrial: boolean;
+  currentEnd: string | null;
+  chargeAt: string | null;
+  cancelAtPeriodEnd: boolean;
+  accessUntil: string | null;
+}
 
-  await loadRazorpayScript();
-
-  const orderResult = await createRazorpayOrder(planId, userInfo);
-  if (!orderResult.success || !orderResult.orderId) {
-    throw new Error(orderResult.error || 'Failed to create order');
-  }
-
-  return new Promise((resolve) => {
-    const razorpay = new window.Razorpay({
-      key: orderResult.keyId,
-      amount: orderResult.amount ?? plan.amount,
-      currency: orderResult.currency ?? plan.currency,
-      name: 'NCD-6-May',
-      description: plan.description,
-      order_id: orderResult.orderId,
-      prefill: {
-        name: userInfo?.name || '',
-        email: userInfo?.email || '',
-        contact: userInfo?.phone || '',
-      },
-      theme: {
-        color: '#0ea5e9',
-        hide_topbar: false,
-      },
-      handler: async (rzpResponse: RazorpayResponse) => {
-        try {
-          const verification = await verifyRazorpayPayment(rzpResponse);
-          resolve(verification.verified ? rzpResponse : null);
-        } catch {
-          resolve(null);
-        }
-      },
-      modal: {
-        ondismiss: () => resolve(null),
-      },
+export async function fetchBillingStatus(): Promise<BillingStatus | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke('payment-api', {
+      body: { action: 'billing-status' },
     });
+    if (error || !data) return null;
+    return data as BillingStatus;
+  } catch {
+    return null;
+  }
+}
 
-    razorpay.on('payment.failed', (payload: unknown) => {
-      console.error('Razorpay payment.failed:', payload);
-      resolve(null);
-    });
-
-    razorpay.open();
+export async function cancelSubscription(): Promise<{
+  ok: boolean; error?: string; accessUntil?: string | null;
+}> {
+  const { data, error } = await supabase.functions.invoke('payment-api', {
+    body: { action: 'cancel-subscription' },
   });
+  if (error || !data?.cancelled) {
+    return { ok: false, error: data?.error || error?.message || 'Cancellation failed' };
+  }
+  return { ok: true, accessUntil: data.accessUntil ?? null };
 }

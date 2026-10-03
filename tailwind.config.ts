@@ -92,6 +92,23 @@ export default {
           red: "#FF0000",
           yellow: "#FFFF00",
         },
+        brand: {
+          DEFAULT: "hsl(var(--brand) / <alpha-value>)",
+          deep: "hsl(var(--brand-deep) / <alpha-value>)",
+          foreground: "hsl(var(--brand-foreground) / <alpha-value>)",
+        },
+        mist: {
+          DEFAULT: "hsl(var(--mist) / <alpha-value>)",
+          foreground: "hsl(var(--mist-foreground) / <alpha-value>)",
+        },
+        tier: {
+          "very-high": "hsl(var(--tier-very-high) / <alpha-value>)",
+          "very-high-foreground": "hsl(var(--tier-very-high-foreground) / <alpha-value>)",
+          high: "hsl(var(--tier-high) / <alpha-value>)",
+          "high-foreground": "hsl(var(--tier-high-foreground) / <alpha-value>)",
+          unclassified: "hsl(var(--tier-unclassified) / <alpha-value>)",
+          "unclassified-foreground": "hsl(var(--tier-unclassified-foreground) / <alpha-value>)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -132,6 +149,10 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
+        seat: {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -140,6 +161,7 @@ export default {
         "slide-in": "slide-in 0.3s ease-out",
         blob: "blob 7s infinite",
         "bounce-slow": "bounce-slow 2s ease-in-out infinite",
+        seat: "seat 0.35s ease-out both",
       },
     },
   },

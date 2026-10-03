@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
 import { useEffect, useState } from "react";
 import PaywallModal from "@/components/PaywallModal";
-import { OPEN_PAYWALL_EVENT, pruneExpiredTrial } from "@/payments";
+import { OPEN_PAYWALL_EVENT } from "@/payments";
 import { injectMock } from "@/lib/wrapper/mock-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -11,6 +11,7 @@ import { LabProvider } from "@/components/SmartLabelUpload/GlobalLabContext";
 import BackToHome from "@/components/BackToHome";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { RequireAccess } from "@/components/RequireAccess";
 import { OfflineProvider } from "@/lib/offline/OfflineContext";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 
@@ -100,7 +101,6 @@ class RouteErrorBoundary extends Component<{ children: ReactNode }, { hasError: 
 const Home = lazyWithModuleRetry(() => import("@/pages/Home"));
 const Settings = lazyWithModuleRetry(() => import("@/pages/Settings"));
 const Subscription = lazyWithModuleRetry(() => import("@/pages/Subscription"));
-const Login = lazyWithModuleRetry(() => import("@/pages/Login"));
 const Diabetes = lazyWithModuleRetry(() => import("@/pages/Diabetes"));
 const Hypertension = lazyWithModuleRetry(() => import("@/pages/Hypertension"));
 const Lipids = lazyWithModuleRetry(() => import("@/pages/Lipids"));
@@ -208,6 +208,7 @@ const PEPPage = lazyWithModuleRetry(() => import("@/pages/PEP"));
 const AdultVaccinationsPage = lazyWithModuleRetry(() => import("@/pages/AdultVaccinations"));
 const AKIAKDMiniApp = lazyWithModuleRetry(() => import("@/pages/AKIAKDMiniApp"));
 const NotFound = lazyWithModuleRetry(() => import("@/components/NotFound"));
+const Login = lazyWithModuleRetry(() => import("@/pages/Login"));
 
 const queryClient = new QueryClient();
 
@@ -269,7 +270,9 @@ const PageShell = ({ title, children }: { title: string; children: ReactNode }) 
 };
 
 const withNav = (element: ReactNode, title: string) => (
-  <PageShell title={title}>{element}</PageShell>
+  <RequireAccess>
+    <PageShell title={title}>{element}</PageShell>
+  </RequireAccess>
 );
 
 const App = () => {
@@ -279,9 +282,6 @@ const App = () => {
 
   useEffect(() => {
     injectMock();
-
-    // Clear any trial that has passed its 3-day window.
-    pruneExpiredTrial();
 
     // Open the paywall when another screen requests it (e.g. Subscription).
     const openHandler = () => setShowPaywall(true);
@@ -349,8 +349,8 @@ const App = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
           <Route path="/settings" element={withNav(<Settings />, "Settings")} />
-          <Route path="/login" element={withNav(<Login />, "Account")} />
-          <Route path="/subscription" element={withNav(<Subscription />, "Subscription")} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/subscription" element={<PageShell title="Subscription"><Subscription /></PageShell>} />
           <Route path="/diabetes" element={withNav(<Diabetes />, "Diabetes")} />
           <Route path="/hypertension" element={withNav(<Hypertension />, "Hypertension")} />
           <Route path="/lipids" element={withNav(<Lipids />, "Lipids")} />
@@ -463,10 +463,10 @@ const App = () => {
           <Route path="/feedback" element={withNav(<FeedbackTips />, "Feedback")} />
 
           {/* Legal / Compliance */}
-          <Route path="/privacy" element={withNav(<PrivacyPolicy />, "Privacy Policy")} />
-          <Route path="/terms" element={withNav(<TermsOfService />, "Terms of Service")} />
-          <Route path="/disclaimer" element={withNav(<DisclaimerPage />, "Disclaimer")} />
-          <Route path="/delete-account" element={withNav(<DeleteAccount />, "Delete Account")} />
+          <Route path="/privacy" element={<PageShell title="Privacy Policy"><PrivacyPolicy /></PageShell>} />
+          <Route path="/terms" element={<PageShell title="Terms of Service"><TermsOfService /></PageShell>} />
+          <Route path="/disclaimer" element={<PageShell title="Disclaimer"><DisclaimerPage /></PageShell>} />
+          <Route path="/delete-account" element={<PageShell title="Delete Account"><DeleteAccount /></PageShell>} />
           <Route path="/account/delete" element={<Navigate to="/delete-account" replace />} />
           <Route path="/images" element={withNav(<ImageGallery />, "Image Gallery")} />
           <Route path="/image-gallery" element={<Navigate to="/images" replace />} />

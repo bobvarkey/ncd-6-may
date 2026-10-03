@@ -11,7 +11,7 @@
 
 import { describe, it, expect } from "vitest";
 import { readdirSync, readFileSync, statSync } from "fs";
-import { join, relative } from "path";
+import { join, relative, resolve } from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -181,5 +181,30 @@ describe("dark-theme contrast regression guard", () => {
   it("index.css applies color: white to dark-surface children", () => {
     const css = readFileSync(join(ROOT, "index.css"), "utf8");
     expect(css).toMatch(/\[class\*="bg-/);
+  });
+
+  it("defines the tier and brand tokens in both theme blocks with light foregrounds", () => {
+    const css = readFileSync(resolve(__dirname, "../index.css"), "utf8");
+    // Both theme blocks must carry each token: :root is the dark theme, .light the light one.
+    for (const token of [
+      "--brand",
+      "--brand-deep",
+      "--mist",
+      "--tier-very-high",
+      "--tier-very-high-foreground",
+      "--tier-high",
+      "--tier-high-foreground",
+      "--tier-unclassified",
+      "--tier-unclassified-foreground",
+    ]) {
+      const hits = css.match(new RegExp(`${token}:`, "g")) ?? [];
+      expect(hits.length, `${token} must be defined in both theme blocks`).toBeGreaterThanOrEqual(2);
+    }
+    // White-on-tier must hold in both themes, so every tier foreground is full lightness.
+    for (const token of ["--tier-very-high-foreground", "--tier-high-foreground", "--tier-unclassified-foreground"]) {
+      const values = [...css.matchAll(new RegExp(`${token}:\\s*([^;]+);`, "g"))].map((m) => m[1].trim());
+      expect(values.length).toBeGreaterThanOrEqual(2);
+      for (const v of values) expect(v, `${token} must be pure white`).toBe("0 0% 100%");
+    }
   });
 });

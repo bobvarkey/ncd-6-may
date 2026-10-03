@@ -6,10 +6,12 @@ export interface Plan {
   name: string;
   amount: number; // Amount in paise (INR * 100)
   currency: string;
-  interval: 'month' | 'year' | 'one-time';
+  interval: 'month' | 'year';
   description: string;
   features: string[];
   popular?: boolean;
+  /** Days of free trial, mirrored from the server catalog. Display only. */
+  trialDays: number;
 }
 
 export const plans: Plan[] = [
@@ -25,7 +27,8 @@ export const plans: Plan[] = [
       'Hypertension tools',
       'Diabetes management',
       'Basic drug references'
-    ]
+    ],
+    trialDays: 3
   },
   {
     id: 'pro-monthly',
@@ -42,7 +45,8 @@ export const plans: Plan[] = [
       'Treatment protocols',
       'Priority updates'
     ],
-    popular: true
+    popular: true,
+    trialDays: 3
   },
   {
     id: 'pro-yearly',
@@ -58,23 +62,8 @@ export const plans: Plan[] = [
       'Priority support',
       'Custom templates'
     ],
-    popular: true
-  },
-  {
-    id: 'lifetime',
-    name: 'Lifetime Access',
-    amount: 1499900, // ₹14,999 one-time
-    currency: 'INR',
-    interval: 'one-time',
-    description: 'Pay once, use forever',
-    features: [
-      'Lifetime Pro access',
-      'All future updates',
-      'All new features',
-      'Priority support',
-      'Custom templates',
-      'No recurring charges'
-    ]
+    popular: true,
+    trialDays: 3
   }
 ];
 
@@ -86,8 +75,6 @@ export function getPlan(planId: string): Plan | undefined {
 // Format amount for display
 export function formatAmount(plan: Plan): string {
   const amount = plan.amount / 100;
-  if (plan.interval === 'one-time') {
-    return `₹${amount.toLocaleString('en-IN')}`;
-  }
-  return `₹${amount.toLocaleString('en-IN')}/${plan.interval === 'month' ? 'mo' : 'yr'}`;
+  const suffix = plan.interval === 'month' ? 'mo' : 'yr';
+  return `₹${amount.toLocaleString('en-IN')}/${suffix}`;
 }

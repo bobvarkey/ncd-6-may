@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check, Crown, Sparkles, Loader2, Zap } from 'lucide-react';
-import { openCheckout, formatAmount, plans, grantProAccess, startFreeTrial, fetchMyEntitlement } from '@/payments';
+import { openSubscriptionCheckout, formatAmount, plans } from '@/payments';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/auth/AuthProvider';
 
@@ -14,14 +14,14 @@ interface PaywallModalProps {
 
 export default function PaywallModal({ open, onOpenChange, onStartTrial }: PaywallModalProps) {
   const navigate = useNavigate();
-  const { user, startTrial: startAccountTrial, refreshAccess } = useAuth();
+  const { user, refreshAccess } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Paid plan used for checkout.
   const proPlan = plans.find((p) => p.id === 'pro-monthly') || plans[1];
 
-  /** Immediate Pro access — real Razorpay payment + server-side verification. */
+  /** Immediate Pro access — real Razorpay subscription + server-side verification. */
   const handleProAccess = async () => {
     if (!user) {
       onOpenChange(false);
@@ -32,23 +32,11 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
     setError(null);
 
     try {
-      const response = await openCheckout(proPlan.id);
+      const response = await openSubscriptionCheckout(proPlan.id);
 
       if (response) {
-        // Payment verified server-side (HMAC signature matched) and the
-        // entitlement now lives on the server (/api/entitlements/me).
-        // Refresh the local mirror from server truth; fall back to the
-        // requested plan if the fetch hiccups.
-        const serverEntitlement = await fetchMyEntitlement();
-        if (serverEntitlement?.validUntil) {
-          grantProAccess(
-            serverEntitlement.planId || proPlan.id,
-            response.razorpay_payment_id,
-            serverEntitlement.validUntil
-          );
-        } else {
-          grantProAccess(proPlan.id, response.razorpay_payment_id);
-        }
+        // Checkout was verified server-side and the entitlement now lives on
+        // the server, so refresh the local mirror from server truth.
         await refreshAccess();
         onOpenChange(false);
       } else {
@@ -63,12 +51,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
     }
   };
 
-  /**
-   * Local 3-day free trial.
-   * NOTE: this does NOT collect payment and does NOT set up autopay.
-   * True autopay requires Razorpay Subscriptions (plan + subscription_id),
-   * which is a separate integration. This trial simply expires locally.
-   */
+  /** Start the trial: a real subscription whose first charge is deferred. */
   const handleStartTrial = async () => {
     if (!user) {
       onOpenChange(false);
@@ -78,15 +61,19 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
     setLoading(true);
     setError(null);
     try {
-      const accountAccess = await startAccountTrial();
-      if (!accountAccess.access) {
-        throw new Error('This account has already used its free trial. Choose Pro to continue.');
+      // A trial is a real subscription with a future start_at, so Checkout must
+      // collect a mandate now. That is what makes the first charge automatic and
+      // the trial non-repeatable per account.
+      const result = await openSubscriptionCheckout(proPlan.id, { trial: true });
+      if (!result) {
+        setError('Trial was not authorised. No charge was made.');
+        return;
       }
-      startFreeTrial();
+      await refreshAccess();
       onStartTrial?.();
       onOpenChange(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to start your trial.');
+    } catch (e) {
+      setError((e as Error).message);
     } finally {
       setLoading(false);
     }
@@ -109,7 +96,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
           <div className="flex items-center justify-center gap-2 mb-1">
             <Sparkles className="w-5 h-5 text-amber-600" />
             <span className="font-bold text-amber-700 dark:text-amber-400">
-              BUY NOW OR TRY FREE FOR 3 DAYS
+              BUY NOW OR TRY FREE FOR {proPlan.trialDays} DAYS
             </span>
           </div>
           <p className="text-sm text-amber-700 dark:text-amber-300">
@@ -122,7 +109,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
           <div className="text-center mb-6">
             <p className="text-4xl font-bold text-foreground">{formatAmount(proPlan)}</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Or start with a 3-day free trial — cancel anytime
+              Or start with a {proPlan.trialDays}-day free trial — cancel anytime
             </p>
           </div>
 
@@ -171,7 +158,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
               )}
             </Button>
 
-            {/* Start Free Trial (local, no payment) */}
+            {/* Start Free Trial — mandate authorised now, first charge after the trial */}
             <Button
               variant="outline"
               className="w-full border-border text-muted-foreground hover:bg-card"
@@ -179,11 +166,12 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
               disabled={loading}
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              Start Free 3-Day Trial
+              Start {proPlan.trialDays}-day free trial
             </Button>
 
-            <p className="text-xs text-muted-foreground text-center">
-              Buy directly for instant Pro, or try free for 3 days — no payment collected during trial.
+            <p className="text-sm text-muted-foreground">
+              {formatAmount(proPlan)} after {proPlan.trialDays} days. Cancel anytime before{' '}
+              {new Date(Date.now() + proPlan.trialDays * 86400_000).toLocaleDateString('en-IN')} and you pay nothing.
             </p>
           </div>
 
