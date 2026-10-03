@@ -30,32 +30,63 @@ export function errRes(status: number, message: string): Response {
 }
 
 /**
- * Resolve a plan from the repo's plan catalog. Mirrors src/payments/plans.ts
- * prices — amounts are authoritative HERE, never from the client.
+ * Single env reader. Deno-guarded so Vitest (which has no Deno global) can
+ * import this module; tests stub `Deno` via vi.stubGlobal.
  */
+export function getSecret(name: string): string {
+  const deno = (globalThis as { Deno?: { env: { get(k: string): string | undefined } } }).Deno;
+  return deno?.env.get(name) ?? '';
+}
+
 export interface PlanDef {
   id: string;
   name: string;
   amountPaise: number;
   currency: 'INR';
-  interval: 'monthly' | 'yearly' | 'lifetime';
-  durationDays: number;
+  interval: 'monthly' | 'yearly';
+  /** Server-side trial length offered on this plan, in days. 0 disables the trial. */
+  trialDays: number;
 }
 
-// Keep in sync with ~/ncd-6-may/src/payments/plans.ts
+/**
+ * The authoritative catalog. Amounts are here, never from the client.
+ * Razorpay plan ids are NOT here: test and live plans have different ids, so
+ * they live in backend secrets and go-live stays a config change.
+ */
 export const PLAN_CATALOG: PlanDef[] = [
-  { id: 'basic-monthly', name: 'Basic', amountPaise: 29900, currency: 'INR', interval: 'monthly', durationDays: 30 },
-  { id: 'pro-monthly', name: 'Pro', amountPaise: 50100, currency: 'INR', interval: 'monthly', durationDays: 30 },
-  { id: 'pro-yearly', name: 'Pro', amountPaise: 699900, currency: 'INR', interval: 'yearly', durationDays: 365 },
-  { id: 'lifetime', name: 'Pro', amountPaise: 1499900, currency: 'INR', interval: 'lifetime', durationDays: 36500 },
+  { id: 'basic-monthly', name: 'Basic', amountPaise: 29900, currency: 'INR', interval: 'monthly', trialDays: 3 },
+  { id: 'pro-monthly',   name: 'Pro',   amountPaise: 50100, currency: 'INR', interval: 'monthly', trialDays: 3 },
+  { id: 'pro-yearly',    name: 'Pro',   amountPaise: 699900, currency: 'INR', interval: 'yearly', trialDays: 3 },
 ];
+
+const RAZORPAY_PLAN_ID_SECRET: Record<string, string> = {
+  'basic-monthly': 'RAZORPAY_PLAN_ID_BASIC_MONTHLY',
+  'pro-monthly': 'RAZORPAY_PLAN_ID_PRO_MONTHLY',
+  'pro-yearly': 'RAZORPAY_PLAN_ID_PRO_YEARLY',
+};
 
 export function findPlan(planId: string): PlanDef | undefined {
   return PLAN_CATALOG.find((p) => p.id === planId);
 }
 
+/** Internal plan id -> Razorpay plan id, or undefined when the secret is unset. */
+export function razorpayPlanIdFor(planId: string): string | undefined {
+  const secretName = RAZORPAY_PLAN_ID_SECRET[planId];
+  if (!secretName) return undefined;
+  const value = getSecret(secretName);
+  return value || undefined;
+}
+
+/** Razorpay plan id -> internal plan. Used by the webhook, which only sees the former. */
+export function planByRazorpayPlanId(razorpayPlanId: string): PlanDef | undefined {
+  return PLAN_CATALOG.find((p) => razorpayPlanIdFor(p.id) === razorpayPlanId);
+}
+
+/** Retained for the order code until Task 14 removes it. */
 export function planDurationDays(planId: string): number {
-  return findPlan(planId)?.durationDays ?? 30;
+  const plan = findPlan(planId);
+  if (!plan) return 30;
+  return plan.interval === 'yearly' ? 365 : 30;
 }
 
 /**

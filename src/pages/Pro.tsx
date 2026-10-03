@@ -92,7 +92,8 @@ export function ProFeaturesPage({ entitlement }: ProFeaturesPageProps) {
                   interval: 'month',
                   description: 'Full access',
                   features: proFeatures,
-                  popular: true
+                  popular: true,
+                  trialDays: 3
                 }}
                 className="w-full"
               />
