@@ -7,23 +7,16 @@
   the record instead of vanishing with the code. This is a record, not a fix: nothing was added
   to `src/lib/osteo/logic.ts`, which is frozen, and nothing deleted is restored.
 
-## What was compared
+## What counts as the shipped surface — and the bound on this audit
 
-- **Superseded copy:** the `drugDetails` block in
-  `src/components/bone-health/BoneHealthGuidedApp.tsx` — ten drug entries, each with
-  `name`, `doses`, `duration` and `notes`.
-- **Engine copy:** the medication cards produced by `evaluate()` in `src/lib/osteo/logic.ts`
-  (`MedicationOption.dose` / `.review` / `.notes`). The engine builds **seven** cards:
-  alendronate, risedronate, zoledronate, denosumab, teriparatide, abaloparatide,
-  romosozumab.
-- The engine also emits global `safetyAlerts`, `todayActions`, `evidence`,
-  `documentedScreeningRisks` and `missingInformation`. Where an old point is made only there
-  (not on a drug card), it is still counted as **made**, and the location is noted.
+**The bound.** This audit compares the four retired files against the **frozen engine** and the
+**Bone Health page's four tabs** — Assessment, Summary, DEXA scan and Zoledronic — together with
+the page's own Copy/Download export. It is **not** a claim that no other surface in the
+application carries overlapping clinical content: two other routes ship osteoporosis material and
+are named as **deliberately outside the bound** at the end of this note. Read every "missing"
+below as *missing from the surfaces inside this bound*, not as "absent from the application".
 
-## What counts as the shipped surface
-
-A clinician using the Bone Health page can obtain copy from every one of these, so the audit
-counts all of them:
+Inside the bound, a clinician using the Bone Health page can obtain copy from:
 
 1. the engine's outputs in `src/lib/osteo/logic.ts`, as rendered by
    `src/components/osteo/ResultCard.tsx`;
@@ -34,25 +27,54 @@ counts all of them:
    emitted by the handlers at `src/pages/BoneHealth.tsx:85` and `:91` — a user presses Copy and
    receives this text;
 5. **the Zoledronic infusion tab**, `src/components/bone-health/ZoledronicProtocol.tsx` and
-   `src/data/zoledronic-protocol.ts`.
+   `src/data/zoledronic-protocol.ts`;
+6. **the Summary tab poster**, `public/osteoporosis-summary.jpg`, rendered at
+   `src/pages/BoneHealth.tsx:139-158` (the `img` at `:149-154`) — a current pathway poster that is
+   **engine-aligned**, not stale (see below);
+7. **the DEXA scan tab**, `src/components/bone-health/DexaBmdTesting.tsx` with
+   `src/data/dexa-bmd-testing.ts`, rendered at `src/pages/BoneHealth.tsx:164-166`.
 
-**Correction to the first version of this audit.** It scoped the surface to (1)–(3) and so
-reported as *missing* several items that (4) or (5) actually ship. Those are relabelled
-**present but stale** below, not deleted: they are still shipped, still state the old algorithm,
-and now contradict the engine's result card on the same page. The two "nothing is lost" sentences
-in the earlier version were wrong for the same reason and have been removed.
+**Correction history.** The first version scoped the surface to (1)–(3) and so reported as
+*missing* several items that (4)–(5) ship; those are relabelled **present but stale** below. A
+second pass added (4)–(5). This third pass adds (6)–(7) and, with them, the *bound*: the earlier
+"the audit counts all of them" and "nothing remains un-accounted for" phrasings were absolutes
+the audit cannot support, and are removed rather than reworded.
 
 ## How points were judged
 
 A point is:
 
-- **made** if the engine output, tab copy or mappings say the same thing in different words;
+- **made** if a surface inside the bound — the engine, either new tab, the export block, the
+  poster or the mappings — says the same thing in different words;
+- **made (poster)** where the Summary poster is the surface that carries it (the poster is
+  engine-aligned; it is **not** "present but stale");
 - **present but stale** if the page export block (4) or the Zoledronic tab (5) ships it, but it
   still states the old algorithm and now contradicts the engine's result card on the same page;
-- **missing** only if it is absent from every part of the shipped surface (1)–(5).
+- **missing** only if it is absent from every surface inside the bound (1)–(7). Out-of-scope
+  surfaces are named separately, so "missing" is never read as "absent from the application".
 
 Doses and durations are included, because they are clinical copy that leaves the codebase with
 the deleted files. Brand names were not treated as counselling points (see "Naming differences").
+
+## The Summary poster (`osteoporosis-summary.jpg`) — engine-aligned
+
+Rendered on the Summary tab (`BoneHealth.tsx:139-158`). Its risk criteria **match the frozen
+engine**, not the retired algorithm: "Lowest valid DXA T-score ≤ −3.5", "Lowest valid DXA T-score
+≤ −2.5", "Prednisolone-equivalent ≥7.5 mg/day for ≥3 months", "Vertebral fragility fracture
+within 2 years", "≥2 vertebral fragility fractures at any time", "Very-high FRAX threshold
+independently confirmed", "Hip or vertebral fragility fracture", "FRAX above the national
+treatment threshold". Its "HOW TO READ THIS" legend states **"Low = below treatment threshold
+after review."** It also states **"No DXA does not mean low risk."**, **"Never stop or delay
+denosumab without a clinician-led plan for ongoing treatment or antiresorptive cover."**, and, in
+the low-risk box, **"Exercise, nutrition, calcium / vitamin D adequacy and falls prevention."**
+and **"No new osteoporosis drug from this result alone."** It credits **"NOGG 2024 + ISCD 2023"**
+— a different source list from the retired `osteoporosis-algorithm.ts`, which credited
+SEIOMM/NOGG/KDIGO.
+
+Because the poster ships these, the very-high/high/low classification criteria, the low-risk
+legend ("Low: below threshold after assessment"), the "no DXA ≠ low risk" and "never stop
+denosumab" rules, and summary-level exercise / nutrition / calcium–vitamin-D / falls advice are
+**made** and are removed from the missing list below.
 
 ## Points the engine also makes
 
@@ -80,7 +102,7 @@ the deleted files. Brand names were not treated as counselling points (see "Nami
   "3-6 years" figure is shipped by the page export (present but stale).
 - "Ensure adequate calcium/vit D" → made globally rather than on the card: safety alerts
   "Calcium and vitamin D adequacy is not confirmed." and "Correct hypocalcaemia before
-  starting any antiresorptive."
+  starting any antiresorptive." Also made (poster) via "calcium / vitamin D adequacy".
 - "flu-like symptoms common" → **present but stale**: the Zoledronic infusion tab ships
   "Flu-like symptoms may occur within 24-72 hours" (`src/data/zoledronic-protocol.ts:56-57`).
 
@@ -89,14 +111,14 @@ the deleted files. Brand names were not treated as counselling points (see "Nami
 - "5-10 years, must transition to BP if stopping" → the transition point is made (engine review
   "No routine drug holiday" plus safety alerts); the "5-10 years" figure is shipped by the page
   export (present but stale).
-- "NEVER stop without planned antiresorptive" → made: "Denosumab lapse risks rebound vertebral
-  fracture. Do not simply stop." and "Never stop or delay denosumab without a planned effective
-  antiresorptive transition, even if BMD improved."
+- "NEVER stop without planned antiresorptive" → made: engine ("Never stop or delay denosumab
+  without a planned effective antiresorptive transition, even if BMD improved.") and the poster
+  ("Never stop or delay denosumab without a clinician-led plan for ongoing treatment or
+  antiresorptive cover.").
 - "Calcium monitoring required." → **not made.** The engine has only a CKD-specific
   hypocalcaemia-risk caveat ("Severe hypocalcaemia risk in advanced CKD.") and a pre-treatment
-  correction ("Correct hypocalcaemia before starting any antiresorptive."). Neither is a
-  monitoring instruction; no calcium-monitoring text exists anywhere in the shipped surface.
-  Recorded as missing below.
+  correction ("Correct hypocalcaemia before starting any antiresorptive."); the poster has no
+  calcium-monitoring instruction. Neither is a monitoring instruction. Recorded as missing below.
 
 **Romosozumab (old) → engine card `romosozumab`**
 - "210mg SC monthly (2 injections)" → engine dose "210 mg subcutaneously monthly as two 105 mg
@@ -126,7 +148,8 @@ the deleted files. Brand names were not treated as counselling points (see "Nami
 These items are **not lost**: they ship in the page's Copy/Download export block or on the
 Zoledronic infusion tab. But they still state the old algorithm, and several now contradict the
 engine's result card on the same page (for example the export's "Calcium 1000-1200mg + Vitamin D
-800-2000 IU daily" against the engine's cardless, alert-only calcium handling). Quoted verbatim.
+800-2000 IU daily" against the engine's alert-only, cardless calcium handling). Quoted verbatim.
+(The Summary poster is **not** here — it is engine-aligned; its items are recorded as made above.)
 
 From the page export block, `src/pages/BoneHealth.tsx` `boneHealthText`:
 - "Calcium 1000-1200mg + Vitamin D 800-2000 IU daily" (`:46`) — the very-high/high plan dose
@@ -166,8 +189,9 @@ From the Zoledronic infusion tab:
 
 ## Points the shipped surface does NOT make (missing)
 
-These points are absent from the engine output, the tab copy, the mappings, the page export
-block and the Zoledronic tab. Quoted verbatim.
+These points are absent from every surface inside the bound (1)–(7). Quoted verbatim. "Missing"
+means missing *from those surfaces*, not absent from the application — see "Out of scope by
+design" below.
 
 **Drug level**
 - Risedronate dosing alternative **"150mg monthly"** (the engine lists only "35 mg orally
@@ -183,42 +207,51 @@ block and the Zoledronic tab. Quoted verbatim.
 - Denosumab "Calcium monitoring required." (no monitoring instruction exists — see above).
 
 **Per-plan `lifestyle` / `monitoring` / `followUp` (`BoneHealthGuidedApp.tsx`)**
-- "Weight-bearing exercise 30 min most days"
-- "Balance training to prevent falls"
+
+*Made by the Summary poster at summary level* (the specific frequencies and quantities below are
+still absent, but the topics are shipped): exercise — "Weight-bearing exercise 30 min most days",
+"Muscle strengthening 2-3x weekly", "Weight-bearing exercise: walking, dancing, resistance
+training"; falls prevention — "Balance training to prevent falls", "Balance exercises to prevent
+falls"; nutrition — "Calcium-rich diet: dairy, leafy greens, fortified foods", "Vitamin D:
+sunlight exposure, fatty fish, fortified foods"; and the reassessment intent — "Reassess in 2-3
+years or sooner if clinical situation changes.", "Reassess if: new fracture, weight loss >5%, new
+illness/medication".
+
+Still missing (no surface in the bound ships them):
 - "Stop smoking, limit alcohol"
-- "Home safety assessment for fall hazards"
-- "DXA at 12-24 month intervals during treatment"
-- "Serial height measurement"
-- "Calcium, phosphate, creatinine annually"
-- "Monitor for new fractures"
-- "Muscle strengthening 2-3x weekly"
-- "Balance training"
 - "Stop smoking, limit alcohol <2 units/day"
-- "Vision check, home hazards assessment"
-- "DXA at 1-2 year intervals"
-- "Annual review of adherence and side effects"
-- "Calcium-rich diet: dairy, leafy greens, fortified foods"
-- "Vitamin D: sunlight exposure, fatty fish, fortified foods"
-- "Weight-bearing exercise: walking, dancing, resistance training"
-- "Balance exercises to prevent falls"
 - "Stop smoking completely"
 - "Limit alcohol to <2 units/day"
 - "Maintain healthy weight"
+- "Home safety assessment for fall hazards"
+- "Vision check, home hazards assessment"
+- "DXA at 12-24 month intervals during treatment"
+- "DXA at 1-2 year intervals"
 - "DXA only if new risk factors develop"
-- "Reassess if: new fracture, weight loss >5%, new illness/medication"
-- "Reassess in 2-3 years or sooner if clinical situation changes."
+- "Serial height measurement"
+- "Calcium, phosphate, creatinine annually"
+- "Monitor for new fractures"
+- "Annual review of adherence and side effects"
 
 (The AFF "thigh pain" prompt and the ONJ "dental issues" prompt are **not** in this list: they
 are shipped, partially, on the Zoledronic tab — see present but stale.)
 
 **Decision-tree `body` statements and `safety_rules` (`bone-health-app.ts`)**
+
+*Made by the Summary poster / DEXA tab:* the very-high "≥2 vertebral fragility fractures at any
+time" (poster); "Low: below threshold after assessment" (poster legend "Low = below treatment
+threshold after review."); "Reassure; offer prevention." (poster low box "PREVENTION +
+REASSESSMENT"); "No automatic medication or annual DXA." (poster "No new osteoporosis drug from
+this result alone.", and DEXA tab "No current indication for routine DXA/BMD testing based on the
+listed criteria"); the nutrition/exercise/falls components of the prevention node.
+
+Still missing:
 - "Z-score <= -2.0: below expected for age."
 - "No blanket lab panel for low-risk adults."
 - "Investigate when fractures, low BMD, symptoms warrant."
 - "Don't order DXA to label normal."
-- "No automatic medication or annual DXA." (the "no automatic annual DXA" component)
-- ">=5mg/day: dose-dependent risk" (the ≥5 mg/day glucocorticoid flag; the engine fires only at
-  ≥7.5 mg/day)
+- ">=5mg/day: dose-dependent risk" (the ≥5 mg/day glucocorticoid flag; the engine and the poster
+  both fire only at ≥7.5 mg/day)
 - "May increase risk beyond FRAX." (falls)
 - "Consider upgrade with high baseline risk, low BMD." (falls — the engine records falls as an
   input risk factor only; it has no falls-modifier rule)
@@ -226,19 +259,18 @@ are shipped, partially, on the Zoledronic tab — see present but stale.)
 - "One fracture ≠ treatment failure." → **note:** the export ships "Single fracture ≠ treatment
   failure." (`:78`), but the short "One fracture ≠ treatment failure." phrasing is absent; the
   substance is shipped (present but stale).
-- "Very high: >=2 vertebral, T<-3.0" — the multiple-vertebral component is made, but the
-  "hip or vertebral fracture with T<-3.0" very-high rule is absent (the engine and the export
-  both use ≤ −3.5)
-- "Reassure; offer prevention."
-- "No automatic annual DXA." (low/normal BMD)
+- "Very high: >=2 vertebral, T<-3.0" — the "≥2 vertebral" component is made (poster and engine);
+  the "hip or vertebral fracture with T<-3.0" combined very-high rule is absent (the engine, the
+  export and the poster all use ≤ −3.5)
 - "Does not need medication." (osteopenia)
 - "Closer reassessment if approaching threshold."
 - "If not indicated and low risk, prevention."
 - "Revisit with age/risk factors."
-- Prevention node: "Balanced diet, protein, calcium", "Vitamin D appropriate", "Exercise,
-  balance training", "Stop smoking", "Limit alcohol", "Falls review"
+- Prevention node "Stop smoking", "Limit alcohol", "Falls review" (the nutrition, exercise and
+  balance components are made by the poster; smoking/alcohol are not)
 - Reassessment node: "Revisit history, falls, weight, meds.", "Order DXA only if will change
-  management.", "Triggers: new fracture, meds, falls, weight loss."
+  management.", "Triggers: new fracture, meds, falls, weight loss." (the general "reassess if
+  circumstances change" intent is made by the poster; these specifics are not)
 - "Consider: age, renal, CV, GI, adherence" (the GI-tolerance and adherence factors)
 - "Review: new fractures, adherence, adverse, BMD"
 - "Persistent high: FN T<=-2.5, fracture 3-5yr, prior hip/vertebral"
@@ -246,20 +278,21 @@ are shipped, partially, on the Zoledronic tab — see present but stale.)
 - "Suspected hip/acute fracture: urgent imaging"
 - "New back pain/height loss: assess vertebral fracture."
 
-Of the eight `safety_rules`, made are: "Never stop denosumab without planned antiresorptive.",
-"Advanced CKD ≠ automatic anabolic indication.", "No DXA ≠ normal BMD.", "Don't apply
-postmenopausal T-scores to younger adults.", and "Don't route prior osteoporosis/denosumab to
-untreated because BMD improved." (re-worded). Three further rules — "Single fracture ≠ treatment
-failure.", "Normal BMD ≠ low risk." and "Osteopenia ≠ medication indication." — are **not lost**:
-the page export ships all three verbatim (`src/pages/BoneHealth.tsx:76-78`), so they are present
-but stale rather than missing.
+Of the eight `safety_rules`, made are: "Never stop denosumab without planned antiresorptive."
+(engine + poster), "Advanced CKD ≠ automatic anabolic indication.", "No DXA ≠ normal BMD."
+(engine + poster "No DXA does not mean low risk."), "Don't apply postmenopausal T-scores to
+younger adults.", and "Don't route prior osteoporosis/denosumab to untreated because BMD
+improved." (re-worded). Three further rules — "Single fracture ≠ treatment failure.", "Normal BMD
+≠ low risk." and "Osteopenia ≠ medication indication." — are **not lost**: the page export ships
+all three verbatim (`src/pages/BoneHealth.tsx:76-78`), so they are present but stale rather than
+missing.
 
-**`Low: below threshold after assessment` — verdict corrected.** The earlier version listed this
-as made, citing the engine string "None established (this is not low risk)". That string asserts
-the *contrary* of "below threshold → low": it is a warning against reading absence as low risk,
-and the engine has no "low" output category at all. This item is therefore **not made**; it is
-recorded as an unreproduced classification statement (the engine's refusal to output "low" is a
-different, safer behaviour, not the same point).
+**`Low: below threshold after assessment` — verdict history.** A prior pass marked this *made*
+citing the engine string "None established (this is not low risk)"; that string asserts the
+contrary and the engine has no "low" output category, so the verdict was changed to *not made*.
+The Summary poster now **does** ship it verbatim in meaning — "Low = below treatment threshold
+after review." — so it is **made (poster)**, on a surface that is engine-aligned, even though the
+engine itself never outputs a "low" category.
 
 ## Naming differences (not counted as missing counselling points)
 
@@ -267,11 +300,26 @@ The engine drops brand names: Fosamax, Actonel, Boniva, Reclast, Prolia, Evenity
 Tymlos. It also spells the drug "Zoledronate" where the old copy used "Zoledronic acid". These
 are naming, not counselling, so they are recorded here rather than in the missing list.
 
+## Out of scope by design
+
+Two other routes ship osteoporosis material. They are named here as **deliberately outside the
+bound** — not overlooked, and not claimed absent:
+
+- **Vitamin D dosing calculator** — `src/calculators/vitamind/VitaminDDosingCalculator.tsx`
+  ships "target 25(OH)D ≥30 ng/mL" (`:96`, `const targetLevel = "≥30 ng/mL (75 nmol/L)"`) and
+  "Osteoporosis: target 25(OH)D ≥30 ng/mL (some guidelines suggest ≥40 ng/mL). Ensure adequate
+  calcium intake." (`:167`). This is a *different route*, so the note's vitamin-D-target statement
+  (drug-level missing: "Target 25-OH >30 ng/mL. Replete deficiency first") still holds within the
+  bound — but a reader should know the number is shipped elsewhere in the app.
+- **Image gallery** — `src/pages/ImageGallery.tsx:122-147` ships osteoporosis treatment images
+  on its own route: "Osteoporosis Treatment Approach (2026)", "Clinical Criteria for Initiating
+  Bisphosphonates" and "Osteoporosis Fragility Fracture: First-Line Visual Guide". Outside the
+  bound; recorded so the bound is honest.
+
 ## Audit of the remaining retired clinical copy
 
-The sections above now cover the whole retired material against the full shipped surface (1)–(5).
 For completeness, this section records the per-source audit and the `osteoporosis-algorithm.ts`
-characterisation.
+characterisation, within the bound above.
 
 ### 1. Per-plan `lifestyle` / `monitoring` / `followUp` (`BoneHealthGuidedApp.tsx`)
 
@@ -281,8 +329,9 @@ upgrade for all" (tab hint "No automatic FRAX multiplier or risk-class upgrade."
 disclaimer "This is clinical decision support, not medical advice." (tab disclaimer). The
 calcium/vitamin D dose figures and the "Oral BP: up to 10 years" / "IV BP: up to 6 years" /
 "Denosumab: 5-10 years" figures are shipped by the page export (present but stale). Exercise,
-falls, smoking, alcohol, vision, home-hazard, DXA-interval, height, annual-lab, adherence-review
-and the low-pathway prevention/reassessment copy remain **missing** (full list above).
+falls, nutrition and the reassessment intent are made by the poster at summary level. Smoking,
+alcohol, vision, home-hazard, DXA-interval, height, annual-lab, adherence-review and the
+"maintain healthy weight" copy remain **missing** (full list above).
 
 ### 2. Decision-tree `body` statements and `safety_rules` (`bone-health-app.ts`)
 
@@ -296,7 +345,8 @@ endocrine, malabsorption, weight, immobilization, medicines."; the anabolic dura
 replacement." The three safety_rules "Single fracture ≠ treatment failure.", "Normal BMD ≠ low
 risk." and "Osteopenia ≠ medication indication." are shipped by the page export (present but
 stale); "No DXA ≠ normal BMD." and "Don't apply postmenopausal T-scores to younger adults." are
-made by the engine. Everything else in this file is missing (full list above).
+made by the engine (and the former also by the poster). Everything else in this file is missing
+(full list above).
 
 ### 3. `osteoporosis-algorithm.ts` — characterisation
 
@@ -307,7 +357,8 @@ T ≤ −3.5; high from hip/vertebral fracture, T ≤ −2.5 and FRAX above thre
 ≥7.5 mg/day for ≥3 months rule; the anabolic durations; the denosumab "never stop" rule; the
 "unknown is not negative" principle). It is **not** simply superseded, however: it also carries
 actionable thresholds and figures the engine does **not** implement. Some are shipped by the page
-export (present but stale); the rest are missing.
+export (present but stale); the rest are missing. The current Summary poster credits "NOGG 2024 +
+ISCD 2023", a different source list from this file's SEIOMM/NOGG/KDIGO.
 
 Present but stale (shipped, in substance, by the page export):
 - "Other fragility fracture, including humeral or pelvic fracture" — the export's "Prior
@@ -323,9 +374,9 @@ Present but stale (shipped, in substance, by the page export):
 Missing (verbatim):
 - "Coexisting vertebral and hip fracture" (very-high criterion — no engine predicate)
 - "Hip or vertebral fracture with T-score < -3.0" (very-high criterion — no engine predicate;
-  the engine and export both use ≤ −3.5)
+  the engine, the export and the poster all use ≤ −3.5)
 - "Systemic prednisolone-equivalent >=5 mg/day in supplied table" (the ≥5 mg/day flag; the engine
-  fires only at ≥7.5 mg/day)
+  and poster fire only at ≥7.5 mg/day)
 - "Femoral-neck T-score <= -2.5", "Fragility fracture within previous 3-5 years", "Prior hip or
   vertebral fracture" (persistent-high-risk continuation indicators — not implemented)
 - "Consider monitored pause for 1-3 years, individualized to agent and risk" (bisphosphonate)
@@ -338,7 +389,7 @@ Missing (verbatim):
 - "Z-score <= -2.0 means below expected range for age, not an automatic osteoporosis diagnosis or
   drug indication."
 - "NOGG uses a minimum total intake of 700 mg/day for adults in its scope" (the export ships
-  different figures, 1000-1200 mg/day, so the NOGG 700 mg/day value itself is absent)
+  different figures, 1000-1200 mg/day, and the poster says only "calcium / vitamin D adequacy")
 - "NOGG recommends at least 800 IU/day for insufficiency or risk factors in its target population"
   (the export ships 800-2000 IU/day, so this specific figure is absent)
 - "Diagnostic T-score >= -1.0" (normal_bmd), "-2.5 < diagnostic T-score < -1.0"
@@ -347,10 +398,10 @@ Missing (verbatim):
 - "Do not hard-code foreign FRAX thresholds as Indian treatment thresholds." — the engine
   requires the policy version to be documented but does not enforce this rule
 
-**Audit completeness.** All three superseded files were recovered from `9703a82` and read in
-full, and every absence claim was re-checked against the page export block and the Zoledronic
-tab. Nothing in the retired material is un-accounted for: each item is made, present but stale,
-or missing above.
+**Within the bound.** All three superseded files were recovered from `9703a82` and read in full,
+and each item is recorded as made, present-but-stale, or missing against the surfaces inside the
+bound (1)–(7). This is not a claim that the application as a whole carries no other overlapping
+clinical content — the two named out-of-scope routes above are examples of exactly that.
 
 ## Follow-ups (for the engine's owner — not fixed in this task)
 
@@ -364,9 +415,12 @@ or missing above.
    card. This affects the calcium/vitamin D doses, the oral/IV bisphosphonate and denosumab
    durations, three `safety_rules`, and the AFF/ONJ prompts. An owner should reconcile or
    regenerate that export text rather than leave two conflicting sources on one page.
-4. Decide whether the genuinely missing items (exercise, falls, smoking, alcohol, vision, home
-   hazards, DXA intervals, height and annual-lab monitoring, adherence review, urgent triage, the
-   ≥5 mg/day glucocorticoid flag, the falls modifier, fracture-on-treatment review, the
-   fracture-plus-T<-3.0 very-high rule, the Z ≤ −2.0 threshold, the persistent-high-risk
-   continuation and bisphosphonate-pause rules, and the NOGG calcium/vitamin D figures) should be
-   reimplemented in the engine or surfaced in the tab.
+4. Decide whether the genuinely missing items (smoking, alcohol, vision, home hazards, DXA
+   intervals, height and annual-lab monitoring, adherence review, urgent triage, the ≥5 mg/day
+   glucocorticoid flag, the falls modifier, fracture-on-treatment review, the fracture-plus-T<-3.0
+   very-high rule, the Z ≤ −2.0 threshold, the persistent-high-risk continuation and
+   bisphosphonate-pause rules, and the NOGG calcium/vitamin D figures) should be reimplemented in
+   the engine or surfaced in the tab.
+5. Decide whether the bound itself should be widened, or the two out-of-scope routes reconciled
+   with this note, so the application does not present overlapping osteoporosis guidance on
+   different routes.
