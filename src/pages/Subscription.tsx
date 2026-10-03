@@ -161,10 +161,13 @@ export default function Subscription() {
                 Cancel subscription
               </Button>
             )}
-            {notice && <p className="text-muted-foreground">{notice}</p>}
           </CardContent>
         </Card>
       )}
+
+      {/* Outside the card: the post-cancel refresh can return null, which
+          unmounts the card, and the confirmation must outlive it. */}
+      {notice && <p className="text-muted-foreground">{notice}</p>}
     </main>
   );
 }

@@ -127,6 +127,20 @@ describe("Subscription billing card", () => {
     expect(document.body.textContent).not.toMatch(PLACEHOLDERS);
   });
 
+  it("keeps the cancellation confirmation when the post-cancel refresh returns nothing", async () => {
+    // The refresh after cancelling can legitimately return null, which unmounts
+    // the billing card. The confirmation must not disappear with it.
+    payment.fetchBillingStatus.mockResolvedValueOnce(PLAN).mockResolvedValueOnce(null);
+    payment.cancelSubscription.mockResolvedValue({ ok: true, accessUntil: PLAN.accessUntil });
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    renderPage();
+    fireEvent.click(await screen.findByRole("button", { name: /cancel subscription/i }));
+
+    expect(await screen.findByText(/Cancelled\. Access continues until/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Your subscription/i)).not.toBeInTheDocument();
+  });
+
   it("re-enables the cancel button and reports the failure when the request rejects", async () => {
     payment.fetchBillingStatus.mockResolvedValue(PLAN);
     payment.cancelSubscription.mockRejectedValue(new Error("network down"));
