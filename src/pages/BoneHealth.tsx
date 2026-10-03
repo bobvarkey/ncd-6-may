@@ -30,14 +30,20 @@ RISK CATEGORIES & TREATMENT
 ---------------------------
 
 VERY HIGH RISK:
-• ≥2 vertebral fractures OR T-score < -3.5
+• Vertebral fracture within the last 2 years.
+• Multiple vertebral fractures.
+• Lowest valid T-score of −3.5 or below.
+• Systemic glucocorticoid ≥7.5 mg/day prednisolone equivalent for ≥3 months.
+• Independently confirmed very-high FRAX against a documented policy.
 • Consider: Romosozumab 210mg SC monthly x 12 months
            Abaloparatide 80mcg daily x 18 months  
            Teriparatide 20mcg daily x 24 months
 • MUST follow with antiresorptive to consolidate gains
 
 HIGH RISK:
-• Prior fracture, T-score ≤ -2.5, FRAX above threshold
+• Documented hip or vertebral fragility fracture.
+• Lowest valid T-score of −2.5 or below.
+• FRAX above the documented local treatment threshold.
 • First-line: Oral bisphosphonate (Alendronate 70mg weekly)
 • Alternative: Denosumab 60mg SC every 6 months
 
