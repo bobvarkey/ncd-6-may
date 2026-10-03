@@ -176,6 +176,16 @@ describe('createSubscription', () => {
     expect(body.firstChargeAt).toBe(new Date(1700000000 * 1000).toISOString());
   });
 
+  it('502s with CORS headers when the Razorpay call rejects at the network level', async () => {
+    const d = deps({
+      fetchFn: vi.fn(async () => { throw new Error('network down'); }) as unknown as typeof fetch,
+    });
+    const res = await createSubscription(post({ planId: 'pro-monthly' }), 'u1', d);
+    expect(res.status).toBe(502);
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+    expect(d.bound).toHaveLength(0);
+  });
+
   it('falls back to the requested start_at when Razorpay echoes none', async () => {
     const d = deps({
       fetchFn: vi.fn(async () =>

@@ -8,12 +8,13 @@
  */
 import {
   findPlan, razorpayPlanIdFor, getSecret, planByRazorpayPlanId,
-  jsonRes, errRes,
+  jsonRes, errRes, hmacHex, safeEqualHex,
 } from './payment-helpers.ts';
 import {
   bindSubscription, getLiveSubscriptionForUser as realGetLive,
   hasConsumedTrial as realHasConsumed, getSubscriptionByRazorpayId,
   applySubscriptionEntity, setEntitlementUntil, revokeEntitlement,
+  recordTrialConsumed,
   type SubscriptionRow,
 } from './subscription-store.ts';
 
@@ -27,6 +28,10 @@ export interface SubscriptionDeps {
   hasConsumedTrial(userId: string): Promise<boolean>;
   getLiveSubscriptionForUser(userId: string): Promise<SubscriptionRow | null>;
   bindSubscription(input: Parameters<typeof bindSubscription>[0]): Promise<void>;
+  getSubscriptionByRazorpayId(subscriptionId: string): Promise<SubscriptionRow | null>;
+  applySubscriptionEntity(entity: Parameters<typeof applySubscriptionEntity>[0]): Promise<SubscriptionRow | null>;
+  setEntitlementUntil(userId: string, planId: string, untilIso: string, paymentId: string | null): Promise<void>;
+  recordTrialConsumed(userId: string, endsAtIso: string): Promise<void>;
 }
 
 const defaultDeps: SubscriptionDeps = {
@@ -34,6 +39,10 @@ const defaultDeps: SubscriptionDeps = {
   hasConsumedTrial: realHasConsumed,
   getLiveSubscriptionForUser: realGetLive,
   bindSubscription,
+  getSubscriptionByRazorpayId,
+  applySubscriptionEntity,
+  setEntitlementUntil,
+  recordTrialConsumed,
 };
 
 function razorpayAuth(): string | null {
@@ -41,6 +50,17 @@ function razorpayAuth(): string | null {
   const secret = getSecret('RAZORPAY_KEY_SECRET');
   if (!id || !secret) return null;
   return `Basic ${btoa(`${id}:${secret}`)}`;
+}
+
+/**
+ * Unix seconds -> ISO, with null/undefined preserved as null. Mirrors
+ * `ts()` in `subscription-store.ts`, which is not exported and whose module
+ * this file must not edit; do not substitute a bare `new Date(x * 1000)`,
+ * which would turn a missing date into 1970.
+ */
+function unixToIso(unix: number | null | undefined): string | null {
+  if (unix === null || unix === undefined) return null;
+  return new Date(unix * 1000).toISOString();
 }
 
 export async function createSubscription(
@@ -117,11 +137,19 @@ export async function createSubscription(
   };
   if (startAt !== undefined) payload.start_at = startAt;
 
-  const res = await deps.fetchFn('https://api.razorpay.com/v1/subscriptions', {
-    method: 'POST',
-    headers: { Authorization: auth, 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  // Wrapped like the reads above: a network-level rejection must surface as a
+  // clean, CORS-carrying 502, not as a rejected promise the caller turns into
+  // an uncorsed 500.
+  let res: Response;
+  try {
+    res = await deps.fetchFn('https://api.razorpay.com/v1/subscriptions', {
+      method: 'POST',
+      headers: { Authorization: auth, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    return errRes(502, `Razorpay request failed: ${(e as Error).message}`);
+  }
   if (!res.ok) {
     const text = await res.text();
     return errRes(502, `Razorpay subscription creation failed: ${res.status} ${text.slice(0, 300)}`);
@@ -159,4 +187,86 @@ export async function createSubscription(
     isTrial: wantsTrial,
     firstChargeAt: firstChargeUnix === null ? null : new Date(firstChargeUnix * 1000).toISOString(),
   });
+}
+
+/**
+ * The Checkout callback. The browser's word is a hint that something happened,
+ * never evidence: access is granted only after the signature is checked against
+ * a secret the browser has never seen, the row is confirmed to belong to the
+ * signed-in account, and Razorpay confirms the subscription's state.
+ */
+export async function verifySubscription(
+  req: Request,
+  userId: string,
+  overrides: Partial<SubscriptionDeps> = {},
+): Promise<Response> {
+  const deps = { ...defaultDeps, ...overrides };
+
+  let body: Record<string, string>;
+  try {
+    body = await req.json();
+  } catch {
+    return errRes(400, 'Invalid JSON body');
+  }
+  // A JSON scalar, null or array parses fine but has no fields to read.
+  if (body === null || typeof body !== 'object' || Array.isArray(body)) {
+    return errRes(400, 'Invalid JSON body');
+  }
+
+  const paymentId = body.razorpay_payment_id ?? '';
+  const claimedSubscriptionId = body.razorpay_subscription_id ?? '';
+  const signature = body.razorpay_signature ?? '';
+  if (!paymentId || !claimedSubscriptionId || !signature) {
+    return errRes(400, 'Missing razorpay_payment_id / razorpay_subscription_id / razorpay_signature');
+  }
+
+  const keySecret = getSecret('RAZORPAY_KEY_SECRET');
+  if (!keySecret) return errRes(502, 'Razorpay keys not configured');
+
+  const row = await deps.getSubscriptionByRazorpayId(claimedSubscriptionId);
+  if (!row) return errRes(404, 'Unknown subscription');
+  if (row.user_id !== userId) {
+    return errRes(403, 'This subscription does not belong to the signed-in account');
+  }
+
+  // Sign the STORED id. Razorpay's guide is explicit that the Checkout-returned
+  // subscription id must not be trusted for this computation.
+  const expected = await hmacHex(keySecret, `${paymentId}|${row.razorpay_subscription_id}`);
+  if (!safeEqualHex(expected, signature)) {
+    return errRes(400, 'Signature verification failed');
+  }
+
+  // Confirm with Razorpay: the signature proves the payment, not the state.
+  let subRes: Response;
+  try {
+    subRes = await deps.fetchFn(
+      `https://api.razorpay.com/v1/subscriptions/${encodeURIComponent(row.razorpay_subscription_id)}`,
+      { headers: { Authorization: razorpayAuth() ?? '' } },
+    );
+  } catch (e) {
+    return errRes(502, `Razorpay request failed: ${(e as Error).message}`);
+  }
+  if (!subRes.ok) return errRes(502, `Subscription fetch failed: ${subRes.status}`);
+  const entity = await subRes.json();
+
+  if (entity.plan_id !== row.razorpay_plan_id) {
+    return errRes(400, 'Subscription plan does not match our record');
+  }
+  if (!['authenticated', 'active'].includes(entity.status)) {
+    return errRes(400, `Subscription not authorised (status: ${entity.status})`);
+  }
+
+  const updated = (await deps.applySubscriptionEntity(entity)) ?? row;
+
+  // Access until the next charge. For a trial that is start_at; for a paid cycle
+  // it is current_end. Never a locally computed duration.
+  const untilIso = unixToIso(entity.current_end)
+    ?? unixToIso(entity.start_at)
+    ?? updated.charge_at;
+  if (!untilIso) return errRes(502, 'Razorpay returned no billing date');
+
+  await deps.setEntitlementUntil(userId, updated.plan_id, untilIso, paymentId);
+  if (updated.is_trial) await deps.recordTrialConsumed(userId, untilIso);
+
+  return jsonRes({ verified: true, planId: updated.plan_id, validUntil: untilIso });
 }
