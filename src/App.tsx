@@ -349,7 +349,7 @@ const App = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
           <Route path="/settings" element={withNav(<Settings />, "Settings")} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<PageShell title="Account"><Login /></PageShell>} />
           <Route path="/subscription" element={<PageShell title="Subscription"><Subscription /></PageShell>} />
           <Route path="/diabetes" element={withNav(<Diabetes />, "Diabetes")} />
           <Route path="/hypertension" element={withNav(<Hypertension />, "Hypertension")} />
