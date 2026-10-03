@@ -16,6 +16,7 @@ import {
   applySubscriptionEntity, setEntitlementUntil, revokeEntitlement,
   recordTrialConsumed,
   type SubscriptionRow,
+  type RazorpaySubscriptionEntity,
 } from './subscription-store.ts';
 
 export interface CreateSubscriptionBody {
@@ -202,7 +203,7 @@ export async function verifySubscription(
 ): Promise<Response> {
   const deps = { ...defaultDeps, ...overrides };
 
-  let body: Record<string, string>;
+  let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
@@ -213,9 +214,11 @@ export async function verifySubscription(
     return errRes(400, 'Invalid JSON body');
   }
 
-  const paymentId = body.razorpay_payment_id ?? '';
-  const claimedSubscriptionId = body.razorpay_subscription_id ?? '';
-  const signature = body.razorpay_signature ?? '';
+  // Type-checked, not merely coerced: an array such as ['pay_1'] stringifies to
+  // "pay_1" inside the HMAC template literal and would forge a valid input.
+  const paymentId = typeof body.razorpay_payment_id === 'string' ? body.razorpay_payment_id : '';
+  const claimedSubscriptionId = typeof body.razorpay_subscription_id === 'string' ? body.razorpay_subscription_id : '';
+  const signature = typeof body.razorpay_signature === 'string' ? body.razorpay_signature : '';
   if (!paymentId || !claimedSubscriptionId || !signature) {
     return errRes(400, 'Missing razorpay_payment_id / razorpay_subscription_id / razorpay_signature');
   }
@@ -223,7 +226,14 @@ export async function verifySubscription(
   const keySecret = getSecret('RAZORPAY_KEY_SECRET');
   if (!keySecret) return errRes(502, 'Razorpay keys not configured');
 
-  const row = await deps.getSubscriptionByRazorpayId(claimedSubscriptionId);
+  // Store and network failures all surface as CORS-carrying 502s rather than
+  // rejected promises — the same contract createSubscription's reads hold to.
+  let row: SubscriptionRow | null;
+  try {
+    row = await deps.getSubscriptionByRazorpayId(claimedSubscriptionId);
+  } catch (e) {
+    return errRes(502, `Subscription lookup failed: ${(e as Error).message}`);
+  }
   if (!row) return errRes(404, 'Unknown subscription');
   if (row.user_id !== userId) {
     return errRes(403, 'This subscription does not belong to the signed-in account');
@@ -247,8 +257,19 @@ export async function verifySubscription(
     return errRes(502, `Razorpay request failed: ${(e as Error).message}`);
   }
   if (!subRes.ok) return errRes(502, `Subscription fetch failed: ${subRes.status}`);
-  const entity = await subRes.json();
 
+  let entity: RazorpaySubscriptionEntity;
+  try {
+    entity = await subRes.json();
+  } catch (e) {
+    return errRes(502, `Subscription fetch returned invalid JSON: ${(e as Error).message}`);
+  }
+
+  // applySubscriptionEntity PATCHes by entity.id, so an echoed id that is not the
+  // one we looked up would rewrite another row's status and dates.
+  if (entity.id !== row.razorpay_subscription_id) {
+    return errRes(400, 'Subscription id does not match our record');
+  }
   if (entity.plan_id !== row.razorpay_plan_id) {
     return errRes(400, 'Subscription plan does not match our record');
   }
@@ -256,7 +277,12 @@ export async function verifySubscription(
     return errRes(400, `Subscription not authorised (status: ${entity.status})`);
   }
 
-  const updated = (await deps.applySubscriptionEntity(entity)) ?? row;
+  let updated: SubscriptionRow;
+  try {
+    updated = (await deps.applySubscriptionEntity(entity)) ?? row;
+  } catch (e) {
+    return errRes(502, `Subscription sync failed: ${(e as Error).message}`);
+  }
 
   // Access until the next charge. For a trial that is start_at; for a paid cycle
   // it is current_end. Never a locally computed duration.
@@ -265,8 +291,22 @@ export async function verifySubscription(
     ?? updated.charge_at;
   if (!untilIso) return errRes(502, 'Razorpay returned no billing date');
 
-  await deps.setEntitlementUntil(userId, updated.plan_id, untilIso, paymentId);
-  if (updated.is_trial) await deps.recordTrialConsumed(userId, untilIso);
+  try {
+    await deps.setEntitlementUntil(userId, updated.plan_id, untilIso, paymentId);
+  } catch (e) {
+    return errRes(502, `Entitlement write failed: ${(e as Error).message}`);
+  }
+  if (updated.is_trial) {
+    // Deliberately after the grant, not before: the latch is bookkeeping, and
+    // recording it first would burn the trial on an abandoned checkout. A latch
+    // failure after the grant is reported so the caller can retry — the whole
+    // path is idempotent, and the entitlement is the thing that matters.
+    try {
+      await deps.recordTrialConsumed(userId, untilIso);
+    } catch (e) {
+      return errRes(502, `Trial record failed: ${(e as Error).message}`);
+    }
+  }
 
   return jsonRes({ verified: true, planId: updated.plan_id, validUntil: untilIso });
 }

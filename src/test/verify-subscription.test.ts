@@ -135,15 +135,27 @@ describe('verifySubscription', () => {
   it('accepts a signature over the stored id even when the browser claimed a different one', async () => {
     granted.length = 0;
     const row = { ...ROW, razorpay_subscription_id: 'sub_stored' };
+    const lookup = vi.fn(async () => row);
+    const fetchFn = vi.fn(async () =>
+      new Response(JSON.stringify({
+        id: 'sub_stored', plan_id: 'plan_PRO123', status: 'authenticated',
+        start_at: Math.floor(Date.parse('2026-11-01T00:00:00Z') / 1000),
+      }), { status: 200 })) as unknown as typeof fetch;
     const overStored = await sign('pay_1', 'sub_stored');
     const res = await verifySubscription(
       post({ razorpay_payment_id: 'pay_1', razorpay_subscription_id: 'sub_claimed', razorpay_signature: overStored }),
       'u1',
-      deps({ getSubscriptionByRazorpayId: async () => row, applySubscriptionEntity: async () => row }),
+      deps({ getSubscriptionByRazorpayId: lookup, applySubscriptionEntity: async () => row, fetchFn }),
     );
     expect(res.status).toBe(200);
     expect(granted).toHaveLength(1);
-    expect((granted[0] as any).u).toBe('u1');
+    expect(granted[0]).toMatchObject({ u: 'u1', p: 'pro-monthly', pay: 'pay_1' });
+    // The lookup is keyed by what the browser claimed; both the HMAC and the
+    // live GET use the id stored on our own row.
+    expect(lookup).toHaveBeenCalledWith('sub_claimed');
+    const url = String((fetchFn as any).mock.calls[0][0]);
+    expect(url).toContain('sub_stored');
+    expect(url).not.toContain('sub_claimed');
   });
 
   it('502s rather than rejecting when the Razorpay call fails at the network level', async () => {
@@ -171,6 +183,123 @@ describe('verifySubscription', () => {
         deps(),
       );
       expect(res.status, `body ${raw}`).toBe(400);
+    }
+  });
+
+  // --- Fix round 1: state gates, entity identity, call arguments, typing ---
+
+  it('rejects an entity whose id is not the subscription we looked up, before any write', async () => {
+    granted.length = 0;
+    const applied = vi.fn(async () => ROW);
+    const sig = await sign('pay_1', 'sub_1');
+    const res = await verifySubscription(
+      post({ razorpay_payment_id: 'pay_1', razorpay_subscription_id: 'sub_1', razorpay_signature: sig }),
+      'u1',
+      deps({
+        applySubscriptionEntity: applied,
+        fetchFn: vi.fn(async () =>
+          new Response(JSON.stringify({
+            id: 'sub_OTHER', plan_id: 'plan_PRO123', status: 'authenticated',
+            start_at: Math.floor(Date.parse('2026-11-01T00:00:00Z') / 1000),
+          }), { status: 200 })) as unknown as typeof fetch,
+      }),
+    );
+    expect(res.status).toBe(400);
+    // applySubscriptionEntity PATCHes by entity.id, so a mismatched id would
+    // rewrite another row's status and dates.
+    expect(applied).not.toHaveBeenCalled();
+    expect(granted).toHaveLength(0);
+  });
+
+  it('rejects an entity whose plan does not match our record, and grants nothing', async () => {
+    granted.length = 0;
+    const sig = await sign('pay_1', 'sub_1');
+    const res = await verifySubscription(
+      post({ razorpay_payment_id: 'pay_1', razorpay_subscription_id: 'sub_1', razorpay_signature: sig }),
+      'u1',
+      deps({
+        fetchFn: vi.fn(async () =>
+          new Response(JSON.stringify({
+            id: 'sub_1', plan_id: 'plan_OTHER', status: 'authenticated',
+            start_at: Math.floor(Date.parse('2026-11-01T00:00:00Z') / 1000),
+          }), { status: 200 })) as unknown as typeof fetch,
+      }),
+    );
+    expect(res.status).toBe(400);
+    expect(granted).toHaveLength(0);
+  });
+
+  it('rejects a subscription that is neither authenticated nor active, and grants nothing', async () => {
+    granted.length = 0;
+    const sig = await sign('pay_1', 'sub_1');
+    const res = await verifySubscription(
+      post({ razorpay_payment_id: 'pay_1', razorpay_subscription_id: 'sub_1', razorpay_signature: sig }),
+      'u1',
+      deps({
+        fetchFn: vi.fn(async () =>
+          new Response(JSON.stringify({
+            id: 'sub_1', plan_id: 'plan_PRO123', status: 'created',
+            start_at: Math.floor(Date.parse('2026-11-01T00:00:00Z') / 1000),
+          }), { status: 200 })) as unknown as typeof fetch,
+      }),
+    );
+    expect(res.status).toBe(400);
+    expect(granted).toHaveLength(0);
+  });
+
+  it('falls back to the stored charge date when Razorpay echoes no billing date', async () => {
+    granted.length = 0;
+    const chargeAt = new Date('2026-12-01T00:00:00Z').toISOString();
+    const sig = await sign('pay_1', 'sub_1');
+    const res = await verifySubscription(
+      post({ razorpay_payment_id: 'pay_1', razorpay_subscription_id: 'sub_1', razorpay_signature: sig }),
+      'u1',
+      deps({
+        applySubscriptionEntity: async () => ({ ...ROW, current_end: null, charge_at: chargeAt }),
+        fetchFn: vi.fn(async () =>
+          new Response(JSON.stringify({
+            id: 'sub_1', plan_id: 'plan_PRO123', status: 'authenticated',
+          }), { status: 200 })) as unknown as typeof fetch,
+      }),
+    );
+    expect(res.status).toBe(200);
+    expect(granted).toHaveLength(1);
+    expect((granted[0] as any).until).toBe(chargeAt);
+  });
+
+  it('rejects a non-string field instead of stringifying it into a valid HMAC input', async () => {
+    granted.length = 0;
+    // ['pay_1'] stringifies to "pay_1" inside the template literal, so without a
+    // typeof guard this would verify and grant.
+    const sig = await sign('pay_1', 'sub_1');
+    const res = await verifySubscription(
+      post({ razorpay_payment_id: ['pay_1'], razorpay_subscription_id: 'sub_1', razorpay_signature: sig }),
+      'u1', deps(),
+    );
+    expect(res.status).toBe(400);
+    expect(granted).toHaveLength(0);
+  });
+
+  it('502s with CORS instead of rejecting when a store call or the entity parse fails', async () => {
+    const sig = await sign('pay_1', 'sub_1');
+    const cases: Array<[string, Record<string, unknown>]> = [
+      ['lookup throws', { getSubscriptionByRazorpayId: async () => { throw new Error('supabase down'); } }],
+      ['sync throws', { applySubscriptionEntity: async () => { throw new Error('supabase down'); } }],
+      ['grant throws', { setEntitlementUntil: async () => { throw new Error('supabase down'); } }],
+      ['trial record throws', { recordTrialConsumed: async () => { throw new Error('supabase down'); } }],
+      ['entity is not JSON', {
+        fetchFn: vi.fn(async () => new Response('not json', { status: 200 })) as unknown as typeof fetch,
+      }],
+    ];
+    for (const [label, override] of cases) {
+      granted.length = 0;
+      const res = await verifySubscription(
+        post({ razorpay_payment_id: 'pay_1', razorpay_subscription_id: 'sub_1', razorpay_signature: sig }),
+        'u1',
+        deps(override),
+      );
+      expect(res.status, label).toBe(502);
+      expect(res.headers.get('Access-Control-Allow-Origin'), label).toBe('*');
     }
   });
 });
