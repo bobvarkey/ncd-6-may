@@ -1,0 +1,105 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { createSubscription } from '../../supabase/functions/_shared/subscription-logic.ts';
+
+const ENV: Record<string, string> = {
+  RAZORPAY_KEY_ID: 'rzp_test_KEY',
+  RAZORPAY_KEY_SECRET: 'secret',
+  RAZORPAY_PLAN_ID_PRO_MONTHLY: 'plan_PRO123',
+};
+
+beforeEach(() => {
+  vi.stubGlobal('Deno', { env: { get: (n: string) => ENV[n] } });
+});
+
+function post(body: unknown) {
+  return new Request('http://x/create-subscription', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+function deps(overrides: Record<string, unknown> = {}) {
+  const bound: unknown[] = [];
+  return {
+    bound,
+    fetchFn: vi.fn(async () =>
+      new Response(JSON.stringify({
+        id: 'sub_NEW', plan_id: 'plan_PRO123', status: 'created',
+        short_url: 'https://rzp.io/i/abc', start_at: 1700000000,
+      }), { status: 200 })) as unknown as typeof fetch,
+    hasConsumedTrial: async () => false,
+    getLiveSubscriptionForUser: async () => null,
+    bindSubscription: async (input: unknown) => { bound.push(input); },
+    ...overrides,
+  };
+}
+
+describe('createSubscription', () => {
+  it('rejects a plan id that is not in the server catalog', async () => {
+    const res = await createSubscription(post({ planId: 'lifetime' }), 'u1', deps());
+    expect(res.status).toBe(400);
+  });
+
+  it('returns only what checkout needs, and never the key secret', async () => {
+    const res = await createSubscription(post({ planId: 'pro-monthly' }), 'u1', deps());
+    const body = await res.json();
+    expect(res.status).toBe(200);
+    expect(body.subscriptionId).toBe('sub_NEW');
+    expect(body.keyId).toBe('rzp_test_KEY');
+    expect(JSON.stringify(body)).not.toContain('secret');
+  });
+
+  it('502s when the plan has no Razorpay plan id configured, without calling Razorpay', async () => {
+    const d = deps();
+    const res = await createSubscription(post({ planId: 'basic-monthly' }), 'u1', d);
+    expect(res.status).toBe(502);
+    expect(d.fetchFn).not.toHaveBeenCalled();
+  });
+
+  it('refuses a second subscription when one is already live (Review Focus 1)', async () => {
+    const d = deps({
+      getLiveSubscriptionForUser: async () => ({ razorpay_subscription_id: 'sub_LIVE' }),
+    });
+    const res = await createSubscription(post({ planId: 'pro-monthly' }), 'u1', d);
+    expect(res.status).toBe(409);
+    expect(d.fetchFn).not.toHaveBeenCalled();
+  });
+
+  it('refuses the trial when it was already consumed, and says so (Review Focus 2)', async () => {
+    const d = deps({ hasConsumedTrial: async () => true });
+    const res = await createSubscription(post({ planId: 'pro-monthly', trial: true }), 'u1', d);
+    expect(res.status).toBe(409);
+    const body = await res.json();
+    expect(body.error).toMatch(/trial/i);
+    expect(d.fetchFn).not.toHaveBeenCalled();
+  });
+
+  it('sets start_at three days ahead for a trial and binds isTrial', async () => {
+    const d = deps();
+    const before = Date.now();
+    await createSubscription(post({ planId: 'pro-monthly', trial: true }), 'u1', d);
+
+    const sent = JSON.parse(String((d.fetchFn as any).mock.calls[0][1].body));
+    const expected = Math.floor(before / 1000) + 3 * 86400;
+    expect(Math.abs(sent.start_at - expected)).toBeLessThan(5);
+    expect(sent.plan_id).toBe('plan_PRO123');
+    expect(sent.total_count).toBeGreaterThanOrEqual(1);
+
+    expect((d.bound[0] as any).isTrial).toBe(true);
+  });
+
+  it('omits start_at entirely for a non-trial subscription', async () => {
+    const d = deps();
+    await createSubscription(post({ planId: 'pro-monthly' }), 'u1', d);
+    const sent = JSON.parse(String((d.fetchFn as any).mock.calls[0][1].body));
+    expect(sent.start_at).toBeUndefined();
+    expect((d.bound[0] as any).isTrial).toBe(false);
+  });
+
+  it('binds the subscription to the authenticated user, ignoring any userId in the body', async () => {
+    const d = deps();
+    await createSubscription(post({ planId: 'pro-monthly', userId: 'attacker' }), 'real-user', d);
+    expect((d.bound[0] as any).userId).toBe('real-user');
+  });
+});
