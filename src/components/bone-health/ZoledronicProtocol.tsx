@@ -107,11 +107,11 @@ export default function ZoledronicProtocol() {
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <FlaskConical className="h-5 w-5 text-primary" />
+            <CardTitle className="text-base flex items-center gap-2">
+              <FlaskConical className="h-4 w-4 text-primary" />
               {zoledronicAcidProtocol.title}
             </CardTitle>
             <p className="text-xs text-muted-foreground mt-1">
@@ -130,23 +130,23 @@ export default function ZoledronicProtocol() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
-        {/* Quick Info - More Readable */}
-        <div className="rounded-lg bg-blue-50 border-2 border-blue-200 p-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-white rounded-lg border border-blue-100">
+      <CardContent className="space-y-2.5">
+        {/* Quick Info */}
+        <div className="rounded-lg bg-blue-50 border border-blue-200 p-2.5">
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="text-center p-2 bg-white rounded-lg border border-blue-100">
               <div className="text-lg font-bold text-blue-700">{zoledronicAcidProtocol.medication.dosage}</div>
               <div className="text-xs text-blue-600 font-medium">DOSAGE</div>
             </div>
-            <div className="text-center p-3 bg-white rounded-lg border border-blue-100">
+            <div className="text-center p-2 bg-white rounded-lg border border-blue-100">
               <div className="text-lg font-bold text-blue-700">{zoledronicAcidProtocol.medication.volume}</div>
               <div className="text-xs text-blue-600 font-medium">VOLUME</div>
             </div>
-            <div className="text-center p-3 bg-white rounded-lg border border-blue-100">
+            <div className="text-center p-2 bg-white rounded-lg border border-blue-100">
               <div className="text-lg font-bold text-blue-700">≥15 min</div>
               <div className="text-xs text-blue-600 font-medium">INFUSION TIME</div>
             </div>
-            <div className="text-center p-3 bg-white rounded-lg border border-blue-100">
+            <div className="text-center p-2 bg-white rounded-lg border border-blue-100">
               <div className="text-lg font-bold text-blue-700">≥35</div>
               <div className="text-xs text-blue-600 font-medium">MIN CrCl (mL/min)</div>
             </div>
@@ -162,7 +162,7 @@ export default function ZoledronicProtocol() {
             <div key={section.id} className="rounded-lg border overflow-hidden">
               <button
                 onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between p-3 hover:bg-muted/50 transition-colors"
+                className="w-full flex items-center justify-between py-2 px-3 hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center gap-2">
                   <Icon className="h-4 w-4 text-primary" />
@@ -176,7 +176,7 @@ export default function ZoledronicProtocol() {
               </button>
               
               {isExpanded && (
-                <div className="px-3 pb-3 border-t pt-3 space-y-2">
+                <div className="px-3 pb-3 border-t pt-2 space-y-2">
                   {section.id === "screening" && (
                     <>
                       <div className="flex items-start gap-2">

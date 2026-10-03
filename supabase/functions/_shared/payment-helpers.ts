@@ -6,7 +6,14 @@
 export const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, x-ncd-device-id, Authorization, apikey, X-Razorpay-Signature',
+  // Must stay a SUPERSET of the Supabase SDK's own list
+  // (node_modules/@supabase/supabase-js/src/cors.ts -> SUPABASE_HEADERS), which
+  // the SDK extends over time. supabase-js installs X-Client-Info as a global
+  // header on every functions.invoke, and it is not CORS-safelisted, so a browser
+  // preflight lists it in Access-Control-Request-Headers: drop it and the call is
+  // blocked with no visible error (callers catch and report "no access").
+  // x-retry-count / traceparent / tracestate / baggage ride along the same way.
+  'Access-Control-Allow-Headers': 'Content-Type, x-ncd-device-id, Authorization, apikey, X-Razorpay-Signature, x-client-info, x-retry-count, traceparent, tracestate, baggage',
   'Access-Control-Max-Age': '86400',
 };
 
@@ -30,32 +37,56 @@ export function errRes(status: number, message: string): Response {
 }
 
 /**
- * Resolve a plan from the repo's plan catalog. Mirrors src/payments/plans.ts
- * prices — amounts are authoritative HERE, never from the client.
+ * Single env reader. Deno-guarded so Vitest (which has no Deno global) can
+ * import this module; tests stub `Deno` via vi.stubGlobal.
  */
+export function getSecret(name: string): string {
+  const deno = (globalThis as { Deno?: { env: { get(k: string): string | undefined } } }).Deno;
+  return deno?.env.get(name) ?? '';
+}
+
 export interface PlanDef {
   id: string;
   name: string;
   amountPaise: number;
   currency: 'INR';
-  interval: 'monthly' | 'yearly' | 'lifetime';
-  durationDays: number;
+  interval: 'monthly' | 'yearly';
+  /** Server-side trial length offered on this plan, in days. 0 disables the trial. */
+  trialDays: number;
 }
 
-// Keep in sync with ~/ncd-6-may/src/payments/plans.ts
+/**
+ * The authoritative catalog. Amounts are here, never from the client.
+ * Razorpay plan ids are NOT here: test and live plans have different ids, so
+ * they live in backend secrets and go-live stays a config change.
+ */
 export const PLAN_CATALOG: PlanDef[] = [
-  { id: 'basic-monthly', name: 'Basic', amountPaise: 29900, currency: 'INR', interval: 'monthly', durationDays: 30 },
-  { id: 'pro-monthly', name: 'Pro', amountPaise: 50100, currency: 'INR', interval: 'monthly', durationDays: 30 },
-  { id: 'pro-yearly', name: 'Pro', amountPaise: 699900, currency: 'INR', interval: 'yearly', durationDays: 365 },
-  { id: 'lifetime', name: 'Pro', amountPaise: 1499900, currency: 'INR', interval: 'lifetime', durationDays: 36500 },
+  { id: 'basic-monthly', name: 'Basic', amountPaise: 29900, currency: 'INR', interval: 'monthly', trialDays: 3 },
+  { id: 'pro-monthly',   name: 'Pro',   amountPaise: 50100, currency: 'INR', interval: 'monthly', trialDays: 3 },
+  { id: 'pro-yearly',    name: 'Pro',   amountPaise: 699900, currency: 'INR', interval: 'yearly', trialDays: 3 },
 ];
+
+const RAZORPAY_PLAN_ID_SECRET: Record<string, string> = {
+  'basic-monthly': 'RAZORPAY_PLAN_ID_BASIC_MONTHLY',
+  'pro-monthly': 'RAZORPAY_PLAN_ID_PRO_MONTHLY',
+  'pro-yearly': 'RAZORPAY_PLAN_ID_PRO_YEARLY',
+};
 
 export function findPlan(planId: string): PlanDef | undefined {
   return PLAN_CATALOG.find((p) => p.id === planId);
 }
 
-export function planDurationDays(planId: string): number {
-  return findPlan(planId)?.durationDays ?? 30;
+/** Internal plan id -> Razorpay plan id, or undefined when the secret is unset. */
+export function razorpayPlanIdFor(planId: string): string | undefined {
+  const secretName = RAZORPAY_PLAN_ID_SECRET[planId];
+  if (!secretName) return undefined;
+  const value = getSecret(secretName);
+  return value || undefined;
+}
+
+/** Razorpay plan id -> internal plan. Used by the webhook, which only sees the former. */
+export function planByRazorpayPlanId(razorpayPlanId: string): PlanDef | undefined {
+  return PLAN_CATALOG.find((p) => razorpayPlanIdFor(p.id) === razorpayPlanId);
 }
 
 /**
@@ -73,6 +104,13 @@ export function getDeviceId(req: Request): string | null {
   }
 }
 
+/** Lowercase hex of a digest — the encoding Razorpay signatures use. */
+export function toHex(bytes: Uint8Array): string {
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 /** HMAC-SHA256 hex digest — Razorpay signature format. */
 export async function hmacHex(secret: string, payload: string): Promise<string> {
   const enc = new TextEncoder();
@@ -84,9 +122,7 @@ export async function hmacHex(secret: string, payload: string): Promise<string> 
     ['sign'],
   );
   const sig = await crypto.subtle.sign('HMAC', key, enc.encode(payload));
-  return Array.from(new Uint8Array(sig))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
+  return toHex(new Uint8Array(sig));
 }
 
 /** Timing-safe string comparison for hex signatures. */
@@ -97,4 +133,18 @@ export function safeEqualHex(a: string, b: string): boolean {
     diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
   return diff === 0;
+}
+
+export type RoleName = 'user' | 'developer' | 'admin';
+
+/** `developer` implies app access but NOT administrative power. Only `admin` does. */
+export function isAdminRole(roles: string[]): boolean {
+  return roles.includes('admin');
+}
+
+/** Precedence, defined once so the client and the server cannot disagree. */
+export function resolveRole(roles: string[]): RoleName {
+  if (roles.includes('admin')) return 'admin';
+  if (roles.includes('developer')) return 'developer';
+  return 'user';
 }

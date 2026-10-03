@@ -4,15 +4,9 @@ import { resolve } from "path";
 
 const BASE_URL = "https://ncdapp.store";
 
-interface Entry {
-  path: string;
-  changefreq?: "weekly" | "monthly" | "yearly";
-  priority?: string;
-}
-
 // Canonical, indexable routes only. Excludes duplicates, redirects, legal boilerplate,
 // admin/dev, and calculator-shell routes that redirect to a parent.
-const entries: Entry[] = [
+const entries = [
   { path: "/", priority: "1.0", changefreq: "weekly" },
   { path: "/home", priority: "1.0", changefreq: "weekly" },
   { path: "/diabetes", priority: "0.9", changefreq: "weekly" },

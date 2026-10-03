@@ -207,4 +207,44 @@ describe("dark-theme contrast regression guard", () => {
       for (const v of values) expect(v, `${token} must be pure white`).toBe("0 0% 100%");
     }
   });
+
+  it("tier backgrounds clear 4.5:1 against their white foreground, in both themes", () => {
+    const css = readFileSync(resolve(__dirname, "../index.css"), "utf8");
+
+    // The custom props are stored as bare "H S% L%" triples, so the two theme
+    // blocks resolve to a ratio without a browser. Asserting only that the
+    // foreground is white says nothing about the background it sits on: a
+    // darker-than-intended tier passes that check at 4.23:1.
+    const ratio = (background: string) => {
+      const [h, s, l] = background.split(/\s+/).map((v) => parseFloat(v));
+      const c = (1 - Math.abs(2 * (l / 100) - 1)) * (s / 100);
+      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+      const m = l / 100 - c / 2;
+      const [r, g, b] =
+        h < 60 ? [c, x, 0]
+        : h < 120 ? [x, c, 0]
+        : h < 180 ? [0, c, x]
+        : h < 240 ? [0, x, c]
+        : h < 300 ? [x, 0, c]
+        : [c, 0, x];
+      const linear = (v: number) => {
+        const ch = v + m;
+        return ch <= 0.03928 ? ch / 12.92 : ((ch + 0.055) / 1.055) ** 2.4;
+      };
+      const luminance = 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+      return 1.05 / (luminance + 0.05); // contrast against pure white
+    };
+
+    for (const tier of ["--tier-very-high", "--tier-high", "--tier-unclassified"]) {
+      const values = [...css.matchAll(new RegExp(`${tier}:\\s*([^;]+);`, "g"))].map((m) => m[1].trim());
+      expect(values.length, `${tier} must be defined in both theme blocks`).toBeGreaterThanOrEqual(2);
+      for (const value of values) {
+        const measured = ratio(value);
+        expect(
+          measured,
+          `white on ${tier} (${value}) measures ${measured.toFixed(2)}:1, below the 4.5:1 floor`,
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+  });
 });

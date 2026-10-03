@@ -123,7 +123,7 @@
     --mist-foreground: 0 0% 100%;
     --tier-very-high: 0 72% 42%;
     --tier-very-high-foreground: 0 0% 100%;
-    --tier-high: 26 82% 42%;
+    --tier-high: 26 82% 38%;               /* not 42%: white on 42% measures 4.23:1 */
     --tier-high-foreground: 0 0% 100%;
     --tier-unclassified: 220 12% 40%;
     --tier-unclassified-foreground: 0 0% 100%;

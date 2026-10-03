@@ -1,25 +1,18 @@
 // Payment Module Entry Point
 export { plans, getPlan, formatAmount, type Plan } from './plans';
 export {
-  openCheckout,
+  openSubscriptionCheckout,
+  createSubscription,
+  verifySubscriptionCheckout,
+  buildCheckoutOptions,
   loadRazorpayScript,
-  verifyRazorpayPayment,
   fetchMyEntitlement,
-  type RazorpayResponse,
-  type CreateOrderResponse,
+  fetchBillingStatus,
+  cancelSubscription,
+  type RazorpaySubscriptionResponse,
+  type CreateSubscriptionResult,
+  type UserInfo,
   type VerifyResult,
+  type BillingStatus,
 } from './razorpay';
-export {
-  grantProAccess,
-  startFreeTrial,
-  isTrialActive,
-  hasProAccess,
-  hasAppAccess,
-  pruneExpiredTrial,
-  getTrialInfo,
-  getSubscription,
-  saveSubscription,
-  openPaywall,
-  OPEN_PAYWALL_EVENT,
-  type LocalSubscription,
-} from './access';
+export { openPaywall, OPEN_PAYWALL_EVENT } from './paywall-event';

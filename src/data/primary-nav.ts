@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  Activity, AirVent, Bandage, BookOpen, Bone, Bug, Calculator, Dna, Droplet, Droplets,
+  Activity, AirVent, Bandage, BookOpen, Bone, Brain, Bug, Calculator, Dna, Droplet, Droplets,
   Eye, Filter, Flame, Gem, Heart, Image, Microscope, Moon, Pill, Search, Shield,
   Stethoscope, Sun, Syringe, Thermometer, Timer, TrendingDown, User, UtensilsCrossed, Weight, Zap,
 } from "lucide-react";
@@ -47,7 +47,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
     items: [
       { path: "/aki-criteria", label: "AKI / AKD Criteria", icon: Activity, tone: "orange", keywords: "kdigo rifle" },
       { path: "/renal-dosing", label: "Renal", icon: Filter, tone: "amber", keywords: "egfr dosing" },
-      { path: "/gfr-calculator", label: "eGFR Calculator", icon: Calculator, tone: "cyan", keywords: "ckd-epi bsa" },
+      { path: "/gfr-calculator", label: "KDIGO eGFR", icon: Calculator, tone: "cyan", keywords: "ckd-epi bsa kidney function" },
       { path: "/anemia", label: "Blood", icon: Droplet, tone: "rose", keywords: "anemia iron" },
       { path: "/anemia?tab=anemia", label: "Anemia Evaluator", icon: Droplet, tone: "fuchsia" },
       { path: "/anemia?tab=thrombocytopenia", label: "Thrombocytopenia", icon: Bandage, tone: "violet" },
@@ -93,7 +93,8 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/geriatrics", label: "Geriatrics", icon: User, tone: "violet" },
       { path: "/frailty-calculator", label: "Frailty Calculator", icon: User, tone: "fuchsia" },
       { path: "/vaccine-calculator", label: "Vaccine Calculator", icon: Syringe, tone: "emerald" },
-      { path: "/perioperative-calculators", label: "Perioperative Tools", icon: Stethoscope, tone: "indigo", keywords: "rcri asa mallampati" },
+      { path: "/perioperative-calculators", label: "Perioperative Scores", icon: Stethoscope, tone: "indigo", keywords: "rcri asa mallampati caprini apgar stop-bang" },
+      { path: "/perioperative-calculators#csdh", label: "cSDH", icon: Brain, tone: "violet", keywords: "chronic subdural hematoma perioperative plan neurosurgery" },
     ],
   },
   {
