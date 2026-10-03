@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { render, screen } from "@testing-library/react";
+// Raw text of the real route table. A query import keeps this independent of
+// the working directory and of how the file is formatted.
+import appSource from "../App.tsx?raw";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 
 // Mutable auth state the mocked useAuth returns. Hoisted so it exists before
@@ -87,19 +88,24 @@ describe("RequireAccess", () => {
 });
 
 // A denied user is redirected to /subscription?next=…, so any allowlisted route
-// that is itself wrapped in withNav would bounce to itself forever. This pins
-// that invariant against the real route table.
+// that is itself gated (via withNav, or a direct RequireAccess wrap) would bounce
+// to itself forever. This pins that invariant against the real route table.
+// It matches whole <Route … /> elements rather than lines, so reformatting a
+// route across multiple lines — as /glp1-prescreen already is — cannot hide it.
 describe("App allowlisted routes", () => {
   const ALLOWLIST = ["/login", "/subscription", "/privacy", "/terms", "/disclaimer", "/delete-account"];
 
-  it("are not built with withNav, so they cannot redirect-loop", () => {
-    const source = readFileSync(resolve(process.cwd(), "src/App.tsx"), "utf8");
-    const lines = source.split("\n");
+  it("are not wrapped in a guard, so they cannot redirect-loop", () => {
+    // Splitting on the opening tag bounds each self-closing route element: a
+    // segment runs from one <Route to the next, so it can never swallow its
+    // neighbour even when the element spans several lines.
+    const segments = appSource.split("<Route");
 
-    for (const path of ALLOWLIST) {
-      const line = lines.find((candidate) => candidate.includes(`path="${path}"`));
-      expect(line, `no route for ${path}`).toBeDefined();
-      expect(line, `route ${path} must not be wrapped in withNav`).not.toContain("withNav");
+    for (const routePath of ALLOWLIST) {
+      const segment = segments.find((candidate) => candidate.includes(`path="${routePath}"`));
+      expect(segment, `no route element for ${routePath}`).toBeDefined();
+      expect(segment, `route ${routePath} must not be wrapped in withNav`).not.toContain("withNav");
+      expect(segment, `route ${routePath} must not be wrapped in RequireAccess`).not.toContain("<RequireAccess");
     }
   });
 });
