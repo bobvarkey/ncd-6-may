@@ -18,13 +18,12 @@ type AuthContextValue = {
   loading: boolean;
   access: AccountAccess | null;
   refreshAccess: () => Promise<void>;
-  startTrial: () => Promise<AccountAccess>;
   signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const invokeAccess = async (action: "access-status" | "start-trial") => {
+const invokeAccess = async (action: "access-status") => {
   const { data, error } = await supabase.functions.invoke("payment-api", { body: { action } });
   if (error) throw error;
   if (!data || typeof data.access !== "boolean") throw new Error("Access status is unavailable.");
@@ -68,18 +67,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [refreshAccess]);
 
-  const startTrial = useCallback(async () => {
-    const next = await invokeAccess("start-trial");
-    setAccess(next);
-    return next;
-  }, []);
-
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setAccess(null);
   }, []);
 
-  const value = useMemo(() => ({ session, user: session?.user ?? null, loading, access, refreshAccess, startTrial, signOut }), [session, loading, access, refreshAccess, startTrial, signOut]);
+  const value = useMemo(() => ({ session, user: session?.user ?? null, loading, access, refreshAccess, signOut }), [session, loading, access, refreshAccess, signOut]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

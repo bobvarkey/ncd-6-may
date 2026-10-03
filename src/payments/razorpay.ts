@@ -163,8 +163,8 @@ export async function openSubscriptionCheckout(
 }
 
 /**
- * Read THIS device's entitlement from server-side truth.
- * GET /api/entitlements/me — returns null when never entitled / free tier.
+ * Read THIS user's entitlement from server-side truth.
+ * `payment-api` action `access-status` — returns null when never entitled / free tier.
  */
 export async function fetchMyEntitlement(): Promise<UserEntitlement | null> {
   try {
@@ -174,4 +174,39 @@ export async function fetchMyEntitlement(): Promise<UserEntitlement | null> {
   } catch {
     return null;
   }
+}
+
+export interface BillingStatus {
+  planId: string | null;
+  planName: string | null;
+  status: string | null;
+  isTrial: boolean;
+  currentEnd: string | null;
+  chargeAt: string | null;
+  cancelAtPeriodEnd: boolean;
+  accessUntil: string | null;
+}
+
+export async function fetchBillingStatus(): Promise<BillingStatus | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke('payment-api', {
+      body: { action: 'billing-status' },
+    });
+    if (error || !data) return null;
+    return data as BillingStatus;
+  } catch {
+    return null;
+  }
+}
+
+export async function cancelSubscription(): Promise<{
+  ok: boolean; error?: string; accessUntil?: string | null;
+}> {
+  const { data, error } = await supabase.functions.invoke('payment-api', {
+    body: { action: 'cancel-subscription' },
+  });
+  if (error || !data?.cancelled) {
+    return { ok: false, error: data?.error || error?.message || 'Cancellation failed' };
+  }
+  return { ok: true, accessUntil: data.accessUntil ?? null };
 }

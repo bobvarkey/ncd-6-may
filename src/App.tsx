@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
 import { useEffect, useState } from "react";
 import PaywallModal from "@/components/PaywallModal";
-import { OPEN_PAYWALL_EVENT, pruneExpiredTrial } from "@/payments";
+import { OPEN_PAYWALL_EVENT } from "@/payments";
 import { injectMock } from "@/lib/wrapper/mock-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -284,9 +284,6 @@ const App = () => {
 
   useEffect(() => {
     injectMock();
-
-    // Clear any trial that has passed its 3-day window.
-    pruneExpiredTrial();
 
     // Open the paywall when another screen requests it (e.g. Subscription).
     const openHandler = () => setShowPaywall(true);

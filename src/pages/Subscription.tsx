@@ -1,27 +1,88 @@
 import { useEffect, useState } from "react";
 import { CalendarClock, Crown, LogIn, LogOut, ShieldCheck } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/auth/AuthProvider";
-import { openPaywall } from "@/lib/subscription";
+import {
+  cancelSubscription,
+  fetchBillingStatus,
+  formatAmount,
+  openPaywall,
+  plans,
+  type BillingStatus,
+} from "@/payments";
 
 const fmt = (value: string) => new Date(value).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
 
+// Razorpay subscription statuses are a state enum; "halted" means nothing to a
+// clinician. Unknown values fall through so a future status still renders.
+const STATUS_LABELS: Record<string, string> = {
+  created: "Not yet active",
+  authenticated: "Awaiting first charge",
+  active: "Active",
+  pending: "Payment pending",
+  halted: "Payment failed",
+  cancelled: "Cancelled",
+  completed: "Completed",
+  expired: "Expired",
+};
+
+const statusLabel = (status: string | null) =>
+  status ? STATUS_LABELS[status] ?? status : "Unknown";
+
 export default function Subscription() {
-  const { user, access, loading, refreshAccess, startTrial, signOut } = useAuth();
+  const { user, access, loading, refreshAccess, signOut } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [billing, setBilling] = useState<BillingStatus | null>(null);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
-  useEffect(() => { if (user) void refreshAccess(); }, [user, refreshAccess]);
+  useEffect(() => {
+    if (!user) return;
+    void refreshAccess();
+    void fetchBillingStatus().then(setBilling);
+  }, [user, refreshAccess]);
 
-  const beginTrial = async () => {
+  // A denied user is bounced here as /subscription?next=<path>. Once access is
+  // granted (trial authorised or payment verified) send them where they were
+  // headed. The same validation Login.tsx applies to ?next=.
+  const next = new URLSearchParams(location.search).get("next");
+  const safeNext = next?.startsWith("/") && !next.startsWith("//") ? next : null;
+  const hasAccess = Boolean(access?.access);
+  useEffect(() => {
+    if (hasAccess && safeNext) navigate(safeNext, { replace: true });
+  }, [hasAccess, safeNext, navigate]);
+
+  const planFor = (id: string | null) => plans.find((p) => p.id === id);
+
+  const onCancel = async () => {
+    if (!window.confirm(
+      "Cancel your subscription? You keep access until the end of the period you have already paid for.",
+    )) return;
     setBusy(true);
-    setError(null);
-    try { await startTrial(); }
-    catch (err) { setError(err instanceof Error ? err.message : "Unable to start trial."); }
-    finally { setBusy(false); }
+    setNotice(null);
+    try {
+      const result = await cancelSubscription();
+      if (!result.ok) {
+        setNotice(result.error ?? "Cancellation failed");
+        return;
+      }
+      // The server can legitimately report no current_end; say so rather than
+      // formatting null into "1/1/1970".
+      setNotice(
+        result.accessUntil
+          ? `Cancelled. Access continues until ${new Date(result.accessUntil).toLocaleDateString("en-IN")}.`
+          : "Cancelled. Access continues until the end of the current period.",
+      );
+      setBilling(await fetchBillingStatus());
+    } catch {
+      setNotice("Cancellation failed. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (loading) return <main className="mx-auto max-w-2xl p-4"><p className="text-muted-foreground">Loading account…</p></main>;
@@ -38,6 +99,7 @@ export default function Subscription() {
   const trialActive = Boolean(access?.trialEndsAt && new Date(access.trialEndsAt) > new Date());
   const paidActive = Boolean(access?.status === "active" && access.validUntil && new Date(access.validUntil) > new Date());
   const privileged = access?.role === "developer" || access?.role === "admin";
+  const trialPlan = billing ? planFor(billing.planId) : undefined;
 
   return (
     <main className="mx-auto max-w-2xl space-y-4 p-4">
@@ -59,18 +121,50 @@ export default function Subscription() {
           {!privileged && !paidActive && trialActive && access?.trialEndsAt && <p className="flex items-center gap-2"><CalendarClock className="h-4 w-4" />Your three-day trial ends on {fmt(access.trialEndsAt)}.</p>}
           {!access?.trialStartedAt && !paidActive && !privileged && <p>Choose a free three-day trial or pay now for immediate Pro access.</p>}
           {access?.trialStartedAt && !trialActive && !paidActive && !privileged && <p>Your free trial has ended. Subscribe to continue using Pro tools.</p>}
-          {error && <p role="alert" className="text-destructive">{error}</p>}
         </CardContent>
       </Card>
 
       {!access?.access && (
         <div className="grid gap-3 sm:grid-cols-2">
-          {!access?.trialStartedAt && <Button variant="outline" disabled={busy} onClick={() => void beginTrial()}>Start free 3-day trial</Button>}
-          <Button onClick={openPaywall}>Pay ₹501/month</Button>
+          {!access?.trialStartedAt && <Button variant="outline" onClick={() => openPaywall()}>Start free 3-day trial</Button>}
+          <Button onClick={() => openPaywall()}>Pay ₹501/month</Button>
         </div>
       )}
 
-      {paidActive && <p className="text-sm text-muted-foreground">This checkout currently purchases a 30-day access period. No automatic renewal or in-app cancellation is enabled yet.</p>}
+      {billing?.planId && (
+        <Card>
+          <CardHeader><CardTitle>Your subscription</CardTitle></CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            {billing.planName && <p>Plan: <span className="font-medium">{billing.planName}</span></p>}
+            <p>Status: <Badge variant="secondary">{statusLabel(billing.status)}</Badge></p>
+            {billing.isTrial && billing.chargeAt && (
+              <p>
+                Free trial.
+                {trialPlan && <> First charge of <span className="font-medium">{formatAmount(trialPlan)}</span></>}{' '}
+                on {new Date(billing.chargeAt).toLocaleDateString('en-IN')}.
+              </p>
+            )}
+            {!billing.isTrial && billing.chargeAt && (
+              <p>Next charge on {new Date(billing.chargeAt).toLocaleDateString('en-IN')}.</p>
+            )}
+            {billing.accessUntil && (
+              <p className="text-muted-foreground">
+                Access until {new Date(billing.accessUntil).toLocaleDateString('en-IN')}.
+              </p>
+            )}
+            {billing.cancelAtPeriodEnd ? (
+              <p className="text-muted-foreground">
+                Cancelled — access ends {billing.currentEnd ? new Date(billing.currentEnd).toLocaleDateString('en-IN') : 'at period end'}.
+              </p>
+            ) : (
+              <Button variant="outline" onClick={() => void onCancel()} disabled={busy}>
+                Cancel subscription
+              </Button>
+            )}
+            {notice && <p className="text-muted-foreground">{notice}</p>}
+          </CardContent>
+        </Card>
+      )}
     </main>
   );
 }

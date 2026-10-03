@@ -7,22 +7,12 @@ export {
   buildCheckoutOptions,
   loadRazorpayScript,
   fetchMyEntitlement,
+  fetchBillingStatus,
+  cancelSubscription,
   type RazorpaySubscriptionResponse,
   type CreateSubscriptionResult,
   type UserInfo,
   type VerifyResult,
+  type BillingStatus,
 } from './razorpay';
-export {
-  grantProAccess,
-  startFreeTrial,
-  isTrialActive,
-  hasProAccess,
-  hasAppAccess,
-  pruneExpiredTrial,
-  getTrialInfo,
-  getSubscription,
-  saveSubscription,
-  openPaywall,
-  OPEN_PAYWALL_EVENT,
-  type LocalSubscription,
-} from './access';
+export { openPaywall, OPEN_PAYWALL_EVENT } from './paywall-event';
