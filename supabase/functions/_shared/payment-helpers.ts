@@ -134,3 +134,17 @@ export function safeEqualHex(a: string, b: string): boolean {
   }
   return diff === 0;
 }
+
+export type RoleName = 'user' | 'developer' | 'admin';
+
+/** `developer` implies app access but NOT administrative power. Only `admin` does. */
+export function isAdminRole(roles: string[]): boolean {
+  return roles.includes('admin');
+}
+
+/** Precedence, defined once so the client and the server cannot disagree. */
+export function resolveRole(roles: string[]): RoleName {
+  if (roles.includes('admin')) return 'admin';
+  if (roles.includes('developer')) return 'developer';
+  return 'user';
+}
