@@ -14,7 +14,7 @@ import {
   bindSubscription, getLiveSubscriptionForUser as realGetLive,
   hasConsumedTrial as realHasConsumed, getSubscriptionByRazorpayId,
   applySubscriptionEntity, setEntitlementUntil, revokeEntitlement,
-  recordTrialConsumed,
+  recordTrialConsumed, getActiveEntitlement, ts,
   type SubscriptionRow,
   type RazorpaySubscriptionEntity,
 } from './subscription-store.ts';
@@ -33,6 +33,8 @@ export interface SubscriptionDeps {
   applySubscriptionEntity(entity: Parameters<typeof applySubscriptionEntity>[0]): Promise<SubscriptionRow | null>;
   setEntitlementUntil(userId: string, planId: string, untilIso: string, paymentId: string | null): Promise<void>;
   recordTrialConsumed(userId: string, endsAtIso: string): Promise<void>;
+  getActiveEntitlement(userId: string): Promise<{ plan_id: string; valid_until: string; status: string } | null>;
+  revokeEntitlement(userId: string, planId: string): Promise<void>;
 }
 
 const defaultDeps: SubscriptionDeps = {
@@ -44,6 +46,8 @@ const defaultDeps: SubscriptionDeps = {
   applySubscriptionEntity,
   setEntitlementUntil,
   recordTrialConsumed,
+  getActiveEntitlement,
+  revokeEntitlement,
 };
 
 function razorpayAuth(): string | null {
@@ -51,17 +55,6 @@ function razorpayAuth(): string | null {
   const secret = getSecret('RAZORPAY_KEY_SECRET');
   if (!id || !secret) return null;
   return `Basic ${btoa(`${id}:${secret}`)}`;
-}
-
-/**
- * Unix seconds -> ISO, with null/undefined preserved as null. Mirrors
- * `ts()` in `subscription-store.ts`, which is not exported and whose module
- * this file must not edit; do not substitute a bare `new Date(x * 1000)`,
- * which would turn a missing date into 1970.
- */
-function unixToIso(unix: number | null | undefined): string | null {
-  if (unix === null || unix === undefined) return null;
-  return new Date(unix * 1000).toISOString();
 }
 
 export async function createSubscription(
@@ -152,10 +145,22 @@ export async function createSubscription(
     return errRes(502, `Razorpay request failed: ${(e as Error).message}`);
   }
   if (!res.ok) {
-    const text = await res.text();
-    return errRes(502, `Razorpay subscription creation failed: ${res.status} ${text.slice(0, 300)}`);
+    let detail = '';
+    try {
+      detail = (await res.text()).slice(0, 300);
+    } catch {
+      // Body read failed; the status alone still identifies the failure.
+    }
+    return errRes(502, `Razorpay subscription creation failed: ${res.status} ${detail}`);
   }
-  const subscription = await res.json();
+  // Wrapped like the fetch above: a body read is I/O too, and must surface as a
+  // clean, CORS-carrying 502 rather than a rejected promise.
+  let subscription: { id: string; short_url?: string | null; start_at?: number | null };
+  try {
+    subscription = await res.json();
+  } catch (e) {
+    return errRes(502, `Razorpay subscription creation returned invalid JSON: ${(e as Error).message}`);
+  }
 
   try {
     await deps.bindSubscription({
@@ -286,8 +291,8 @@ export async function verifySubscription(
 
   // Access until the next charge. For a trial that is start_at; for a paid cycle
   // it is current_end. Never a locally computed duration.
-  const untilIso = unixToIso(entity.current_end)
-    ?? unixToIso(entity.start_at)
+  const untilIso = ts(entity.current_end)
+    ?? ts(entity.start_at)
     ?? updated.charge_at;
   if (!untilIso) return errRes(502, 'Razorpay returned no billing date');
 
@@ -309,4 +314,116 @@ export async function verifySubscription(
   }
 
   return jsonRes({ verified: true, planId: updated.plan_id, validUntil: untilIso });
+}
+
+/**
+ * Cancels the signed-in user's live subscription at the end of the cycle it has
+ * already paid for. The subscription id comes from the row `getLiveSubscriptionForUser`
+ * resolved for this verified `userId` and never from the request, so a caller cannot
+ * cancel an account that is not theirs. Access is deliberately NOT revoked here: the
+ * customer bought through `current_end`, and expiry is decided by the clock on read.
+ */
+export async function cancelSubscription(
+  req: Request,
+  userId: string,
+  overrides: Partial<SubscriptionDeps> = {},
+): Promise<Response> {
+  const deps = { ...defaultDeps, ...overrides };
+
+  // Scoped by userId: this lookup is the ownership proof for the id we cancel.
+  let row: SubscriptionRow | null;
+  try {
+    row = await deps.getLiveSubscriptionForUser(userId);
+  } catch (e) {
+    return errRes(502, `Subscription lookup failed: ${(e as Error).message}`);
+  }
+  if (!row) return errRes(409, 'No active subscription to cancel');
+
+  const auth = razorpayAuth();
+  if (!auth) return errRes(502, 'Razorpay keys not configured');
+
+  // cancel_at_cycle_end keeps the paid window the user already paid for.
+  let res: Response;
+  try {
+    res = await deps.fetchFn(
+      `https://api.razorpay.com/v1/subscriptions/${encodeURIComponent(row.razorpay_subscription_id)}/cancel`,
+      {
+        method: 'POST',
+        headers: { Authorization: auth, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cancel_at_cycle_end: true }),
+      },
+    );
+  } catch (e) {
+    return errRes(502, `Razorpay request failed: ${(e as Error).message}`);
+  }
+  if (!res.ok) {
+    let detail = '';
+    try {
+      detail = (await res.text()).slice(0, 300);
+    } catch {
+      // Body read failed; the status alone still identifies the failure.
+    }
+    return errRes(502, `Razorpay cancellation failed: ${res.status} ${detail}`);
+  }
+
+  let entity: RazorpaySubscriptionEntity;
+  try {
+    entity = await res.json();
+  } catch (e) {
+    return errRes(502, `Razorpay cancellation returned invalid JSON: ${(e as Error).message}`);
+  }
+
+  let updated: SubscriptionRow | null;
+  try {
+    updated = await deps.applySubscriptionEntity(entity);
+  } catch (e) {
+    return errRes(502, `Subscription sync failed: ${(e as Error).message}`);
+  }
+  const current = updated ?? row;
+  // Access is intentionally NOT revoked here: the customer paid through
+  // current_end. Expiry is handled by the clock in billingStatus, and the
+  // subscription.cancelled webhook confirms it at cycle end.
+  return jsonRes({
+    cancelled: true,
+    accessUntil: current.current_end,
+    cancelAtPeriodEnd: true,
+  });
+}
+
+/**
+ * The billing screen's read model. Access is reported from the live entitlement,
+ * which computes expiry on read — a row still marked 'active' whose `valid_until`
+ * has passed reports as no access. The subscription's own dates describe the next
+ * charge, which may outlive access for a cancelled subscription.
+ */
+export async function billingStatus(
+  req: Request,
+  userId: string,
+  overrides: Partial<SubscriptionDeps> = {},
+): Promise<Response> {
+  const deps = { ...defaultDeps, ...overrides };
+
+  let row: SubscriptionRow | null;
+  let entitlement: { plan_id: string; valid_until: string; status: string } | null;
+  try {
+    [row, entitlement] = await Promise.all([
+      deps.getLiveSubscriptionForUser(userId),
+      deps.getActiveEntitlement(userId),
+    ]);
+  } catch (e) {
+    return errRes(502, `Billing status lookup failed: ${(e as Error).message}`);
+  }
+
+  const plan = row ? findPlan(row.plan_id) : null;
+
+  return jsonRes({
+    planId: row?.plan_id ?? null,
+    planName: plan?.name ?? null,
+    status: row?.status ?? null,
+    isTrial: row?.is_trial ?? false,
+    currentEnd: row?.current_end ?? null,
+    chargeAt: row?.charge_at ?? null,
+    cancelAtPeriodEnd: row?.cancel_at_period_end ?? false,
+    accessUntil: entitlement?.valid_until ?? null,
+  });
 }

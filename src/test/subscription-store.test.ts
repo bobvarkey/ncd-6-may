@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { setEntitlementUntil, revokeEntitlement, subscriptionEntityToRow } from '../../supabase/functions/_shared/subscription-store.ts';
+import {
+  setEntitlementUntil, revokeEntitlement, subscriptionEntityToRow,
+  recordTrialConsumed, getActiveEntitlement,
+} from '../../supabase/functions/_shared/subscription-store.ts';
 
 describe('subscriptionEntityToRow', () => {
   it('converts unix timestamps to ISO strings', () => {
@@ -50,5 +53,54 @@ describe('entitlement writes', () => {
 
     const body = JSON.parse(String(calls[0].init.body));
     expect(body.status).toBe('expired');
+  });
+});
+
+describe('recordTrialConsumed', () => {
+  it('ignores a repeat insert instead of merging over the original ends_at', async () => {
+    const calls: { url: string; init: RequestInit }[] = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response('[]', { status: 201 });
+    });
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    await recordTrialConsumed('u1', '2027-01-01T00:00:00.000Z');
+
+    const prefer = String((calls[0].init.headers as Record<string, string>).Prefer);
+    // merge-duplicates would UPDATE the existing row and silently rewrite the
+    // trial's ends_at; the latch must be a no-op on repeat.
+    expect(prefer).toContain('ignore-duplicates');
+    expect(prefer).not.toContain('merge-duplicates');
+  });
+
+  it('treats an existing trial row as already consumed, not an error', async () => {
+    vi.stubGlobal('fetch', async () => new Response('', { status: 409 }));
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    await expect(recordTrialConsumed('u1', '2027-01-01T00:00:00.000Z')).resolves.toBeUndefined();
+  });
+});
+
+describe('getActiveEntitlement', () => {
+  it('treats a past valid_until as no access even while the row still says active', async () => {
+    vi.stubGlobal('fetch', async () => new Response(JSON.stringify([
+      { plan_id: 'pro-monthly', valid_until: '2020-01-01T00:00:00.000Z', status: 'active' },
+    ]), { status: 200 }));
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    expect(await getActiveEntitlement('u1')).toBeNull();
+  });
+
+  it('returns the row while valid_until is still in the future', async () => {
+    const future = new Date(Date.now() + 86400_000).toISOString();
+    vi.stubGlobal('fetch', async () => new Response(JSON.stringify([
+      { plan_id: 'pro-monthly', valid_until: future, status: 'active' },
+    ]), { status: 200 }));
+    vi.stubGlobal('Deno', { env: { get: () => 'x' } });
+
+    expect(await getActiveEntitlement('u1')).toMatchObject({
+      plan_id: 'pro-monthly', valid_until: future, status: 'active',
+    });
   });
 });

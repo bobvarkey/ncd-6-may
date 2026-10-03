@@ -20,11 +20,21 @@ function serviceHeaders(): Record<string, string> {
   };
 }
 
-async function pg(method: string, path: string, body?: unknown, query = ''): Promise<Response> {
+async function pg(
+  method: string,
+  path: string,
+  body?: unknown,
+  query = '',
+  prefer?: string,
+): Promise<Response> {
   const url = `${getSecret('SUPABASE_URL')}/rest/v1/${path}${query}`;
+  const headers = serviceHeaders();
+  // The default merge-duplicates is right for upserts; a caller that needs a
+  // conflict to be a no-op (the trial latch) passes `resolution=ignore-duplicates`.
+  if (prefer) headers.Prefer = prefer;
   return fetch(url, {
     method,
-    headers: serviceHeaders(),
+    headers,
     body: body === undefined ? undefined : JSON.stringify(body),
   });
 }
@@ -67,8 +77,11 @@ export interface WebhookEventRow {
   http_status: number | null;
 }
 
-/** Unix seconds -> ISO, with null preserved as null (never epoch 0). */
-function ts(unix: number | null | undefined): string | null {
+/**
+ * Unix seconds -> ISO, with null preserved as null (never epoch 0). Exported so
+ * subscription-logic.ts shares this one conversion rather than keeping a copy.
+ */
+export function ts(unix: number | null | undefined): string | null {
   if (unix === null || unix === undefined) return null;
   return new Date(unix * 1000).toISOString();
 }
@@ -169,16 +182,40 @@ export async function setEntitlementUntil(
   if (!res.ok) throw new Error(`setEntitlementUntil failed: ${res.status} ${await res.text()}`);
 }
 
+/**
+ * The user's live entitlement, or null. "Live" is computed on read: a row whose
+ * status still says 'active' but whose valid_until has passed grants no access.
+ * No scheduled job is needed — expiry is the clock's decision, made here.
+ */
+export async function getActiveEntitlement(userId: string): Promise<
+  { plan_id: string; valid_until: string; status: string } | null
+> {
+  const res = await pg('GET', 'entitlements', undefined,
+    `?user_id=eq.${encodeURIComponent(userId)}&status=eq.active` +
+    `&select=plan_id,valid_until,status&order=valid_until.desc&limit=1`);
+  if (!res.ok) throw new Error(`getActiveEntitlement failed: ${res.status}`);
+  const rows = await res.json();
+  const row = rows[0];
+  if (!row) return null;
+  return new Date(row.valid_until).getTime() > Date.now() ? row : null;
+}
+
 export async function revokeEntitlement(userId: string, planId: string): Promise<void> {
   const res = await pg('PATCH', 'entitlements', { status: 'expired' },
     `?user_id=eq.${encodeURIComponent(userId)}&plan_id=eq.${encodeURIComponent(planId)}`);
   if (!res.ok) throw new Error(`revokeEntitlement failed: ${res.status}`);
 }
 
-/** Records that this account has consumed its one free trial, so it cannot repeat. */
+/**
+ * Records that this account has consumed its one free trial, so it cannot repeat.
+ * `user_trials.user_id` is the primary key, so a repeat call conflicts; the insert
+ * resolves that conflict by ignoring it (`ON CONFLICT DO NOTHING`), which keeps the
+ * latch idempotent and must not merge — a merge would rewrite the original
+ * `ends_at`. A 409 from some other constraint is likewise treated as consumed.
+ */
 export async function recordTrialConsumed(userId: string, endsAtIso: string): Promise<void> {
-  const res = await pg('POST', 'user_trials', { user_id: userId, ends_at: endsAtIso });
-  // 23505 = already consumed. Not an error.
+  const res = await pg('POST', 'user_trials', { user_id: userId, ends_at: endsAtIso },
+    '', 'resolution=ignore-duplicates,return=representation');
   if (!res.ok && res.status !== 409) {
     throw new Error(`recordTrialConsumed failed: ${res.status}`);
   }
