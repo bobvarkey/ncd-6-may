@@ -89,13 +89,6 @@ export function planByRazorpayPlanId(razorpayPlanId: string): PlanDef | undefine
   return PLAN_CATALOG.find((p) => razorpayPlanIdFor(p.id) === razorpayPlanId);
 }
 
-/** Retained for the order code until Task 14 removes it. */
-export function planDurationDays(planId: string): number {
-  const plan = findPlan(planId);
-  if (!plan) return 30;
-  return plan.interval === 'yearly' ? 365 : 30;
-}
-
 /**
  * Device identity: x-ncd-device-id header first, then ?deviceId= param.
  * Same convention as the Vercel handlers and the client.
