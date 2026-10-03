@@ -11,6 +11,7 @@ import { LabProvider } from "@/components/SmartLabelUpload/GlobalLabContext";
 import BackToHome from "@/components/BackToHome";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { RequireAccess } from "@/components/RequireAccess";
 import { OfflineProvider } from "@/lib/offline/OfflineContext";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 
@@ -207,6 +208,7 @@ const PEPPage = lazyWithModuleRetry(() => import("@/pages/PEP"));
 const AdultVaccinationsPage = lazyWithModuleRetry(() => import("@/pages/AdultVaccinations"));
 const AKIAKDMiniApp = lazyWithModuleRetry(() => import("@/pages/AKIAKDMiniApp"));
 const NotFound = lazyWithModuleRetry(() => import("@/components/NotFound"));
+const Login = lazyWithModuleRetry(() => import("@/pages/Login"));
 
 const queryClient = new QueryClient();
 
@@ -270,18 +272,10 @@ const PageShell = ({ title, children }: { title: string; children: ReactNode }) 
 };
 
 const withNav = (element: ReactNode, title: string) => (
-  <PageShell title={title}>{element}</PageShell>
+  <RequireAccess>
+    <PageShell title={title}>{element}</PageShell>
+  </RequireAccess>
 );
-
-const OpenAppRedirect = () => {
-  const { search } = useLocation();
-  const requestedPath = new URLSearchParams(search).get("next");
-  const destination = requestedPath?.startsWith("/") && !requestedPath.startsWith("//")
-    ? requestedPath
-    : "/home";
-
-  return <Navigate to={destination} replace />;
-};
 
 const App = () => {
   // Paywall is no longer a startup gate — the app opens directly.
@@ -360,8 +354,8 @@ const App = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
           <Route path="/settings" element={withNav(<Settings />, "Settings")} />
-          <Route path="/login" element={<OpenAppRedirect />} />
-          <Route path="/subscription" element={withNav(<Subscription />, "Subscription")} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/subscription" element={<PageShell title="Subscription"><Subscription /></PageShell>} />
           <Route path="/diabetes" element={withNav(<Diabetes />, "Diabetes")} />
           <Route path="/hypertension" element={withNav(<Hypertension />, "Hypertension")} />
           <Route path="/lipids" element={withNav(<Lipids />, "Lipids")} />
@@ -474,10 +468,10 @@ const App = () => {
           <Route path="/feedback" element={withNav(<FeedbackTips />, "Feedback")} />
 
           {/* Legal / Compliance */}
-          <Route path="/privacy" element={withNav(<PrivacyPolicy />, "Privacy Policy")} />
-          <Route path="/terms" element={withNav(<TermsOfService />, "Terms of Service")} />
-          <Route path="/disclaimer" element={withNav(<DisclaimerPage />, "Disclaimer")} />
-          <Route path="/delete-account" element={withNav(<DeleteAccount />, "Delete Account")} />
+          <Route path="/privacy" element={<PageShell title="Privacy Policy"><PrivacyPolicy /></PageShell>} />
+          <Route path="/terms" element={<PageShell title="Terms of Service"><TermsOfService /></PageShell>} />
+          <Route path="/disclaimer" element={<PageShell title="Disclaimer"><DisclaimerPage /></PageShell>} />
+          <Route path="/delete-account" element={<PageShell title="Delete Account"><DeleteAccount /></PageShell>} />
           <Route path="/account/delete" element={<Navigate to="/delete-account" replace />} />
           <Route path="/images" element={withNav(<ImageGallery />, "Image Gallery")} />
           <Route path="/image-gallery" element={<Navigate to="/images" replace />} />
