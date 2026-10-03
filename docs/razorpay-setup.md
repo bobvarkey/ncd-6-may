@@ -12,6 +12,12 @@ Nothing here is executed by the agent that wrote it. Every step is performed by 
 operator. No secret value appears in this file, and no `.env` file is written: the key id,
 key secret, webhook secret and three plan ids live only in backend secrets.
 
+**Read [`razorpay-known-limitations.md`](./razorpay-known-limitations.md) before you go
+live.** It carries what this implementation deliberately does not do: the decision you have
+to make when you switch the access gate on, the deploy prerequisite about the two dead
+trees, and the limitations that were reviewed and carried. Section numbers below point into
+it where a step needs it.
+
 ---
 
 ## 1. Secrets to set
@@ -260,7 +266,7 @@ was **not** made by this work.
 5. **Rotate the Test Mode keys that were exposed in chat.** Treat `RAZORPAY_KEY_ID`,
    `RAZORPAY_KEY_SECRET` and `RAZORPAY_WEBHOOK_SECRET` from the test session as
    compromised: regenerate them in the Dashboard and update the secrets.
-6. **Known limitation to decide alongside step 4** (deferred-findings-register D-11): when
+6. **Known limitation to decide alongside step 4** (known-limitations §1.1): when
    the access guard bounces an unpaid user, it builds `?next=` from `location.pathname`
    **only**, dropping the query string and the hash. A user bounced from a deep link
    therefore returns to the bare path after paying. Low severity, but it becomes visible
@@ -271,7 +277,7 @@ was **not** made by this work.
 ## 9. Go-live prerequisite — the two dead trees (unverified deployment question)
 
 **Please read this as a question to check, not a confirmed problem.** Source:
-`deferred-findings-register.md` D-15.
+`razorpay-known-limitations.md` §2.
 
 After Task 13 deleted the one-time order modules, `supabase/functions/api/index.ts` no
 longer compiles: it still imports `create-order-logic.ts` and `verify-payment-logic.ts`,
