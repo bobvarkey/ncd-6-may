@@ -6,7 +6,14 @@
 export const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, x-ncd-device-id, Authorization, apikey, X-Razorpay-Signature',
+  // Must stay a SUPERSET of the Supabase SDK's own list
+  // (node_modules/@supabase/supabase-js/src/cors.ts -> SUPABASE_HEADERS), which
+  // the SDK extends over time. supabase-js installs X-Client-Info as a global
+  // header on every functions.invoke, and it is not CORS-safelisted, so a browser
+  // preflight lists it in Access-Control-Request-Headers: drop it and the call is
+  // blocked with no visible error (callers catch and report "no access").
+  // x-retry-count / traceparent / tracestate / baggage ride along the same way.
+  'Access-Control-Allow-Headers': 'Content-Type, x-ncd-device-id, Authorization, apikey, X-Razorpay-Signature, x-client-info, x-retry-count, traceparent, tracestate, baggage',
   'Access-Control-Max-Age': '86400',
 };
 
