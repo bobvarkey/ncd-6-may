@@ -124,7 +124,7 @@ row 5, which applies to every row.
 | 4 | Duplicate webhook | Replay the same delivery (Dashboard resend, or re-POST the identical signed body and signature) | **No new row.** Dedup is on signed content (event type + subscription id + payment id), not on the `X-Razorpay-Event-Id` header; the duplicate is refused by the unique `dedupe_key` and answers `{"skipped":"duplicate delivery"}` | No state change. The ledger still shows exactly one row per signed content; the response body is the only server-side signal that the duplicate arrived |
 | 5 | Invalid-signature webhook | POST a body to the webhook URL with a wrong or absent `X-Razorpay-Signature` (the endpoint is public, `verify_jwt = false`) | `rejected_signature`, detail `signature mismatch`, `signature_valid = false` | Nothing is persisted from the unverified bytes; no state change. Response is still HTTP 200 |
 | 6 | Cancellation | Cancel from the billing screen (or in the Dashboard), in both variants: at cycle end, and immediately | `subscription.cancelled` → `no_change`; detail `cancelled at cycle end; access until <date>` **or** `cancelled immediately; access revoked` | Cycle-end: `cancel_at_period_end = true`, access continues to `current_end`. Immediate: entitlement `expired`, access gone |
-| 7 | Expired access | Let a subscription reach `current_end`, or emit `subscription.completed` / `subscription.expired`. In Test Mode you may also force the read by setting `entitlements.valid_until` into the past (service role only) | `completed` / `expired` → `no_change`, detail `<event_type>; access revoked` | Entitlement `expired`; `access-status` returns `access: false` for a normal user |
+| 7 | Expired access | Let a subscription reach `current_end`, or emit `subscription.completed` / `subscription.expired`. In Test Mode you may also force the read by setting `entitlements.valid_until` into the past (service role only) | `completed` / `expired` → `no_change`, detail `<event_type>; access revoked`; the manual probe writes no ledger row | Event path: entitlement `status = 'expired'`. Manual `valid_until` probe: the row stays `status = 'active'` — access is **computed from `valid_until`**, not read from `status`, so the probe still denies access. Either way `access-status` returns `access: false` for a normal user |
 | 8 | Developer account | Signed in as the seeded administrator, invoke the admin-only action with your own auth user id (e.g. from the signed-in app's browser console): `payment-api` body `{"action":"grant-developer","userId":"<your-uuid>"}` | No webhook involved | `user_roles` gains a `developer` row for that id; `access-status` returns `role: "developer"` and `access: true` regardless of entitlement |
 
 ### SQL that confirms each row
@@ -251,7 +251,8 @@ was **not** made by this work.
    account's signing secret. The live secret differs from the Test Mode one.
 4. **Decide `VITE_ENFORCE_ACCESS`.** Left unset, the client route guard is inert and the
    app relies on server-side enforcement alone (which is the access-control boundary
-   either way). Setting it to `true` turns the guard on for the ~90 clinical routes. This
+   either way). Setting it to `true` turns the guard on for the 119 clinical routes wrapped
+   in `withNav` in `src/App.tsx` (a point-in-time count, not a contract). This
    is a product decision, not just a config toggle — make it deliberately, and exercise
    the unpaid-user path once the day you switch it on.
 5. **Rotate the Test Mode keys that were exposed in chat.** Treat `RAZORPAY_KEY_ID`,
@@ -294,9 +295,10 @@ inside the repository.
    whether a project deploy is all-or-nothing.
 2. **If the answer is all-or-nothing** (or if `api` is deployed), delete both dead trees —
    `supabase/functions/api/` **and** the root `api/` — as a **separate reviewed change**
-   before go-live. The root `api/` tree carries its own security issue: its create-order
-   endpoint reads the amount from the request body and is reachable through the Vercel
-   rewrite, so it should not be deployed regardless.
+   before go-live. The root `api/` tree is the retired one-time-order port, superseded by
+   the subscription path: nothing in `src/` calls it, and its create-order endpoint already
+   prices from the server-side catalog rather than the request body. It is dead code, and
+   should not be deployed regardless.
 3. Either way, re-run `grep -rn "functions/v1/api" src/` after any deletion.
 
 **These dead trees were deliberately NOT deleted by this work.** Removing them is a
