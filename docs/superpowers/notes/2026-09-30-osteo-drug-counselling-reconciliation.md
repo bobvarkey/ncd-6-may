@@ -146,31 +146,211 @@ The engine drops brand names: Fosamax, Actonel, Boniva, Reclast, Prolia, Evenity
 Tymlos. It also spells the drug "Zoledronate" where the old copy used "Zoledronic acid". These
 are naming, not counselling, so they are recorded here rather than in the missing list.
 
-## Scope caveat: other clinical copy is also being retired
+## Audit of the remaining retired clinical copy
 
-The brief for this task scoped the side-by-side comparison to the `drugDetails` block above.
-The four files being deleted carry **additional** clinical copy beyond that block, which also
-leaves the codebase with this deletion and was **not** audited here:
+The drug section above covers the `drugDetails` block. This section audits the **rest** of the
+material the deletion removes, against the **new surface as shipped**: the engine's outputs in
+`src/lib/osteo/logic.ts` (`safetyAlerts`, `todayActions`, `evidence`, `documentedScreeningRisks`,
+`missingInformation`, and the DXA/risk labels, as rendered by
+`src/components/osteo/ResultCard.tsx`), the copy rendered by
+`src/components/bone-health/OsteoCareAssessment.tsx` (gate purposes, hints and disclaimers), and
+`src/data/osteo-mappings.ts`. Superseded material was recovered verbatim from the commit before
+the deletion (`9703a82`). Same rule as the drug section: a point is **made** if any part of the
+new surface says the same thing in different words; **missing** only if absent everywhere.
 
-- `src/components/bone-health/BoneHealthGuidedApp.tsx` — the per-plan `lifestyle`,
-  `monitoring` and `followUp` lists for the very-high, high and low pathways (e.g. the
-  bisphosphonate duration framing "Oral BP: up to 10 years. IV BP: up to 6 years. Denosumab:
-  5-10 years with planned exit strategy", DXA interval advice, atypical-femoral-fracture and
-  osteonecrosis-of-the-jaw monitoring prompts, fall-prevention and lifestyle advice).
-- `src/data/bone-health-app.ts` — the guided decision tree's per-node `body` clinical
-  statements and the eight `safety_rules`.
-- `src/data/osteoporosis-algorithm.ts` — the full 417-line algorithm data (risk thresholds,
-  provenance and source list).
+`osteo-mappings.ts` carries no counselling prose — it is pure mapping/parsing (option lists, the
+CKD ladder, CFS translation, view⇄engine conversion) plus UI labels, and it introduces only one
+threshold, `CFS_FRAILTY_THRESHOLD = 5`, which it documents as sourced from
+`ClinicalFrailtyScale.tsx`. Nothing is lost from it.
 
-An owner should decide whether a follow-up audit of this material against the new engine is
-warranted. It is recorded here so the deletion is not mistaken for having covered all of the
-old file's clinical content.
+### 1. Per-plan `lifestyle` / `monitoring` / `followUp` (`BoneHealthGuidedApp.tsx`)
+
+**Made (re-worded):** the very-high follow-up "MUST start antiresorptive immediately after to
+consolidate gains." is made by the anabolic cards' "Follow with a prompt antiresorptive."; the
+high pathway's "Denosumab with exit plan" is made by the denosumab safety alerts; "No universal
+upgrade for all" is made by the tab hint "No automatic FRAX multiplier or risk-class upgrade.";
+and the exported disclaimer "This is clinical decision support, not medical advice." is made by
+the tab disclaimer ("Clinical decision support only ... clinical sign-off is required.").
+
+**Missing (verbatim).**
+
+Very-high plan `lifestyle`:
+- "Ensure adequate calcium (1000-1200mg/day) and vitamin D (800-2000 IU/day)" — the *adequacy*
+  point is made (engine safety alert "Calcium and vitamin D adequacy is not confirmed."), but
+  neither the 1000-1200 mg/day nor the 800-2000 IU/day figure is present anywhere in the new
+  surface.
+- "Weight-bearing exercise 30 min most days"
+- "Balance training to prevent falls"
+- "Stop smoking, limit alcohol"
+- "Home safety assessment for fall hazards"
+
+Very-high plan `monitoring`:
+- "DXA at 12-24 month intervals during treatment"
+- "Serial height measurement"
+- "Calcium, phosphate, creatinine annually"
+- "Monitor for new fractures"
+
+High plan `lifestyle`:
+- "Calcium 1000-1200mg + Vitamin D 800-2000 IU daily" (the dose figures, as above)
+- "Weight-bearing exercise 30 min most days"
+- "Muscle strengthening 2-3x weekly"
+- "Balance training"
+- "Stop smoking, limit alcohol <2 units/day"
+- "Vision check, home hazards assessment"
+
+High plan `monitoring`:
+- "DXA at 1-2 year intervals"
+- "Annual review of adherence and side effects"
+- "Monitor for atypical femoral fractures (thigh pain)"
+- "Monitor for osteonecrosis of jaw (dental issues)"
+
+High plan `followUp` — partially made; the engine cards give review points ("Review after 5
+years" for oral bisphosphonates, "Review after 3 annual doses" for IV) and the denosumab exit
+strategy is made, but the following figures are absent:
+- "Oral BP: up to 10 years. IV BP: up to 6 years. Denosumab: 5-10 years with planned exit
+  strategy." (the "up to 10 years", "up to 6 years" and "5-10 years" figures)
+
+Low plan `lifestyle` (all missing):
+- "Calcium-rich diet: dairy, leafy greens, fortified foods"
+- "Vitamin D: sunlight exposure, fatty fish, fortified foods"
+- "Weight-bearing exercise: walking, dancing, resistance training"
+- "Balance exercises to prevent falls"
+- "Stop smoking completely"
+- "Limit alcohol to <2 units/day"
+- "Maintain healthy weight"
+
+Low plan `monitoring` (all missing):
+- "DXA only if new risk factors develop"
+- "Reassess if: new fracture, weight loss >5%, new illness/medication"
+
+Low plan `followUp` (missing):
+- "Reassess in 2-3 years or sooner if clinical situation changes."
+
+### 2. Decision-tree `body` statements and `safety_rules` (`bone-health-app.ts`)
+
+**Made (re-worded):** "Recent vertebral: very-high-risk." ("Vertebral fracture within the last
+2 years."); ">=7.5mg/>3mo: very-high-risk, specialist" (very-high predicate "Systemic
+glucocorticoid ≥7.5 mg/day prednisolone equivalent for ≥3 months."); "Individualize with
+renal/bone specialist." ("Advanced CKD / CKD-MBD: renal-bone specialist review before any
+routine drug choice."); "Don't delay prevention solely for DXA." ("DXA indicated but unavailable:
+arrange DXA if feasible; do not delay a clear fracture indication."); "Women 65+, Men 70+"
+(age-based DXA prompt); "<50: offer prevention; investigate fractures, secondary causes." and
+"Treatment depends on cause, not Z-score alone." ("Use the Z-score, fracture phenotype and a
+secondary-cause evaluation. No automatic T-score medication trigger." and "Individualise: no
+automatic male or female T-score pathway is applied."); "Unknown ≠ negative." ("Unknown is never
+treated as no" + "Very high is not excluded — these predicates are unknown."); "FRAX above
+applicable national treatment threshold"; "Low: below threshold after assessment" ("None
+established (this is not low risk)"); "No universal upgrade for all"; "Review endocrine,
+malabsorption, weight, immobilization, medicines." (present as risk-factor options and
+`documentedScreeningRisks`); the anabolic durations and "Follow with antiresorptive."; the
+denosumab rules; "Tool supports clinical decision, not replacement." (tab disclaimer).
+
+**Missing (verbatim).** Purely navigational body text ("Group determines next assessment.",
+"Confirm age group", "Complete", etc.) is not counselling and is covered by the tab's gates; the
+clinically actionable statements below are not made anywhere in the new surface.
+
+- "Z-score <= -2.0: below expected for age."
+- "No blanket lab panel for low-risk adults."
+- "Investigate when fractures, low BMD, symptoms warrant."
+- "Don't order DXA to label normal."
+- "No automatic medication or annual DXA." (the "no automatic annual DXA" component)
+- ">=5mg/day: dose-dependent risk" (the ≥5 mg/day glucocorticoid flag; the engine fires only at
+  ≥7.5 mg/day)
+- "May increase risk beyond FRAX." (falls)
+- "Consider upgrade with high baseline risk, low BMD." (falls — the engine records falls as an
+  input risk factor only; it has no falls-modifier rule)
+- "Review adherence, exposure, secondary causes, BMD." (fracture on treatment)
+- "One fracture ≠ treatment failure."
+- "Very high: >=2 vertebral, T<-3.0" — the multiple-vertebral component is made, but the
+  "hip or vertebral fracture with T<-3.0" very-high rule is not (the engine's T predicate is
+  ≤ −3.5)
+- "High: fracture, T<=-2.5, FRAX above" — the T and FRAX components are made, but "Other
+  fragility fracture, including humeral or pelvic fracture" is not counted as high by the engine
+  (it only records "Other fragility site — clinician site-specific review needed; this blocks any
+  below-threshold conclusion")
+- "Reassure; offer prevention."
+- "No automatic annual DXA." (low/normal BMD)
+- "Does not need medication." (osteopenia)
+- "Closer reassessment if approaching threshold."
+- "If not indicated and low risk, prevention."
+- "Revisit with age/risk factors."
+- Prevention node: "Balanced diet, protein, calcium", "Vitamin D appropriate", "Exercise,
+  balance training", "Stop smoking", "Limit alcohol", "Falls review"
+- Reassessment node: "Revisit history, falls, weight, meds.", "Order DXA only if will change
+  management.", "Triggers: new fracture, meds, falls, weight loss."
+- "Consider: age, renal, CV, GI, adherence" (the GI-tolerance and adherence factors)
+- "Review: new fractures, adherence, adverse, BMD"
+- "Persistent high: FN T<=-2.5, fracture 3-5yr, prior hip/vertebral"
+- "Oral BP: continue up to 10yr"
+- "IV BP: continue up to 6yr"
+- "Pause 1-3yr for bisphosphonate"
+- "Suspected hip/acute fracture: urgent imaging"
+- "New back pain/height loss: assess vertebral fracture."
+
+Of the eight `safety_rules`, made are: "Never stop denosumab without planned antiresorptive."
+(engine safety alerts), "Advanced CKD ≠ automatic anabolic indication." ("Not a default choice."
++ renal-specialist action), "No DXA ≠ normal BMD." ("normal BMD is not inferred"),
+"Don't apply postmenopausal T-scores to younger adults." ("Individualise: no automatic male or
+female T-score pathway is applied."), and "Don't route prior osteoporosis/denosumab to untreated
+because BMD improved." (denosumab safety alerts + current-therapy reconciliation — re-worded).
+**Missing** are:
+- "Single fracture ≠ treatment failure."
+- "Normal BMD ≠ low risk."
+- "Osteopenia ≠ medication indication."
+
+### 3. `osteoporosis-algorithm.ts` — characterisation
+
+It is **provenance/data with a clinically load-bearing core**: the SEIOMM/NOGG/KDIGO risk-
+threshold framework, the source list and the rationale/migration notes. Its central thresholds
+**are** implemented by the frozen engine (very-high from multiple/recent vertebral fracture and
+T ≤ −3.5; high from hip/vertebral fracture, T ≤ −2.5 and FRAX above threshold; the glucocorticoid
+≥7.5 mg/day for ≥3 months rule; the anabolic durations; the denosumab "never stop" rule; the
+"unknown is not negative" principle). It is **not** simply superseded, however: it also carries
+actionable thresholds and figures that the engine does **not** implement. Those, verbatim:
+
+- "Coexisting vertebral and hip fracture" (very-high criterion — no engine predicate)
+- "Hip or vertebral fracture with T-score < -3.0" (very-high criterion — no engine predicate;
+  the engine's T predicate is ≤ −3.5)
+- "Other fragility fracture, including humeral or pelvic fracture" (stated as high; the engine
+  does not count non-hip/vertebral fragility as high — it flags site-specific review)
+- "Systemic prednisolone-equivalent >=5 mg/day in supplied table" (the ≥5 mg/day flag; the engine
+  fires only at ≥7.5 mg/day)
+- "denosumab": "5-10 years or target attainment; continue routine review throughout"
+- "Femoral-neck T-score <= -2.5", "Fragility fracture within previous 3-5 years", "Prior hip or
+  vertebral fracture" (persistent-high-risk continuation indicators — not implemented)
+- "Consider continuation up to 10 years total, individualized" (oral bisphosphonate)
+- "Consider continuation up to 6 years total, individualized" (IV bisphosphonate)
+- "Consider monitored pause for 1-3 years, individualized to agent and risk" (bisphosphonate)
+- "New fracture", "Significant BMD loss", "New clinical risk factor" (early-review triggers)
+- "Suspected new hip or other acute fracture: urgent clinical assessment and imaging."
+- "New severe back pain or height loss: assess for vertebral fracture. Neurological deficit
+  requires urgent evaluation."
+- "Z-score <= -2.0 means below expected range for age, not an automatic osteoporosis diagnosis or
+  drug indication."
+- "NOGG uses a minimum total intake of 700 mg/day for adults in its scope"
+- "NOGG recommends at least 800 IU/day for insufficiency or risk factors in its target population"
+- "Diagnostic T-score >= -1.0" (normal_bmd), "-2.5 < diagnostic T-score < -1.0"
+  (low_bone_mass/osteopenia), "Diagnostic T-score <= -2.5" (osteoporosis_bmd) — the engine does
+  not output BMD category labels
+- "Do not hard-code foreign FRAX thresholds as Indian treatment thresholds." — the engine
+  requires the policy version to be documented but does not enforce this rule
+
+**Nothing remains un-audited.** All three superseded files were recovered from `9703a82` and read
+in full against the shipped surface; the note records what is made and what is missing.
 
 ## Follow-ups (for the engine's owner — not fixed in this task)
 
-1. Decide whether the seven missing drug items above should be added to the engine's medication
-   cards. The engine is frozen for this plan; adding clinical text here would ship un-reviewed
-   copy inside an untouchable file.
+1. Decide whether the seven missing drug items in the first section should be added to the
+   engine's medication cards. The engine is frozen for this plan; adding clinical text here would
+   ship un-reviewed copy inside an untouchable file.
 2. In particular, ibandronate, calcium and vitamin D have no engine card at all — a clinician
    using the new tab is not offered these three agents.
-3. Decide whether the additional plan-level copy noted under "Scope caveat" needs an audit.
+3. The audit above found substantially actionable clinical copy that the new surface does not
+   carry: per-drug items (nausea/acute-phase reaction, ibandronate/calcium/vitamin D entire
+   cards), plan-level prevention and monitoring advice (calcium/vitamin D doses, exercise, falls,
+   smoking, alcohol, DXA intervals, height and annual-lab monitoring, atypical-femoral-fracture
+   and osteonecrosis-of-the-jaw prompts), and several management thresholds (persistent-high-risk
+   continuation durations, bisphosphonate pause, urgent fracture triage, the very-high
+   fracture-plus-T<-3.0 rule, the ≥5 mg/day glucocorticoid flag, the Z ≤ −2.0 threshold). This is a
+   record of what left the codebase; an owner should decide, item by item, whether any of it
+   should be reimplemented in the engine or surfaced in the tab.
