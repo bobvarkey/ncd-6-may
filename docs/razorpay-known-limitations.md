@@ -194,6 +194,11 @@ Razorpay ids are not guessable.
   place, and it false-fails on a cosmetic rewrite such as single quotes or `.match({status:'active'})`.
   This is deliberate — see §3.3, the same file. The Deno entry cannot be imported by the test runner
   at all, because Vite rejects its `npm:` specifiers before any module mock can intercept.
+- `src/pages/Subscription.tsx:44-48` — `void fetchBillingStatus().then(setBilling)` attaches no
+  rejection handler, so a failing `payment-api` call surfaces as an unhandled promise rejection
+  rather than a visible error. The page degrades gracefully anyway (the billing card is simply
+  absent), so this is console noise, not a broken screen. `.catch(() => setBilling(null))` states
+  the intent.
 
 ### 3.6 The test suite flakes under parallel load — re-run before believing a failure
 
