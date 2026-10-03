@@ -5,6 +5,7 @@ const ENV: Record<string, string> = {
   RAZORPAY_KEY_ID: 'rzp_test_KEY',
   RAZORPAY_KEY_SECRET: 'secret',
   RAZORPAY_PLAN_ID_PRO_MONTHLY: 'plan_PRO123',
+  RAZORPAY_PLAN_ID_PRO_YEARLY: 'plan_PROYEARLY',
 };
 
 beforeEach(() => {
@@ -55,6 +56,8 @@ describe('createSubscription', () => {
     const res = await createSubscription(post({ planId: 'basic-monthly' }), 'u1', d);
     expect(res.status).toBe(502);
     expect(d.fetchFn).not.toHaveBeenCalled();
+    // Review Focus 3 has two halves: no Razorpay call AND no subscription row.
+    expect(d.bound).toHaveLength(0);
   });
 
   it('refuses a second subscription when one is already live (Review Focus 1)', async () => {
@@ -101,5 +104,90 @@ describe('createSubscription', () => {
     const d = deps();
     await createSubscription(post({ planId: 'pro-monthly', userId: 'attacker' }), 'real-user', d);
     expect((d.bound[0] as any).userId).toBe('real-user');
+  });
+
+  it('400s on a JSON body that is not an object, including null', async () => {
+    for (const raw of ['null', '[]', '"x"', '3']) {
+      const res = await createSubscription(
+        new Request('http://x/create-subscription', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: raw,
+        }),
+        'u1',
+        deps(),
+      );
+      expect(res.status, `body ${raw}`).toBe(400);
+    }
+  });
+
+  it('502s with CORS headers when the live-subscription read throws', async () => {
+    const d = deps({
+      getLiveSubscriptionForUser: async () => { throw new Error('supabase down'); },
+    });
+    const res = await createSubscription(post({ planId: 'pro-monthly' }), 'u1', d);
+    expect(res.status).toBe(502);
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+    expect(d.fetchFn).not.toHaveBeenCalled();
+  });
+
+  it('502s with CORS headers when the trial-consumption read throws', async () => {
+    const d = deps({
+      hasConsumedTrial: async () => { throw new Error('supabase down'); },
+    });
+    const res = await createSubscription(post({ planId: 'pro-monthly', trial: true }), 'u1', d);
+    expect(res.status).toBe(502);
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+    expect(d.fetchFn).not.toHaveBeenCalled();
+  });
+
+  it('prices from the server catalog for the requested plan', async () => {
+    const res = await createSubscription(post({ planId: 'pro-yearly' }), 'u1', deps());
+    const body = await res.json();
+    expect(body.amountPaise).toBe(699900);
+    expect(body.currency).toBe('INR');
+    expect(body.planName).toBe('Pro');
+    expect(body.interval).toBe('yearly');
+    expect(body.planId).toBe('pro-yearly');
+  });
+
+  it('ignores client-supplied price, currency and plan name', async () => {
+    const d = deps();
+    const res = await createSubscription(
+      post({ planId: 'pro-monthly', amount: 1, amountPaise: 1, currency: 'USD', name: 'Hacked' }),
+      'u1',
+      d,
+    );
+    const body = await res.json();
+    expect(body.amountPaise).toBe(50100);
+    expect(body.currency).toBe('INR');
+    expect(body.planName).toBe('Pro');
+    expect(body.interval).toBe('monthly');
+
+    const sent = JSON.parse(String((d.fetchFn as any).mock.calls[0][1].body));
+    expect(sent.amount).toBeUndefined();
+    expect(sent.currency).toBeUndefined();
+  });
+
+  it("reports firstChargeAt from Razorpay's echo, not the locally requested start", async () => {
+    const d = deps();
+    const res = await createSubscription(post({ planId: 'pro-monthly', trial: true }), 'u1', d);
+    const body = await res.json();
+    expect(body.firstChargeAt).toBe(new Date(1700000000 * 1000).toISOString());
+  });
+
+  it('falls back to the requested start_at when Razorpay echoes none', async () => {
+    const d = deps({
+      fetchFn: vi.fn(async () =>
+        new Response(JSON.stringify({
+          id: 'sub_NEW', plan_id: 'plan_PRO123', status: 'created',
+          short_url: null, start_at: null,
+        }), { status: 200 })) as unknown as typeof fetch,
+    });
+    const before = Date.now();
+    const res = await createSubscription(post({ planId: 'pro-monthly', trial: true }), 'u1', d);
+    const body = await res.json();
+    const expected = Math.floor(before / 1000) + 3 * 86400;
+    expect(Math.abs(new Date(body.firstChargeAt).getTime() / 1000 - expected)).toBeLessThan(5);
   });
 });

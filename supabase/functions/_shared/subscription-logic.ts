@@ -8,6 +8,7 @@
  */
 import {
   findPlan, razorpayPlanIdFor, getSecret, planByRazorpayPlanId,
+  jsonRes, errRes,
 } from './payment-helpers.ts';
 import {
   bindSubscription, getLiveSubscriptionForUser as realGetLive,
@@ -15,21 +16,6 @@ import {
   applySubscriptionEntity, setEntitlementUntil, revokeEntitlement,
   type SubscriptionRow,
 } from './subscription-store.ts';
-
-const CORS_HEADERS: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, apikey',
-  'Access-Control-Max-Age': '86400',
-};
-
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
-  });
-
-export const TRIAL_DAYS = 3;
 
 export interface CreateSubscriptionBody {
   planId: string;
@@ -68,25 +54,36 @@ export async function createSubscription(
   try {
     body = await req.json();
   } catch {
-    return json({ error: 'Invalid JSON body' }, 400);
+    return errRes(400, 'Invalid JSON body');
+  }
+  // A JSON scalar, null or array parses fine but has no planId to read.
+  if (body === null || typeof body !== 'object' || Array.isArray(body)) {
+    return errRes(400, 'Invalid JSON body');
   }
 
   const plan = findPlan(String(body.planId ?? ''));
-  if (!plan) return json({ error: 'Unknown plan' }, 400);
+  if (!plan) return errRes(400, 'Unknown plan');
 
   // Secret must exist before any Razorpay call, so a half-configured go-live
   // fails here instead of creating a subscription against an empty plan_id.
   const razorpayPlanId = razorpayPlanIdFor(plan.id);
   if (!razorpayPlanId) {
-    return json({ error: `Plan ${plan.id} is not configured for Razorpay` }, 502);
+    return errRes(502, `Plan ${plan.id} is not configured for Razorpay`);
   }
 
   const auth = razorpayAuth();
-  if (!auth) return json({ error: 'Razorpay keys not configured' }, 502);
+  if (!auth) return errRes(502, 'Razorpay keys not configured');
 
-  const existing = await deps.getLiveSubscriptionForUser(userId);
+  // Reads are wrapped so a Supabase blip is a clean, CORS-carrying 502 rather
+  // than a rejected promise the caller turns into an uncorsed 500.
+  let existing: SubscriptionRow | null;
+  try {
+    existing = await deps.getLiveSubscriptionForUser(userId);
+  } catch (e) {
+    return errRes(502, `Subscription lookup failed: ${(e as Error).message}`);
+  }
   if (existing) {
-    return json({
+    return jsonRes({
       error: 'You already have an active subscription',
       subscriptionId: existing.razorpay_subscription_id,
     }, 409);
@@ -94,10 +91,16 @@ export async function createSubscription(
 
   const wantsTrial = body.trial === true && plan.trialDays > 0;
   if (body.trial === true && plan.trialDays === 0) {
-    return json({ error: 'This plan does not offer a trial' }, 400);
+    return errRes(400, 'This plan does not offer a trial');
   }
-  if (wantsTrial && (await deps.hasConsumedTrial(userId))) {
-    return json({ error: 'Your free trial has already been used' }, 409);
+  if (wantsTrial) {
+    let consumed: boolean;
+    try {
+      consumed = await deps.hasConsumedTrial(userId);
+    } catch (e) {
+      return errRes(502, `Trial lookup failed: ${(e as Error).message}`);
+    }
+    if (consumed) return errRes(409, 'Your free trial has already been used');
   }
 
   // A future start_at turns the window before it into a trial: the mandate is
@@ -121,7 +124,7 @@ export async function createSubscription(
   });
   if (!res.ok) {
     const text = await res.text();
-    return json({ error: `Razorpay subscription creation failed: ${res.status} ${text.slice(0, 300)}` }, 502);
+    return errRes(502, `Razorpay subscription creation failed: ${res.status} ${text.slice(0, 300)}`);
   }
   const subscription = await res.json();
 
@@ -136,11 +139,16 @@ export async function createSubscription(
       shortUrl: subscription.short_url ?? null,
     });
   } catch (e) {
-    return json({ error: `Binding persistence failed: ${(e as Error).message}` }, 502);
+    return errRes(502, `Binding persistence failed: ${(e as Error).message}`);
   }
 
+  // Razorpay is the authority for dates, so we report the start it echoed back
+  // and only fall back to the start we requested when it echoes none.
+  const echoedStartAt = typeof subscription.start_at === 'number' ? subscription.start_at : null;
+  const firstChargeUnix = echoedStartAt ?? startAt ?? null;
+
   // Only what Checkout needs. Never the plan catalog's internals, never a secret.
-  return json({
+  return jsonRes({
     subscriptionId: subscription.id,
     keyId: getSecret('RAZORPAY_KEY_ID'),
     planId: plan.id,
@@ -149,6 +157,6 @@ export async function createSubscription(
     currency: plan.currency,
     interval: plan.interval,
     isTrial: wantsTrial,
-    firstChargeAt: startAt ? new Date(startAt * 1000).toISOString() : null,
+    firstChargeAt: firstChargeUnix === null ? null : new Date(firstChargeUnix * 1000).toISOString(),
   });
 }
