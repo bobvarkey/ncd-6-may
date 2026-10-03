@@ -8,6 +8,7 @@ import {
   CFS_SCORES,
   OTHER_CONFIRMED_RISKS,
   cfsIndicatesFrailty,
+  ckdStatusForView,
   initialView,
   ladderToCkdStatus,
   normaliseView,
@@ -39,19 +40,53 @@ describe("the CKD ladder (M1)", () => {
     }
   });
 
-  it("covers every rung — no rung is left unmapped", () => {
-    for (const rung of CKD_LADDER) expect(ladderToCkdStatus(rung)).toBeTruthy();
-  });
-
   it("keeps 'Not advanced' blocking when eGFR is under 30", () => {
-    // Review Focus 3: a recorded renal status must not silently contradict the number.
-    const ids = blockingIds(view({ ...ADULT, ckd_ladder: "not_advanced", egfr_ml_min_1_73m2: 22 }));
+    // Review Focus 3: a recorded renal status must not silently contradict the
+    // number. The ladder is only in force while the CKD cause is ticked (see the
+    // ckdStatusForView tests above), so the cause is part of the state that can
+    // carry the contradiction.
+    const ids = blockingIds(
+      view({ ...ADULT, ckd_ladder: "not_advanced", bone_loss_conditions: ["ckd"], egfr_ml_min_1_73m2: 22 }),
+    );
     expect(ids).toContain("ckd_no_vs_egfr");
   });
 
-  it("does not discard a recorded rung when the cause is unticked", () => {
-    const s = toOsteoState(view({ ...ADULT, ckd_ladder: "ckd_g5", bone_loss_conditions: [] }));
-    expect(s.advanced_ckd_ckd_mbd_dialysis).toBe("yes_or_suspected");
+  it("reads unknown from a retained negative rung when the CKD cause is not recorded", () => {
+    // Final review Finding 2: the ladder is rendered only while the CKD cause is
+    // ticked, and unticking it leaves the rung behind. A retained rung must not
+    // assert the negative finding "no" for a patient with no CKD recorded and no
+    // eGFR — the component's own hint calls an empty cause list "unconfirmed,
+    // which is not the same as absent".
+    const v = view({ ...ADULT, ckd_ladder: "not_advanced", bone_loss_conditions: [] });
+    expect(ckdStatusForView(v)).toBe("unknown");
+    expect(toOsteoState(v).advanced_ckd_ckd_mbd_dialysis).toBe("unknown");
+  });
+
+  it("reads unknown from a retained positive rung when the CKD cause is not recorded", () => {
+    // The same rule in the other direction: with no CKD recorded, a leftover
+    // positive rung must not assert advanced CKD either.
+    const v = view({ ...ADULT, ckd_ladder: "ckd_g5", bone_loss_conditions: [] });
+    expect(ckdStatusForView(v)).toBe("unknown");
+    expect(toOsteoState(v).advanced_ckd_ckd_mbd_dialysis).toBe("unknown");
+  });
+
+  it("still collapses all eight rungs, exactly, when the CKD cause is recorded", () => {
+    // The retained-rung rule must not change the mapping when CKD is genuine.
+    const expected: Record<CkdLadderRung, string> = {
+      unknown: "unknown",
+      not_advanced: "no",
+      ckd_g4: "yes_or_suspected",
+      ckd_g5: "yes_or_suspected",
+      dialysis: "yes_or_suspected",
+      advanced_ckd_not_staged: "yes_or_suspected",
+      suspected_ckd_mbd: "yes_or_suspected",
+      ckd_mbd_present: "yes_or_suspected",
+    };
+    for (const rung of CKD_LADDER) {
+      const v = view({ ...ADULT, ckd_ladder: rung, bone_loss_conditions: ["ckd"] });
+      expect(ckdStatusForView(v), rung).toBe(expected[rung]);
+      expect(toOsteoState(v).advanced_ckd_ckd_mbd_dialysis, rung).toBe(expected[rung]);
+    }
   });
 });
 

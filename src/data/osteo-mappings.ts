@@ -120,6 +120,16 @@ export function ladderToCkdStatus(rung: CkdLadderRung): CkdStatus {
   return "yes_or_suspected";
 }
 
+/** The engine's renal tri-state is only meaningful when the CKD cause is actually
+ *  recorded: an empty cause list is "unconfirmed", which the UI states is not the
+ *  same as absent, so a rung left behind by unticking the cause must not assert a
+ *  negative finding. The rung itself is retained in the view and echoed by Gate 5. */
+export function ckdStatusForView(view: OsteoView): CkdStatus {
+  return view.bone_loss_conditions.includes("ckd")
+    ? ladderToCkdStatus(view.ckd_ladder)
+    : "unknown";
+}
+
 /* ------------------------------------------------------------------ */
 /* M2 — the Clinical Frailty Scale                                     */
 /* ------------------------------------------------------------------ */
@@ -411,7 +421,7 @@ export function toOsteoState(view: OsteoView): OsteoState {
       view.systemic_glucocorticoids === "yes" ? view.prednisolone_equivalent_mg_per_day : null,
     glucocorticoid_duration_months:
       view.systemic_glucocorticoids === "yes" ? view.glucocorticoid_duration_months : null,
-    advanced_ckd_ckd_mbd_dialysis: ladderToCkdStatus(view.ckd_ladder),
+    advanced_ckd_ckd_mbd_dialysis: ckdStatusForView(view),
     egfr_ml_min_1_73m2: view.egfr_ml_min_1_73m2,
     drug_specific_crcl_ml_min: view.drug_specific_crcl_ml_min,
     current_therapy: view.current_therapy,

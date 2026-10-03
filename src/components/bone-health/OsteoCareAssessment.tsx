@@ -20,8 +20,8 @@ import {
   NONE_IDENTIFIED,
   OTHER_CONFIRMED_RISKS,
   STANDALONE_RISK_FACTORS,
+  ckdStatusForView,
   initialView,
-  ladderToCkdStatus,
   normaliseView,
   reportContext,
   toCfsScore,
@@ -530,7 +530,9 @@ export default function OsteoCareAssessment() {
                   <p className="text-sm font-semibold">
                     {CKD_LADDER_LABELS[view.ckd_ladder]}
                     <span className="ml-2 font-normal text-muted-foreground">
-                      engine reads: {label(ladderToCkdStatus(view.ckd_ladder))}
+                      {ckdSelected
+                        ? `engine reads: ${label(ckdStatusForView(view))}`
+                        : "engine reads: Unknown (CKD not selected)"}
                     </span>
                   </p>
                 </Field>

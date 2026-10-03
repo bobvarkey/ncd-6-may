@@ -41,6 +41,19 @@ describe("OsteoCareAssessment", () => {
     expect(screen.queryByText("Ckd g4")).toBeNull();
   });
 
+  it("echoes the engine's renal reading, and says so when the CKD cause is not selected", () => {
+    render(<OsteoCareAssessment />);
+    openGates();
+    // CKD selected: the rung is echoed with the tri-state the engine derives from it.
+    fireEvent.click(screen.getByRole("button", { name: /chronic kidney disease/i }));
+    fireEvent.click(screen.getByRole("button", { name: "CKD G5" }));
+    expect(screen.getByText(/engine reads: Yes or suspected/)).toBeTruthy();
+    // Untick the cause: the rung is retained in the record, but the engine no longer
+    // reads it, so the echo must not claim a status the engine does not get.
+    fireEvent.click(screen.getByRole("button", { name: /chronic kidney disease/i }));
+    expect(screen.getByText(/engine reads: Unknown \(CKD not selected\)/)).toBeTruthy();
+  });
+
   it("adds the frailty risk when CFS is 5 or more", () => {
     render(<OsteoCareAssessment />);
     openGates();
