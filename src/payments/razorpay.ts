@@ -3,15 +3,9 @@
 // SECURITY:
 //   - The checkout key id is returned by the authenticated Cloud function.
 //   - KEY_SECRET lives exclusively in encrypted Cloud secrets.
-//
-// The Supabase client is imported lazily inside the functions that need it.
-// `createClient` throws at module-evaluation time when VITE_SUPABASE_URL is
-// absent, which would make the pure `buildCheckoutOptions` — and therefore
-// this whole module — unimportable without backend configuration (tests,
-// storybook, any client-less context). Deferring the import keeps the pure
-// builder loadable on its own.
 
 import type { UserEntitlement } from './entitlements';
+import { supabase } from '@/integrations/supabase/client';
 
 declare global {
   interface Window {
@@ -73,7 +67,6 @@ export async function createSubscription(
   planId: string,
   opts: { trial?: boolean } = {},
 ): Promise<CreateSubscriptionResult> {
-  const { supabase } = await import('@/integrations/supabase/client');
   const { data, error } = await supabase.functions.invoke('payment-api', {
     body: { action: 'create-subscription', planId, trial: opts.trial === true },
   });
@@ -91,7 +84,6 @@ export async function createSubscription(
 export async function verifySubscriptionCheckout(
   r: RazorpaySubscriptionResponse,
 ): Promise<VerifyResult> {
-  const { supabase } = await import('@/integrations/supabase/client');
   const { data, error } = await supabase.functions.invoke('payment-api', {
     body: { action: 'verify-subscription', ...r },
   });
@@ -176,7 +168,6 @@ export async function openSubscriptionCheckout(
  */
 export async function fetchMyEntitlement(): Promise<UserEntitlement | null> {
   try {
-    const { supabase } = await import('@/integrations/supabase/client');
     const { data, error } = await supabase.functions.invoke('payment-api', { body: { action: 'access-status' } });
     if (error || !data?.planId) return null;
     return { userId: '', planId: data.planId, status: data.status, validUntil: data.validUntil, features: [] } as UserEntitlement;
