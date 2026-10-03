@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import {
   setEntitlementUntil, revokeEntitlement, subscriptionEntityToRow,
   recordTrialConsumed, getActiveEntitlement, getBillingSubscription,
-  claimWebhookEvent, finishWebhookEvent,
+  claimWebhookEvent, finishWebhookEvent, CLAIM_MARKER,
 } from '../../supabase/functions/_shared/subscription-store.ts';
 
 describe('claimWebhookEvent', () => {
@@ -12,6 +12,20 @@ describe('claimWebhookEvent', () => {
     signature_present: true, signature_valid: true,
     outcome: 'no_change', detail: null, http_status: 200,
   };
+
+  it('keeps the in-flight marker free of PostgREST reserved characters', () => {
+    // The marker is concatenated raw into the reclaim predicate, and PostgREST
+    // reserves `, . : * ( )` inside a filter value (a value containing one must be
+    // wrapped in percent-encoded double quotes, which we do not do). A marker with a
+    // reserved character turns the predicate into a 400, claimWebhookEvent reports
+    // that as 'error', and handleDelivery only short-circuits on 'duplicate' — so
+    // every duplicate would be reprocessed instead of deduped. Silent, and the
+    // dedupe that fix round 1 exists to provide would simply be gone.
+    expect(CLAIM_MARKER).toMatch(/^[A-Za-z0-9_-]+$/);
+    for (const ch of [',', '.', ':', '*', '(', ')']) {
+      expect(CLAIM_MARKER).not.toContain(ch);
+    }
+  });
 
   it('reclaims a redelivery whose earlier attempt never finished', async () => {
     const calls: { url: string; init: RequestInit }[] = [];
@@ -29,9 +43,9 @@ describe('claimWebhookEvent', () => {
     await expect(claimWebhookEvent(ROW)).resolves.toBe('claimed');
 
     const insert = JSON.parse(String(calls[0].init.body));
-    expect(insert.detail).toBe('claim:in-flight'); // the in-flight marker
+    expect(insert.detail).toBe('claim-in-flight'); // the in-flight marker
     expect(calls[1].url).toContain('dedupe_key=eq.k1');
-    expect(calls[1].url).toContain('or=(detail.eq.claim:in-flight,outcome.eq.error)');
+    expect(calls[1].url).toContain('or=(detail.eq.claim-in-flight,outcome.eq.error)');
     const prefer = String((calls[1].init.headers as Record<string, string>).Prefer);
     expect(prefer).toContain('return=representation');
   });

@@ -253,8 +253,14 @@ export async function hasConsumedTrial(userId: string): Promise<boolean> {
  * text can reach: any value that collided with the marker would make a settled row
  * look reclaimable forever, so the marker is a string the payload domain cannot
  * produce. (Callers passing payload text into `detail` prefix it for the same reason.)
+ *
+ * The alphabet matters as much as the namespace: the marker is concatenated raw
+ * into the reclaim predicate in `claimWebhookEvent`, and PostgREST reserves
+ * `, . : * ( )` inside a filter value. Keep it to letters, digits, `-` and `_` —
+ * a reserved character here fails the predicate with a 400, which reads as 'error'
+ * and quietly disables dedup rather than failing loudly. Pinned by a unit test.
  */
-export const CLAIM_MARKER = 'claim:in-flight';
+export const CLAIM_MARKER = 'claim-in-flight';
 
 /**
  * Atomic dedup. The UNIQUE(dedupe_key) constraint is the lock: a concurrent second

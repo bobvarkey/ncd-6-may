@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { razorpayWebhook, dedupeKeyFor } from '../../supabase/functions/_shared/webhook-logic.ts';
+import { CLAIM_MARKER } from '../../supabase/functions/_shared/subscription-store.ts';
 
 const SECRET = 'whsec';
 beforeEach(() => { vi.stubGlobal('Deno', { env: { get: () => SECRET } }); });
@@ -341,15 +342,17 @@ describe('razorpayWebhook', () => {
     // happened to be the sentinel would settle as outcome:'unhandled_event' with
     // detail equal to the marker, which is exactly what the reclaim predicate
     // matches — so the row would be reprocessed on every retry instead of deduped.
-    const raw = event('claim:in-flight', { id: 'sub_1', plan_id: 'plan_PRO123', status: 'active' });
+    // Uses the real marker name, so the invariant does not depend on the payload
+    // domain and this test keeps holding if the marker is renamed.
+    const raw = event(CLAIM_MARKER, { id: 'sub_1', plan_id: 'plan_PRO123', status: 'active' });
     const finishes: any[] = [];
     await deliver(raw, {
       finishWebhookEvent: async (_k: string, o: string, d: string) => { finishes.push({ o, d }); },
     });
     const unhandled = finishes.find((f) => f.o === 'unhandled_event');
     expect(unhandled).toBeDefined();
-    expect(unhandled.d).not.toBe('claim:in-flight');
-    expect(unhandled.d).toBe('event:claim:in-flight');
+    expect(unhandled.d).not.toBe(CLAIM_MARKER);
+    expect(unhandled.d).toBe(`event:${CLAIM_MARKER}`);
   });
 
   it('keeps the trial date when a sparse authorization entity omits it', async () => {
