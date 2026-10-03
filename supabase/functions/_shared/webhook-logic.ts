@@ -91,6 +91,11 @@ function unverifiedKey(raw: string, reason: string): Promise<string> {
   return sha256Hex(`unverified|${reason}|${raw}`);
 }
 
+/** A thrown value need not be an Error — and `e.message` itself throws for null. */
+function errorMessage(e: unknown): string {
+  return e instanceof Error && e.message ? e.message : String(e ?? 'unknown');
+}
+
 /**
  * The last line of the 200-always decision. This delivery never got as far as a
  * body-derived key — the body itself may be what threw — so the row carries a
@@ -134,7 +139,7 @@ export async function razorpayWebhook(
   // decision: an unexpected throw must not become a non-2xx and spend the retry
   // window that ends with Razorpay disabling the webhook.
   const res = await handleDelivery(req, deps).catch(async (e) => {
-    const message = (e as Error).message;
+    const message = errorMessage(e);
     console.error('razorpayWebhook threw', message);
     await recordUnexpected(deps, message.slice(0, 200));
     return ok({ error: message });
@@ -303,11 +308,14 @@ async function handleDelivery(req: Request, deps: WebhookDeps): Promise<Response
         return ok({ revoked: true });
 
       default:
-        await finish('unhandled_event', eventType);
+        // eventType is payload text and detail also carries the in-flight marker, so
+        // it is prefixed: no payload string ever lands bare in that column.
+        await finish('unhandled_event', `event:${eventType}`);
         return ok({ skipped: `unhandled event: ${eventType}` });
     }
   } catch (e) {
-    await finish('error', (e as Error).message.slice(0, 200));
-    return ok({ error: (e as Error).message });
+    const message = errorMessage(e);
+    await finish('error', message.slice(0, 200));
+    return ok({ error: message });
   }
 }

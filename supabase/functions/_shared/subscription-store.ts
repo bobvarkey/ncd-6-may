@@ -248,11 +248,20 @@ export async function hasConsumedTrial(userId: string): Promise<boolean> {
 }
 
 /**
+ * The in-flight marker claimWebhookEvent writes and finishWebhookEvent clears.
+ * Namespaced, because the same column also carries free-form detail an event's own
+ * text can reach: any value that collided with the marker would make a settled row
+ * look reclaimable forever, so the marker is a string the payload domain cannot
+ * produce. (Callers passing payload text into `detail` prefix it for the same reason.)
+ */
+export const CLAIM_MARKER = 'claim:in-flight';
+
+/**
  * Atomic dedup. The UNIQUE(dedupe_key) constraint is the lock: a concurrent second
  * delivery of the same event loses the insert and is reported as a duplicate.
  * Never throws — a ledger failure must not change the webhook's response.
  *
- * The insert marks the row `claimed`, which makes an unfinished attempt
+ * The insert marks the row CLAIM_MARKER, which makes an unfinished attempt
  * distinguishable from a settled one. Razorpay retries a delivery exactly when it
  * got no 2xx, but we answer 200 even for a delivery whose processing threw, so the
  * ledger's `error` row is the only signal that the work did not happen — and the
@@ -266,7 +275,7 @@ export async function claimWebhookEvent(
     const res = await pg('POST', 'webhook_events', {
       ...row,
       outcome: 'no_change', // placeholder; overwritten by finishWebhookEvent
-      detail: 'claimed', // in-flight marker; finishWebhookEvent always clears it
+      detail: CLAIM_MARKER, // finishWebhookEvent always clears it
     });
     if (res.ok) return 'claimed';
     if (res.status !== 409) {
@@ -275,9 +284,9 @@ export async function claimWebhookEvent(
     }
     // Redelivery. return=representation is what makes the two cases distinguishable:
     // a non-empty body means the row was still unfinished and is ours to process.
-    const reclaim = await pg('PATCH', 'webhook_events', { detail: 'claimed' },
+    const reclaim = await pg('PATCH', 'webhook_events', { detail: CLAIM_MARKER },
       `?dedupe_key=eq.${encodeURIComponent(row.dedupe_key)}` +
-      '&or=(detail.eq.claimed,outcome.eq.error)', 'return=representation');
+      `&or=(detail.eq.${CLAIM_MARKER},outcome.eq.error)`, 'return=representation');
     if (!reclaim.ok) {
       console.error('claimWebhookEvent reclaim failed', reclaim.status, await reclaim.text());
       return 'error';
@@ -298,7 +307,7 @@ export async function finishWebhookEvent(
 ): Promise<void> {
   try {
     // detail is written even when null: the column doubles as the in-flight marker,
-    // and a settled row left holding `claimed` would look reclaimable forever.
+    // and a settled row left holding CLAIM_MARKER would look reclaimable forever.
     await pg('PATCH', 'webhook_events',
       { outcome, detail: detail ?? null, http_status: httpStatus },
       `?dedupe_key=eq.${encodeURIComponent(dedupeKey)}`);

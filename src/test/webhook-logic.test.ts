@@ -318,6 +318,40 @@ describe('razorpayWebhook', () => {
     expect(finishes).toContain('error');
   });
 
+  it('returns 200 even when a dependency rejects with something that is not an Error', async () => {
+    // A non-Error throw is the one input that can break 200-always from inside the
+    // catch: reading `.message` off it yields undefined and slicing that throws,
+    // so the last line of defence becomes the thing that 500s — and a 500 spends
+    // the retry window that ends with Razorpay disabling the webhook.
+    const notAnError: unknown = 'kaboom';
+    const claimed: any[] = [];
+    const req = new Request('http://x/razorpay-webhook', { method: 'POST', body: CHARGED });
+    const res = await razorpayWebhook(req, {
+      getSecret: () => { throw notAnError; },
+      claimWebhookEvent: async (row: any) => { claimed.push(row); return 'claimed'; },
+      finishWebhookEvent: async () => {},
+    } as never);
+    expect(res.status).toBe(200);
+    expect(claimed).toHaveLength(1);
+    expect(claimed[0].detail).toBe('kaboom');
+  });
+
+  it('never lets a payload string settle a row as the in-flight marker', async () => {
+    // `detail` carries both the sentinel and free-form text. An event whose name
+    // happened to be the sentinel would settle as outcome:'unhandled_event' with
+    // detail equal to the marker, which is exactly what the reclaim predicate
+    // matches — so the row would be reprocessed on every retry instead of deduped.
+    const raw = event('claim:in-flight', { id: 'sub_1', plan_id: 'plan_PRO123', status: 'active' });
+    const finishes: any[] = [];
+    await deliver(raw, {
+      finishWebhookEvent: async (_k: string, o: string, d: string) => { finishes.push({ o, d }); },
+    });
+    const unhandled = finishes.find((f) => f.o === 'unhandled_event');
+    expect(unhandled).toBeDefined();
+    expect(unhandled.d).not.toBe('claim:in-flight');
+    expect(unhandled.d).toBe('event:claim:in-flight');
+  });
+
   it('keeps the trial date when a sparse authorization entity omits it', async () => {
     vi.stubGlobal('Deno', { env: { get: (n: string) => (n === 'RAZORPAY_PLAN_ID_PRO_MONTHLY' ? 'plan_PRO123' : SECRET) } });
     const boundAt = new Date(1790000000 * 1000).toISOString();

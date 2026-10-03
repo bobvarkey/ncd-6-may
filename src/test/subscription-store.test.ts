@@ -29,9 +29,9 @@ describe('claimWebhookEvent', () => {
     await expect(claimWebhookEvent(ROW)).resolves.toBe('claimed');
 
     const insert = JSON.parse(String(calls[0].init.body));
-    expect(insert.detail).toBe('claimed'); // the in-flight marker
+    expect(insert.detail).toBe('claim:in-flight'); // the in-flight marker
     expect(calls[1].url).toContain('dedupe_key=eq.k1');
-    expect(calls[1].url).toContain('or=(detail.eq.claimed,outcome.eq.error)');
+    expect(calls[1].url).toContain('or=(detail.eq.claim:in-flight,outcome.eq.error)');
     const prefer = String((calls[1].init.headers as Record<string, string>).Prefer);
     expect(prefer).toContain('return=representation');
   });
