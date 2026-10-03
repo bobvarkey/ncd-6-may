@@ -38,25 +38,25 @@ function SectionCard({
 }) {
   return (
     <AccordionItem value={id} className="border border-border/60 rounded-xl overflow-hidden bg-card/50">
-      <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/40 text-left">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+      <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/40 text-left">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
             <Icon className="h-4 w-4" />
           </div>
           <span className="text-sm font-semibold">{title}</span>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="px-4 pb-4 pt-0">{children}</AccordionContent>
+      <AccordionContent className="px-3 pb-3 pt-0">{children}</AccordionContent>
     </AccordionItem>
   );
 }
 
 function BulletList({ items }: { items: string[] }) {
   return (
-    <ul className="space-y-1.5 text-sm text-muted-foreground">
+    <ul className="space-y-1 text-xs text-muted-foreground">
       {items.map((item, i) => (
         <li key={i} className="flex gap-2">
-          <span className="text-primary mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+          <span className="text-primary mt-1.5 h-1 w-1 rounded-full bg-primary shrink-0" />
           <span>{item}</span>
         </li>
       ))}
@@ -78,15 +78,15 @@ export default function OsteoporosisAlgorithm() {
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Brain className="h-5 w-5 text-primary" />
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Brain className="h-4 w-4 text-primary" />
           {a.title}
         </CardTitle>
         <p className="text-xs text-muted-foreground">Algorithm v{a.algorithm_version} • {a.updated}</p>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="rounded-xl border border-amber-200/60 bg-amber-50/50 p-3 text-sm text-amber-900">
+      <CardContent className="space-y-4">
+        <div className="rounded-xl border border-amber-200/60 bg-amber-50/50 p-2.5 text-xs text-amber-900">
           <strong>Purpose:</strong> {a.purpose}
         </div>
 
@@ -139,7 +139,7 @@ export default function OsteoporosisAlgorithm() {
           </SectionCard>
 
           <SectionCard id="classification" title="3. Baseline classification" icon={iconMap.classification}>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-2 text-sm">
               <div className="rounded-lg border p-3 bg-rose-50/40 border-rose-200/50">
                 <strong className="text-rose-700">Very high</strong>
                 <BulletList items={a.baseline_classification.very_high.any_of} />
@@ -153,9 +153,9 @@ export default function OsteoporosisAlgorithm() {
           </SectionCard>
 
           <SectionCard id="special" title="4. Mandatory special-scenario review" icon={iconMap.special}>
-            <div className="grid sm:grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-2 gap-2">
               {a.mandatory_special_scenario_review.scenarios.map((s: any) => (
-                <div key={s.id} className="rounded-lg border p-3 bg-muted/20">
+                <div key={s.id} className="rounded-lg border p-2.5 bg-muted/20">
                   <h4 className="text-sm font-semibold mb-1">{s.trigger}</h4>
                   <p className="text-xs text-muted-foreground">{s.action || s.effect}</p>
                   {s.note && <p className="text-[10px] text-muted-foreground mt-1 italic">{s.note}</p>}
@@ -166,7 +166,7 @@ export default function OsteoporosisAlgorithm() {
           </SectionCard>
 
           <SectionCard id="drugs" title="5. Drug selection" icon={iconMap.drugs}>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-2 text-sm">
               <div className="rounded-lg border p-3 bg-rose-50/40 border-rose-200/50">
                 <strong className="text-rose-700">Very high risk</strong>
                 <p className="text-xs text-muted-foreground mt-1">Consider: {a.drug_selection.very_high.consider.map((d: any) => `${d.drug} ${d.months}mo`).join("; ")}</p>
@@ -200,7 +200,7 @@ export default function OsteoporosisAlgorithm() {
 
           <SectionCard id="lowrisk" title="7. Untreated low-risk management" icon={iconMap.lowrisk}>
             <p className="text-sm text-muted-foreground mb-2">{a.untreated_low_risk_management.eligibility}</p>
-            <div className="grid sm:grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-2 gap-2">
               {Object.entries(a.untreated_low_risk_management.general_prevention).map(([key, val]: [string, any]) => (
                 <div key={key} className="rounded-lg border p-3 bg-muted/20 text-xs">
                   <strong className="capitalize">{key.replace("_", " ")}</strong>

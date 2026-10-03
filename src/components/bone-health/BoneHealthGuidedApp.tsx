@@ -289,10 +289,10 @@ export default function BoneHealthGuidedApp() {
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-primary" />
+          <CardTitle className="text-base flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-primary" />
             {boneHealthApp.title}
           </CardTitle>
           <div className="flex gap-1">
@@ -314,8 +314,8 @@ export default function BoneHealthGuidedApp() {
           Guided assessment • v{boneHealthApp.algorithm_version} • {boneHealthApp.exported_on}
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-3">
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
           <h3 className="text-base font-semibold">{currentNode.title}</h3>
           {currentNode.body && (
             <div className="text-sm text-muted-foreground space-y-2">
@@ -333,7 +333,7 @@ export default function BoneHealthGuidedApp() {
                 key={opt.id || idx}
                 variant="outline"
                 className={cn(
-                  "justify-between text-left h-auto py-3 px-4",
+                  "justify-between text-left h-auto py-2 px-3",
                   "hover:bg-primary/5 hover:border-primary/30"
                 )}
                 onClick={() => handleSelect(opt)}
@@ -345,26 +345,11 @@ export default function BoneHealthGuidedApp() {
           </div>
         )}
 
-        {/* State indicator */}
-        {(state.group || state.secondary || state.treated || state.initial) && (
-          <div className="text-xs text-muted-foreground pt-2 border-t">
-            <span className="font-medium">State:</span>{" "}
-            {[
-              state.group && `group: ${state.group}`,
-              state.secondary && "secondary",
-              state.treated && "treated",
-              state.initial && `risk: ${state.initial}`,
-            ]
-              .filter(Boolean)
-              .join(" • ")}
-          </div>
-        )}
-
         {/* Treatment Plan Display */}
         {isComplete && treatmentPlan && (
-          <div className="mt-6 space-y-4">
+          <div className="mt-2 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Treatment Plan</h3>
+              <h3 className="text-base font-semibold">Treatment Plan</h3>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -388,7 +373,7 @@ export default function BoneHealthGuidedApp() {
             </div>
 
             {/* Drug Details */}
-            <div className="rounded-lg border p-4 bg-muted/30 space-y-4">
+            <div className="rounded-lg border p-3 bg-muted/30 space-y-3">
               <div>
                 <h4 className="font-semibold text-sm mb-2">Pharmacological Treatment</h4>
                 <div className="space-y-3">

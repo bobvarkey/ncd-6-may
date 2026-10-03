@@ -72,16 +72,16 @@ export default function DexaBmdTesting() {
   }, [sex, age, menopausal, riskFactors, adultIndications]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card className="overflow-hidden">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Scan className="h-5 w-5 text-primary" />
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Scan className="h-4 w-4 text-primary" />
             {d.test}
           </CardTitle>
           <p className="text-xs text-muted-foreground">{d.purpose} — indication checker</p>
         </CardHeader>
-        <CardContent className="space-y-5">
+        <CardContent className="space-y-4">
           {/* Sex */}
           <div className="space-y-2">
             <Label className="text-sm font-semibold">Sex</Label>
@@ -190,7 +190,7 @@ export default function DexaBmdTesting() {
           {result && (
             <div
               className={cn(
-                "rounded-xl border p-4",
+                "rounded-xl border p-3",
                 result.indicated
                   ? "border-emerald-300/60 bg-emerald-50/60"
                   : "border-slate-300/60 bg-slate-50/60"
@@ -230,13 +230,13 @@ export default function DexaBmdTesting() {
 
       {/* Reference: full indication criteria */}
       <Card className="overflow-hidden">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Bone className="h-5 w-5 text-primary" />
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Bone className="h-4 w-4 text-primary" />
             Indication criteria
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm">
+        <CardContent className="space-y-3 text-sm">
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="rounded-lg border p-3 bg-muted/20">
               <h4 className="font-semibold mb-1">Women</h4>
