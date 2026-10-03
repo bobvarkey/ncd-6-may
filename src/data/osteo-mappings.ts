@@ -250,7 +250,7 @@ function asStringArray(v: unknown, allowed: readonly string[]): string[] {
   return v.filter((x): x is string => typeof x === "string" && allowed.includes(x));
 }
 
-function asCfs(v: unknown): CfsScore | null {
+export function toCfsScore(v: unknown): CfsScore | null {
   return typeof v === "number" && (CFS_SCORES as readonly number[]).includes(v)
     ? (v as CfsScore)
     : null;
@@ -310,7 +310,7 @@ export function normaliseView(raw: unknown): OsteoView {
     other_confirmed_risks: asStringArray(raw.other_confirmed_risks, OTHER_CONFIRMED_RISKS),
     other_risks_other_text: asString(raw.other_risks_other_text),
     ckd_ladder: asOneOf(raw.ckd_ladder, CKD_LADDER, "unknown"),
-    clinical_frailty_scale: asCfs(raw.clinical_frailty_scale),
+    clinical_frailty_scale: toCfsScore(raw.clinical_frailty_scale),
     male_50_69_dxa_risk_review_complete: asOneOf(
       raw.male_50_69_dxa_risk_review_complete,
       TRI,
