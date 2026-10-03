@@ -29,7 +29,7 @@ export default function BoneHealth() {
 RISK CATEGORIES & TREATMENT
 ---------------------------
 
-VERY HIGH RISK:
+VERY HIGH RISK (any one of the following):
 • Vertebral fracture within the last 2 years.
 • Multiple vertebral fractures.
 • Lowest valid T-score of −3.5 or below.
@@ -40,7 +40,7 @@ VERY HIGH RISK:
            Teriparatide 20mcg daily x 24 months
 • MUST follow with antiresorptive to consolidate gains
 
-HIGH RISK:
+HIGH RISK (any one of the following):
 • Documented hip or vertebral fragility fracture.
 • Lowest valid T-score of −2.5 or below.
 • FRAX above the documented local treatment threshold.
