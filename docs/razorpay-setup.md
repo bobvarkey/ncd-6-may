@@ -249,9 +249,11 @@ was **not** made by this work.
 3. **Live webhook.** In the live Razorpay account register the webhook at the section 2
    URL, subscribe the section 3 events, and set `RAZORPAY_WEBHOOK_SECRET` to the live
    account's signing secret. The live secret differs from the Test Mode one.
-4. **Decide `VITE_ENFORCE_ACCESS`.** Left unset, the client route guard is inert and the
-   app relies on server-side enforcement alone (which is the access-control boundary
-   either way). Setting it to `true` turns the guard on for the 119 clinical routes wrapped
+4. **Decide `VITE_ENFORCE_ACCESS`.** Left unset, the client route guard is inert and
+   there is no content gate at all: only `payment-api` is invoked from `src/`, and no
+   clinical content is server-fetched. `payment-api` still protects entitlement
+   *reporting* and the payment actions, but it does not gate the clinical pages
+   themselves. Setting it to `true` turns the guard on for the 119 clinical routes wrapped
    in `withNav` in `src/App.tsx` (a point-in-time count, not a contract). This
    is a product decision, not just a config toggle — make it deliberately, and exercise
    the unpaid-user path once the day you switch it on.

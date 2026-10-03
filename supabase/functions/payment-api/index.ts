@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     readAccess: async (id) => {
       const [{ data: trial }, { data: entitlements }] = await Promise.all([
         admin.from("user_trials").select("started_at,ends_at").eq("user_id", id).maybeSingle(),
-        admin.from("entitlements").select("plan_id,status,valid_until").eq("user_id", id).order("valid_until", { ascending: false }).limit(1),
+        admin.from("entitlements").select("plan_id,status,valid_until").eq("user_id", id).eq("status", "active").order("valid_until", { ascending: false }).limit(1),
       ]);
       return { trial: trial ?? null, entitlement: entitlements?.[0] ?? null };
     },

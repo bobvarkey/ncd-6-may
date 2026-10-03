@@ -30,8 +30,13 @@ const ROW = {
   current_end: null, charge_at: null, cancel_at_period_end: false,
 };
 
-async function deliver(raw: string, overrides: Record<string, unknown> = {}, eventId = 'evt_1') {
-  const sig = await sign(raw);
+async function deliver(
+  raw: string,
+  overrides: Record<string, unknown> = {},
+  eventId = 'evt_1',
+  signOver: string = raw,
+) {
+  const sig = await sign(signOver);
   const finishes: unknown[] = [];
   const grants: unknown[] = [];
   const revokes: unknown[] = [];
@@ -99,6 +104,37 @@ describe('razorpayWebhook', () => {
       finishWebhookEvent: async () => {},
     } as never);
     expect(res.status).toBe(200);
+  });
+
+  it('verifies over the raw bytes, not a re-serialized body', async () => {
+    // The event is identical to CHARGED but serialized non-canonically (indented).
+    // The bytes signed are exactly these; an implementation that verifies
+    // `JSON.stringify(JSON.parse(raw))` computes a different HMAC over different
+    // bytes and would reject a delivery that must be accepted.
+    const pretty = JSON.stringify(JSON.parse(CHARGED), null, 2);
+    expect(pretty).not.toBe(CHARGED); // guards the fixture: the byte strings differ
+    const finishes: string[] = [];
+    const { res, grants } = await deliver(pretty, {
+      finishWebhookEvent: async (_k: string, o: string) => { finishes.push(o); },
+    });
+    expect(res.status).toBe(200);
+    expect(finishes).not.toContain('rejected_signature');
+    expect(grants).toHaveLength(1);
+  });
+
+  it('rejects bytes signed with the canonical serialization of the same body', async () => {
+    // Mirror of the above: sign the canonical serialization, send the non-canonical
+    // bytes. The verifier must not normalize its signature input either.
+    const pretty = JSON.stringify(JSON.parse(CHARGED), null, 2);
+    const finishes: string[] = [];
+    const grants: unknown[] = [];
+    const { res } = await deliver(pretty, {
+      finishWebhookEvent: async (_k: string, o: string) => { finishes.push(o); },
+      setEntitlementUntil: async (...a: unknown[]) => { grants.push(a); },
+    }, 'evt_1', CHARGED);
+    expect(res.status).toBe(200);
+    expect(finishes).toContain('rejected_signature');
+    expect(grants).toHaveLength(0);
   });
 
   it('grants on subscription.charged with the cycle end as the expiry', async () => {
@@ -283,6 +319,8 @@ describe('razorpayWebhook', () => {
     expect(claimed[0].event_type).toBeNull();
     expect(finishes).toContain('invalid_json');
     expect(grants).toHaveLength(0);
+    // Verified signature but unparseable body: handled, not a 5xx.
+    expect(await res.json()).toMatchObject({ skipped: 'invalid json' });
   });
 
   it('records an event that names no subscription as unhandled', async () => {
