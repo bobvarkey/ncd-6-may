@@ -112,10 +112,27 @@ function sentenceCase(str: string): string {
   return str.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 }
 
-export function ClinicalFrailtyScale() {
-  const [selectedScore, setSelectedScore] = useState<number | null>(null);
+export function ClinicalFrailtyScale({
+  value,
+  onChange,
+}: {
+  /** Omit both to keep the component self-managed, as its existing call sites do. */
+  value?: number | null;
+  onChange?: (v: number | null) => void;
+} = {}) {
+  const [internalScore, setInternalScore] = useState<number | null>(null);
+  const controlled = value !== undefined;
+  const selectedScore = controlled ? value : internalScore;
 
-  const reset = () => setSelectedScore(null);
+  const select = (score: number) => {
+    if (!controlled) setInternalScore(score);
+    onChange?.(score);
+  };
+
+  const reset = () => {
+    if (!controlled) setInternalScore(null);
+    onChange?.(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -143,7 +160,10 @@ export function ClinicalFrailtyScale() {
               return (
                 <button
                   key={category.score}
-                  onClick={() => setSelectedScore(category.score)}
+                  type="button"
+                  aria-label={`CFS ${category.score}`}
+                  aria-pressed={isSelected}
+                  onClick={() => select(category.score)}
                   className={`w-full text-left rounded-lg border p-4 transition-all hover:shadow-sm ${
                     isSelected
                       ? "border-primary bg-primary/5 ring-1 ring-primary/30"
