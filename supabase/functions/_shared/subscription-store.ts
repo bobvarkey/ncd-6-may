@@ -247,15 +247,68 @@ export async function hasConsumedTrial(userId: string): Promise<boolean> {
   return (await res.json()).length > 0;
 }
 
-/** Best-effort. Never throws: an audit failure must not deny access. */
-export async function logWebhookEvent(row: WebhookEventRow): Promise<void> {
+/**
+ * Atomic dedup. The UNIQUE(dedupe_key) constraint is the lock: a concurrent second
+ * delivery of the same event loses the insert and is reported as a duplicate.
+ * Never throws — a ledger failure must not change the webhook's response.
+ */
+export async function claimWebhookEvent(
+  row: WebhookEventRow,
+): Promise<'claimed' | 'duplicate' | 'error'> {
   try {
-    const res = await pg('POST', 'webhook_events', row);
-    if (!res.ok && res.status !== 409) {
-      // 409 = duplicate delivery, which is the normal retry case.
-      console.error('logWebhookEvent failed', res.status, await res.text());
-    }
+    const res = await pg('POST', 'webhook_events', {
+      ...row,
+      outcome: 'no_change', // placeholder; overwritten by finishWebhookEvent
+    });
+    if (res.ok) return 'claimed';
+    if (res.status === 409) return 'duplicate';
+    console.error('claimWebhookEvent failed', res.status, await res.text());
+    return 'error';
   } catch (e) {
-    console.error('logWebhookEvent threw', (e as Error).message);
+    console.error('claimWebhookEvent threw', (e as Error).message);
+    return 'error';
+  }
+}
+
+/** Best-effort. Never throws. */
+export async function finishWebhookEvent(
+  dedupeKey: string,
+  outcome: string,
+  detail: string,
+  httpStatus: number,
+): Promise<void> {
+  try {
+    await pg('PATCH', 'webhook_events', { outcome, detail, http_status: httpStatus },
+      `?dedupe_key=eq.${encodeURIComponent(dedupeKey)}`);
+  } catch (e) {
+    console.error('finishWebhookEvent threw', (e as Error).message);
+  }
+}
+
+/**
+ * The cycle-end cancellation flag. Nothing else writes it: the cancel flow only
+ * tells Razorpay, and the column defaults to false, so a subscription winding down
+ * to current_end would otherwise report `cancelAtPeriodEnd: false` forever.
+ */
+export async function setCancelAtPeriodEnd(
+  subscriptionId: string,
+  value: boolean,
+): Promise<void> {
+  const res = await pg('PATCH', 'subscriptions', { cancel_at_period_end: value },
+    `?razorpay_subscription_id=eq.${encodeURIComponent(subscriptionId)}`);
+  if (!res.ok) throw new Error(`setCancelAtPeriodEnd failed: ${res.status}`);
+}
+
+/** Best-effort retention. Old rows only; never blocks a response. */
+export async function pruneWebhookEvents(retentionDays = 90): Promise<void> {
+  try {
+    // Forged deliveries are unauthenticated and unbounded, but a store with no
+    // absolute base URL (tests, or a half-configured deploy) has no rows to prune.
+    if (!/^https?:\/\//i.test(getSecret('SUPABASE_URL'))) return;
+    const cutoff = new Date(Date.now() - retentionDays * 86_400_000).toISOString();
+    await pg('DELETE', 'webhook_events', undefined,
+      `?received_at=lt.${encodeURIComponent(cutoff)}`);
+  } catch (e) {
+    console.error('pruneWebhookEvents threw', (e as Error).message);
   }
 }

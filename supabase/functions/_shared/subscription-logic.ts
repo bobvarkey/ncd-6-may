@@ -7,7 +7,7 @@
  * Checkout signature: HMAC-SHA256(`${payment_id}|${subscription_id}`, KEY_SECRET).
  */
 import {
-  findPlan, razorpayPlanIdFor, getSecret, planByRazorpayPlanId,
+  findPlan, razorpayPlanIdFor, getSecret,
   jsonRes, errRes, hmacHex, safeEqualHex,
 } from './payment-helpers.ts';
 import {
