@@ -34,9 +34,22 @@ describe('plan catalog', () => {
     expect(razorpayPlanIdFor('pro-monthly')).toBe('plan_PRO123');
   });
 
-  it('returns undefined rather than empty string when the secret is unset', async () => {
+  it('resolves the basic-monthly secret to its value', async () => {
     const { razorpayPlanIdFor } = await import('../../supabase/functions/_shared/payment-helpers.ts');
     expect(razorpayPlanIdFor('basic-monthly')).toBe('plan_BASIC123');
+  });
+
+  it('returns undefined rather than empty string when the secret is unset', async () => {
+    const { razorpayPlanIdFor, planByRazorpayPlanId } = await import(
+      '../../supabase/functions/_shared/payment-helpers.ts'
+    );
+
+    vi.stubGlobal('Deno', { env: { get: () => undefined } });
+    expect(razorpayPlanIdFor('pro-monthly')).toBeUndefined();
+    expect(planByRazorpayPlanId('plan_PRO123')).toBeUndefined();
+
+    vi.stubGlobal('Deno', { env: { get: () => '' } });
+    expect(razorpayPlanIdFor('pro-monthly')).toBeUndefined();
   });
 
   it('maps a Razorpay plan id back to the internal plan', async () => {
