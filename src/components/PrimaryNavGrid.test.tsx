@@ -80,24 +80,34 @@ describe("PrimaryNavGrid collapsible sections", () => {
     expect(screen.getByRole("link", { name: /diabetes/i })).toBeVisible();
   });
 
-  it("keeps deep-link tile hrefs intact", () => {
-    renderGrid();
-    fireEvent.click(sectionTrigger("Renal, blood & electrolytes"));
-    const renal = screen.getByRole("link", { name: /kdigo egfr/i });
-    expect(renal).toHaveAttribute("href", "/gfr-calculator");
+  // This test does seven accessible-name lookups across an expanding 50-tile
+  // grid. Query cost dominates: `getByRole` + a name regex makes
+  // dom-accessibility-api compute a name for every link on the page, which in
+  // jsdom measured ~7s here while rendering all 50 tiles costs ~2s. The app
+  // itself is not slow — this is the test's query style. The 5s default was
+  // timing out, so the assertions below were never actually running.
+  it(
+    "keeps deep-link tile hrefs intact",
+    () => {
+      renderGrid();
+      fireEvent.click(sectionTrigger("Renal, blood & electrolytes"));
+      const renal = screen.getByRole("link", { name: /kdigo egfr/i });
+      expect(renal).toHaveAttribute("href", "/gfr-calculator");
 
-    const anemiaTab = screen.getByRole("link", { name: /iron calculator/i });
-    expect(anemiaTab).toHaveAttribute("href", "/anemia?tab=iron");
+      const anemiaTab = screen.getByRole("link", { name: /iron calculator/i });
+      expect(anemiaTab).toHaveAttribute("href", "/anemia?tab=iron");
 
-    fireEvent.click(sectionTrigger("Cardiometabolic & endocrine"));
-    const liver = screen.getByRole("link", { name: /liver/i });
-    expect(liver).toHaveAttribute("href", "/liver");
-    expect(screen.queryByRole("link", { name: /liver auto-calc/i })).not.toBeInTheDocument();
+      fireEvent.click(sectionTrigger("Cardiometabolic & endocrine"));
+      const liver = screen.getByRole("link", { name: /liver/i });
+      expect(liver).toHaveAttribute("href", "/liver");
+      expect(screen.queryByRole("link", { name: /liver auto-calc/i })).not.toBeInTheDocument();
 
-    fireEvent.click(sectionTrigger("Respiratory, infection & general"));
-    expect(screen.getByRole("link", { name: /^perioperative scores/i })).toHaveAttribute("href", "/perioperative-calculators");
-    expect(screen.getByRole("link", { name: /^csdh/i })).toHaveAttribute("href", "/perioperative-calculators#csdh");
-  });
+      fireEvent.click(sectionTrigger("Respiratory, infection & general"));
+      expect(screen.getByRole("link", { name: /^perioperative scores/i })).toHaveAttribute("href", "/perioperative-calculators");
+      expect(screen.getByRole("link", { name: /^csdh/i })).toHaveAttribute("href", "/perioperative-calculators#csdh");
+    },
+    20_000,
+  );
 
   it("exposes a chevron affordance on each section header", () => {
     renderGrid();
