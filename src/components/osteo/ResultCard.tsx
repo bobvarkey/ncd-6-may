@@ -301,9 +301,6 @@ export function ResultCard({
             className="flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-brand-foreground shadow-md transition hover:bg-brand-deep active:scale-[0.98]"
           >
             Copy full report
-            <span className="tabular rounded-full bg-brand-foreground/15 px-2 py-0.5 text-xs font-medium">
-              {result.token}
-            </span>
           </button>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
             {stale
