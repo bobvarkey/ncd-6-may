@@ -427,6 +427,34 @@ app is no longer a verbatim port of `logic.ts`'s risk resolution, so a future
 re-sync with the source project must keep this divergence rather than overwrite
 it. See R4.
 
+**D9 — The therapeutic plan is a separate, status-keyed section; for an
+unresolved assessment it states that no guideline covers the case.** The spec's
+`ui.result_sections` lists `today_actions` and no other therapeutic section, and
+the ported engine reached its therapeutic lines through independent conditions
+rather than deriving them from `riskStatus`. Two outcomes were wrong for this
+app: an unresolved assessment produced a single non-therapeutic line ("Collect
+the missing information…") with no therapeutic content at all, and
+`no_adult_class` produced no status-keyed line. `OsteoResult` therefore gains
+`therapeuticPlan: string[]`, built by one `switch (riskStatus)` arm per internal
+status with a `length === 0` backstop, so the plan is non-empty for every tier
+the engine can return. The therapeutic lines that used to sit in `todayActions`
+moved into it and the two lists are disjoint: the plan states what to treat,
+`todayActions` states what to do now. `buildReport` emits a `PLAN:` line and
+`ResultCard` renders a "Therapeutic plan" section above "Today's actions".
+
+The unresolved arm's content is deliberate, at the user's instruction:
+**"There is currently no therapeutic guideline for this. Use your discretion."**
+An assessment that has not resolved establishes no indication, and saying so
+plainly keeps the tool from implying one that nobody has evidence for.
+
+*Rejected:* leaving the unresolved tier with a non-therapeutic line only;
+inventing non-pharmacological measures for it; and listing drug options at
+*needs-review* while the evidence is unresolved — which would contradict the
+fail-closed gate in D8 and the poster's step 4 ("Do not default to low risk";
+complete, refer or reclassify). *Consequence:* the result object and the copied
+report now carry a section the spec's `ui.result_sections` does not name, so a
+future re-sync must keep it.
+
 ---
 
 ## Retirement

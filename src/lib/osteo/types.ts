@@ -196,6 +196,7 @@ export interface OsteoResult {
   unresolvedHigherTier: string[];
   documentedScreeningRisks: string[];
   todayActions: string[];
+  therapeuticPlan: string[];
   safetyAlerts: string[];
   medications: MedicationOption[];
   medicationsGateNote: string | null;

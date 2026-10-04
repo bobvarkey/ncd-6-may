@@ -250,7 +250,9 @@ describe("low risk is reachable and fails closed (logic.ts:459-500)", () => {
     const r = evaluate(withState(LOW_RISK), TODAY);
     expect(r.medications).toEqual([]);
     expect(r.medicationsGateNote).toMatch(/low risk/i);
-    expect(r.todayActions.some((a) => /low risk/i.test(a))).toBe(true);
+    // The prevention-only statement is the low tier's therapeutic plan, not a
+    // same-day action, so it is asserted against `therapeuticPlan`.
+    expect(r.therapeuticPlan.some((a) => /low risk/i.test(a))).toBe(true);
   });
 
   it("carries the low-risk label into the copied report", () => {
@@ -324,6 +326,127 @@ describe("the five internal statuses display as four labels", () => {
       "Unresolved / insufficient information",
       "Very high risk",
     ]);
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/* The therapeutic plan is generated from the risk status              */
+/* ------------------------------------------------------------------ */
+
+/** Outside the adult T-score pathway entirely: age <18 routes to paediatric. */
+const PAEDIATRIC: Partial<OsteoState> = { age: 12, sex: "male" };
+
+/** Nothing resolves true and the low gate is unmet: the unresolved tier. */
+const UNRESOLVED: Partial<OsteoState> = {
+  ...POSTMENOPAUSAL,
+  fragility_fracture: "none",
+  dxa_status: "available_valid",
+  lowest_valid_t_score: -2.0,
+  recent_vertebral_fracture_within_2_years: "no",
+  systemic_glucocorticoids: "no",
+  frax_comparison: "below_local_treatment_threshold",
+  frax_country_threshold_policy_version: "UK NOGG 2021",
+};
+
+const DRUG_NAMES =
+  /alendronate|risedronate|zoledronate|denosumab|teriparatide|abaloparatide|romosozumab/i;
+
+describe("a therapeutic plan is generated from the risk status (logic.ts:579-620)", () => {
+  it("very high — anabolic-first sequencing with specialist referral", () => {
+    const r = evaluate(
+      withState({ ...POSTMENOPAUSAL, fragility_fracture: "multiple_vertebral" }),
+      TODAY,
+    );
+    expect(r.riskStatus).toBe("very_high");
+    expect(r.therapeuticPlan.join(" ")).toMatch(/anabolic/i);
+  });
+
+  it("at least high — the resolved high tier still yields the antiresorptive plan", () => {
+    const r = evaluate(
+      withState({
+        ...POSTMENOPAUSAL,
+        fragility_fracture: "none",
+        dxa_status: "available_valid",
+        lowest_valid_t_score: -3.0,
+      }),
+      TODAY,
+    );
+    expect(r.riskStatus).toBe("at_least_high");
+    expect(r.therapeuticPlan.join(" ")).toMatch(/antiresorptive/i);
+  });
+
+  it("high — the resolved high tier yields the antiresorptive plan", () => {
+    const r = evaluate(
+      withState({
+        ...POSTMENOPAUSAL,
+        fragility_fracture: "none",
+        dxa_status: "available_valid",
+        lowest_valid_t_score: -3.0,
+        recent_vertebral_fracture_within_2_years: "no",
+        systemic_glucocorticoids: "no",
+        frax_comparison: "below_local_treatment_threshold",
+        frax_country_threshold_policy_version: "UK NOGG 2021",
+      }),
+      TODAY,
+    );
+    expect(r.riskStatus).toBe("high");
+    expect(r.therapeuticPlan.join(" ")).toMatch(/antiresorptive/i);
+  });
+
+  it("low — prevention only, and the plan says so", () => {
+    const r = evaluate(withState(LOW_RISK), TODAY);
+    expect(r.riskStatus).toBe("low");
+    expect(r.therapeuticPlan.some((p) => /low risk/i.test(p))).toBe(true);
+  });
+
+  it("unresolved — states that no therapeutic guideline covers it and leaves it to discretion", () => {
+    const r = evaluate(withState(UNRESOLVED), TODAY);
+    expect(r.riskStatus).toBe("unclassified_or_incomplete");
+    expect(r.therapeuticPlan).toContain(
+      "There is currently no therapeutic guideline for this. Use your discretion.",
+    );
+  });
+
+  it("unresolved — names no drug, because no indication has been established", () => {
+    const r = evaluate(withState(UNRESOLVED), TODAY);
+    expect(r.therapeuticPlan.join(" ")).not.toMatch(DRUG_NAMES);
+  });
+
+  it("no adult class — the paediatric route is referred out rather than planned", () => {
+    const r = evaluate(withState(PAEDIATRIC), TODAY);
+    expect(r.riskStatus).toBe("no_adult_class");
+    expect(r.therapeuticPlan.join(" ")).toMatch(/paediatric/i);
+  });
+
+  it("returns a non-empty plan for every tier the engine can produce", () => {
+    const states = [
+      withState({ ...POSTMENOPAUSAL, fragility_fracture: "multiple_vertebral" }),
+      withState({
+        ...POSTMENOPAUSAL,
+        fragility_fracture: "none",
+        dxa_status: "available_valid",
+        lowest_valid_t_score: -3.0,
+      }),
+      withState({ ...POSTMENOPAUSAL, fragility_fracture: "one_vertebral", dxa_status: "unknown" }),
+      withState(LOW_RISK),
+      withState(UNRESOLVED),
+      withState(PAEDIATRIC),
+    ];
+    const seen = new Set<string>();
+    for (const s of states) {
+      const r = evaluate(s, TODAY);
+      seen.add(r.riskStatus);
+      expect(r.therapeuticPlan.length, `${r.riskStatus} produced no plan`).toBeGreaterThan(0);
+    }
+    expect(seen.size).toBeGreaterThanOrEqual(4);
+  });
+
+  it("carries the plan into the copied report", () => {
+    const state = withState(UNRESOLVED);
+    const report = buildReport(state, evaluate(state, TODAY), "2026-09-30");
+    expect(report).toContain(
+      "PLAN: There is currently no therapeutic guideline for this. Use your discretion.",
+    );
   });
 });
 

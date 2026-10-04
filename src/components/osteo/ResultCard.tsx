@@ -213,6 +213,10 @@ export function ResultCard({
           <Bullets items={result.documentedScreeningRisks} tone="bg-accent" />
         </Section>
 
+        <Section title="Therapeutic plan">
+          <Bullets items={result.therapeuticPlan} tone="bg-brand-deep" />
+        </Section>
+
         <Section title="Today's actions">
           <Bullets items={result.todayActions} tone="bg-brand-deep" />
         </Section>

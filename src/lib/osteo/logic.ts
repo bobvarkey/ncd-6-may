@@ -589,30 +589,68 @@ export function evaluate(s: OsteoState, today: Date): OsteoResult {
     todayActions.push("Hip or vertebral fracture: start secondary prevention now; do not wait for a screening DXA.");
   if (advancedCkd === true)
     todayActions.push("Advanced CKD / CKD-MBD: renal-bone specialist review before any routine drug choice.");
-  if (riskStatus === "very_high")
-    todayActions.push(
-      "Refer for osteoporosis specialist review; consider sequential anabolic therapy then antiresorptive where appropriate.",
-    );
-  if ((riskStatus === "at_least_high" || riskStatus === "high") && !blocked)
-    todayActions.push("Discuss antiresorptive therapy once the safety gates are explicitly satisfied.");
   if (s.dxa_status === "unavailable_or_not_feasible" && dxaIndicated)
     todayActions.push("DXA indicated but unavailable: arrange DXA if feasible; do not delay a clear fracture indication.");
-  if (riskStatus === "low")
-    todayActions.push(
-      "Low risk: no medication indication. Prevention only — calcium and vitamin D adequacy, weight-bearing and balance exercise, falls review, smoking and alcohol advice.",
-    );
   if (riskStatus === "unclassified_or_incomplete")
     todayActions.push("Collect the missing information. This is not low risk and not below threshold.");
-  if (routeId === "pediatric")
-    todayActions.push("Paediatric: outside the scope of this pathway. Refer to paediatric bone health services.");
   if (routeId === "incomplete")
     todayActions.push("Enter age and sex to assign a pathway.");
-  if (pathway === "younger_individualized_z_score")
-    todayActions.push(
-      "Use the Z-score, fracture phenotype and a secondary-cause evaluation. No automatic T-score medication trigger.",
+
+  /* ---------------- Therapeutic plan, keyed to the risk status ----------------
+     One arm per status the engine can return, so a plan exists for every
+     patient — the unresolved tier included, where the honest answer is that no
+     guideline covers the situation and the decision rests with the clinician.
+     This states what to treat; `todayActions` above states what to do now, and
+     the two lists are disjoint.
+
+     These lines used to sit in `todayActions`, reached by independent
+     conditions rather than derived from the tier, so the unresolved arm was a
+     single line with no therapeutic content and a status nobody added a branch
+     for would silently produce nothing. Deriving the plan from `riskStatus`
+     with a `therapeuticPlan.length === 0` backstop makes that impossible. */
+  const therapeuticPlan: string[] = [];
+  switch (riskStatus) {
+    case "very_high":
+      therapeuticPlan.push(
+        "Refer for osteoporosis specialist review; consider sequential anabolic therapy then antiresorptive where appropriate.",
+      );
+      break;
+    case "at_least_high":
+    case "high":
+      therapeuticPlan.push(
+        "Discuss antiresorptive therapy once the safety gates are explicitly satisfied.",
+      );
+      break;
+    case "low":
+      therapeuticPlan.push(
+        "Low risk: no medication indication. Prevention only — calcium and vitamin D adequacy, weight-bearing and balance exercise, falls review, smoking and alcohol advice.",
+      );
+      break;
+    case "unclassified_or_incomplete":
+      // No guideline covers an assessment that has not resolved. Stating that,
+      // rather than inventing measures, keeps the tool from implying an
+      // indication nobody has established.
+      therapeuticPlan.push(
+        "There is currently no therapeutic guideline for this. Use your discretion.",
+      );
+      break;
+    case "no_adult_class":
+      if (routeId === "pediatric")
+        therapeuticPlan.push(
+          "Paediatric: outside the scope of this pathway. Refer to paediatric bone health services.",
+        );
+      if (pathway === "younger_individualized_z_score")
+        therapeuticPlan.push(
+          "Use the Z-score, fracture phenotype and a secondary-cause evaluation. No automatic T-score medication trigger.",
+        );
+      if (pathway === "individualized_no_auto_class")
+        therapeuticPlan.push("Individualise: no automatic male or female T-score pathway is applied.");
+      break;
+  }
+  if (therapeuticPlan.length === 0)
+    therapeuticPlan.push(
+      "Individualise the plan: no automatic adult T-score pathway applies to this patient.",
     );
-  if (pathway === "individualized_no_auto_class")
-    todayActions.push("Individualise: no automatic male or female T-score pathway is applied.");
 
   /* ---------------- Safety alerts ---------------- */
   const safetyAlerts: string[] = [];
@@ -816,6 +854,7 @@ export function evaluate(s: OsteoState, today: Date): OsteoResult {
     unresolvedHigherTier,
     documentedScreeningRisks,
     todayActions,
+    therapeuticPlan,
     safetyAlerts,
     medications,
     medicationsGateNote,
@@ -846,6 +885,7 @@ export function buildReport(s: OsteoState, r: OsteoResult, dateISO: string): str
     `EVIDENCE: ${list(r.evidence)}`,
     `UNRESOLVED HIGHER-TIER: ${list(r.unresolvedHigherTier)}`,
     `DOCUMENTED SCREENING RISKS: ${list(r.documentedScreeningRisks)}`,
+    `PLAN: ${list(r.therapeuticPlan)}`,
     `TODAY: ${list(r.todayActions)}`,
     `SAFETY: ${list(r.safetyAlerts)}`,
     `MEDS (alternatives, not a combination): ${list(r.medications.map((m) => `${m.name} ${m.dose} [${m.status}]`))}`,
