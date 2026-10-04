@@ -114,10 +114,13 @@ export default function OsteoCareAssessment() {
             <span className="size-2 rounded-full bg-tier-very-high" /> Very high
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full bg-tier-high" /> At least high
+            <span className="size-2 rounded-full bg-tier-high" /> High
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full bg-tier-unclassified" /> Unclassified
+            <span className="size-2 rounded-full bg-tier-low" /> Low
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="size-2 rounded-full bg-tier-unclassified" /> Unresolved
           </span>
         </div>
         <button

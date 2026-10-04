@@ -127,12 +127,17 @@ export const DXA_LABELS: Record<DxaDecision, string> = {
   pending_entry: "Pending Gate 1 entry",
 };
 
+/** Five internal statuses, four displayed labels. `at_least_high` is a floor on
+ *  the high tier and shows as high, with `riskCertainty` carrying the caveat;
+ *  `no_adult_class` is out of the adult T-score pathway entirely, so it shows as
+ *  unresolved rather than as a second kind of "not established". */
 export const RISK_LABELS: Record<RiskStatus, string> = {
-  very_high: "Very high",
-  at_least_high: "At least high",
-  high: "High",
-  unclassified_or_incomplete: "Unclassified / incomplete",
-  no_adult_class: "No adult T-score class",
+  very_high: "Very high risk",
+  at_least_high: "High risk",
+  high: "High risk",
+  low: "Low risk",
+  unclassified_or_incomplete: "Unresolved / insufficient information",
+  no_adult_class: "Unresolved / insufficient information",
 };
 
 /* ------------------------------------------------------------------ */
@@ -391,6 +396,12 @@ export function evaluate(s: OsteoState, today: Date): OsteoResult {
         : "pending_risk_review";
   } else dxaDecision = "pending_entry";
 
+  /** The three decisions that ask for a DXA. An absent T-score is missing
+   *  evidence whenever one of these applies, never a below-threshold finding. */
+  const dxaIndicated = (["age_based_prompt", "risk_based_prompt", "risk_based_individualized"] as DxaDecision[]).includes(
+    dxaDecision,
+  );
+
   /* ---------------- Risk resolution ---------------- */
   const evidence: string[] = [];
   const unresolvedHigherTier: string[] = [];
@@ -475,7 +486,39 @@ export function evaluate(s: OsteoState, today: Date): OsteoResult {
         riskStatus = "high";
       }
     } else {
-      riskStatus = "unclassified_or_incomplete";
+      // Below the high tier. "Low" is a positive finding, so it needs every
+      // criterion explicitly satisfied — a missing answer is never a "no", and
+      // an unresolved one never resolves downward into low risk.
+      const fraxBelow =
+        fraxUsable && s.frax_comparison === "below_local_treatment_threshold";
+      const fractureHistoryReviewed =
+        s.fragility_fracture !== "unknown" &&
+        s.recent_vertebral_fracture_within_2_years !== "unknown";
+      const modifiersReviewed =
+        s.systemic_glucocorticoids !== "unknown" &&
+        s.advanced_ckd_ckd_mbd_dialysis !== "unknown" &&
+        s.dxa_risk_factors.length > 0;
+      const bmdAcceptable =
+        usableT !== null
+          ? usableT > -2.5
+          : s.dxa_status === "unavailable_or_not_feasible" && !dxaIndicated;
+
+      if (
+        vh === false &&
+        hi === false &&
+        fraxBelow &&
+        fractureHistoryReviewed &&
+        modifiersReviewed &&
+        bmdAcceptable &&
+        !blocked
+      ) {
+        riskStatus = "low";
+        evidence.push(
+          "No high or very-high feature; no hip or vertebral fragility fracture; FRAX below the documented local threshold with the policy version recorded; BMD not in the osteoporotic range; glucocorticoid, CKD and clinical risk-factor review all complete.",
+        );
+      } else {
+        riskStatus = "unclassified_or_incomplete";
+      }
     }
   }
 
@@ -499,16 +542,20 @@ export function evaluate(s: OsteoState, today: Date): OsteoResult {
       ? "Lower bound only — higher tier unresolved"
       : riskStatus === "very_high" || riskStatus === "high"
         ? "Resolved from present evidence"
-        : riskStatus === "no_adult_class"
-          ? "Adult T-score classification not applicable"
-          : "Not established — data incomplete";
+        : riskStatus === "low"
+          ? "Low-risk criteria all explicitly satisfied"
+          : riskStatus === "no_adult_class"
+            ? "Adult T-score classification not applicable"
+            : "Not established — data incomplete";
 
   const riskLowerBound =
     riskStatus === "very_high"
       ? "Very high"
       : riskStatus === "at_least_high" || riskStatus === "high"
         ? "High"
-        : "None established (this is not low risk)";
+        : riskStatus === "low"
+          ? "Low"
+          : "None established (this is not low risk)";
 
   /* ---------------- Documented screening risks ---------------- */
   const documentedScreeningRisks: string[] = [];
@@ -548,11 +595,12 @@ export function evaluate(s: OsteoState, today: Date): OsteoResult {
     );
   if ((riskStatus === "at_least_high" || riskStatus === "high") && !blocked)
     todayActions.push("Discuss antiresorptive therapy once the safety gates are explicitly satisfied.");
-  if (
-    s.dxa_status === "unavailable_or_not_feasible" &&
-    ["age_based_prompt", "risk_based_prompt", "risk_based_individualized"].includes(dxaDecision)
-  )
+  if (s.dxa_status === "unavailable_or_not_feasible" && dxaIndicated)
     todayActions.push("DXA indicated but unavailable: arrange DXA if feasible; do not delay a clear fracture indication.");
+  if (riskStatus === "low")
+    todayActions.push(
+      "Low risk: no medication indication. Prevention only — calcium and vitamin D adequacy, weight-bearing and balance exercise, falls review, smoking and alcohol advice.",
+    );
   if (riskStatus === "unclassified_or_incomplete")
     todayActions.push("Collect the missing information. This is not low risk and not below threshold.");
   if (routeId === "pediatric")
@@ -630,7 +678,9 @@ export function evaluate(s: OsteoState, today: Date): OsteoResult {
   if (!confirmedTreatable || blocked) {
     medicationsGateNote = blocked
       ? "Medication options are suppressed while blocking validation is unresolved. Positive evidence above is retained."
-      : "No confirmed high or very-high evidence. Medication options stay hidden; this is not a below-threshold conclusion.";
+      : riskStatus === "low"
+        ? "Low risk: no medication indication. Prevention, calcium and vitamin D, exercise and falls measures only."
+        : "No confirmed high or very-high evidence. Medication options stay hidden; this is not a below-threshold conclusion.";
   } else if (!globalsMet) {
     medicationsGateNote =
       "Global safety requirements are not all explicitly satisfied. Every option below is needs-review, not cleared.";

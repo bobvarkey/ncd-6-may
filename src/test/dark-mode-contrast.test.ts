@@ -196,12 +196,19 @@ describe("dark-theme contrast regression guard", () => {
       "--tier-high-foreground",
       "--tier-unclassified",
       "--tier-unclassified-foreground",
+      "--tier-low",
+      "--tier-low-foreground",
     ]) {
       const hits = css.match(new RegExp(`${token}:`, "g")) ?? [];
       expect(hits.length, `${token} must be defined in both theme blocks`).toBeGreaterThanOrEqual(2);
     }
     // White-on-tier must hold in both themes, so every tier foreground is full lightness.
-    for (const token of ["--tier-very-high-foreground", "--tier-high-foreground", "--tier-unclassified-foreground"]) {
+    for (const token of [
+      "--tier-very-high-foreground",
+      "--tier-high-foreground",
+      "--tier-unclassified-foreground",
+      "--tier-low-foreground",
+    ]) {
       const values = [...css.matchAll(new RegExp(`${token}:\\s*([^;]+);`, "g"))].map((m) => m[1].trim());
       expect(values.length).toBeGreaterThanOrEqual(2);
       for (const v of values) expect(v, `${token} must be pure white`).toBe("0 0% 100%");
@@ -235,7 +242,7 @@ describe("dark-theme contrast regression guard", () => {
       return 1.05 / (luminance + 0.05); // contrast against pure white
     };
 
-    for (const tier of ["--tier-very-high", "--tier-high", "--tier-unclassified"]) {
+    for (const tier of ["--tier-very-high", "--tier-high", "--tier-unclassified", "--tier-low"]) {
       const values = [...css.matchAll(new RegExp(`${tier}:\\s*([^;]+);`, "g"))].map((m) => m[1].trim());
       expect(values.length, `${tier} must be defined in both theme blocks`).toBeGreaterThanOrEqual(2);
       for (const value of values) {

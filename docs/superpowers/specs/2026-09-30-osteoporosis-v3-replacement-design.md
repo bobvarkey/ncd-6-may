@@ -287,7 +287,7 @@ as the dark theme (`src/index.css:23`) and the light override beginning at
 |---|---|
 | `brand`, `brand-deep` | new `--brand`, `--brand-deep` HSL triplets, both theme blocks |
 | `mist` | new `--mist` triplet, both blocks |
-| `tier-very-high`, `tier-high`, `tier-unclassified` (+ `-foreground`) | new triplets on the rose / amber / slate families, both blocks |
+| `tier-very-high`, `tier-high`, `tier-unclassified`, `tier-low` (+ `-foreground`) | new triplets on the rose / amber / slate / green families, both blocks. `tier-low` is an addition of this repo's, not a ported token — see D8. |
 | `font-display` | **renamed** to the repo's existing `font-heading` (`tailwind.config.ts:18`) |
 | `tabular` | `@layer utilities` rule, `font-variant-numeric: tabular-nums` — matches `NATIVE.tabular` in `src/lib/design-tokens.ts:142` |
 | `glass`, `glass-strong`, `field-bg` | `@layer utilities` |
@@ -398,6 +398,35 @@ a new clinical claim, not a port.
 **D7 — The CKD rung and CFS score ride in the copied report, not in the engine.**
 See D2.
 
+**D8 — The app displays four risk statuses and adds a reachable `low`; this
+deliberately diverges from the source project.** The ported engine resolves every
+standard adult with no high or very-high feature — including a complete, fully
+negative assessment — to `unclassified_or_incomplete`, so "Low risk" was
+unreachable and a genuinely low-risk patient was told their assessment was
+incomplete. The app therefore adds a sixth internal `RiskStatus`, `low`, gated by
+a fail-closed predicate, and displays exactly four strings: **Very high risk**,
+**High risk**, **Low risk**, **Unresolved / insufficient information**
+(`RISK_LABELS`). The five previously displayed labels collapse onto those four —
+`at_least_high` shows as *High risk* with `riskCertainty` carrying the
+"lower bound only" caveat, and `no_adult_class` shows as *Unresolved /
+insufficient information*. The internal ids are retained because they drive the
+certainty note, the unresolved-higher-tier list and the existing tests.
+
+The `low` predicate holds only when every line does, and anything `unknown` fails
+it: no very-high or high predicate resolves true; FRAX is usable with the policy
+version recorded and sits below the local treatment threshold; fracture history,
+recent vertebral fracture, glucocorticoid exposure, advanced CKD and the clinical
+risk-factor review are all explicitly answered; BMD is above −2.5, or — where no
+usable T-score exists — DXA was assessed as not feasible **and** no DXA is
+indicated (`dxaIndicated`); and nothing is blocking. `low` yields no medication
+options and a prevention-only action list.
+
+*Rejected:* leaving low unreachable; inferring low from an absent answer; and
+adding a fifth displayed label for the internal floor states. *Consequence:* the
+app is no longer a verbatim port of `logic.ts`'s risk resolution, so a future
+re-sync with the source project must keep this divergence rather than overwrite
+it. See R4.
+
 ---
 
 ## Retirement
@@ -435,8 +464,9 @@ clock-injected, so no mocking and no fake timers.
 - Fail-closed validations fire with the right severity: `ckd_no_vs_egfr` and
   `none_and_factors` blocking; `ckd_selected_no_stage`,
   `parent_without_subtype`, `other_risk_without_subtype` warnings.
-- Tier derivation across `very_high` / `at_least_high` / `high` /
-  `unclassified_or_incomplete`.
+- Tier derivation across `very_high` / `at_least_high` / `high` / `low` /
+  `unclassified_or_incomplete`; and the low gate's fail-closed cases, one per
+  criterion — a criterion answered `unknown` is never read as satisfied.
 - Drug gates: `globalsMet` all-seven requirement; `renal(35)` and `renal(30)`
   boundaries; and the four `advancedCkd`-dependent branches (denosumab,
   teriparatide, abaloparatide, romosozumab).
@@ -477,7 +507,8 @@ browser, not in the unit suite.
 does. One inspected path is safe but worth recording: `entryRoute` null-checks
 `age` before the `male_50_69` / `male_70_plus` rungs cast `s.age as number`
 (`logic.ts:146`). If that ordering were ever changed, the cast becomes a runtime
-hazard.
+hazard. Note that the risk resolution is no longer verbatim — see D8 — so future
+re-syncs must diff that block rather than replace it.
 
 **R5 — Retirement is irreversible in-session.** Mitigated by ordering: the new
 tab lands and is verified before the four files are deleted, and deletion is a

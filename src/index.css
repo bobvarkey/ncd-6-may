@@ -127,6 +127,8 @@
     --tier-high-foreground: 0 0% 100%;
     --tier-unclassified: 220 12% 40%;
     --tier-unclassified-foreground: 0 0% 100%;
+    --tier-low: 152 64% 30%;                /* white on 30% measures 5.16:1 */
+    --tier-low-foreground: 0 0% 100%;
   }
 
   /* ============================================================
@@ -231,6 +233,8 @@
     --tier-high-foreground: 0 0% 100%;
     --tier-unclassified: 220 12% 36%;
     --tier-unclassified-foreground: 0 0% 100%;
+    --tier-low: 152 64% 30%;
+    --tier-low-foreground: 0 0% 100%;
   }
 
   /* Lipid mini-app: repeatable clinical colors make every option easy to scan. */

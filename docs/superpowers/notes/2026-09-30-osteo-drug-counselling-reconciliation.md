@@ -289,10 +289,15 @@ missing.
 
 **`Low: below threshold after assessment` — verdict history.** A prior pass marked this *made*
 citing the engine string "None established (this is not low risk)"; that string asserts the
-contrary and the engine has no "low" output category, so the verdict was changed to *not made*.
-The Summary poster now **does** ship it verbatim in meaning — "Low = below treatment threshold
-after review." — so it is **made (poster)**, on a surface that is engine-aligned, even though the
-engine itself never outputs a "low" category.
+contrary and the ported engine had no "low" output category, so the verdict was changed to *not
+made*. The Summary poster now **does** ship it verbatim in meaning — "Low = below treatment
+threshold after review." — so it is **made (poster)**, on a surface that is engine-aligned.
+
+**Update.** The engine now *does* output a low category: a fail-closed `low` predicate was added
+alongside the four displayed risk statuses (spec D8), and "Low risk" is reachable when every
+below-threshold criterion is explicitly satisfied. "None established (this is not low risk)" is
+retained for the genuinely unresolved tier, where it remains accurate — that tier is still not the
+low tier.
 
 ## Naming differences (not counted as missing counselling points)
 

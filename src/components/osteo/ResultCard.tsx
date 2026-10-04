@@ -39,6 +39,7 @@ const TIER_STYLES: Record<string, string> = {
   very_high: "bg-tier-very-high text-tier-very-high-foreground",
   at_least_high: "bg-tier-high text-tier-high-foreground",
   high: "bg-tier-high text-tier-high-foreground",
+  low: "bg-tier-low text-tier-low-foreground",
   unclassified_or_incomplete: "bg-tier-unclassified text-tier-unclassified-foreground",
   no_adult_class: "bg-tier-unclassified text-tier-unclassified-foreground",
 };

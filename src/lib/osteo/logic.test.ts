@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { evaluate, entryRoute, makeToken } from "./logic";
-import { initialState, type OsteoState, type SafetyKey, type Tri } from "./types";
+import { RISK_LABELS, buildReport, evaluate, entryRoute, makeToken } from "./logic";
+import { initialState, type OsteoState, type RiskStatus, type SafetyKey, type Tri } from "./types";
 
 const TODAY = new Date("2026-09-30T00:00:00Z");
 
@@ -14,6 +14,60 @@ const issueIds = (s: OsteoState) =>
   evaluate(s, TODAY).issues.map((i) => `${i.id}:${i.severity}`);
 
 const POSTMENOPAUSAL = { age: 72, sex: "female", menopause: "postmenopausal" } as const;
+
+/**
+ * Every low-risk criterion explicitly satisfied, and nothing left unanswered.
+ * Age 62 keeps the postmenopausal route off the age-based DXA prompt, so the
+ * no-T-score fallback in the low gate is reachable from this base.
+ */
+const LOW_RISK: Partial<OsteoState> = {
+  age: 62,
+  sex: "female",
+  menopause: "postmenopausal",
+  fragility_fracture: "none",
+  dxa_status: "available_valid",
+  lowest_valid_t_score: -1.8,
+  recent_vertebral_fracture_within_2_years: "no",
+  systemic_glucocorticoids: "no",
+  advanced_ckd_ckd_mbd_dialysis: "no",
+  dxa_risk_factors: ["none_identified"],
+  frax_comparison: "below_local_treatment_threshold",
+  frax_country_threshold_policy_version: "UK NOGG 2021",
+};
+
+/** Each row flips exactly one criterion of the low gate away from a resolved
+ *  answer. Every one must fall out of "low": a missing answer is never "no". */
+const LOW_RISK_GAP_CASES: [string, Partial<OsteoState>, RiskStatus][] = [
+  ["FRAX never assessed", { frax_comparison: "not_assessed" }, "unclassified_or_incomplete"],
+  [
+    "no documented FRAX policy version",
+    { frax_country_threshold_policy_version: "" },
+    "unclassified_or_incomplete",
+  ],
+  ["fracture history unknown", { fragility_fracture: "unknown" }, "unclassified_or_incomplete"],
+  [
+    "recent vertebral fracture unknown",
+    { recent_vertebral_fracture_within_2_years: "unknown" },
+    "unclassified_or_incomplete",
+  ],
+  [
+    "glucocorticoid exposure unknown",
+    { systemic_glucocorticoids: "unknown" },
+    "unclassified_or_incomplete",
+  ],
+  [
+    "advanced CKD unknown",
+    { advanced_ckd_ckd_mbd_dialysis: "unknown" },
+    "unclassified_or_incomplete",
+  ],
+  ["clinical risk factors not reviewed", { dxa_risk_factors: [] }, "unclassified_or_incomplete"],
+  [
+    "T-score not recorded although DXA is reported valid",
+    { lowest_valid_t_score: null },
+    "unclassified_or_incomplete",
+  ],
+  ["T-score exactly at the high threshold", { lowest_valid_t_score: -2.5 }, "high"],
+];
 
 describe("engine validation is fail-closed", () => {
   it("blocks an age outside 0-120 rather than clamping it", () => {
@@ -152,22 +206,124 @@ describe("risk tier derivation across all four tiers (logic.ts:459-480)", () => 
     expect(r.unresolvedHigherTier).toEqual([]);
   });
 
-  it("unclassified_or_incomplete — no tier predicate resolves true", () => {
-    const r = evaluate(
+  it("unclassified_or_incomplete — nothing resolves true and the low-risk gate is unmet", () => {
+    const state = withState({
+      ...POSTMENOPAUSAL,
+      fragility_fracture: "none",
+      dxa_status: "available_valid",
+      lowest_valid_t_score: -2.0,
+      recent_vertebral_fracture_within_2_years: "no",
+      systemic_glucocorticoids: "no",
+      frax_comparison: "below_local_treatment_threshold",
+      frax_country_threshold_policy_version: "UK NOGG 2021",
+    });
+    const r = evaluate(state, TODAY);
+    expect(r.riskStatus).toBe("unclassified_or_incomplete");
+    expect(r.riskLowerBound).toBe("None established (this is not low risk)");
+    expect(r.riskCertainty).toMatch(/Not established/);
+
+    // The gate here is missing data, not the absence of a high-risk feature:
+    // answer the two unanswered fields and the same patient becomes low risk.
+    const answered = evaluate(
       withState({
-        ...POSTMENOPAUSAL,
-        fragility_fracture: "none",
-        dxa_status: "available_valid",
-        lowest_valid_t_score: -2.0,
-        recent_vertebral_fracture_within_2_years: "no",
-        systemic_glucocorticoids: "no",
-        frax_comparison: "below_local_treatment_threshold",
-        frax_country_threshold_policy_version: "UK NOGG 2021",
+        ...state,
+        advanced_ckd_ckd_mbd_dialysis: "no",
+        dxa_risk_factors: ["none_identified"],
       }),
       TODAY,
     );
-    expect(r.riskStatus).toBe("unclassified_or_incomplete");
-    expect(r.riskLowerBound).toBe("None established (this is not low risk)");
+    expect(answered.riskStatus).toBe("low");
+  });
+});
+
+describe("low risk is reachable and fails closed (logic.ts:459-500)", () => {
+  it("returns low when every criterion is explicitly satisfied", () => {
+    const r = evaluate(withState(LOW_RISK), TODAY);
+    expect(r.riskStatus).toBe("low");
+    expect(r.riskLowerBound).toBe("Low");
+    expect(r.riskCertainty).toMatch(/Low-risk criteria/);
+    expect(r.blocked).toBe(false);
+    expect(r.unresolvedHigherTier).toEqual([]);
+  });
+
+  it("offers no medication options and says why", () => {
+    const r = evaluate(withState(LOW_RISK), TODAY);
+    expect(r.medications).toEqual([]);
+    expect(r.medicationsGateNote).toMatch(/low risk/i);
+    expect(r.todayActions.some((a) => /low risk/i.test(a))).toBe(true);
+  });
+
+  it("carries the low-risk label into the copied report", () => {
+    const state = withState(LOW_RISK);
+    const report = buildReport(state, evaluate(state, TODAY), "2026-09-30");
+    expect(report).toContain("RISK: Low risk");
+  });
+
+  // Each row flips exactly one criterion of the low gate away from a resolved
+  // answer. Every one must fall out of "low": a missing answer is never "no".
+  it.each(LOW_RISK_GAP_CASES)("does not return low when %s", (_label, patch, expected) => {
+    const r = evaluate(withState({ ...LOW_RISK, ...patch }), TODAY);
+    expect(r.riskStatus).not.toBe("low");
+    expect(r.riskStatus).toBe(expected);
+  });
+
+  it("does not return low while a blocking validation conflict is unresolved", () => {
+    const r = evaluate(
+      withState({ ...LOW_RISK, prednisolone_equivalent_mg_per_day: 20 }),
+      TODAY,
+    );
+    expect(r.blocked).toBe(true);
+    expect(r.riskStatus).not.toBe("low");
+  });
+
+  it("returns low without a T-score only when DXA is not indicated and was assessed as not feasible", () => {
+    const r = evaluate(
+      withState({ ...LOW_RISK, dxa_status: "unavailable_or_not_feasible", lowest_valid_t_score: null }),
+      TODAY,
+    );
+    expect(r.dxaDecision).not.toBe("risk_based_prompt");
+    expect(r.riskStatus).toBe("low");
+  });
+
+  it("does not return low when DXA is indicated but was not done", () => {
+    // Age 72 drives the postmenopausal age-based DXA prompt, so an absent
+    // T-score is missing evidence rather than a below-threshold conclusion.
+    const r = evaluate(
+      withState({
+        ...LOW_RISK,
+        age: 72,
+        dxa_status: "unavailable_or_not_feasible",
+        lowest_valid_t_score: null,
+      }),
+      TODAY,
+    );
+    expect(r.dxaDecision).toBe("risk_based_prompt");
+    expect(r.riskStatus).not.toBe("low");
+  });
+
+  it("does not treat an unreviewed DXA status as 'no DXA needed'", () => {
+    const r = evaluate(
+      withState({ ...LOW_RISK, dxa_status: "unknown", lowest_valid_t_score: null }),
+      TODAY,
+    );
+    expect(r.riskStatus).not.toBe("low");
+  });
+});
+
+describe("the five internal statuses display as four labels", () => {
+  it("maps them onto exactly four displayed strings", () => {
+    expect(RISK_LABELS.very_high).toBe("Very high risk");
+    expect(RISK_LABELS.high).toBe("High risk");
+    expect(RISK_LABELS.at_least_high).toBe("High risk");
+    expect(RISK_LABELS.low).toBe("Low risk");
+    expect(RISK_LABELS.unclassified_or_incomplete).toBe("Unresolved / insufficient information");
+    expect(RISK_LABELS.no_adult_class).toBe("Unresolved / insufficient information");
+    expect([...new Set(Object.values(RISK_LABELS))].sort()).toEqual([
+      "High risk",
+      "Low risk",
+      "Unresolved / insufficient information",
+      "Very high risk",
+    ]);
   });
 });
 

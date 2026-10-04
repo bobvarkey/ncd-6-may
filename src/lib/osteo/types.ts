@@ -164,6 +164,7 @@ export type RiskStatus =
   | "very_high"
   | "at_least_high"
   | "high"
+  | "low"
   | "unclassified_or_incomplete"
   | "no_adult_class";
 
