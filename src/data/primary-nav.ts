@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Activity, AirVent, Bandage, BookOpen, Bone, Brain, Bug, Calculator, Dna, Droplet, Droplets,
-  Eye, Filter, Flame, Gem, Heart, Image, Microscope, Moon, Pill, Search, Shield,
+  Eye, Filter, Flame, Gem, Heart, Image, Microscope, Moon, Pill, Ruler, Search, Shield,
   Stethoscope, Sun, Syringe, Thermometer, Timer, TrendingDown, User, UtensilsCrossed, Weight, Zap,
 } from "lucide-react";
 import type { EntryTone } from "@/lib/entry-tones";
@@ -32,6 +32,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/hypertension", label: "Hypertension", icon: Heart, tone: "rose", keywords: "bp esc" },
       { path: "/hypertension/secondary-htn", label: "Secondary HTN", icon: Search, tone: "fuchsia", keywords: "workup" },
       { path: "/lipids", label: "Lipids", icon: Droplet, tone: "amber", keywords: "ascvd ldl" },
+      { path: "/metabolic-syndrome", label: "Metabolic Syndrome", icon: Ruler, tone: "orange", keywords: "mets ncep atp iii idf waist triglycerides hdl glucose criteria" },
       { path: "/liver", label: "Liver", icon: Dna, tone: "lime", keywords: "masld nafld fib-4 meld child-pugh auto-calc" },
       { path: "/thyroid", label: "Thyroid", icon: Microscope, tone: "orange", keywords: "tsh" },
       { path: "/steroid-taper", label: "Steroid Taper", icon: TrendingDown, tone: "amber", keywords: "glucocorticoid prednisolone adrenal hpa" },

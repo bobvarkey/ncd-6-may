@@ -191,3 +191,70 @@ export const PMOS_METABOLIC_SCREENING: string[] = [
 export function countCheckedItems(items: { id: string }[], checked: Record<string, boolean>) {
   return items.filter((i) => checked[i.id]).length;
 }
+
+// ─── Metabolic Syndrome criteria (≥3 of 5 qualifies — NCEP ATP III / IDF) ───
+// Single source of truth for both the lipid panel's MetS section and the
+// standalone Metabolic Syndrome tab.
+//
+// The criterion ids are load-bearing: the lipid panel keys its checked-map on
+// them and syncs the count into the ASCVD high-risk feature `feat_mets` and the
+// risk enhancer `enh_mets`. Renaming an id would silently break that
+// integration with no type error, so `metsyn-criteria.test.ts` pins them.
+export type MetSynSet = "idf" | "ncep";
+
+export const METSYN_CRITERION_IDS = [
+  "lc_ms_waist",
+  "lc_ms_tg",
+  "lc_ms_hdl",
+  "lc_ms_bp",
+  "lc_ms_glucose",
+] as const;
+
+/** Count of the five criteria that qualifies as metabolic syndrome. */
+export const METSYN_QUALIFYING_COUNT = 3;
+
+// Waist is the only criterion whose threshold differs between the two sets, so
+// it is the only label the active set changes.
+const METSYN_WAIST: Record<MetSynSet, { label: string; alternate: string }> = {
+  idf: {
+    label: "Large waistline — ≥90 cm ♂, ≥80 cm ♀ (South Asian / IDF)",
+    alternate: "NCEP ATP III: >101.6 cm (40 in) ♂, >88.9 cm (35 in) ♀",
+  },
+  ncep: {
+    label: "Large waistline — >101.6 cm (40 in) ♂, >88.9 cm (35 in) ♀ (NCEP ATP III)",
+    alternate: "South Asian / IDF: ≥90 cm ♂, ≥80 cm ♀",
+  },
+};
+
+/** Criteria whose thresholds are identical under both sets. */
+const METSYN_SHARED: SubItem[] = [
+  { id: "lc_ms_tg", label: "High triglycerides — ≥150 mg/dL (1.7 mmol/L) or on TG medication" },
+  { id: "lc_ms_hdl", label: "Low HDL-C — <40 mg/dL ♂, <50 mg/dL ♀ or on drug treatment for reduced HDL-C" },
+  { id: "lc_ms_bp", label: "Elevated BP — ≥130/85 mmHg or on antihypertensive therapy" },
+  { id: "lc_ms_glucose", label: "Elevated fasting glucose — ≥100 mg/dL (5.6 mmol/L) or on glucose-lowering therapy" },
+];
+
+/**
+ * The five metabolic-syndrome criteria for the active criteria set.
+ *
+ * `showAlternate` appends the other set's waist cutoff as a reference line,
+ * which the lipid panel uses so it keeps showing both numbers at once.
+ */
+export function getMetsynCriteria(
+  set: MetSynSet = "idf",
+  { showAlternate = false }: { showAlternate?: boolean } = {},
+): SubItem[] {
+  const waist = METSYN_WAIST[set];
+  return [
+    {
+      id: "lc_ms_waist",
+      label: showAlternate ? `${waist.label}. ${waist.alternate}` : waist.label,
+    },
+    ...METSYN_SHARED,
+  ];
+}
+
+/** Count of the five criteria ticked. Set-independent: ids are keyed, not labels. */
+export function countMetsynCriteria(checked: Record<string, boolean>, set: MetSynSet = "idf"): number {
+  return countCheckedItems(getMetsynCriteria(set), checked);
+}

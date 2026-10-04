@@ -47,7 +47,7 @@ import cprFrameworkImg from "@/assets/cpr-framework.png";
 import {
   ASCVD_ESTABLISHED, HIGH_CAC_ITEMS, CKD_ITEMS,
   FH_ITEMS, FHX_ITEMS, TOD_MICROVASCULAR, TOD_MACROVASCULAR,
-  TOD_ALL, countCheckedItems, type SubItem,
+  TOD_ALL, countCheckedItems, getMetsynCriteria, METSYN_QUALIFYING_COUNT, type SubItem,
   RISK_MODIFIERS_LAI, HIGH_RISK_FEATURES_LAI,
   RISK_ENHANCERS_2019,
   PMOS_DIAGNOSTIC_CRITERIA, PMOS_ADULT_VS_ADOLESCENT, PMOS_METABOLIC_SCREENING,
@@ -70,14 +70,10 @@ const FEATURE_VISUALS: Record<string, { tone: LabTone; icon: React.ReactNode }> 
   feat_cacs:    { tone: "indigo",  icon: <CircleDot className="h-4 w-4" /> },
 };
 
-// ─── Metabolic Syndrome sub-criteria (≥3 of 5 qualifies — NCEP ATP III / IDF) ───
-const METSYN_CRITERIA: SubItem[] = [
-  { id: "lc_ms_waist",   label: "Large waistline — >40 in (102 cm) ♂, >35 in (88 cm) ♀ (Asian: >90 cm ♂, >80 cm ♀)" },
-  { id: "lc_ms_tg",      label: "High triglycerides — ≥150 mg/dL (1.7 mmol/L) or on TG medication" },
-  { id: "lc_ms_hdl",     label: "Low HDL-C — <40 mg/dL ♂, <50 mg/dL ♀ or on HDL medication" },
-  { id: "lc_ms_bp",      label: "Elevated BP — ≥130/85 mmHg or on antihypertensive therapy" },
-  { id: "lc_ms_glucose", label: "Elevated fasting glucose — ≥100 mg/dL (5.6 mmol/L) or on glucose-lowering therapy" },
-];
+// ─── Metabolic Syndrome criteria ───
+// Moved to @/lib/clinicalConstants so this panel and the standalone Metabolic
+// Syndrome tab share one definition. See METSYN_CRITERION_IDS there for the
+// ids this panel's subChecked map is keyed on.
 
 const MODIFIER_VISUALS_LAI: Record<string, { tone: LabTone; icon: React.ReactNode }> = {
   mod_lpa:        { tone: "violet",  icon: <Dna className="h-4 w-4" /> },
@@ -514,11 +510,17 @@ export default function LipidCalculator() {
   const toggleLaiFeat = (id: string) => setLaiFeatChecked(prev => ({ ...prev, [id]: !prev[id] }));
 
   // ─── Metabolic Syndrome auto-qualification (≥3 of 5) ───
-  const metsynCount = useMemo(
-    () => countCheckedItems(METSYN_CRITERIA, subChecked),
-    [subChecked]
+  // Keeps both waist cutoffs on one line here, as this panel showed before the
+  // criteria moved to the shared module.
+  const metsynCriteria = useMemo(
+    () => getMetsynCriteria("ncep", { showAlternate: true }),
+    []
   );
-  const metsynQualified = metsynCount >= 3;
+  const metsynCount = useMemo(
+    () => countCheckedItems(metsynCriteria, subChecked),
+    [metsynCriteria, subChecked]
+  );
+  const metsynQualified = metsynCount >= METSYN_QUALIFYING_COUNT;
 
   useEffect(() => {
     setLaiFeatChecked((prev) =>
@@ -1415,7 +1417,7 @@ export default function LipidCalculator() {
                             <p className="text-xs text-muted-foreground leading-snug">
                               ≥3 of 5 criteria qualifies as <strong className="text-foreground">Metabolic Syndrome</strong> (NCEP ATP III / IDF).
                             </p>
-                            {METSYN_CRITERIA.map((crit) => (
+                            {metsynCriteria.map((crit) => (
                               <RiskFactorChip
                                 key={crit.id}
                                 label={crit.label}
