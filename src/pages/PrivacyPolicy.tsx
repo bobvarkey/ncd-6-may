@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
           <section>
             <h3 className="text-sm font-heading font-bold mb-2">1. Introduction</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              This Privacy Policy explains how the NCD App ("we", "our", "the App") collects, uses,
+              This Privacy Policy explains how Clinical tools ("we", "our", "the App") collects, uses,
               discloses, and safeguards your information. By using the App, you consent to the
               practices described in this policy. If you do not agree, please discontinue use.
             </p>
@@ -69,10 +69,10 @@ export default function PrivacyPolicy() {
                     <td className="py-2">Sent directly to GitHub API per user action</td>
                   </tr>
                   <tr>
-                    <td className="py-2 pr-4">Analytics events (optional)</td>
-                    <td className="py-2 pr-4">Feature usage and crash reporting</td>
-                    <td className="py-2 pr-4">Anonymized; retained 90 days</td>
-                    <td className="py-2">Shared with analytics provider if opted in</td>
+                    <td className="py-2 pr-4">Account and subscription details</td>
+                    <td className="py-2 pr-4">Sign-in, trial eligibility, billing, and access across devices</td>
+                    <td className="py-2 pr-4">Kept while the account or billing record is required</td>
+                    <td className="py-2">Processed by our account service and Razorpay</td>
                   </tr>
                 </tbody>
               </table>
@@ -85,8 +85,8 @@ export default function PrivacyPolicy() {
               <li>To calculate clinical risk scores and treatment recommendations</li>
               <li>To provide medication dosing guidance (renal/hepatic adjustments)</li>
               <li>To populate and store your locally saved patient profiles</li>
-              <li>To fetch content updates when you trigger the GitHub sync action</li>
-              <li>To improve app functionality through anonymized analytics (with consent)</li>
+              <li>To authenticate your account and verify trial or subscription access</li>
+              <li>To process and manage recurring payments through Razorpay</li>
             </ul>
           </section>
 
@@ -94,10 +94,10 @@ export default function PrivacyPolicy() {
             <h3 className="text-sm font-heading font-bold mb-2">4. Data Storage & Security</h3>
             <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
               <li>All patient data is stored locally on your device</li>
-              <li>No cloud sync occurs unless you explicitly enable it</li>
-              <li>GitHub tokens are stored in the system keychain</li>
-              <li>Data in transit to GitHub API is encrypted via TLS 1.3</li>
-              <li>We do not operate any backend server that stores your data</li>
+              <li>Clinical entries and calculator values stay on your device</li>
+              <li>Account, role, trial, and subscription records are stored securely online</li>
+              <li>Payment credentials are handled by Razorpay and are not stored in the App</li>
+              <li>Data in transit is encrypted</li>
             </ul>
           </section>
 
@@ -106,8 +106,7 @@ export default function PrivacyPolicy() {
             <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
               <li><strong>Access:</strong> All your data is already visible within the App</li>
               <li><strong>Deletion:</strong> Clear app data or uninstall the App to delete all local data</li>
-              <li><strong>Analytics consent:</strong> Toggle analytics collection in Settings</li>
-              <li><strong>GitHub disconnect:</strong> Remove your token in App Settings</li>
+              <li><strong>Subscription:</strong> Review renewal and cancellation from Account &amp; subscription</li>
               <li><strong>Export:</strong> Use the Copy/Download feature on any calculation result</li>
             </ul>
           </section>
@@ -115,9 +114,8 @@ export default function PrivacyPolicy() {
           <section>
             <h3 className="text-sm font-heading font-bold mb-2">6. Third-Party Services</h3>
             <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
-              <li><strong>GitHub API:</strong> Used only when you manually trigger "Fetch Latest"</li>
-              <li><strong>Google Fonts:</strong> DM Sans and Space Grotesk fonts are loaded from Google Fonts CDN</li>
-              <li>No other third-party SDKs, trackers, or advertising networks are embedded</li>
+              <li><strong>Razorpay:</strong> Processes subscription authorization and recurring payments</li>
+              <li><strong>Google:</strong> Provides optional Google account sign-in</li>
             </ul>
           </section>
 
