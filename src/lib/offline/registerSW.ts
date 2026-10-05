@@ -6,7 +6,10 @@
  * Every refused context unregisters any stale /sw.js first.
  */
 
+import { registerSW } from "virtual:pwa-register";
+
 const SW_URL = "/sw.js";
+let updateServiceWorker: ((reloadPage?: boolean) => Promise<void>) | undefined;
 
 function isRefusedContext(): boolean {
   if (typeof window === "undefined") return true;
@@ -43,7 +46,16 @@ export async function registerOfflineServiceWorker(enabled: boolean): Promise<bo
   }
 
   try {
-    await navigator.serviceWorker.register(SW_URL, { scope: "/" });
+    if (!updateServiceWorker) {
+      updateServiceWorker = registerSW({
+        immediate: true,
+        onNeedRefresh() {
+          window.dispatchEvent(new CustomEvent("pwa-update-available"));
+        },
+      });
+    } else {
+      await updateServiceWorker(false);
+    }
     return true;
   } catch (error) {
     console.warn("Offline mode: service worker registration failed", error);
