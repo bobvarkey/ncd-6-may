@@ -22,6 +22,31 @@ type AuthContextValue = {
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+const ACCESS_CACHE_KEY = "clinical-tools-verified-access";
+const PRIVILEGED_CACHE_MS = 24 * 60 * 60 * 1000;
+
+type CachedAccess = { checkedAt: number; value: AccountAccess };
+
+function readVerifiedAccessCache(): AccountAccess | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const cached = JSON.parse(window.localStorage.getItem(ACCESS_CACHE_KEY) ?? "null") as CachedAccess | null;
+    if (!cached?.value.access) return null;
+    const now = Date.now();
+    if (cached.value.role !== "user") {
+      return now - cached.checkedAt <= PRIVILEGED_CACHE_MS ? cached.value : null;
+    }
+    const accessEndsAt = cached.value.status === "active" ? cached.value.validUntil : cached.value.trialEndsAt;
+    return accessEndsAt && new Date(accessEndsAt).getTime() > now ? cached.value : null;
+  } catch {
+    return null;
+  }
+}
+
+function cacheVerifiedAccess(value: AccountAccess) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(ACCESS_CACHE_KEY, JSON.stringify({ checkedAt: Date.now(), value } satisfies CachedAccess));
+}
 
 const invokeAccess = async (action: "access-status") => {
   const { data, error } = await supabase.functions.invoke("payment-api", { body: { action } });
@@ -41,7 +66,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAccess(null);
       return;
     }
-    setAccess(await invokeAccess("access-status"));
+    try {
+      const verified = await invokeAccess("access-status");
+      cacheVerifiedAccess(verified);
+      setAccess(verified);
+    } catch (error) {
+      const cached = readVerifiedAccessCache();
+      if (cached) {
+        setAccess(cached);
+        return;
+      }
+      throw error;
+    }
   }, []);
 
   useEffect(() => {
@@ -69,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
+    window.localStorage.removeItem(ACCESS_CACHE_KEY);
     setAccess(null);
   }, []);
 

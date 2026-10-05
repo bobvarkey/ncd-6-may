@@ -154,8 +154,8 @@ export default function Settings() {
             </CardTitle>
             <CardDescription>
               {pending > 0
-                ? `${pending} change${pending === 1 ? "" : "s"} waiting to sync.`
-                : "All local changes are synced."}
+                ? `${pending} local change${pending === 1 ? "" : "s"} waiting to be stored.`
+                : "All clinical data is stored on this device."}
               {lastSyncAt ? ` Last sync ${new Date(lastSyncAt).toLocaleString()}.` : ""}
             </CardDescription>
           </CardHeader>
@@ -215,7 +215,7 @@ export default function Settings() {
                 </li>
                 <li>
                   <Badge variant="outline" className="mr-1">Cloud</Badge>
-                  Subscription / purchase checks
+                   Sign-in, subscription, renewal, and purchase checks
                 </li>
                 <li>
                   <Badge variant="outline" className="mr-1">Cloud</Badge>
