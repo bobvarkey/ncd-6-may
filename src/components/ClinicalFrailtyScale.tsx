@@ -6,9 +6,16 @@ import { Separator } from "@/components/ui/separator";
 import { Info, RotateCcw, Activity, User } from "lucide-react";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 import ZoomableImage from "@/components/ZoomableImage";
-import frailtyScaleAsset from "@/assets/clinical-frailty-scale.png.asset.json";
 import frailtyQuestionnaireImg from "@/assets/frailty-questionnaire.jpg";
-import frailtyScaleChartImg from "@/assets/frailty-scale-chart.jpg";
+import veryFitImg from "@/assets/cfs/01_very_fit.png.asset.json";
+import wellImg from "@/assets/cfs/02_well.png.asset.json";
+import managingWellImg from "@/assets/cfs/03_managing_well.png.asset.json";
+import vulnerableImg from "@/assets/cfs/04_vulnerable.png.asset.json";
+import mildlyFrailImg from "@/assets/cfs/05_mildly_frail.png.asset.json";
+import moderatelyFrailImg from "@/assets/cfs/06_moderately_frail.png.asset.json";
+import severelyFrailImg from "@/assets/cfs/07_severely_frail.png.asset.json";
+import verySeverelyFrailImg from "@/assets/cfs/08_very_severely_frail.png.asset.json";
+import terminallyIllImg from "@/assets/cfs/09_terminally_ill.png.asset.json";
 
 interface CfsCategory {
   score: number;
@@ -16,6 +23,18 @@ interface CfsCategory {
   description: string;
   functional_profile: Record<string, unknown>;
 }
+
+const CFS_IMAGES = [
+  veryFitImg,
+  wellImg,
+  managingWellImg,
+  vulnerableImg,
+  mildlyFrailImg,
+  moderatelyFrailImg,
+  severelyFrailImg,
+  verySeverelyFrailImg,
+  terminallyIllImg,
+];
 
 const CFS_DATA = {
   name: "Clinical Frailty Scale",
@@ -171,6 +190,12 @@ export function ClinicalFrailtyScale({
                   }`}
                 >
                   <div className="flex items-start gap-3">
+                    <img
+                      src={CFS_IMAGES[category.score - 1]?.url}
+                      alt={`${category.label} — CFS ${category.score}`}
+                      className="h-24 w-20 shrink-0 rounded-md border border-border bg-background object-contain sm:h-28 sm:w-24"
+                      loading="lazy"
+                    />
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-sm font-bold ${getSeverityColor(category.score)}`}>
                       {category.score}
                     </span>
@@ -235,23 +260,10 @@ export function ClinicalFrailtyScale({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <User className="h-5 w-5 text-primary" />
-            Reference Infographic
+            Reference Flowchart
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <figure className="rounded-lg border border-border bg-card p-2">
-            <ZoomableImage
-              src={frailtyScaleAsset.url}
-              alt="Clinical Frailty Scale 9-point diagram from Rockwood et al. 2005, showing silhouettes for very fit through terminally ill categories"
-              className="w-full rounded-md cursor-zoom-in"
-              wrapperClassName="w-full"
-              loading="lazy"
-            />
-            <figcaption className="text-xs text-center text-muted-foreground mt-2">
-              Clinical Frailty Scale (Rockwood et al., 2005)
-            </figcaption>
-          </figure>
-
           <figure className="rounded-lg border border-border bg-card p-2">
             <ZoomableImage
               src={frailtyQuestionnaireImg}
@@ -262,19 +274,6 @@ export function ClinicalFrailtyScale({
             />
             <figcaption className="text-xs text-center text-muted-foreground mt-2">
               Frailty Questionnaire & CFS Scoring Flowchart
-            </figcaption>
-          </figure>
-
-          <figure className="rounded-lg border border-border bg-card p-2">
-            <ZoomableImage
-              src={frailtyScaleChartImg}
-              alt="Clinical Frailty Scale 1-9 descriptor chart illustrating levels of fitness, vulnerability, dependence, and terminal illness"
-              className="w-full rounded-md cursor-zoom-in"
-              wrapperClassName="w-full"
-              loading="lazy"
-            />
-            <figcaption className="text-xs text-center text-muted-foreground mt-2">
-              Clinical Frailty Scale 1–9 Descriptor Chart
             </figcaption>
           </figure>
         </CardContent>
