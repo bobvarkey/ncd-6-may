@@ -1,6 +1,20 @@
 import { db } from '@/lib/db';
 import { supabase } from '@/integrations/supabase/client';
 
+type RemoteResult = Promise<{ error: unknown }>;
+type RemoteQuery = {
+  upsert(value: unknown): RemoteResult;
+  delete(): RemoteQuery;
+  eq(column: string, value: string): RemoteResult;
+};
+type RemoteClient = {
+  from(table: 'patients' | 'calculations'): RemoteQuery;
+};
+
+// These offline-first tables are deployed separately from the generated
+// account types, so keep this adapter narrow until the generated types include them.
+const remote = supabase as unknown as RemoteClient;
+
 export const SyncManager = {
   async processQueue() {
     const queue = await db.syncQueue.orderBy('id').toArray();
@@ -21,7 +35,7 @@ export const SyncManager = {
           }
 
           // Push to Supabase (using .upsert() for both create and update)
-          const { error } = await supabase
+          const { error } = await remote
             .from(tableName)
             .upsert({
               ...record,
@@ -33,7 +47,7 @@ export const SyncManager = {
           // Mark as clean locally
           await db[tableName].update(recordId, { isDirty: false });
         } else if (operation === 'DELETE') {
-          const { error } = await supabase
+          const { error } = await remote
             .from(tableName)
             .delete()
             .eq('id', recordId);
