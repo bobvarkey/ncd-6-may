@@ -28,6 +28,7 @@ import {
   toOsteoState,
   type OsteoView,
 } from "@/data/osteo-mappings";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { entryRoute, evaluate, label } from "@/lib/osteo/logic";
 import { SAFETY_KEYS } from "@/lib/osteo/types";
 import { PatientService } from "@/lib/services/PatientService";
@@ -76,7 +77,7 @@ const PERSIST_KEY = "ncd_osteo_state";
  * component knows that the engine does not is translated in src/data/osteo-mappings.
  */
 export default function OsteoCareAssessment() {
-  const [stored, setStored] = useState<OsteoView>(initialView());
+  const [stored, setStored] = useLocalStorage<OsteoView>(PERSIST_KEY, initialView());
 
   // Read through normaliseView every time: a value written by an older build can
   // carry a renamed or retyped field, and neither may reach the engine.
