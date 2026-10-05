@@ -18,113 +18,115 @@ function getGitInfo() {
   }
 }
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const git = getGitInfo();
   const env = loadEnv(mode, process.cwd(), "");
   const analyzeBundle = process.env.ANALYZE === "true";
-  // These are public client connection values, not secrets. Keep a checked-in
-  // fallback so production publishing cannot produce a blank app when the
-  // generated VITE_* environment is unavailable during the build.
   const supabaseUrl = env.VITE_SUPABASE_URL || "https://dhwpbfqxypbbljygtlih.supabase.co";
   const supabasePublishableKey = env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_omXe4-gE00vDE9xe801IrQ_jKLmfX1j";
+
   return {
-  server: {
-    host: "::",
-    port: 8080,
-    hmr: {
-      overlay: false,
+    server: {
+      host: "::",
+      port: 8080,
+      hmr: { overlay: false },
     },
-  },
-  plugins: [
-    react(),
-    mode === "development" && componentTagger(),
-    analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "stats.html" }),
-    // Offline support (opt-in at runtime via Settings → Offline Mode).
-    VitePWA({
-      strategies: "generateSW",
-      registerType: "autoUpdate",
-      injectRegister: null,
-      devOptions: { enabled: false },
-      filename: "sw.js",
-      manifest: false,
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,jpg,jpeg,woff,woff2,ico,webmanifest}"],
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-        navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/~oauth/],
-        cleanupOutdatedCaches: true,
-        clientsClaim: true,
-        skipWaiting: true,
-        runtimeCaching: [
-          {
-            // HTML navigations must never be served cache-first.
-            urlPattern: ({ request }) => request.mode === "navigate",
-            handler: "NetworkFirst",
-            options: { cacheName: "html-navigations", networkTimeoutSeconds: 5 },
-          },
-          {
-            urlPattern: ({ url, request, sameOrigin }) =>
-              sameOrigin && !url.pathname.startsWith("/~oauth") &&
-              ["script", "style", "image", "font"].includes(request.destination),
-            handler: "CacheFirst",
-            options: {
-              cacheName: "static-assets",
-              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 60 },
+    plugins: [
+      react(),
+      mode === "development" && componentTagger(),
+      analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "stats.html" }),
+      VitePWA({
+        strategies: "generateSW",
+        registerType: "autoUpdate",
+        injectRegister: "auto",
+        devOptions: { enabled: true },
+        filename: "sw.js",
+        manifest: {
+          name: "NCD Clinical Tool",
+          short_name: "NCD Tool",
+          start_url: "/",
+          display: "standalone",
+          background_color: "#ffffff",
+          theme_color: "#ef4444",
+          icons: [
+            { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
+            { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
+          ],
+        },
+        workbox: {
+          globPatterns: ["**/*.{js,css,html,svg,png,jpg,jpeg,woff,woff2,ico,webmanifest}"],
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+          navigateFallback: "/index.html",
+          navigateFallbackDenylist: [/^\/~oauth/],
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
+          runtimeCaching: [
+            {
+              urlPattern: ({ request }) => request.mode === "navigate",
+              handler: "NetworkFirst",
+              options: { cacheName: "html-navigations", networkTimeoutSeconds: 5 },
             },
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "google-fonts",
-              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 365 },
-              cacheableResponse: { statuses: [0, 200] },
+            {
+              urlPattern: ({ url, request, sameOrigin }) =>
+                sameOrigin && !url.pathname.startsWith("/~oauth") &&
+                ["script", "style", "image", "font"].includes(request.destination),
+              handler: "CacheFirst",
+              options: {
+                cacheName: "static-assets",
+                expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 60 },
+              },
             },
-          },
-        ],
-      },
-    }),
-  ].filter(Boolean),
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+            {
+              urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "google-fonts",
+                expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 365 },
+                cacheableResponse: { statuses: [0, 200] },
+              },
+            },
+          ],
+        },
+      }),
+    ].filter(Boolean),
+    resolve: {
+      alias: { "@": path.resolve(__dirname, "./src") },
     },
-  },
-  define: {
-    "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(supabaseUrl),
-    "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(supabasePublishableKey),
-    "import.meta.env.VITE_GIT_HASH": JSON.stringify(git.hash),
-    "import.meta.env.VITE_GIT_MESSAGE": JSON.stringify(git.message),
-    "import.meta.env.VITE_GIT_DATE": JSON.stringify(git.date),
-    "import.meta.env.VITE_GIT_BRANCH": JSON.stringify(git.branch),
-    "import.meta.env.VITE_BUILD_TIME": JSON.stringify(new Date().toISOString()),
-  },
-  esbuild: {
-    drop: mode === "production" ? ["console", "debugger"] : [],
-    legalComments: "none",
-  },
-  build: {
-    target: "es2020",
-    cssCodeSplit: true,
-    sourcemap: false,
-    reportCompressedSize: false,
-    chunkSizeWarningLimit: 900,
-    rollupOptions: {
-      output: {
-        manualChunks(id: string) {
-          if (!id.includes("node_modules")) return;
-          if (id.includes("react-router")) return "react-vendor";
-          if (id.match(/node_modules\/(react|react-dom|scheduler)\//)) return "react-vendor";
-          if (id.includes("@radix-ui")) return "radix-vendor";
-          if (id.includes("recharts") || id.includes("d3-")) return "charts-vendor";
-          if (id.includes("@tanstack")) return "query-vendor";
-          if (id.includes("react-hook-form") || id.includes("@hookform") || id.includes("zod")) return "form-vendor";
-          if (id.includes("date-fns") || id.includes("react-day-picker")) return "date-vendor";
-          if (id.includes("lucide-react")) return "icons-vendor";
+    define: {
+      "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(supabaseUrl),
+      "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(supabasePublishableKey),
+      "import.meta.env.VITE_GIT_HASH": JSON.stringify(git.hash),
+      "import.meta.env.VITE_GIT_MESSAGE": JSON.stringify(git.message),
+      "import.meta.env.VITE_GIT_DATE": JSON.stringify(git.date),
+      "import.meta.env.VITE_GIT_BRANCH": JSON.stringify(git.branch),
+      "import.meta.env.VITE_BUILD_TIME": JSON.stringify(new Date().toISOString()),
+    },
+    esbuild: {
+      drop: mode === "production" ? ["console", "debugger"] : [],
+      legalComments: "none",
+    },
+    build: {
+      target: "es2020",
+      cssCodeSplit: true,
+      sourcemap: false,
+      reportCompressedSize: false,
+      chunkSizeWarningLimit: 900,
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (!id.includes("node_modules")) return;
+            if (id.includes("react-router")) return "react-vendor";
+            if (id.match(/node_modules\/(react|react-dom|scheduler)\//)) return "react-vendor";
+            if (id.includes("@radix-ui")) return "radix-vendor";
+            if (id.includes("recharts") || id.includes("d3-")) return "charts-vendor";
+            if (id.includes("@tanstack")) return "query-vendor";
+            if (id.includes("react-hook-form") || id.includes("@hookform") || id.includes("zod")) return "form-vendor";
+            if (id.includes("date-fns") || id.includes("react-day-picker")) return "date-vendor";
+            if (id.includes("lucide-react")) return "icons-vendor";
+          },
         },
       },
     },
-  },
   };
 });
