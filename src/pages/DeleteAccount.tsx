@@ -3,12 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Trash2, ShieldAlert, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAuth } from "@/auth/AuthProvider";
 
 /**
- * Permanently delete all locally-stored account data.
- *
- * This app runs entirely in the browser — there is no server account.
- * "Delete account" wipes every trace of user data from this device:
+ * Permanently clear locally-stored clinical data from this device:
  *  - localStorage (patient profile, saved inputs, feedback, progress)
  *  - sessionStorage
  *  - IndexedDB
@@ -39,7 +37,12 @@ async function wipeAllLocalData(): Promise<void> {
         dbs.map((db) =>
           db.name
             ? new Promise<void>((resolve) => {
-                const req = indexedDB.deleteDatabase(db.name!);
+                const databaseName = db.name;
+                if (!databaseName) {
+                  resolve();
+                  return;
+                }
+                const req = indexedDB.deleteDatabase(databaseName);
                 req.onsuccess = req.onerror = req.onblocked = () => resolve();
               })
             : Promise.resolve()
@@ -67,6 +70,7 @@ async function wipeAllLocalData(): Promise<void> {
 
 export default function DeleteAccount() {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [confirmText, setConfirmText] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -81,8 +85,9 @@ export default function DeleteAccount() {
     setBusy(true);
     try {
       await wipeAllLocalData();
+      await signOut();
       setDone(true);
-      toast.success("All local data deleted");
+      toast.success("Local clinical data cleared");
       // Give the toast a moment, then hard-reload to reset all in-memory state
       setTimeout(() => {
         window.location.replace("/home");
@@ -98,7 +103,7 @@ export default function DeleteAccount() {
       <div className="max-w-2xl mx-auto p-6">
         <div className="clinical-card text-center space-y-3 border border-success/30 bg-success/5">
           <CheckCircle2 className="w-12 h-12 text-success mx-auto" />
-          <h1 className="text-2xl font-heading font-bold text-success">Account Deleted</h1>
+          <h1 className="text-2xl font-heading font-bold text-success">Local Data Cleared</h1>
           <p className="text-sm text-muted-foreground">
             All locally-stored data has been permanently removed from this device.
             Reloading the app…
@@ -121,10 +126,10 @@ export default function DeleteAccount() {
       <div className="rounded-xl p-6 text-primary-foreground" style={{ background: "var(--gradient-hero)" }}>
         <div className="flex items-center gap-3 mb-2">
           <Trash2 className="w-6 h-6" />
-          <h1 className="text-2xl font-heading font-bold">Delete Account & Data</h1>
+          <h1 className="text-2xl font-heading font-bold">Clear Local Data</h1>
         </div>
         <p className="text-sm opacity-90">
-          Permanently remove all of your data from this device.
+          Permanently remove clinical data and preferences from this device, then sign out.
         </p>
       </div>
 
@@ -138,8 +143,7 @@ export default function DeleteAccount() {
           <li>Cached images, offline data, and cookies for this app</li>
         </ul>
         <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-          This app stores data <span className="font-medium text-foreground">only on your device</span>.
-          There is no server account to recover — deletion is immediate and permanent.
+          This does not delete billing records or your online account. Contact support to request full account deletion.
         </p>
       </div>
 
@@ -179,7 +183,7 @@ export default function DeleteAccount() {
             onClick={handleDelete}
           >
             <Trash2 className="w-4 h-4 mr-1.5" />
-            {busy ? "Deleting…" : "Permanently Delete My Data"}
+            {busy ? "Clearing…" : "Permanently Clear Local Data"}
           </Button>
         </div>
       </div>

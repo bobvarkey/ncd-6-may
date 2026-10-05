@@ -14,6 +14,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { RequireAccess } from "@/components/RequireAccess";
 import { OfflineProvider } from "@/lib/offline/OfflineContext";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
+import PWAInstallButton from "@/components/PWAInstallButton";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -244,6 +245,7 @@ const AppHeader = ({ title }: { title: string }) => {
       <span className="ml-3 text-sm font-heading font-semibold text-sunset truncate">{title}</span>
       <div className="ml-auto mr-2 flex items-center gap-2">
         <OfflineStatusBadge className="hidden sm:inline-flex" />
+        <PWAInstallButton />
         <Link
           to={user ? "/subscription" : "/login"}
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-muted"
@@ -277,8 +279,6 @@ const withNav = (element: ReactNode, title: string) => (
 );
 
 const App = () => {
-  // Paywall is no longer a startup gate — the app opens directly.
-  // It can still be opened on demand (e.g. from the Subscription page).
   const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
@@ -347,7 +347,7 @@ const App = () => {
           <Route path="/db/*" element={<NotFound />} />
 
           {/* Main App — unified interface */}
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<RequireAccess><Home /></RequireAccess>} />
           <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
           <Route path="/settings" element={withNav(<Settings />, "Settings")} />
           <Route path="/login" element={<PageShell title="Account"><Login /></PageShell>} />
@@ -408,11 +408,13 @@ const App = () => {
           <Route
             path="/glp1-prescreen"
             element={
-              <PageShell title="GLP-1 Pre-Initiation Screener">
-                <div className="max-w-4xl mx-auto px-4 py-6">
-                  <GLP1PreInitiationScreenerCalc />
-                </div>
-              </PageShell>
+              <RequireAccess>
+                <PageShell title="GLP-1 Pre-Initiation Screener">
+                  <div className="max-w-4xl mx-auto px-4 py-6">
+                    <GLP1PreInitiationScreenerCalc />
+                  </div>
+                </PageShell>
+              </RequireAccess>
             }
           />
           <Route path="/obesity/glp1-screener" element={withNav(<GLP1ScreenerCalc />, "GLP-1 Screener")} />

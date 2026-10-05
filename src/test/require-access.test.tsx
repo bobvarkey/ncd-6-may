@@ -45,14 +45,14 @@ afterEach(() => {
 });
 
 describe("RequireAccess", () => {
-  it("renders the guarded child and never redirects while the flag is unset", async () => {
+  it("redirects when access has not been granted", async () => {
     authState.current = { access: null, loading: false };
     const RequireAccess = await loadGuard(undefined);
 
     renderGuard(RequireAccess);
 
-    expect(screen.getByText("GUARDED CHILD")).toBeInTheDocument();
-    expect(screen.queryByText(/SUBSCRIPTION PAGE/)).not.toBeInTheDocument();
+    expect(screen.getByText("SUBSCRIPTION PAGE?next=%2Fclinical")).toBeInTheDocument();
+    expect(screen.queryByText("GUARDED CHILD")).not.toBeInTheDocument();
   });
 
   it("shows the placeholder and does not redirect while auth is still loading", async () => {

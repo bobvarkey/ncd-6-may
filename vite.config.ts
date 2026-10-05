@@ -38,26 +38,35 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         strategies: "generateSW",
         registerType: "autoUpdate",
-        injectRegister: "auto",
-        devOptions: { enabled: true },
+        injectRegister: null,
+        devOptions: { enabled: false },
         filename: "sw.js",
         manifest: {
-          name: "NCD Clinical Tool",
-          short_name: "NCD Tool",
-          start_url: "/",
+          id: "/",
+          name: "Clinical tools",
+          short_name: "Clinical tools",
+          description: "Evidence-based clinical calculators, algorithms and prescribing guides.",
+          start_url: "/home",
+          scope: "/",
           display: "standalone",
-          background_color: "#ffffff",
-          theme_color: "#ef4444",
+          background_color: "#0c2340",
+          theme_color: "#2d8a9e",
+          orientation: "any",
           icons: [
-            { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
-            { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
+            { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+            { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+            { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+          ],
+          shortcuts: [
+            { name: "Clinical tools", short_name: "Tools", url: "/home", icons: [{ src: "/icon-96.png", sizes: "96x96" }] },
+            { name: "Drug search", short_name: "Drugs", url: "/drug-calculator", icons: [{ src: "/icon-96.png", sizes: "96x96" }] },
           ],
         },
         workbox: {
           globPatterns: ["**/*.{js,css,html,svg,png,jpg,jpeg,woff,woff2,ico,webmanifest}"],
           maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
           navigateFallback: "/index.html",
-          navigateFallbackDenylist: [/^\/~oauth/],
+          navigateFallbackDenylist: [/^\/~oauth/, /^\/functions\//, /^\/api\//],
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: true,
@@ -70,6 +79,7 @@ export default defineConfig(({ mode }) => {
             {
               urlPattern: ({ url, request, sameOrigin }) =>
                 sameOrigin && !url.pathname.startsWith("/~oauth") &&
+                !url.pathname.startsWith("/functions/") && !url.pathname.startsWith("/api/") &&
                 ["script", "style", "image", "font"].includes(request.destination),
               handler: "CacheFirst",
               options: {

@@ -17,9 +17,11 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
   const { user, refreshAccess } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const proPlans = plans.filter((plan) => plan.id === 'pro-monthly' || plan.id === 'pro-yearly');
+  const [selectedPlanId, setSelectedPlanId] = useState('pro-monthly');
+  const selectedPlan = proPlans.find((plan) => plan.id === selectedPlanId) ?? proPlans[0];
 
-  // Paid plan used for checkout.
-  const proPlan = plans.find((p) => p.id === 'pro-monthly') || plans[1];
+  if (!selectedPlan) return null;
 
   /** Immediate Pro access — real Razorpay subscription + server-side verification. */
   const handleProAccess = async () => {
@@ -32,7 +34,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
     setError(null);
 
     try {
-      const response = await openSubscriptionCheckout(proPlan.id);
+      const response = await openSubscriptionCheckout(selectedPlan.id);
 
       if (response) {
         // Checkout was verified server-side and the entitlement now lives on
@@ -43,9 +45,8 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
         // Cancelled / dismissed / failed / verification failed.
         setError('Payment was not completed. You have not been charged.');
       }
-    } catch (err: any) {
-      console.error('Payment error:', err);
-      setError(err?.message || 'Payment failed. Please try again.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Payment failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -64,7 +65,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
       // A trial is a real subscription with a future start_at, so Checkout must
       // collect a mandate now. That is what makes the first charge automatic and
       // the trial non-repeatable per account.
-      const result = await openSubscriptionCheckout(proPlan.id, { trial: true });
+      const result = await openSubscriptionCheckout(selectedPlan.id, { trial: true });
       if (!result) {
         setError('Trial was not authorised. No charge was made.');
         return;
@@ -96,7 +97,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
           <div className="flex items-center justify-center gap-2 mb-1">
             <Sparkles className="w-5 h-5 text-amber-600" />
             <span className="font-bold text-amber-700 dark:text-amber-400">
-              BUY NOW OR TRY FREE FOR {proPlan.trialDays} DAYS
+              BUY NOW OR TRY FREE FOR {selectedPlan.trialDays} DAYS
             </span>
           </div>
           <p className="text-sm text-amber-700 dark:text-amber-300">
@@ -105,11 +106,28 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
         </div>
 
         <div className="p-6 space-y-4">
+          <div className="grid grid-cols-2 gap-2" role="group" aria-label="Billing period">
+            {proPlans.map((plan) => (
+              <Button
+                key={plan.id}
+                type="button"
+                variant={selectedPlan.id === plan.id ? 'default' : 'outline'}
+                className="h-auto min-h-14 flex-col gap-0.5"
+                aria-pressed={selectedPlan.id === plan.id}
+                onClick={() => setSelectedPlanId(plan.id)}
+                disabled={loading}
+              >
+                <span>{plan.interval === 'month' ? 'Monthly' : 'Yearly'}</span>
+                <span className="text-xs opacity-80">{formatAmount(plan)}</span>
+              </Button>
+            ))}
+          </div>
+
           {/* Pricing */}
           <div className="text-center mb-6">
-            <p className="text-4xl font-bold text-foreground">{formatAmount(proPlan)}</p>
+            <p className="text-4xl font-bold text-foreground">{formatAmount(selectedPlan)}</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Or start with a {proPlan.trialDays}-day free trial — cancel anytime
+              Or start with a {selectedPlan.trialDays}-day free trial — cancel anytime
             </p>
           </div>
 
@@ -153,7 +171,7 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
               ) : (
                 <>
                   <Zap className="h-4 w-4 mr-2" />
-                  Get Pro Access - {formatAmount(proPlan)}
+                   Get Pro Access - {formatAmount(selectedPlan)}
                 </>
               )}
             </Button>
@@ -166,12 +184,12 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
               disabled={loading}
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              Start {proPlan.trialDays}-day free trial
+               Start {selectedPlan.trialDays}-day free trial
             </Button>
 
             <p className="text-sm text-muted-foreground">
-              {formatAmount(proPlan)} after {proPlan.trialDays} days. Cancel anytime before{' '}
-              {new Date(Date.now() + proPlan.trialDays * 86400_000).toLocaleDateString('en-IN')} and you pay nothing.
+               {formatAmount(selectedPlan)} after {selectedPlan.trialDays} days. Cancel anytime before{' '}
+               {new Date(Date.now() + selectedPlan.trialDays * 86400_000).toLocaleDateString('en-IN')} and you pay nothing.
             </p>
           </div>
 
