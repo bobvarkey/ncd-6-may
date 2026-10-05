@@ -4,6 +4,10 @@ import { db } from '@/lib/db';
 import { SyncManager } from '@/lib/db/syncManager';
 import { supabase } from '@/integrations/supabase/client';
 
+const remoteMock = supabase as unknown as {
+  upsert: ReturnType<typeof vi.fn>;
+};
+
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: vi.fn().mockReturnThis(),
@@ -42,7 +46,7 @@ describe('SyncManager', () => {
 
     // 3. Verify Supabase was called
     expect(supabase.from).toHaveBeenCalledWith('patients');
-    expect(supabase.upsert).toHaveBeenCalled();
+    expect(remoteMock.upsert).toHaveBeenCalled();
 
     // 4. Verify local state updated
     const p = await db.patients.get('p1');
@@ -63,7 +67,7 @@ describe('SyncManager', () => {
     await db.patients.put({ id: 'p2', name: 'User 2', clinicalData: {}, updatedAt: Date.now(), isDirty: true });
 
     // Mock failure for the first item
-    (supabase.upsert as any).mockResolvedValueOnce({ error: new Error('Network Error') });
+    remoteMock.upsert.mockResolvedValueOnce({ error: new Error('Network Error') });
 
     const result = await SyncManager.processQueue();
 

@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import 'fake-indexeddb/auto';
 import { db } from '@/lib/db';
+import type { SyncQueueItem } from '@/lib/db/schema';
 
 describe('NCD Database Schema', () => {
   beforeEach(async () => {
@@ -37,7 +38,7 @@ describe('NCD Database Schema', () => {
   });
 
   it('should allow adding and retrieving a sync item', async () => {
-    const item = {
+    const item: SyncQueueItem = {
       tableName: 'patients',
       recordId: 'p1',
       operation: 'CREATE',

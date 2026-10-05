@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 
 import { ClinicalFrailtyScale } from "@/components/ClinicalFrailtyScale";
 import {
@@ -28,6 +28,9 @@ import {
   toOsteoState,
   type OsteoView,
 } from "@/data/osteo-mappings";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { entryRoute, evaluate, label } from "@/lib/osteo/logic";
+import { SAFETY_KEYS } from "@/lib/osteo/types";
 import { PatientService } from "@/lib/services/PatientService";
 import { CalculationService } from "@/lib/services/CalculationService";
 
@@ -63,48 +66,53 @@ const THERAPY = [
   "anabolic_or_romosozumab",
 ] as const;
 
+/** Gate 4a. The two parent factors are absent: they are derived from 4b and 4c. */
 const STANDALONE_OPTIONS = [...STANDALONE_RISK_FACTORS, NONE_IDENTIFIED] as const;
 
+const PERSIST_KEY = "ncd_osteo_state";
+
+/**
+ * The six-gate osteoporosis pathway. Ported from the supplied OsteoCare 3.3.0-robust
+ * app; the engine itself lives untouched in src/lib/osteo and everything this
+ * component knows that the engine does not is translated in src/data/osteo-mappings.
+ */
 export default function OsteoCareAssessment() {
-  const [view, setView] = useState<OsteoView>(initialView());
-  const [patientId, setPatientId] = useState<string | null>(null);
+  const [stored, setStored] = useLocalStorage<OsteoView>(PERSIST_KEY, initialView());
+
+  // Read through normaliseView every time: a value written by an older build can
+  // carry a renamed or retyped field, and neither may reach the engine.
+  const view = useMemo(() => normaliseView(stored), [stored]);
 
   const set = <K extends keyof OsteoView>(key: K, value: OsteoView[K]) =>
-    setView((prev) => ({ ...prev, [key]: value }));
+    setStored({ ...view, [key]: value });
+
+  const [patientId, setPatientId] = useState<string | null>(null);
 
   const handleSave = async () => {
     try {
-      // 1. Ensure we have a patient
       let currentId = patientId;
       if (!currentId) {
-        const p = await PatientService.savePatient({ name: "Unnamed Patient" });
-        currentId = p.id;
-        setPatientId(p.id);
+        const patient = await PatientService.savePatient({ name: "Unnamed Patient" });
+        currentId = patient.id;
+        setPatientId(patient.id);
       }
 
-      // 2. Save calculation
       await CalculationService.saveCalculation(currentId, {
-        calcType: 'osteoporosis',
+        calcType: "osteoporosis",
         inputs: view,
-        result: {
-          status: "saved"
-        }
+        result: { status: "saved" },
       });
-
-      alert("Assessment saved locally and queued for sync!");
-    } catch (e) {
-      console.error("Save failed", e);
-      alert("Error saving assessment.");
+      window.alert("Assessment saved locally and queued for sync!");
+    } catch (error) {
+      console.error("Save failed", error);
+      window.alert("Error saving assessment.");
     }
   };
 
+  // Read once per mount. The engine never reads a clock itself — it is handed `today`.
   const dateISO = useMemo(() => new Date().toISOString().slice(0, 10), []);
   const today = useMemo(() => new Date(`${dateISO}T00:00:00Z`), [dateISO]);
 
-  // Note: evaluate and entryRoute are imported from @/lib/osteo/logic
-  // In a real implementation, these would be imported at the top.
-  // For this edit, I'm assuming they are available or will be handled.
-  const { evaluate, entryRoute } = require("@/lib/osteo/logic");
   const state = useMemo(() => toOsteoState(view), [view]);
   const result = useMemo(() => evaluate(state, today), [state, today]);
 
@@ -126,7 +134,7 @@ export default function OsteoCareAssessment() {
   return (
     <div className="space-y-6 text-foreground">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-medium text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <span className="size-2 rounded-full bg-tier-very-high" /> Very high
           </span>
@@ -143,14 +151,14 @@ export default function OsteoCareAssessment() {
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => setView(initialView())}
+            onClick={() => setStored(initialView())}
             className="rounded-full bg-card/60 px-4 py-2 text-sm font-semibold text-foreground ring-1 ring-border transition hover:bg-card"
           >
             Reset assessment
           </button>
           <button
             type="button"
-            onClick={handleSave}
+            onClick={() => void handleSave()}
             className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground ring-1 ring-primary transition hover:bg-primary/90"
           >
             Save Record
@@ -182,11 +190,11 @@ export default function OsteoCareAssessment() {
                 options={SEX}
                 value={view.sex}
                 onChange={(v) =>
-                  setView((prev) => ({
-                    ...prev,
+                  setStored({
+                    ...view,
                     sex: v,
-                    menopause: v === "female" ? prev.menopause : "unknown",
-                  }))
+                    menopause: v === "female" ? view.menopause : "unknown",
+                  })
                 }
               />
             </Field>
@@ -227,11 +235,11 @@ export default function OsteoCareAssessment() {
                     options={FRACTURE}
                     value={view.fragility_fracture}
                     onChange={(v) =>
-                      setView((prev) => ({
-                        ...prev,
+                      setStored({
+                        ...view,
                         fragility_fracture: v,
-                        other_fracture_site: v === "other_fragility" ? prev.other_fracture_site : "",
-                      }))
+                        other_fracture_site: v === "other_fragility" ? view.other_fracture_site : "",
+                      })
                     }
                   />
                 </Field>
@@ -239,7 +247,7 @@ export default function OsteoCareAssessment() {
                   <Conditional>
                     <Field
                       title="Other fracture site"
-                      hint="Wrist, humerus, pelvis or an other low-trauma site. Exclude malignant pathological fracture."
+                      hint="Wrist, humerus, pelvis or another low-trauma site. Exclude malignant pathological fracture."
                     >
                       <TextField
                         value={view.other_fracture_site}
@@ -306,4 +314,368 @@ export default function OsteoCareAssessment() {
                             value={view.extreme_verified}
                             onChange={(v) => set("extreme_verified", v)}
                           />
-'/>
+                        </Field>
+                      ) : null}
+                    </div>
+                  </Conditional>
+                ) : null}
+                {view.dxa_status === "unavailable_or_not_feasible" &&
+                (view.lowest_valid_t_score !== null || view.lowest_valid_z_score !== null) ? (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setStored({
+                        ...view,
+                        lowest_valid_t_score: null,
+                        lowest_valid_z_score: null,
+                      })
+                    }
+                    className="rounded-full bg-destructive/10 px-4 py-2 text-sm font-semibold text-destructive ring-1 ring-destructive/40"
+                  >
+                    Clear the stale scores
+                  </button>
+                ) : null}
+              </Gate>
+
+              <Gate
+                index="4"
+                title="Clinical risk factors"
+                purpose="Drives risk-based DXA for men 50-69 and for younger or premenopausal adults. An empty list is incomplete, not none."
+                delay={180}
+              >
+                <Field
+                  title="Standalone risk factors"
+                  hint="None identified is only a claim about an empty list: ticking any other option clears it."
+                >
+                  <PillMultiselect
+                    options={STANDALONE_OPTIONS}
+                    value={view.standalone_risk_factors}
+                    exclusive={NONE_IDENTIFIED}
+                    onChange={(v) =>
+                      // "None identified" is a claim about all three groups, not just
+                      // this one: claiming it must clear the causes and confirmed
+                      // risks, and their free text with them so a stale answer cannot
+                      // reappear. The CKD rung is deliberately kept (Gate 5 reads it).
+                      v.includes(NONE_IDENTIFIED)
+                        ? setStored({
+                            ...view,
+                            standalone_risk_factors: v,
+                            bone_loss_conditions: [],
+                            bone_loss_other_text: "",
+                            other_confirmed_risks: [],
+                            other_risks_other_text: "",
+                          })
+                        : set("standalone_risk_factors", v)
+                    }
+                  />
+                </Field>
+
+                <Field
+                  title="Conditions causing bone loss"
+                  hint="Selecting one or more records the parent factor as confirmed. An empty list leaves it unconfirmed, which is not the same as absent."
+                >
+                  <PillMultiselect
+                    options={BONE_LOSS_CONDITIONS}
+                    value={view.bone_loss_conditions}
+                    onChange={(v) =>
+                      // Any real cause denies a standing "None identified" claim. The
+                      // chip is in another group, so PillMultiselect's own exclusion
+                      // cannot reach it; drop it here instead.
+                      v.length
+                        ? setStored({
+                            ...view,
+                            bone_loss_conditions: v,
+                            standalone_risk_factors: view.standalone_risk_factors.filter(
+                              (f) => f !== NONE_IDENTIFIED,
+                            ),
+                          })
+                        : set("bone_loss_conditions", v)
+                    }
+                  />
+                </Field>
+                {view.bone_loss_conditions.includes("other_specify") ? (
+                  <Conditional>
+                    <Field title="Other condition (specify)">
+                      <TextField
+                        value={view.bone_loss_other_text}
+                        onChange={(v) => set("bone_loss_other_text", v)}
+                        placeholder="e.g. sarcoidosis"
+                      />
+                    </Field>
+                  </Conditional>
+                ) : null}
+                {ckdSelected ? (
+                  <Conditional>
+                    <Field
+                      title="Stage of CKD / CKD-MBD"
+                      hint="The engine holds one tri-state, so the stage is recorded here and collapsed for it. 'Not advanced' is the only negative finding; G4 or above, dialysis, unstaged advanced CKD and any CKD-MBD are positive. An eGFR under 30 has to agree with it."
+                    >
+                      <PillSelect
+                        options={CKD_LADDER}
+                        value={view.ckd_ladder}
+                        onChange={(v) => set("ckd_ladder", v)}
+                        labels={CKD_LADDER_LABELS}
+                      />
+                    </Field>
+                  </Conditional>
+                ) : null}
+
+                <Field
+                  title="Other clinician-confirmed risks"
+                  hint="Documented and investigated. No automatic FRAX multiplier or risk-class upgrade."
+                >
+                  <PillMultiselect
+                    options={OTHER_CONFIRMED_RISKS}
+                    value={view.other_confirmed_risks}
+                    onChange={(v) =>
+                      // As with 4b: a confirmed risk denies "None identified", which
+                      // lives in another group and is invisible to the control.
+                      v.length
+                        ? setStored({
+                            ...view,
+                            other_confirmed_risks: v,
+                            standalone_risk_factors: view.standalone_risk_factors.filter(
+                              (f) => f !== NONE_IDENTIFIED,
+                            ),
+                          })
+                        : set("other_confirmed_risks", v)
+                    }
+                  />
+                </Field>
+                {view.other_confirmed_risks.includes("other_specify") ? (
+                  <Conditional>
+                    <Field title="Other risk (specify)">
+                      <TextField
+                        value={view.other_risks_other_text}
+                        onChange={(v) => set("other_risks_other_text", v)}
+                        placeholder="e.g. longstanding anticonvulsant use"
+                      />
+                    </Field>
+                  </Conditional>
+                ) : null}
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                    Clinical Frailty Scale
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    Scores 5 and above record recurrent falls or frailty as a clinician-confirmed
+                    risk. Scores 1-4 record nothing. Not scored is not the same as 1.
+                  </p>
+                  <div className="mt-3">
+                    <ClinicalFrailtyScale
+                      value={view.clinical_frailty_scale}
+                      onChange={(n) => set("clinical_frailty_scale", toCfsScore(n))}
+                    />
+                  </div>
+                  {frail ? (
+                    <p className="mt-3 rounded-2xl bg-mist/80 p-3 text-xs leading-relaxed ring-1 ring-border">
+                      CFS {view.clinical_frailty_scale} records Recurrent falls / frailty as a
+                      clinician-confirmed risk, and the parent factor with it. It appears in the
+                      copied report whether or not it is ticked above.
+                    </p>
+                  ) : null}
+                </div>
+
+                {view.sex === "male" && typeof view.age === "number" && view.age >= 50 && view.age < 70 ? (
+                  <Conditional>
+                    <Field
+                      title="DXA risk review complete (man 50-69)"
+                      hint="An age-only negative decision is only available after a completed negative review."
+                    >
+                      <PillRadio
+                        options={TRI}
+                        value={view.male_50_69_dxa_risk_review_complete}
+                        onChange={(v) => set("male_50_69_dxa_risk_review_complete", v)}
+                      />
+                    </Field>
+                  </Conditional>
+                ) : null}
+              </Gate>
+
+              <Gate
+                index="5"
+                title="Branch modifiers"
+                purpose="FRAX comparison, glucocorticoids, renal numbers and current therapy. Each branch runs only on explicit values."
+                delay={240}
+              >
+                <Field title="FRAX comparison against the local threshold">
+                  <PillRadio
+                    options={FRAX}
+                    value={view.frax_comparison}
+                    onChange={(v) => set("frax_comparison", v)}
+                  />
+                </Field>
+                {view.frax_comparison !== "not_assessed" ? (
+                  <Conditional>
+                    <Field
+                      title="Country and threshold policy version"
+                      hint="FRAX rules do not fire until this is documented."
+                    >
+                      <TextField
+                        value={view.frax_country_threshold_policy_version}
+                        onChange={(v) => set("frax_country_threshold_policy_version", v)}
+                        placeholder="e.g. UK NOGG 2021 thresholds"
+                      />
+                    </Field>
+                  </Conditional>
+                ) : null}
+
+                <Field title="Systemic glucocorticoids">
+                  <PillRadio
+                    options={TRI}
+                    value={view.systemic_glucocorticoids}
+                    onChange={(v) =>
+                      setStored({
+                        ...view,
+                        systemic_glucocorticoids: v,
+                        prednisolone_equivalent_mg_per_day:
+                          v === "yes" ? view.prednisolone_equivalent_mg_per_day : null,
+                        glucocorticoid_duration_months:
+                          v === "yes" ? view.glucocorticoid_duration_months : null,
+                      })
+                    }
+                  />
+                </Field>
+                {view.systemic_glucocorticoids === "yes" ? (
+                  <Conditional>
+                    <div className="flex flex-wrap gap-5">
+                      <Field title="Prednisolone equivalent">
+                        <NumberField
+                          value={view.prednisolone_equivalent_mg_per_day}
+                          onChange={(v) => set("prednisolone_equivalent_mg_per_day", v)}
+                          unit="mg/day"
+                          step="0.5"
+                        />
+                      </Field>
+                      <Field title="Duration">
+                        <NumberField
+                          value={view.glucocorticoid_duration_months}
+                          onChange={(v) => set("glucocorticoid_duration_months", v)}
+                          unit="months"
+                          step="1"
+                        />
+                      </Field>
+                    </div>
+                  </Conditional>
+                ) : null}
+
+                <Field
+                  title="Advanced CKD, CKD-MBD or dialysis"
+                  hint="Derived from the CKD stage recorded in Gate 4; change it there."
+                >
+                  <p className="text-sm font-semibold">
+                    {CKD_LADDER_LABELS[view.ckd_ladder]}
+                    <span className="ml-2 font-normal text-muted-foreground">
+                      {ckdSelected
+                        ? `engine reads: ${label(ckdStatusForView(view))}`
+                        : "engine reads: Unknown (CKD not selected)"}
+                    </span>
+                  </p>
+                </Field>
+                <div className="flex flex-wrap gap-5">
+                  <Field title="eGFR">
+                    <NumberField
+                      value={view.egfr_ml_min_1_73m2}
+                      onChange={(v) => set("egfr_ml_min_1_73m2", v)}
+                      unit="mL/min/1.73m²"
+                      step="1"
+                    />
+                  </Field>
+                  <Field
+                    title="Drug-specific CrCl"
+                    hint="eGFR is not a substitute for the renal gates."
+                  >
+                    <NumberField
+                      value={view.drug_specific_crcl_ml_min}
+                      onChange={(v) => set("drug_specific_crcl_ml_min", v)}
+                      unit="mL/min"
+                      step="1"
+                    />
+                  </Field>
+                </div>
+
+                <Field title="Current therapy">
+                  <PillRadio
+                    options={THERAPY}
+                    value={view.current_therapy}
+                    onChange={(v) =>
+                      setStored({
+                        ...view,
+                        current_therapy: v,
+                        last_injection_or_infusion_date: [
+                          "denosumab",
+                          "iv_bisphosphonate",
+                          "anabolic_or_romosozumab",
+                        ].includes(v)
+                          ? view.last_injection_or_infusion_date
+                          : "",
+                      })
+                    }
+                  />
+                </Field>
+                {therapyDetail ? (
+                  <Conditional>
+                    <Field title="Last injection or infusion date">
+                      <DateField
+                        value={view.last_injection_or_infusion_date}
+                        onChange={(v) => set("last_injection_or_infusion_date", v)}
+                      />
+                    </Field>
+                  </Conditional>
+                ) : null}
+              </Gate>
+
+              <Gate
+                index="6"
+                title="Medication safety gates"
+                purpose="Every gate must be explicit. Unknown means needs-review, never cleared."
+                delay={300}
+              >
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  {SAFETY_KEYS.map((k) => (
+                    <Field key={k} title={label(k)}>
+                      <PillRadio
+                        options={TRI}
+                        value={view.safety[k]}
+                        onChange={(v) =>
+                          setStored({ ...view, safety: { ...view.safety, [k]: v } })
+                        }
+                      />
+                    </Field>
+                  ))}
+                </div>
+              </Gate>
+            </>
+          ) : null}
+        </div>
+
+        {/* ---------------- Sticky result ---------------- */}
+        <aside className="lg:sticky lg:top-6">
+          {gate1Resolved ? (
+            <ResultCard
+              state={state}
+              result={result}
+              assessmentDate={dateISO}
+              extraContext={reportContext(view)}
+            />
+          ) : (
+            <div className="glass rounded-3xl p-6">
+              <p className="font-heading text-base font-bold tracking-tight">Waiting on Gate 1</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                The result card stays empty until age and sex assign a pathway. Nothing is guessed
+                and nothing is defaulted.
+              </p>
+            </div>
+          )}
+        </aside>
+      </div>
+
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        Clinical decision support only. Unknown is never treated as no, and missing data never
+        produces a below-threshold or low-risk result. Not validated, not auto-prescribing, and
+        clinical sign-off is required.
+      </p>
+    </div>
+  );
+}
