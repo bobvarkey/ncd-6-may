@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TriStateToggle } from "@/components/ui/tri-state-toggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Glp1Modifiers from "./Glp1Modifiers";
 import {
   Select,
   SelectContent,
@@ -16,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Syringe, Eye, Home, Printer, Copy, AlertTriangle, CheckCircle2, Info, ShieldAlert } from "lucide-react";
+import { Syringe, Eye, Home, Printer, Copy, AlertTriangle, CheckCircle2, Info, ShieldAlert, Sliders } from "lucide-react";
 import Seo from "@/components/Seo";
 import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
 import OpticNerveAssessment from "@/calculators/obesity/OpticNerveAssessment";
@@ -759,12 +760,15 @@ export default function Glp1Screening() {
         </div>
 
         <Tabs defaultValue="prescreen">
-          <TabsList className="w-full grid grid-cols-2">
+          <TabsList className="w-full grid grid-cols-3">
             <TabsTrigger value="prescreen" className="text-xs sm:text-sm">
               <Syringe className="w-4 h-4 mr-1" /> Pre-screen
             </TabsTrigger>
             <TabsTrigger value="optic" className="text-xs sm:text-sm">
               <Eye className="w-4 h-4 mr-1" /> Optic nerve / NAION
+            </TabsTrigger>
+            <TabsTrigger value="modifiers" className="text-xs sm:text-sm">
+              <Sliders className="w-4 h-4 mr-1" /> Modifiers
             </TabsTrigger>
           </TabsList>
           <TabsContent value="prescreen" className="mt-4">
@@ -777,6 +781,9 @@ export default function Glp1Screening() {
               </p>
             </div>
             <OpticNerveAssessment embedded />
+          </TabsContent>
+          <TabsContent value="modifiers" className="mt-4">
+            <Glp1Modifiers />
           </TabsContent>
         </Tabs>
       </div>
