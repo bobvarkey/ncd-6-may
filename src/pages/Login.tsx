@@ -47,11 +47,17 @@ export default function Login() {
           return;
         }
       } else {
+        console.log("[Login] Attempting sign-in for email:", email);
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (error) {
+          console.error("[Login] Sign-in error:", error);
+          throw error;
+        }
+        console.log("[Login] Sign-in successful");
       }
       navigate(safeNext, { replace: true });
     } catch (error) {
+      console.error("[Login] Submit catch:", error);
       setMessage(error instanceof Error ? error.message : "Unable to continue.");
     } finally {
       setBusy(false);
@@ -62,10 +68,14 @@ export default function Login() {
     setBusy(true);
     setMessage(null);
     sessionStorage.setItem("ncd-auth-next", safeNext);
+    console.log("[Login] Initiating Google OAuth sign-in");
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) {
+      console.error("[Login] Google OAuth error:", result.error);
       setMessage(result.error.message);
       setBusy(false);
+    } else {
+      console.log("[Login] Google OAuth result:", result);
     }
   };
 

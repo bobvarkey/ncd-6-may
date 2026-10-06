@@ -69,7 +69,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // Developer Whitelist Bypass: If the user is a developer, grant immediate access
+    console.log("[AuthProvider] Checking developer access for ID:", userData.user.id);
     if (isDeveloper(userData.user.id)) {
+      console.log("[AuthProvider] Developer access GRANTED for ID:", userData.user.id);
       const devAccess: AccountAccess = {
         access: true,
         role: "developer",
@@ -82,6 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       cacheVerifiedAccess(devAccess);
       setAccess(devAccess);
       return;
+    } else {
+      console.log("[AuthProvider] Developer access DENIED for ID:", userData.user.id);
     }
 
     try {
