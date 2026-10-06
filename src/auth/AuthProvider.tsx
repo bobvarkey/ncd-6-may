@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { isDeveloper } from "@/lib/developer-access";
 
 export type AccountAccess = {
   access: boolean;
@@ -66,6 +67,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAccess(null);
       return;
     }
+
+    // Developer Whitelist Bypass: If the user is a developer, grant immediate access
+    if (isDeveloper(userData.user.id)) {
+      const devAccess: AccountAccess = {
+        access: true,
+        role: "developer",
+        trialStartedAt: null,
+        trialEndsAt: null,
+        planId: "dev-plan",
+        status: "active",
+        validUntil: null,
+      };
+      cacheVerifiedAccess(devAccess);
+      setAccess(devAccess);
+      return;
+    }
+
     try {
       const verified = await invokeAccess("access-status");
       cacheVerifiedAccess(verified);
