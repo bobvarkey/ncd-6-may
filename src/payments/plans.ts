@@ -35,7 +35,7 @@ export const plans: Plan[] = [
     id: 'pro-monthly',
     razorpayPlanId: 'plan_Tl3xvlBWfEOOik',
     name: 'Pro Monthly',
-    amount: 30000, // ₹300/month
+    amount: 29900, // ₹299/month
     currency: 'INR',
     interval: 'month',
     description: 'Full access to all features',
