@@ -3,6 +3,7 @@
 
 export interface Plan {
   id: string;
+  razorpayPlanId?: string;
   name: string;
   amount: number; // Amount in paise (INR * 100)
   currency: string;
@@ -32,8 +33,9 @@ export const plans: Plan[] = [
   },
   {
     id: 'pro-monthly',
+    razorpayPlanId: 'plan_Tl3xvlBWfEOOik',
     name: 'Pro Monthly',
-    amount: 29900, // ₹299/month
+    amount: 30000, // ₹300/month
     currency: 'INR',
     interval: 'month',
     description: 'Full access to all features',
@@ -50,6 +52,7 @@ export const plans: Plan[] = [
   },
   {
     id: 'pro-yearly',
+    razorpayPlanId: 'plan_Tl3xvlBWfEOOik',
     name: 'Pro Yearly',
     amount: 299900, // ₹2,999/year
     currency: 'INR',
