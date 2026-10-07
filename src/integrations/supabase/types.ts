@@ -116,6 +116,60 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          cancelled_at: string | null
+          charge_at: string | null
+          created_at: string
+          current_end: string | null
+          current_start: string | null
+          id: string
+          is_trial: boolean
+          plan_id: string
+          razorpay_plan_id: string
+          razorpay_subscription_id: string
+          short_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          cancelled_at?: string | null
+          charge_at?: string | null
+          created_at?: string
+          current_end?: string | null
+          current_start?: string | null
+          id?: string
+          is_trial?: boolean
+          plan_id: string
+          razorpay_plan_id: string
+          razorpay_subscription_id: string
+          short_url?: string | null
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          cancelled_at?: string | null
+          charge_at?: string | null
+          created_at?: string
+          current_end?: string | null
+          current_start?: string | null
+          id?: string
+          is_trial?: boolean
+          plan_id?: string
+          razorpay_plan_id?: string
+          razorpay_subscription_id?: string
+          short_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -155,6 +209,51 @@ export type Database = {
           ends_at?: string
           started_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      webhook_events: {
+        Row: {
+          dedupe_key: string
+          detail: string | null
+          event_type: string | null
+          http_status: number | null
+          id: string
+          outcome: string
+          razorpay_event_id: string | null
+          razorpay_payment_id: string | null
+          razorpay_subscription_id: string | null
+          received_at: string
+          signature_present: boolean
+          signature_valid: boolean
+        }
+        Insert: {
+          dedupe_key: string
+          detail?: string | null
+          event_type?: string | null
+          http_status?: number | null
+          id?: string
+          outcome: string
+          razorpay_event_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_subscription_id?: string | null
+          received_at?: string
+          signature_present?: boolean
+          signature_valid?: boolean
+        }
+        Update: {
+          dedupe_key?: string
+          detail?: string | null
+          event_type?: string | null
+          http_status?: number | null
+          id?: string
+          outcome?: string
+          razorpay_event_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_subscription_id?: string | null
+          received_at?: string
+          signature_present?: boolean
+          signature_valid?: boolean
         }
         Relationships: []
       }
