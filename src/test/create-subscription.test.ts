@@ -144,7 +144,7 @@ describe('createSubscription', () => {
   it('prices from the server catalog for the requested plan', async () => {
     const res = await createSubscription(post({ planId: 'pro-yearly' }), 'u1', deps());
     const body = await res.json();
-    expect(body.amountPaise).toBe(699900);
+    expect(body.amountPaise).toBe(299900);
     expect(body.currency).toBe('INR');
     expect(body.planName).toBe('Pro');
     expect(body.interval).toBe('yearly');
@@ -159,7 +159,7 @@ describe('createSubscription', () => {
       d,
     );
     const body = await res.json();
-    expect(body.amountPaise).toBe(50100);
+    expect(body.amountPaise).toBe(29900);
     expect(body.currency).toBe('INR');
     expect(body.planName).toBe('Pro');
     expect(body.interval).toBe('monthly');

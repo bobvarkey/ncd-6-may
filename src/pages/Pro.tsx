@@ -87,7 +87,7 @@ export function ProFeaturesPage({ entitlement }: ProFeaturesPageProps) {
                 plan={{
                   id: 'pro-monthly',
                   name: 'Pro Monthly',
-                  amount: 50100,
+                  amount: 29900,
                   currency: 'INR',
                   interval: 'month',
                   description: 'Full access',

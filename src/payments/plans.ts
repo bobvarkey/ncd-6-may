@@ -33,7 +33,7 @@ export const plans: Plan[] = [
   {
     id: 'pro-monthly',
     name: 'Pro Monthly',
-    amount: 30000, // ₹300/month
+    amount: 29900, // ₹299/month
     currency: 'INR',
     interval: 'month',
     description: 'Full access to all features',
@@ -46,6 +46,19 @@ export const plans: Plan[] = [
       'Priority updates'
     ],
     popular: true,
+    trialDays: 3
+  },
+  {
+    id: 'pro-yearly',
+    name: 'Pro Yearly',
+    amount: 299900, // ₹2,999/year
+    currency: 'INR',
+    interval: 'year',
+    description: 'Full access to all features, billed yearly',
+    features: [
+      'Everything in Pro Monthly',
+      'Best value'
+    ],
     trialDays: 3
   }
 ];

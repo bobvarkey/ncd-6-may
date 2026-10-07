@@ -95,7 +95,7 @@ describe("Subscription billing card", () => {
     // The raw Razorpay slug is a state enum, not copy.
     expect(screen.queryByText("authenticated")).not.toBeInTheDocument();
     expect(screen.getByText("Awaiting first charge")).toBeInTheDocument();
-    expect(screen.getByText("₹501/mo")).toBeInTheDocument();
+    expect(screen.getByText("₹299/mo")).toBeInTheDocument();
     expect(document.body.textContent).not.toMatch(PLACEHOLDERS);
   });
 

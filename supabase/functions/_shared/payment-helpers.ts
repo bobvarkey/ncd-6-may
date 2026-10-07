@@ -62,8 +62,8 @@ export interface PlanDef {
  */
 export const PLAN_CATALOG: PlanDef[] = [
   { id: 'basic-monthly', name: 'Basic', amountPaise: 29900, currency: 'INR', interval: 'monthly', trialDays: 3 },
-  { id: 'pro-monthly',   name: 'Pro',   amountPaise: 50100, currency: 'INR', interval: 'monthly', trialDays: 3 },
-  { id: 'pro-yearly',    name: 'Pro',   amountPaise: 699900, currency: 'INR', interval: 'yearly', trialDays: 3 },
+  { id: 'pro-monthly',   name: 'Pro',   amountPaise: 29900, currency: 'INR', interval: 'monthly', trialDays: 3 },
+  { id: 'pro-yearly',    name: 'Pro',   amountPaise: 299900, currency: 'INR', interval: 'yearly', trialDays: 3 },
 ];
 
 const RAZORPAY_PLAN_ID_SECRET: Record<string, string> = {
