@@ -71,7 +71,12 @@ export async function createSubscription(
     body: { action: 'create-subscription', planId, trial: opts.trial === true },
   });
   if (error || !data?.subscriptionId) {
-    return { success: false, error: data?.error || error?.message || 'Failed to create subscription' };
+    let message = data?.error;
+    if (!message && error?.context instanceof Response) {
+      const payload = await error.context.clone().json().catch(() => null);
+      if (typeof payload?.error === 'string') message = payload.error;
+    }
+    return { success: false, error: message || error?.message || 'Failed to create subscription' };
   }
   return { success: true, ...data };
 }
@@ -133,12 +138,13 @@ export async function openSubscriptionCheckout(
   if (!created.success || !created.subscriptionId || !created.keyId) {
     throw new Error(created.error || 'Failed to create subscription');
   }
+  const { keyId, subscriptionId } = created;
 
   return new Promise((resolve) => {
     const razorpay = new window.Razorpay({
       ...buildCheckoutOptions({
-        keyId: created.keyId!,
-        subscriptionId: created.subscriptionId!,
+        keyId,
+        subscriptionId,
         planName: created.planName ?? 'Pro',
         prefill: opts.userInfo,
       }),

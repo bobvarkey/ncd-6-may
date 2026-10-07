@@ -65,8 +65,50 @@ describe('createSubscription', () => {
       getLiveSubscriptionForUser: async () => ({ razorpay_subscription_id: 'sub_LIVE' }),
     });
     const res = await createSubscription(post({ planId: 'pro-monthly' }), 'u1', d);
-    expect(res.status).toBe(409);
+    expect(res.status).toBe(200);
+    expect((await res.json()).code).toBe('EXISTING_SUBSCRIPTION');
     expect(d.fetchFn).not.toHaveBeenCalled();
+  });
+
+  it('resumes an unfinished matching checkout after checking Razorpay, without binding another subscription', async () => {
+    const d = deps({
+      getLiveSubscriptionForUser: async () => ({
+        user_id: 'u1', status: 'created', plan_id: 'pro-yearly', is_trial: false,
+        razorpay_subscription_id: 'sub_EXISTING', razorpay_plan_id: 'plan_PROYEARLY',
+      }),
+      fetchFn: vi.fn(async () => new Response(JSON.stringify({
+        id: 'sub_EXISTING', plan_id: 'plan_PROYEARLY', status: 'created',
+      }))),
+    });
+    const res = await createSubscription(post({ planId: 'pro-yearly' }), 'u1', d);
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ subscriptionId: 'sub_EXISTING', resumed: true, keyId: 'rzp_test_KEY' });
+    expect(d.bound).toHaveLength(0);
+    expect(d.fetchFn).toHaveBeenCalledWith(expect.stringContaining('/sub_EXISTING'), expect.objectContaining({ headers: expect.any(Object) }));
+  });
+
+  it('does not reuse a pending checkout for different trial terms', async () => {
+    const d = deps({ getLiveSubscriptionForUser: async () => ({
+      status: 'created', plan_id: 'pro-yearly', is_trial: false, razorpay_subscription_id: 'sub_EXISTING',
+    }) });
+    const res = await createSubscription(post({ planId: 'pro-yearly', trial: true }), 'u1', d);
+    expect((await res.json()).code).toBe('EXISTING_SUBSCRIPTION');
+    expect(d.fetchFn).not.toHaveBeenCalled();
+    expect(d.bound).toHaveLength(0);
+  });
+
+  it('does not reopen checkout when the provider says it is already active', async () => {
+    const d = deps({
+      getLiveSubscriptionForUser: async () => ({ status: 'created', plan_id: 'pro-yearly', is_trial: false,
+        razorpay_subscription_id: 'sub_EXISTING', razorpay_plan_id: 'plan_PROYEARLY' }),
+      fetchFn: vi.fn(async () => new Response(JSON.stringify({
+        id: 'sub_EXISTING', plan_id: 'plan_PROYEARLY', status: 'active',
+      }))),
+    });
+    const body = await (await createSubscription(post({ planId: 'pro-yearly' }), 'u1', d)).json();
+    expect(body.code).toBe('EXISTING_SUBSCRIPTION');
+    expect(body.subscriptionId).toBeUndefined();
+    expect(d.bound).toHaveLength(0);
   });
 
   it('refuses the trial when it was already consumed, and says so (Review Focus 2)', async () => {
