@@ -112,10 +112,47 @@ export async function createSubscription(
     return errRes(502, `Subscription lookup failed: ${(e as Error).message}`);
   }
   if (existing) {
+    // `created` means checkout was opened, not that paid access was granted.
+    // Resume only the same terms, and confirm the provider still permits checkout.
+    if (existing.status === 'created' && existing.plan_id === plan.id &&
+        existing.is_trial === (body.trial === true && plan.trialDays > 0)) {
+      let entity: RazorpaySubscriptionEntity;
+      try {
+        const response = await deps.fetchFn(
+          `https://api.razorpay.com/v1/subscriptions/${encodeURIComponent(existing.razorpay_subscription_id)}`,
+          { headers: { Authorization: auth } },
+        );
+        if (!response.ok) return errRes(502, 'Unable to resume checkout. Please try again later.');
+        entity = await response.json();
+      } catch {
+        return errRes(502, 'Unable to resume checkout. Please try again later.');
+      }
+      if (entity.id !== existing.razorpay_subscription_id || entity.plan_id !== existing.razorpay_plan_id) {
+        return errRes(502, 'Subscription details could not be verified.');
+      }
+      if (entity.status === 'created') {
+        return jsonRes({
+          subscriptionId: existing.razorpay_subscription_id,
+          keyId: getSecret('RAZORPAY_KEY_ID'),
+          planId: plan.id,
+          planName: plan.name,
+          amountPaise: plan.amountPaise,
+          currency: plan.currency,
+          interval: plan.interval,
+          isTrial: existing.is_trial,
+          firstChargeAt: existing.is_trial ? ts(entity.start_at) ?? existing.charge_at : null,
+          resumed: true,
+        });
+      }
+    }
+    // A normal account state is not a crashed function. Do not expose a checkout
+    // id for already-authorised subscriptions or silently change pending terms.
     return jsonRes({
-      error: 'You already have an active subscription',
-      subscriptionId: existing.razorpay_subscription_id,
-    }, 409);
+      error: existing.status === 'created'
+        ? 'You have an unfinished subscription. Resume with the same plan and trial option, or manage it on Account & Subscription.'
+        : 'You already have a subscription. Review it on Account & Subscription instead of starting another.',
+      code: 'EXISTING_SUBSCRIPTION',
+    });
   }
 
   const wantsTrial = body.trial === true && plan.trialDays > 0;
