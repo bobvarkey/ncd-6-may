@@ -125,7 +125,7 @@ export default function Subscription() {
           <CardTitle className="flex flex-wrap items-center gap-2"><Crown className="h-5 w-5 text-primary" />Your access
             <Badge>{privileged ? "Developer" : paidActive ? "Pro – Active" : trialActive ? "Free trial" : "No active access"}</Badge>
           </CardTitle>
-          <CardDescription>Clinical Tools Pro — ₹501/month or ₹6,999/year</CardDescription>
+          <CardDescription>Clinical Tools Pro — ₹299/month or ₹2,999/year</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           {privileged && <p className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" />Developer access is active.</p>}
