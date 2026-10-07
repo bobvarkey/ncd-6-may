@@ -102,6 +102,13 @@ export default defineConfig(({ mode }) => {
     ].filter(Boolean),
     resolve: {
       alias: { "@": path.resolve(__dirname, "./src") },
+      // Hooks and the renderer must share one React instance, including linked dependencies.
+      dedupe: ["react", "react-dom"],
+    },
+    optimizeDeps: {
+      // Prebundle every React entry together rather than discovering a second
+      // runtime during lazy-route loading or a hot update.
+      include: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime"],
     },
     define: {
       "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(supabaseUrl),
