@@ -79,6 +79,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     const userId = userData.user.id;
 
+    // A lookup can already be in flight when the session changes hands — a
+    // restore swaps it silently — so its answer belongs to an account that no
+    // longer holds the session. Refusing the write covers what dropping the
+    // value at swap time cannot: a response that arrives after that moment.
+    const stillOwner = () => accessOwnerRef.current === userId;
+
     // Developer Whitelist Bypass: If the user is a developer, grant immediate access
     console.log("[AuthProvider] Checking developer access for ID:", userId);
     if (isDeveloper(userId)) {
@@ -92,6 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         status: "active",
         validUntil: null,
       };
+      if (!stillOwner()) return;
       cacheVerifiedAccess(userId, devAccess);
       setAccess(devAccess);
       return;
@@ -101,15 +108,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const verified = await invokeAccess("access-status");
+      if (!stillOwner()) return;
       cacheVerifiedAccess(userId, verified);
       setAccess(verified);
     } catch (error) {
       const cached = readVerifiedAccessCache(userId);
-      if (cached) {
-        setAccess(cached);
-        return;
-      }
-      throw error;
+      if (!cached) throw error;
+      // Discarded without a write and without rethrowing: the owner changed, so
+      // neither this value nor this failure is the new session's to hear about.
+      if (!stillOwner()) return;
+      setAccess(cached);
     }
   }, []);
 

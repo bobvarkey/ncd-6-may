@@ -184,4 +184,45 @@ describe("verified access cache", () => {
     });
     await waitFor(() => expect(screen.getByTestId("access")).toHaveTextContent("false"));
   });
+
+  it("never lets a previous account's in-flight lookup land after a swap", async () => {
+    // Clearing at swap time is not enough: a lookup for A that is already past
+    // its own getUser() when B takes the session resolves afterwards and writes
+    // A's value into state under B's identity. The plan's contract is absolute —
+    // access is null or belongs to the account holding the session — so the
+    // write itself has to be refused, not just the stale value cleared earlier.
+    renderProvider();
+    await waitFor(() => expect(screen.getByTestId("loading")).toHaveTextContent("false"));
+
+    // A's lookup starts and is held open, the state a slow payment-api leaves.
+    sb.getUser.mockResolvedValue({ data: { user: sessionFor(USER_A).user } });
+    let answerA: (value: unknown) => void = () => {};
+    sb.invoke.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          answerA = resolve;
+        }),
+    );
+
+    await emitSession(USER_A);
+
+    // B takes the session while A's answer is still in flight.
+    sb.getUser.mockResolvedValue({ data: { user: sessionFor(USER_B).user } });
+    sb.invoke.mockResolvedValue({
+      data: privileged({ role: "user", access: false, planId: null, status: null }),
+      error: null,
+    });
+
+    await emitSession(USER_B);
+    await waitFor(() => expect(screen.getByTestId("access")).toHaveTextContent("false"));
+
+    // A's answer arrives last. It belongs to an account that no longer holds
+    // the session, so it must not be written.
+    await act(async () => {
+      answerA({ data: privileged(), error: null });
+    });
+
+    expect(screen.getByTestId("role")).toHaveTextContent("user");
+    expect(screen.getByTestId("access")).toHaveTextContent("false");
+  });
 });
