@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { isDeveloper } from "@/lib/developer-access";
@@ -26,13 +26,16 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 const ACCESS_CACHE_KEY = "clinical-tools-verified-access";
 const PRIVILEGED_CACHE_MS = 24 * 60 * 60 * 1000;
 
-type CachedAccess = { checkedAt: number; value: AccountAccess };
+type CachedAccess = { userId: string; checkedAt: number; value: AccountAccess };
 
-function readVerifiedAccessCache(): AccountAccess | null {
+function readVerifiedAccessCache(userId: string): AccountAccess | null {
   if (typeof window === "undefined") return null;
   try {
     const cached = JSON.parse(window.localStorage.getItem(ACCESS_CACHE_KEY) ?? "null") as CachedAccess | null;
     if (!cached?.value.access) return null;
+    // The cache holds one account's access. Serving it to a different account
+    // would render the previous user's Pro state under the new identity.
+    if (cached.userId !== userId) return null;
     const now = Date.now();
     if (cached.value.role !== "user") {
       return now - cached.checkedAt <= PRIVILEGED_CACHE_MS ? cached.value : null;
@@ -44,9 +47,12 @@ function readVerifiedAccessCache(): AccountAccess | null {
   }
 }
 
-function cacheVerifiedAccess(value: AccountAccess) {
+function cacheVerifiedAccess(userId: string, value: AccountAccess) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(ACCESS_CACHE_KEY, JSON.stringify({ checkedAt: Date.now(), value } satisfies CachedAccess));
+  window.localStorage.setItem(
+    ACCESS_CACHE_KEY,
+    JSON.stringify({ userId, checkedAt: Date.now(), value } satisfies CachedAccess),
+  );
 }
 
 const invokeAccess = async (action: "access-status") => {
@@ -60,6 +66,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [access, setAccess] = useState<AccountAccess | null>(null);
+  // Whose access is in `access`. A session can change hands without a sign-out —
+  // a restore swaps it silently — so the previous account's access has to be
+  // dropped rather than carried into the new one.
+  const accessOwnerRef = useRef<string | null>(null);
 
   const refreshAccess = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
@@ -67,11 +77,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAccess(null);
       return;
     }
+    const userId = userData.user.id;
 
     // Developer Whitelist Bypass: If the user is a developer, grant immediate access
-    console.log("[AuthProvider] Checking developer access for ID:", userData.user.id);
-    if (isDeveloper(userData.user.id)) {
-      console.log("[AuthProvider] Developer access GRANTED for ID:", userData.user.id);
+    console.log("[AuthProvider] Checking developer access for ID:", userId);
+    if (isDeveloper(userId)) {
+      console.log("[AuthProvider] Developer access GRANTED for ID:", userId);
       const devAccess: AccountAccess = {
         access: true,
         role: "developer",
@@ -81,19 +92,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         status: "active",
         validUntil: null,
       };
-      cacheVerifiedAccess(devAccess);
+      cacheVerifiedAccess(userId, devAccess);
       setAccess(devAccess);
       return;
     } else {
-      console.log("[AuthProvider] Developer access DENIED for ID:", userData.user.id);
+      console.log("[AuthProvider] Developer access DENIED for ID:", userId);
     }
 
     try {
       const verified = await invokeAccess("access-status");
-      cacheVerifiedAccess(verified);
+      cacheVerifiedAccess(userId, verified);
       setAccess(verified);
     } catch (error) {
-      const cached = readVerifiedAccessCache();
+      const cached = readVerifiedAccessCache(userId);
       if (cached) {
         setAccess(cached);
         return;
@@ -107,6 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const initialize = async () => {
       const { data } = await supabase.auth.getSession();
       if (!active) return;
+      accessOwnerRef.current = data.session?.user.id ?? null;
       setSession(data.session);
       if (data.session) {
         try { await refreshAccess(); } catch { setAccess(null); }
@@ -116,8 +128,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void initialize();
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
-      if (!nextSession) setAccess(null);
-      else setTimeout(() => void refreshAccess(), 0);
+      const nextUserId = nextSession?.user.id ?? null;
+      if (accessOwnerRef.current !== nextUserId) {
+        setAccess(null);
+        accessOwnerRef.current = nextUserId;
+      }
+      if (!nextSession) return;
+      setTimeout(() => void refreshAccess(), 0);
     });
     return () => {
       active = false;
@@ -128,6 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     window.localStorage.removeItem(ACCESS_CACHE_KEY);
+    accessOwnerRef.current = null;
     setAccess(null);
   }, []);
 
