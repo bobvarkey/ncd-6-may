@@ -51,17 +51,17 @@ was deliberate, and widening or narrowing it silently would have been the wrong 
 when you flip the flag. If Settings is not a paid surface, add it to the allowlist in
 `src/App.tsx`.
 
-### 1.3 Prices are hardcoded in two places on the billing page
+### 1.3 Prices come from one catalog (resolved)
 
-`src/pages/Subscription.tsx:116` and `:130` render the price as literal strings
-(`₹501/month ($4.99)` and `Pay ₹501/month`). `src/payments/plans.ts` is the catalog and the single
-source every other surface reads through `formatAmount(plan)`; the pro-monthly entry already
-carries `amount: 50100`. Both strings are **correct today**.
+This used to be a limitation. It no longer is. `src/payments/plans.ts` is the display catalog, and
+the billing page's header sentence is now built from it (`PRO_PRICE_LINE` in
+`src/pages/Subscription.tsx`) rather than written out as a literal string, so the two cannot drift.
 
-The hazard is future: change the price in `plans.ts` and the catalog, Checkout, and the webhook
-all move together while the billing page keeps quoting the old number. Render
-`formatAmount(proPlan)` instead, and decide whether the `($4.99)` USD hint stays — no plan field
-carries it, so it either becomes a field or it goes.
+The prices, matching both the display catalog and the server catalog in
+`supabase/functions/_shared/payment-helpers.ts`, are **₹299/month** and **₹2,999/year** (29900 and
+299900 paise). An earlier revision of this document quoted `₹501/month ($4.99)` and
+`amount: 50100`; neither matches the code, and the `($4.99)` USD hint does not exist anywhere in
+the repo.
 
 ### 1.4 The trial latch can answer `502` after it has already granted access
 

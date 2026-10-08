@@ -17,6 +17,12 @@ import {
 
 const fmt = (value: string) => new Date(value).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
 
+// Built from the catalog so this sentence can never drift from the price we charge.
+const PRO_PRICE_LINE = plans
+  .filter((plan) => plan.id === "pro-monthly" || plan.id === "pro-yearly")
+  .map(formatAmount)
+  .join(" or ");
+
 // Razorpay subscription statuses are a state enum; "halted" means nothing to a
 // clinician. Unknown values fall through so a future status still renders.
 const STATUS_LABELS: Record<string, string> = {
@@ -125,7 +131,7 @@ export default function Subscription() {
           <CardTitle className="flex flex-wrap items-center gap-2"><Crown className="h-5 w-5 text-primary" />Your access
             <Badge>{privileged ? "Developer" : paidActive ? "Pro – Active" : trialActive ? "Free trial" : "No active access"}</Badge>
           </CardTitle>
-          <CardDescription>Clinical Tools Pro — ₹299/month or ₹2,999/year</CardDescription>
+          <CardDescription>Clinical Tools Pro — {PRO_PRICE_LINE}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           {privileged && <p className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" />Developer access is active.</p>}

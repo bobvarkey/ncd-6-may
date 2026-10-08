@@ -37,8 +37,8 @@ All six are **operator-supplied**. Do not paste values into chat, frontend code,
 | `RAZORPAY_KEY_SECRET` | Razorpay key secret | Same Test Mode key pair as above |
 | `RAZORPAY_WEBHOOK_SECRET` | Signing secret for the webhook endpoint | Razorpay Dashboard → the webhook endpoint's secret |
 | `RAZORPAY_PLAN_ID_BASIC_MONTHLY` | Plan id for Basic, ₹299/month | Test-mode plan created under the same key pair |
-| `RAZORPAY_PLAN_ID_PRO_MONTHLY` | Plan id for Pro, ₹501/month | Test-mode plan created under the same key pair |
-| `RAZORPAY_PLAN_ID_PRO_YEARLY` | Plan id for Pro, ₹6,999/year | Test-mode plan created under the same key pair |
+| `RAZORPAY_PLAN_ID_PRO_MONTHLY` | Plan id for Pro, ₹299/month | Test-mode plan created under the same key pair |
+| `RAZORPAY_PLAN_ID_PRO_YEARLY` | Plan id for Pro, ₹2,999/year | Test-mode plan created under the same key pair |
 
 Notes:
 
@@ -47,7 +47,7 @@ Notes:
 - Live plans have **different** ids from test plans. Replacing the three plan-id secrets
   with the live plan ids, together with the key pair, **is the entire go-live change** —
   there is no code change (spec decisions D2, D7).
-- The catalog amounts above (₹299/mo, ₹501/mo, ₹6,999/yr) and the 3-day trial live in the
+- The catalog amounts above (₹299/mo, ₹2,999/yr) and the 3-day trial live in the
   server catalog (`supabase/functions/_shared/payment-helpers.ts`), not in the secrets.
   The browser cannot name a price; it names only an internal plan id.
 - `RAZORPAY_KEY_ID` is the public key id Checkout needs, but it is returned by the
