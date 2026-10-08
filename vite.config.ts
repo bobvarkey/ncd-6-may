@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, loadEnv, type HmrContext } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
@@ -30,8 +30,20 @@ export default defineConfig(({ mode }) => {
       host: "::",
       port: 8080,
       hmr: { overlay: false },
+      headers: { "Cache-Control": "no-store" },
     },
     plugins: [
+      // Preview updates must replace the entire module graph, not retain hooks
+      // from an earlier optimized React graph in the browser's module map.
+      mode === "development" && {
+        name: "atomic-preview-reload",
+        enforce: "pre" as const,
+        handleHotUpdate(context: HmrContext) {
+          if (!context.file.includes("/src/")) return;
+          context.server.ws.send({ type: "full-reload", path: "*" });
+          return [];
+        },
+      },
       react(),
       mode === "development" && componentTagger(),
       analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "stats.html" }),
@@ -102,6 +114,30 @@ export default defineConfig(({ mode }) => {
     ].filter(Boolean),
     resolve: {
       alias: { "@": path.resolve(__dirname, "./src") },
+      // Hooks and the renderer must share one React instance, including linked dependencies.
+      dedupe: ["react", "react-dom"],
+    },
+    optimizeDeps: {
+      // Keep the optimizer graph fixed: discovering dependencies after a hot
+      // update changes shared chunk URLs and can split React's dispatcher.
+      noDiscovery: true,
+      include: [
+        "react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime",
+        "@hookform/resolvers/zod", "@lovable.dev/cloud-auth-js", "@supabase/supabase-js",
+        "@tanstack/react-query", "@radix-ui/react-accordion", "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-aspect-ratio", "@radix-ui/react-avatar", "@radix-ui/react-checkbox",
+        "@radix-ui/react-collapsible", "@radix-ui/react-context-menu", "@radix-ui/react-dialog",
+        "@radix-ui/react-dropdown-menu", "@radix-ui/react-hover-card", "@radix-ui/react-label",
+        "@radix-ui/react-navigation-menu", "@radix-ui/react-popover",
+        "@radix-ui/react-progress", "@radix-ui/react-radio-group", "@radix-ui/react-scroll-area",
+        "@radix-ui/react-select", "@radix-ui/react-separator", "@radix-ui/react-slider",
+        "@radix-ui/react-slot", "@radix-ui/react-switch", "@radix-ui/react-tabs",
+        "@radix-ui/react-toast", "@radix-ui/react-toggle", "@radix-ui/react-toggle-group",
+        "@radix-ui/react-tooltip", "class-variance-authority", "clsx", "cmdk", "date-fns",
+        "dexie", "html2canvas", "jspdf", "lucide-react", "mermaid", "next-themes",
+        "react-day-picker", "react-helmet-async", "react-hook-form", "react-resizable-panels",
+        "react-router-dom", "recharts", "sonner", "tailwind-merge", "tesseract.js", "vaul", "zod",
+      ],
     },
     define: {
       "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(supabaseUrl),

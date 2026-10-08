@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check, Crown, Sparkles, Loader2, Zap } from 'lucide-react';
 import { openSubscriptionCheckout, formatAmount, plans } from '@/payments';
@@ -82,13 +82,13 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-card border border-border max-w-md p-0 overflow-hidden">
+      <DialogContent aria-describedby={undefined} className="bg-card border border-border max-w-md p-0 overflow-hidden max-h-[90dvh] overflow-y-auto">
         {/* Header with gradient */}
         <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-6 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4">
             <Crown className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-1">NCD-6-May Pro</h2>
+          <DialogTitle className="text-2xl font-bold text-white mb-1">NCD-6-May Pro</DialogTitle>
           <p className="text-white/80 text-sm">Clinical Decision Support</p>
         </div>
 
@@ -150,8 +150,11 @@ export default function PaywallModal({ open, onOpenChange, onStartTrial }: Paywa
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            <div role="alert" className="p-3 bg-destructive/10 border border-destructive rounded-lg">
+              <p className="text-sm text-foreground">{error}</p>
+              <Button variant="link" onClick={() => { onOpenChange(false); navigate('/subscription'); }}>
+                Account &amp; Subscription
+              </Button>
             </div>
           )}
 
