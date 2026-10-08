@@ -30,8 +30,20 @@ export default defineConfig(({ mode }) => {
       host: "::",
       port: 8080,
       hmr: { overlay: false },
+      headers: { "Cache-Control": "no-store" },
     },
     plugins: [
+      // Preview updates must replace the entire module graph, not retain hooks
+      // from an earlier optimized React graph in the browser's module map.
+      mode === "development" && {
+        name: "atomic-preview-reload",
+        enforce: "pre" as const,
+        handleHotUpdate(context) {
+          if (!context.file.includes("/src/")) return;
+          context.server.ws.send({ type: "full-reload", path: "*" });
+          return [];
+        },
+      },
       react(),
       mode === "development" && componentTagger(),
       analyzeBundle && visualizer({ open: false, gzipSize: true, brotliSize: true, filename: "stats.html" }),

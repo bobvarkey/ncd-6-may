@@ -8,3 +8,4 @@
 - Production builds provide a checked-in fallback for the public Lovable Cloud URL and publishable client key so missing build-time environment injection cannot blank the app; private credentials remain server-only.
 - Offline app-shell caching is opt-in and uses one generated service worker registered only by the guarded offline wrapper, preventing stale preview caches and competing registrations.
 - Vite deduplicates React and React DOM and uses an explicit dependency prebundle with automatic discovery disabled; add new browser dependencies to that list so lazy routes and hot updates cannot replace shared React runtime chunks mid-session.
+- Development source updates reload the entire preview and development responses are not cached, because preserving an old browser module graph across optimized dependency generations can split React's hook dispatcher; production behavior is unchanged.
