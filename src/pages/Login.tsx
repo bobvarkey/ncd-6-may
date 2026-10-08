@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Loader2, LogIn, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RestoreAccess } from "@/components/RestoreAccess";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +22,7 @@ export default function Login() {
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState(false);
   const next = new URLSearchParams(location.search).get("next");
   const safeNext = next?.startsWith("/") && !next.startsWith("//") ? next : "/subscription";
 
@@ -88,18 +90,29 @@ export default function Login() {
           <CardDescription>Your trial and Pro access stay with your account across devices.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button type="button" variant="outline" className="w-full" onClick={() => void googleSignIn()} disabled={busy}>Continue with Google</Button>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or use email<span className="h-px flex-1 bg-border" /></div>
-          <form className="space-y-4" onSubmit={submit}>
-            {mode === "signup" && <div className="space-y-2"><Label htmlFor="display-name">Display name</Label><Input id="display-name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={80} autoComplete="name" /></div>}
-            <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" /></div>
-            <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} minLength={8} required autoComplete={mode === "signin" ? "current-password" : "new-password"} /></div>
-            {message && <p role="status" className="rounded-md border border-border bg-muted p-3 text-sm text-foreground">{message}</p>}
-            <Button className="w-full" disabled={busy}>{busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogIn className="mr-2 h-4 w-4" />}{mode === "signin" ? "Sign in" : "Create account"}</Button>
-          </form>
-          <Button type="button" variant="ghost" className="w-full" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMessage(null); }}>
-            {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
-          </Button>
+          {restoring ? (
+            <RestoreAccess onCancel={() => setRestoring(false)} />
+          ) : (
+            <>
+              <Button type="button" variant="outline" className="w-full" onClick={() => void googleSignIn()} disabled={busy}>Continue with Google</Button>
+              <div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or use email<span className="h-px flex-1 bg-border" /></div>
+              <form className="space-y-4" onSubmit={submit}>
+                {mode === "signup" && <div className="space-y-2"><Label htmlFor="display-name">Display name</Label><Input id="display-name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={80} autoComplete="name" /></div>}
+                <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" /></div>
+                <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} minLength={8} required autoComplete={mode === "signin" ? "current-password" : "new-password"} /></div>
+                {message && <p role="status" className="rounded-md border border-border bg-muted p-3 text-sm text-foreground">{message}</p>}
+                <Button className="w-full" disabled={busy}>{busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogIn className="mr-2 h-4 w-4" />}{mode === "signin" ? "Sign in" : "Create account"}</Button>
+              </form>
+              <Button type="button" variant="ghost" className="w-full" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMessage(null); }}>
+                {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
+              </Button>
+              {mode === "signin" && (
+                <Button type="button" variant="ghost" className="w-full" onClick={() => setRestoring(true)}>
+                  Sign in with an email code
+                </Button>
+              )}
+            </>
+          )}
         </CardContent>
       </Card>
     </main>
