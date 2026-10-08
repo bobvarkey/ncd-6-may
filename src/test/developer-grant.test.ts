@@ -145,6 +145,29 @@ describe('forwarded actions never carry a body-supplied userId', () => {
 });
 
 describe('access-status', () => {
+  it.each([undefined, null, '', 'invalid-date'])('denies paid access with an unusable expiry: %s', async (validUntil) => {
+    const { res } = await run(
+      { action: 'access-status' },
+      { readAccess: async () => ({
+        trial: null,
+        entitlement: { status: 'active', valid_until: validUntil },
+      }) },
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).access).toBe(false);
+  });
+
+  it('grants paid access with a future expiry', async () => {
+    const { res } = await run(
+      { action: 'access-status' },
+      { readAccess: async () => ({
+        trial: null,
+        entitlement: { status: 'active', valid_until: new Date(Date.now() + 86_400_000).toISOString() },
+      }) },
+    );
+    expect((await res.json()).access).toBe(true);
+  });
+
   it('still honours an in-flight legacy instant trial (no entitlement row)', async () => {
     const endsAt = new Date(Date.now() + 86_400_000).toISOString();
     const { res } = await run(
