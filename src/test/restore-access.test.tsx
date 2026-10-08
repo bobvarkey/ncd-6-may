@@ -210,4 +210,18 @@ describe("the component's boundaries", () => {
     // the cheapest way to keep that true as the file changes.
     expect(restoreSource).not.toMatch(/useAuth|refreshAccess|useNavigate|next=/);
   });
+
+  it("does not cap the code field before its own sanitizer can run", () => {
+    // Review Focus 2's formatted paste, which jsdom structurally cannot catch:
+    // fireEvent.change assigns input.value directly, and a browser's maxlength
+    // truncation applies only to user-inserted text. With maxlength="6" a real
+    // browser turns a pasted "123-456" into "123-45" *before* onChange runs, so
+    // the sanitizer never sees the dash, the field stops one digit short, and
+    // the Sign-in button stays disabled. onCodeChange already caps the value at
+    // six digits with .slice(0, 6), so the attribute is the only thing that can
+    // break the paste. Asserting the attribute's absence is all jsdom can check;
+    // the paste itself still wants one hand check in a browser. The match is on
+    // the JSX attribute specifically, so the comment recording this can name it.
+    expect(restoreSource).not.toMatch(/maxLength=\{/);
+  });
 });

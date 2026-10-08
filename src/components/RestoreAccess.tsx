@@ -159,7 +159,10 @@ export function RestoreAccess({ onCancel }: { onCancel?: () => void }) {
           onChange={(event) => onCodeChange(event.target.value)}
           inputMode="numeric"
           autoComplete="one-time-code"
-          maxLength={6}
+          // No maxLength: the browser applies it to a paste before React's
+          // onChange runs, so a pasted "123-456" would arrive as "123-45" and
+          // the sanitizer below would never see the dash. onCodeChange caps the
+          // value at six digits itself.
           autoFocus
           className="text-center font-mono text-lg tracking-[0.4em]"
         />
