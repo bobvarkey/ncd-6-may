@@ -5,3 +5,4 @@
 - [x] Consolidate installability and offline caching into one preview-safe PWA flow.
 - [x] Enforce account access after the three-day trial and offer monthly/yearly subscriptions.
 - [x] Resume unfinished account-owned Razorpay checkout without duplicate subscriptions; verify recovery and error states.
+- [x] Stabilize React dependency URLs across lazy navigation and hot updates; verify signed-in subscription rendering, protected-route redirects, and three live updates without hook crashes.
