@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Fix the nullable subscription-expiry compilation error and verify access regressions and signed-in subscription rendering.
+- [x] Fix the nullable subscription-expiry compilation error; 18 regression tests passed, signed-in subscription rendered without runtime errors, and the automatic build reported build OK.
 
 - [x] Adult Vaccinations: keep existing 6-vaccine co-administration schedule; add a second 8-vaccine schedule (Influenza, COVID-19, Shingrix, Tdap/Td, Hep A, PCV20, Hep B, RSV) with the user-provided 4-site layout, Visit 2 (Month 1–2) and Visit 3 (Month 6), important notes, and practical caveats.
 - [x] Store supplied Razorpay test credentials securely and complete account-based checkout.
