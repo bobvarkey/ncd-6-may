@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, loadEnv, type HmrContext } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
       mode === "development" && {
         name: "atomic-preview-reload",
         enforce: "pre" as const,
-        handleHotUpdate(context) {
+        handleHotUpdate(context: HmrContext) {
           if (!context.file.includes("/src/")) return;
           context.server.ws.send({ type: "full-reload", path: "*" });
           return [];
