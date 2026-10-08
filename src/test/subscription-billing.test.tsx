@@ -155,3 +155,56 @@ describe("Subscription billing card", () => {
     );
   });
 });
+
+describe("the restore entry on /subscription", () => {
+  it("is offered when the account has no access, and opens the code flow", async () => {
+    payment.fetchBillingStatus.mockResolvedValue(null);
+
+    renderPage();
+    await waitFor(() => expect(payment.fetchBillingStatus).toHaveBeenCalled());
+
+    fireEvent.click(screen.getByRole("button", { name: /restore access/i }));
+
+    expect(screen.getByLabelText(/^email$/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /email me a code/i })).toBeInTheDocument();
+    // No "Back to sign-in" here: the host's toggle is the way back.
+    expect(screen.queryByRole("button", { name: /back to sign-in/i })).not.toBeInTheDocument();
+  });
+
+  it("closes again from the same control", async () => {
+    payment.fetchBillingStatus.mockResolvedValue(null);
+
+    renderPage();
+    await waitFor(() => expect(payment.fetchBillingStatus).toHaveBeenCalled());
+
+    fireEvent.click(screen.getByRole("button", { name: /restore access/i }));
+    fireEvent.click(screen.getByRole("button", { name: /hide restore/i }));
+
+    expect(screen.queryByLabelText(/^email$/i)).not.toBeInTheDocument();
+  });
+
+  it("is not offered once access exists, which leaves nothing to restore", async () => {
+    // The page's own gate is `!access?.access` (`Subscription.tsx:166`), so that
+    // one field is all this fixture needs. Keep it minimal: the hoisted type in
+    // this file is `{ access: boolean } | null`, and widening it is churn in
+    // someone else's test file for no gain.
+    authState.current.access = { access: true };
+    payment.fetchBillingStatus.mockResolvedValue(null);
+
+    renderPage();
+    await waitFor(() => expect(payment.fetchBillingStatus).toHaveBeenCalled());
+
+    expect(screen.queryByRole("button", { name: /restore access/i })).not.toBeInTheDocument();
+  });
+
+  it("still tells a signed-in account with no access where to get some", async () => {
+    // The state a restore lands in when the paying account it belongs to has no
+    // plan or trial. The user has to be told, not left at a silent paywall.
+    payment.fetchBillingStatus.mockResolvedValue(null);
+
+    renderPage();
+    await waitFor(() => expect(payment.fetchBillingStatus).toHaveBeenCalled());
+
+    expect(screen.getByText(/choose a free three-day trial or pay now/i)).toBeInTheDocument();
+  });
+});

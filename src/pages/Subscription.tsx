@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { CalendarClock, Copy, Crown, LogIn, LogOut, ShieldCheck } from "lucide-react";
+import { CalendarClock, Copy, Crown, LogIn, LogOut, MailCheck, ShieldCheck } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RestoreAccess } from "@/components/RestoreAccess";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/auth/AuthProvider";
@@ -46,6 +47,7 @@ export default function Subscription() {
   const [billing, setBilling] = useState<BillingStatus | null>(null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -164,9 +166,35 @@ export default function Subscription() {
       )}
 
       {!access?.access && (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {!access?.trialStartedAt && <Button variant="outline" onClick={() => openPaywall()}>Start free 3-day trial</Button>}
-          <Button onClick={() => openPaywall()}>View monthly &amp; yearly plans</Button>
+        <div className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {!access?.trialStartedAt && <Button variant="outline" onClick={() => openPaywall()}>Start free 3-day trial</Button>}
+            <Button onClick={() => openPaywall()}>View monthly &amp; yearly plans</Button>
+          </div>
+          {/* The trigger stays visible while the flow is open, so it is also the
+              way back. That is why the flow is mounted here without onCancel. */}
+          <Button
+            variant="outline"
+            className="w-full"
+            aria-expanded={restoring}
+            onClick={() => setRestoring((open) => !open)}
+          >
+            <MailCheck className="mr-2 h-4 w-4" />
+            {restoring ? "Hide restore" : "Restore access"}
+          </Button>
+          {restoring && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Restore access</CardTitle>
+                <CardDescription>
+                  Already subscribed? Sign in as the account that pays, using a one-time code.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RestoreAccess />
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
 
