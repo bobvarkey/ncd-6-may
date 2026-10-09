@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import {
   Activity,
   Syringe,
@@ -722,9 +723,9 @@ export default function Type1TreatmentAlgorithm() {
         ))}
       </div>
 
-      {activeTab === "algorithm" && <Type1Algorithm />}
-      {activeTab === "glp1" && <GLP1InT1DMPanel />}
-      {activeTab === "checklist" && <ManagementChecklist />}
+      {activeTab === "algorithm" && <ExportableTabPanel title="Treatment Algorithm"><Type1Algorithm /></ExportableTabPanel>}
+      {activeTab === "glp1" && <ExportableTabPanel title="Adjunct Therapies"><GLP1InT1DMPanel /></ExportableTabPanel>}
+      {activeTab === "checklist" && <ExportableTabPanel title="Checklist"><ManagementChecklist /></ExportableTabPanel>}
     </div>
   );
 }

@@ -408,15 +408,12 @@ const App = () => {
           <Route path="/glp1-screening" element={withNav(<Glp1Screening />, "GLP-1 Screening")} />
           <Route
             path="/glp1-prescreen"
-            element={
-              <RequireAccess>
-                <PageShell title="GLP-1 Pre-Initiation Screener">
-                  <div className="max-w-4xl mx-auto px-4 py-6">
-                    <GLP1PreInitiationScreenerCalc />
-                  </div>
-                </PageShell>
-              </RequireAccess>
-            }
+            element={withNav(
+              <div className="max-w-4xl mx-auto px-4 py-6">
+                <GLP1PreInitiationScreenerCalc />
+              </div>,
+              "GLP-1 Pre-Initiation Screener"
+            )}
           />
           <Route path="/obesity/glp1-screener" element={withNav(<GLP1ScreenerCalc />, "GLP-1 Screener")} />
           <Route path="/drug-schedule" element={withNav(<DrugSchedule />, "Drug Schedule")} />

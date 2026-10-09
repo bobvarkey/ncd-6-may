@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -364,7 +365,7 @@ export default function HypertensionClinicalCards() {
 
       {/* ───── CARD 1: SECONDARY HTN ───── */}
       {activeCard === "secondary" && (
-        <div className="space-y-5">
+        <ExportableTabPanel title="Secondary HTN Workup" className="space-y-5">
           {/* BP Classification */}
           <Card className="border-border/50">
             <CardHeader className="pb-2">
@@ -489,12 +490,12 @@ export default function HypertensionClinicalCards() {
 
           {/* Cushing's — 1 mg overnight DST interpretation */}
           <DstInterpretationPanel />
-        </div>
+        </ExportableTabPanel>
       )}
 
       {/* ───── CARD 2: TREATMENT GUIDE ───── */}
       {activeCard === "treatment" && (
-        <div className="space-y-5">
+        <ExportableTabPanel title="Treatment Guide" className="space-y-5">
           {/* Combination Therapy */}
           <Card className="border-border/50">
             <CardHeader className="pb-2">
@@ -607,12 +608,12 @@ export default function HypertensionClinicalCards() {
               </Table>
             </CardContent>
           </Card>
-        </div>
+        </ExportableTabPanel>
       )}
 
       {/* ───── CARD 3: HYPERTENSIVE EMERGENCIES ───── */}
       {activeCard === "emergencies" && (
-        <div className="space-y-5">
+        <ExportableTabPanel title="Hypertensive Emergencies" className="space-y-5">
           <p className="text-xs text-muted-foreground">
             Scenario-specific management algorithms for acute hypertensive crises with timelines, BP targets, preferred drugs, and agents to avoid.
           </p>
@@ -675,7 +676,7 @@ export default function HypertensionClinicalCards() {
               </Card>
             ))}
           </div>
-        </div>
+        </ExportableTabPanel>
       )}
     </div>
   );

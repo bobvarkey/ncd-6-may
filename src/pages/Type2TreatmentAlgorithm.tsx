@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";;
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import {
   Activity,
   Syringe,
@@ -531,10 +532,10 @@ export default function Type2TreatmentAlgorithm() {
         ))}
       </div>
 
-      {activeTab === "algorithm" && <Type2Algorithm />}
-      {activeTab === "guide" && <TherapySelectionGuide />}
-      {activeTab === "deescalate" && <DeescalationGuide />}
-      {activeTab === "checklist" && <ManagementChecklist />}
+      {activeTab === "algorithm" && <ExportableTabPanel title="Treatment Algorithm"><Type2Algorithm /></ExportableTabPanel>}
+      {activeTab === "guide" && <ExportableTabPanel title="HbA1c-Based Selection"><TherapySelectionGuide /></ExportableTabPanel>}
+      {activeTab === "deescalate" && <ExportableTabPanel title="De-escalation"><DeescalationGuide /></ExportableTabPanel>}
+      {activeTab === "checklist" && <ExportableTabPanel title="Checklist"><ManagementChecklist /></ExportableTabPanel>}
     </div>
   );
 }

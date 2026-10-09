@@ -35,6 +35,7 @@ import {
 import { copyToClipboard, formatClinicalNote, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
+import { ExportableTabPanel } from "@/components/ResultExport";
 
 // ── Types ──────────────────────────────────────────────────────
 type TabKey = "calculator" | "reference";
@@ -682,7 +683,7 @@ export default function IronReplacementCalculator() {
 
       <main className="mx-auto max-w-4xl px-4 py-4 space-y-4">
         {activeTab === "calculator" && (
-          <>
+          <ExportableTabPanel title="Calculator">
             {/* Disclaimer */}
             <div className="flex items-start gap-3 bg-amber-900/20 border border-amber-800/50 rounded-xl px-4 py-3 text-sm text-amber-300">
               <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" />
@@ -1148,12 +1149,12 @@ export default function IronReplacementCalculator() {
                 )}
               </div>
             )}
-          </>
+          </ExportableTabPanel>
         )}
 
         {/* ── Reference Tab ──────────────────────────────── */}
         {activeTab === "reference" && (
-          <div className="space-y-4">
+          <ExportableTabPanel title="Reference" className="space-y-4">
             <Card className="clinical-card">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
@@ -1385,7 +1386,7 @@ export default function IronReplacementCalculator() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </ExportableTabPanel>
         )}
       </main>
     </div>

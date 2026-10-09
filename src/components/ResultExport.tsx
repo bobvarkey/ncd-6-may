@@ -50,3 +50,27 @@ export function ClinicalExportScope({ title, children }: { title: string; childr
     </ClinicalExportContext.Provider>
   );
 }
+
+/**
+ * Wraps a conditionally-rendered panel on pages with custom (non-Radix) tab
+ * strips, injecting the Copy/Download bar when inside a ClinicalExportScope —
+ * the per-panel counterpart to the Radix TabsContent injection.
+ */
+export function ExportableTabPanel({
+  title,
+  className,
+  children,
+}: {
+  title?: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  const inScope = useClinicalExport();
+  const localRef = useRef<HTMLDivElement>(null);
+  return (
+    <div ref={localRef} className={className}>
+      {inScope && <ResultExport getRoot={() => localRef.current} title={title} />}
+      {children}
+    </div>
+  );
+}

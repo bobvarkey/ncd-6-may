@@ -33,6 +33,7 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
+import { ExportableTabPanel } from "@/components/ResultExport";
 
 interface GLP1Drug {
   name: string;
@@ -252,7 +253,7 @@ export default function GLP1ObesityAlgorithm() {
 
       <main className="mx-auto max-w-4xl px-4 py-5 space-y-6">
         {activeTab === "algorithm" && (
-        <>
+        <ExportableTabPanel title="Algorithm">
         {/* Patient Profile Input */}
         <Card className="clinical-card border-primary/20">
           <CardHeader>
@@ -553,11 +554,11 @@ export default function GLP1ObesityAlgorithm() {
             </ul>
           </CardContent>
         </Card>
-        </>
+        </ExportableTabPanel>
         )}
 
         {activeTab === "drugs" && (
-          <div className="space-y-6">
+          <ExportableTabPanel title="Drug Comparison" className="space-y-6">
             <Card className="clinical-card">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -644,11 +645,11 @@ export default function GLP1ObesityAlgorithm() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </ExportableTabPanel>
         )}
 
         {activeTab === "monitoring" && (
-          <div className="space-y-6">
+          <ExportableTabPanel title="Monitoring" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="clinical-card">
                 <CardHeader>
@@ -733,7 +734,7 @@ export default function GLP1ObesityAlgorithm() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </ExportableTabPanel>
         )}
       </main>
 
