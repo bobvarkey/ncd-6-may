@@ -4,7 +4,7 @@ export function collectResultText(root: HTMLElement): string {
   const visit = (node: Node): string => {
     if (node.nodeType === Node.TEXT_NODE) return node.textContent?.replace(/\s+/g, " ") ?? "";
     if (!(node instanceof HTMLElement)) return "";
-    if (node.matches('[data-result-export-controls], [data-result-export-exclude], button, [role="button"], [role="tablist"], nav, script, style, svg, [hidden], [aria-hidden="true"], [data-state="inactive"][role="tabpanel"], .sr-only')) return "";
+    if (node.matches('[data-result-export-controls], [data-result-export-exclude], [role="tablist"], nav, script, style, svg, [hidden], [aria-hidden="true"], [data-state="inactive"][role="tabpanel"], .sr-only')) return "";
     const style = window.getComputedStyle(node);
     if (style.display === "none" || style.visibility === "hidden") return "";
     if (node instanceof HTMLInputElement) {
@@ -15,12 +15,14 @@ export function collectResultText(root: HTMLElement): string {
     }
     if (node instanceof HTMLTextAreaElement || node instanceof HTMLSelectElement) {
       const label = node.labels?.[0]?.textContent?.trim() || node.getAttribute("aria-label") || node.name;
-      const value = node instanceof HTMLSelectElement ? Array.from(node.selectedOptions).map(option => option.text).join(", ") : node.value;
+      const value = node instanceof HTMLSelectElement ? Array.from(node.options).filter(option => option.selected).map(option => option.text).join(", ") : node.value;
       return value ? `\n${label ? `${label}: ` : ""}${value}\n` : "";
     }
     if (node.getAttribute("role") === "checkbox" || node.getAttribute("role") === "switch") {
       return ` ${node.getAttribute("aria-checked") === "true" ? "Yes" : "No"} `;
     }
+    if (node.getAttribute("role") === "combobox") return ` ${node.textContent?.trim() ?? ""} `;
+    if (node.matches('button, [role="button"]')) return "";
     if (node.tagName === "BR") return "\n";
     const text = Array.from(node.childNodes).map(visit).join("");
     if (node.tagName === "TD" || node.tagName === "TH") return `${text.trim()}\t`;
