@@ -22,6 +22,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, Link 
 import { ArrowLeft, Home as HomeIcon, UserRound } from "lucide-react";
 import { useAuth } from "@/auth/AuthProvider";
 import { LabAutoCalculator } from "@/components/LabAutoCalculator";
+import { ClinicalExportScope } from "@/components/ResultExport";
 
 const moduleLoadErrorPattern = /Importing a module script failed|Failed to fetch dynamically imported module|error loading dynamically imported module|Load failed|Loading chunk \d+ failed/i;
 const moduleReloadKey = "ncd-module-script-reloaded";
@@ -260,13 +261,13 @@ const AppHeader = ({ title }: { title: string }) => {
   );
 };
 
-const PageShell = ({ title, children }: { title: string; children: ReactNode }) => {
+const PageShell = ({ title, children, exportResults = false }: { title: string; children: ReactNode; exportResults?: boolean }) => {
   return (
     <div className="min-h-screen flex flex-col w-full min-w-0 overflow-x-clip">
       <AppHeader title={title} />
       <main className="flex-1 overflow-y-auto overflow-x-clip p-4 md:p-6 max-w-4xl mx-auto w-full min-w-0">
         <LabAutoCalculator />
-        {children}
+        {exportResults ? <ClinicalExportScope title={title}>{children}</ClinicalExportScope> : children}
       </main>
     </div>
   );
@@ -274,7 +275,7 @@ const PageShell = ({ title, children }: { title: string; children: ReactNode }) 
 
 const withNav = (element: ReactNode, title: string) => (
   <RequireAccess>
-    <PageShell title={title}>{element}</PageShell>
+    <PageShell title={title} exportResults>{element}</PageShell>
   </RequireAccess>
 );
 
