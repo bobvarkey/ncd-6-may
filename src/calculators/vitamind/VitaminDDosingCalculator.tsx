@@ -297,7 +297,7 @@ export default function VitaminDDosingCalculator() {
       },
       recommendations: result.specialNotes,
     });
-    downloadTextFile(note, `vitamin-d-plan-${Date.now()}.txt`);
+    downloadTextFile(`vitamin-d-plan-${Date.now()}.txt`, note);
   };
 
   return (

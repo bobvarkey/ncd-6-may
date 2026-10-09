@@ -3,6 +3,7 @@ import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { ResultExport, useClinicalExport } from "@/components/ResultExport";
 
 const Accordion = AccordionPrimitive.Root;
 
@@ -37,15 +38,26 @@ AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
 const AccordionContent = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => {
+  const localRef = React.useRef<HTMLDivElement | null>(null);
+  const clinicalExport = useClinicalExport();
+  return (
   <AccordionPrimitive.Content
-    ref={ref}
+    ref={(node) => {
+      localRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    }}
     className="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
     {...props}
   >
-    <div className={cn("pb-4 pt-0", className)}>{children}</div>
+    <div className={cn("pb-4 pt-0", className)}>
+      {clinicalExport && <ResultExport getRoot={() => localRef.current} />}
+      {children}
+    </div>
   </AccordionPrimitive.Content>
-));
+  );
+});
 
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
