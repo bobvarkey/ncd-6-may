@@ -15,7 +15,9 @@ export function collectResultText(root: HTMLElement): string {
     }
     if (node instanceof HTMLTextAreaElement || node instanceof HTMLSelectElement) {
       const label = node.labels?.[0]?.textContent?.trim() || node.getAttribute("aria-label") || node.name;
-      const value = node instanceof HTMLSelectElement ? Array.from(node.options).filter(option => option.selected).map(option => option.text).join(", ") : node.value;
+      const value = node instanceof HTMLSelectElement
+        ? (node.multiple ? Array.from(node.options).filter(option => option.selected).map(option => option.text).join(", ") : node.options[node.selectedIndex]?.text ?? "")
+        : node.value;
       return value ? `\n${label ? `${label}: ` : ""}${value}\n` : "";
     }
     if (node.getAttribute("role") === "checkbox" || node.getAttribute("role") === "switch") {
