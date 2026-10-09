@@ -1,6 +1,7 @@
 # Roadmap
 
-- [ ] Add shared Copy results and Download TXT controls to all clinical tabs and standalone tools; verify current values, tab isolation, and downloads.
+- [x] Add shared Copy results and Download TXT controls to all clinical tabs and standalone tools; test current values, tab isolation, and downloads.
+- [ ] Complete signed-in browser export verification: the requesting account has no active clinical access and redirects to subscription; requires an account with active trial, Pro, or developer access.
 
 - [x] Fix the nullable subscription-expiry compilation error; 18 regression tests passed, signed-in subscription rendered without runtime errors, and the automatic build reported build OK.
 
