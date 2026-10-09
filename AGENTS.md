@@ -1,6 +1,6 @@
 # Architecture decisions
 
-- Clinical exports are scoped at the clinical page wrapper and shared tab panels; capture current visible content at click time so custom tabs, inputs, and computed results stay synchronized without changing calculator logic or exposing inactive panels.
+- Clinical exports are scoped at the clinical page wrapper and shared tab, accordion, and collapsible panels; capture current visible content at click time so custom tabs, inputs, and computed results stay synchronized without changing calculator logic or exposing inactive panels.
 
 - Account access is server-authoritative: trials, roles, orders, and entitlements use the verified Lovable Cloud user ID, never browser storage or caller-provided IDs, because access must follow users securely across devices.
 - Razorpay prices are resolved from the server-side plan catalogue and payment signatures are verified server-side before access is granted, preventing client price or entitlement tampering.
