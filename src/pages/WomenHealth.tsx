@@ -8,6 +8,7 @@ import { Stethoscope, FlaskConical, Activity, Scan, ClipboardList,
 , Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
+import { ExportableTabPanel } from "@/components/ResultExport";
 
 /* ============================ PMOS TAB ============================ */
 
@@ -1031,7 +1032,15 @@ export default function WomenHealth() {
         </div>
       </div>
 
-      {activeTab === "pmos" ? <PmosTab /> : <HrtAlgorithm />}
+      {activeTab === "pmos" ? (
+        <ExportableTabPanel title="PMOS / PCOS">
+          <PmosTab />
+        </ExportableTabPanel>
+      ) : (
+        <ExportableTabPanel title="HRT Algorithm">
+          <HrtAlgorithm />
+        </ExportableTabPanel>
+      )}
     </div>
   );
 }

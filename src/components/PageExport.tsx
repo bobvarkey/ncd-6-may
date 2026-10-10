@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Copy, Download, X } from "lucide-react";
+import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
 
 type ExportContent = {
   title: string;
@@ -40,29 +41,24 @@ export function PageExport({ content, filename }: PageExportProps) {
     return text;
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(generateText());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    if (await copyToClipboard(generateText(), "Results copied")) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const handleDownload = () => {
-    const blob = new Blob([generateText()], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${filename || "clinical-notes"}-${new Date().toISOString().split("T")[0]}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadTextFile(`${filename || "clinical-notes"}-${new Date().toISOString().split("T")[0]}.txt`, generateText());
   };
 
   return (
     <div className="flex gap-2">
-      <Button variant="outline" size="sm" onClick={handleCopy}>
+      <Button type="button" variant="outline" size="sm" onClick={handleCopy}>
         <Copy className="h-4 w-4 mr-1" />
         {copied ? "Copied!" : "Copy"}
       </Button>
-      <Button variant="outline" size="sm" onClick={handleDownload}>
+      <Button type="button" variant="outline" size="sm" onClick={handleDownload}>
         <Download className="h-4 w-4 mr-1" />
         Download
       </Button>

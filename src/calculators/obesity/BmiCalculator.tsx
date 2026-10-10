@@ -47,6 +47,7 @@ import {
   type ObesityCDSAssessment,
 } from "./obesity-cds-engine";
 import IcmrIndiab from "./IcmrIndiab";
+import { ExportableTabPanel } from "@/components/ResultExport";
 
 const bmiSchema = z.object({
   height: z.coerce.number().min(30).max(300).describe("Height"),
@@ -387,7 +388,7 @@ export default function BmiCalculator() {
 
       <main className="mx-auto w-full max-w-2xl px-4 py-6 space-y-6">
         {activeTab === "calculator" && (
-          <>
+          <ExportableTabPanel title="Calculator">
             <Card className="clinical-card border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -1082,13 +1083,17 @@ export default function BmiCalculator() {
                 <IcmrIndiab />
               </div>
             )}
-          </>
+          </ExportableTabPanel>
         )}
 
-        {activeTab === "icmr-indiab" && <IcmrIndiab />}
+        {activeTab === "icmr-indiab" && (
+          <ExportableTabPanel title="ICMR / INDIAB">
+            <IcmrIndiab />
+          </ExportableTabPanel>
+        )}
 
         {activeTab === "indian-classification" && (
-          <>
+          <ExportableTabPanel title="Indian Classification">
             {/* ─── ICMR (Asian Indian) BMI Classification ─── */}
             <Card className="clinical-card border-amber-500/30">
               <CardHeader className="pb-3">
@@ -1608,11 +1613,11 @@ export default function BmiCalculator() {
                 )}
               </CardContent>
             </Card>
-          </>
+          </ExportableTabPanel>
         )}
 
         {activeTab === "cds-engine" && (
-          <>
+          <ExportableTabPanel title="CDS Engine">
             <Card className="clinical-card border-violet-500/30">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -1865,10 +1870,11 @@ export default function BmiCalculator() {
                 )}
               </CardContent>
             </Card>
-          </>
+          </ExportableTabPanel>
         )}
 
         {activeTab === "guidelines" && (
+          <ExportableTabPanel title="ADA 2025 Guidelines">
           <Card className="clinical-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -1903,6 +1909,7 @@ export default function BmiCalculator() {
               </p>
             </CardContent>
           </Card>
+          </ExportableTabPanel>
         )}
       </main>
 

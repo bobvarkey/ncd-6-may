@@ -17,6 +17,7 @@ import Anticoagulants from './anemia/components/Anticoagulants';
 import Erythrocytosis from './anemia/components/Erythrocytosis';
 import { Microscope, AlertTriangle } from 'lucide-react';
 import { headerTabClass, headerTabListClass } from '@/lib/header-tabs';
+import { ExportableTabPanel } from "@/components/ResultExport";
 import TestSuggestionAlgorithm from './anemia/components/TestSuggestionAlgorithm';
 
 const EMPTY_CBC: CBCValues = { hgb: '', rbc: '', mcv: '', mch: '', mchc: '', rdw: '', hct: '' };
@@ -126,7 +127,7 @@ export default function Anemia() {
 
 
         {activeTab === 'anemia' ? (
-          <>
+          <ExportableTabPanel title="Anemia Evaluator">
             {/* Input form */}
             <CBCForm
               values={cbc}
@@ -278,24 +279,34 @@ export default function Anemia() {
 
             {/* Next Test Algorithm */}
             <TestSuggestionAlgorithm />
-          </>
+          </ExportableTabPanel>
         ) : activeTab === 'iron' ? (
-          <>
+          <ExportableTabPanel title="Iron Calculator">
             <IronStudiesCombined />
             <IronTherapy />
-          </>
+          </ExportableTabPanel>
 
         ) : activeTab === 'bleeding-clotting' ? (
-          <BleedingClottingEvaluator />
+          <ExportableTabPanel title="Bleeding / Clotting">
+            <BleedingClottingEvaluator />
+          </ExportableTabPanel>
         ) : activeTab === 'esr' ? (
 
-          <ESRInterpretation />
+          <ExportableTabPanel title="ESR">
+            <ESRInterpretation />
+          </ExportableTabPanel>
         ) : activeTab === 'anticoagulants' ? (
-          <Anticoagulants />
+          <ExportableTabPanel title="Anticoagulants">
+            <Anticoagulants />
+          </ExportableTabPanel>
         ) : activeTab === 'erythrocytosis' ? (
-          <Erythrocytosis />
+          <ExportableTabPanel title="Erythrocytosis / PV">
+            <Erythrocytosis />
+          </ExportableTabPanel>
         ) : (
-          <ThrombocytopeniaEvaluator />
+          <ExportableTabPanel title="Thrombocytopenia">
+            <ThrombocytopeniaEvaluator />
+          </ExportableTabPanel>
         )}
       </main>
     </div>

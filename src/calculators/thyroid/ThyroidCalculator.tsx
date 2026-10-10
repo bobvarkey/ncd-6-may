@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
 import ImageLink from "@/components/ImageLink";
+import { ExportableTabPanel } from "@/components/ResultExport";
 
 type TabKey = "calculator" | "reference" | "about";
 
@@ -376,7 +377,7 @@ export default function ThyroidCalculator() {
 
       <main className="mx-auto max-w-4xl px-4 py-5 space-y-6">
         {activeTab === "calculator" && (
-          <>
+          <ExportableTabPanel title="Calculator">
             {/* Disclaimer */}
             <div className="flex items-start gap-3 bg-amber-900/20 border border-amber-800/50 rounded-xl px-4 py-3 text-sm text-amber-300">
               <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" />
@@ -617,12 +618,12 @@ export default function ThyroidCalculator() {
                 </Card>
               </div>
             )}
-          </>
+          </ExportableTabPanel>
         )}
 
         {/* ── Reference Tab ── */}
         {activeTab === "reference" && (
-          <div className="space-y-6">
+          <ExportableTabPanel title="Reference" className="space-y-6">
             <Card className="clinical-card">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
@@ -693,11 +694,12 @@ export default function ThyroidCalculator() {
                 </p>
               </CardContent>
             </Card>
-          </div>
+          </ExportableTabPanel>
         )}
 
         {/* ── About Tab ── */}
         {activeTab === "about" && (
+          <ExportableTabPanel title="About">
           <Card className="clinical-card">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
@@ -720,6 +722,7 @@ export default function ThyroidCalculator() {
               </div>
             </CardContent>
           </Card>
+          </ExportableTabPanel>
         )}
       </main>
     </div>

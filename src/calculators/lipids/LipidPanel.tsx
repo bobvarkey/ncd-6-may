@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import ImageLink from "@/components/ImageLink";
 import ZoomableImage from "@/components/ZoomableImage";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import {
   LabInput,
   UNITS_CHOL, UNITS_APOB, UNITS_LPA, UNITS_HBA1C, UNITS_HSCRP,
@@ -758,17 +759,15 @@ export default function LipidCalculator() {
         </div>
       </div>
 
-      {/* ─── Hero Image ─── */}
       {activeTab === "calculator" && (
-        <div className="w-full overflow-hidden" style={{ maxHeight: "220px" }}>
-          <ZoomableImage src={heroDoctorImg} alt="Cardiovascular care" className="w-full object-cover object-top" style={{ maxHeight: "220px" }} />
-        </div>
-      )}
+        <ExportableTabPanel title="Calculator">
+          {/* ─── Hero Image ─── */}
+          <div className="w-full overflow-hidden" style={{ maxHeight: "220px" }}>
+            <ZoomableImage src={heroDoctorImg} alt="Cardiovascular care" className="w-full object-cover object-top" style={{ maxHeight: "220px" }} />
+          </div>
 
-
-      {/* ─── Content ─── */}
-      <div className="mx-auto max-w-2xl px-4 py-5">
-        {activeTab === "calculator" && (
+          {/* ─── Content ─── */}
+          <div className="mx-auto max-w-2xl px-4 py-5">
           <div className="space-y-3">
             {/* ── Primary / Secondary Prevention switch ── */}
             <div className={`no-print rounded-xl border-2 p-1 shadow-sm transition-colors ${
@@ -1808,14 +1807,25 @@ export default function LipidCalculator() {
               </div>
             </Section>
           </div>
-        )}
 
-        {activeTab === "education" && <EducationSection />}
+          <p className="mt-8 text-center text-xs text-muted-foreground pb-6">
+            Reference: 2026 ACC/AHA Guideline on Management of Dyslipidemia · LAI 2023 Consensus IV
+          </p>
+          </div>
+        </ExportableTabPanel>
+      )}
 
-        <p className="mt-8 text-center text-xs text-muted-foreground pb-6">
-          Reference: 2026 ACC/AHA Guideline on Management of Dyslipidemia · LAI 2023 Consensus IV
-        </p>
-      </div>
+      {activeTab === "education" && (
+        <ExportableTabPanel title="Education">
+          <div className="mx-auto max-w-2xl px-4 py-5">
+            <EducationSection />
+
+            <p className="mt-8 text-center text-xs text-muted-foreground pb-6">
+              Reference: 2026 ACC/AHA Guideline on Management of Dyslipidemia · LAI 2023 Consensus IV
+            </p>
+          </div>
+        </ExportableTabPanel>
+      )}
     </div>
   );
 }

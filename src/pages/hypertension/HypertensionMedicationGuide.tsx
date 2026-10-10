@@ -5,6 +5,7 @@ import { Heart, AlertTriangle, ChevronDown, ChevronRight, Stethoscope, Search, X
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import mraPocketCard from "@/assets/mra-pocket-card.jpg.asset.json";
 
 /** Extract frequency tag from a dose range string like "8–16 mg OD" -> "OD" */
@@ -521,7 +522,7 @@ export default function HypertensionMedicationGuide() {
       </div>
 
       {activeTab === "classes" && (
-        <div className="space-y-4">
+        <ExportableTabPanel title="Drug Classes" className="space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
@@ -722,10 +723,11 @@ export default function HypertensionMedicationGuide() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </ExportableTabPanel>
       )}
 
       {activeTab === "dosing" && (
+        <ExportableTabPanel title="Dosing Guide">
         <Card className="clinical-card">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
@@ -788,9 +790,11 @@ export default function HypertensionMedicationGuide() {
             </div>
           </CardContent>
         </Card>
+        </ExportableTabPanel>
       )}
 
       {activeTab === "algorithm" && (
+        <ExportableTabPanel title="By Comorbidity">
         <Card className="clinical-card">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
@@ -844,9 +848,11 @@ export default function HypertensionMedicationGuide() {
             </div>
           </CardContent>
         </Card>
+        </ExportableTabPanel>
       )}
 
       {activeTab === "interactions" && (
+        <ExportableTabPanel title="Drug Interactions">
         <Card className="clinical-card">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
@@ -887,6 +893,7 @@ export default function HypertensionMedicationGuide() {
               ))}
             </div>          </CardContent>
         </Card>
+        </ExportableTabPanel>
       )}
     </div>
   );

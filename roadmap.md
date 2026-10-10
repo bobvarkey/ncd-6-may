@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Add shared Copy results and Download TXT controls to all clinical tabs and standalone tools; test current values, tab isolation, and downloads.
+- [ ] Complete signed-in browser export verification: the requesting account has no active clinical access and redirects to subscription; requires an account with active trial, Pro, or developer access.
+
+- [x] Fix the nullable subscription-expiry compilation error; 18 regression tests passed, signed-in subscription rendered without runtime errors, and the automatic build reported build OK.
+
 - [x] Adult Vaccinations: keep existing 6-vaccine co-administration schedule; add a second 8-vaccine schedule (Influenza, COVID-19, Shingrix, Tdap/Td, Hep A, PCV20, Hep B, RSV) with the user-provided 4-site layout, Visit 2 (Month 1–2) and Visit 3 (Month 6), important notes, and practical caveats.
 - [x] Store supplied Razorpay test credentials securely and complete account-based checkout.
 - [x] Consolidate installability and offline caching into one preview-safe PWA flow.

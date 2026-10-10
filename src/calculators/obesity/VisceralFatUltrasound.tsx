@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calculator, Info, RotateCcw, Activity, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -110,7 +111,7 @@ export default function VisceralFatUltrasound() {
         </div>
 
         {activeTab === "calculator" && (
-          <div className="mt-5 space-y-5">
+          <ExportableTabPanel title="Calculator" className="mt-5 space-y-5">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Measurements</CardTitle>
@@ -201,11 +202,11 @@ export default function VisceralFatUltrasound() {
                 </CardContent>
               </Card>
             )}
-          </div>
+          </ExportableTabPanel>
         )}
 
         {activeTab === "protocol" && (
-          <div className="mt-5 space-y-5">
+          <ExportableTabPanel title="Protocol" className="mt-5 space-y-5">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">How is the measurement conducted?</CardTitle>
@@ -236,7 +237,7 @@ export default function VisceralFatUltrasound() {
                 </Alert>
               </CardContent>
             </Card>
-          </div>
+          </ExportableTabPanel>
         )}
       </div>
     </div>

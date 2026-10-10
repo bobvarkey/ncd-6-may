@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { Badge } from "@/components/ui/badge";
 import { useLabContext } from "@/components/SmartLabelUpload/GlobalLabContext";
@@ -359,7 +360,7 @@ export default function ImageUploadAnalyzer() {
 
             {/* Image Upload Tab */}
             {activeTab === "image" && (
-              <div className="space-y-3">
+              <ExportableTabPanel title="Upload Image" className="space-y-3">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -441,12 +442,12 @@ export default function ImageUploadAnalyzer() {
                     </pre>
                   </details>
                 )}
-              </div>
+              </ExportableTabPanel>
             )}
 
             {/* Text Entry Tab */}
             {activeTab === "text" && (
-              <div className="space-y-3">
+              <ExportableTabPanel title="Paste Text" className="space-y-3">
                 <textarea
                   value={freeText}
                   onChange={(e) => setFreeText(e.target.value)}
@@ -480,7 +481,7 @@ BP 130/85`}
                     Clear
                   </Button>
                 </div>
-              </div>
+              </ExportableTabPanel>
             )}
 
             {/* ── Parsed Results + Analysis ── */}

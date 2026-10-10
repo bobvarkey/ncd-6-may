@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import ImageLink from "@/components/ImageLink";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 
@@ -1482,14 +1483,14 @@ export default function DiabetesTreatment() {
         ))}
       </div>
 
-      {activeTab === "algorithm" && <TreatmentAlgorithm />}
-      {activeTab === "glp1" && <GLP1AdministrationGuide />}
-      {activeTab === "insulin" && <InsulinGuide />}
-      {activeTab === "icodec" && <IcodecMiniApp />}
-      {activeTab === "drugs" && <DrugClassesComparison />}
-      {activeTab === "checklist" && <ManagementChecklist />}
-      {activeTab === "emergency" && <HyperglycemicEmergencySection />}
-      {activeTab === "ckd" && <CKDSafeDrugs />}
+      {activeTab === "algorithm" && <ExportableTabPanel title="Treatment Algorithm"><TreatmentAlgorithm /></ExportableTabPanel>}
+      {activeTab === "glp1" && <ExportableTabPanel title="GLP-1 Guide"><GLP1AdministrationGuide /></ExportableTabPanel>}
+      {activeTab === "insulin" && <ExportableTabPanel title="Insulin Guide"><InsulinGuide /></ExportableTabPanel>}
+      {activeTab === "icodec" && <ExportableTabPanel title="Icodec (Weekly)"><IcodecMiniApp /></ExportableTabPanel>}
+      {activeTab === "drugs" && <ExportableTabPanel title="Drug Classes"><DrugClassesComparison /></ExportableTabPanel>}
+      {activeTab === "checklist" && <ExportableTabPanel title="Care Checklist"><ManagementChecklist /></ExportableTabPanel>}
+      {activeTab === "emergency" && <ExportableTabPanel title="DKA/HHS Guide"><HyperglycemicEmergencySection /></ExportableTabPanel>}
+      {activeTab === "ckd" && <ExportableTabPanel title="CKD Safe Drugs"><CKDSafeDrugs /></ExportableTabPanel>}
       <TakeHomeMessage title="Diabetes Management Pearls" variant="info">
         →Metformin remains first-line unless contraindicated (eGFR &lt;30)
 

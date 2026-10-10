@@ -64,7 +64,10 @@ export async function handlePaymentApi(
     const entitlement = access.entitlement;
     const role = resolveRole(roles);
     const trialActive = Boolean(trial?.ends_at && new Date(trial.ends_at).getTime() > Date.now());
-    const paidActive = Boolean(entitlement?.status === 'active' && new Date(entitlement.valid_until).getTime() > Date.now());
+    const paidActive = Boolean(
+      entitlement?.status === 'active' && entitlement.valid_until &&
+      new Date(entitlement.valid_until).getTime() > Date.now()
+    );
     return jsonRes({
       access: role !== 'user' || trialActive || paidActive,
       role,

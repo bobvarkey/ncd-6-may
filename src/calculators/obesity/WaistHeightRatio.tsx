@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Ruler, Calculator, Info, ChevronDown, ChevronUp, Home, RotateCcw, Target, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ExportableTabPanel } from "@/components/ResultExport";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -144,6 +145,7 @@ export default function WaistHeightRatio() {
 
       <main className="mx-auto max-w-2xl px-4 py-5">
         {activeTab === "calculator" && (
+        <ExportableTabPanel title="Calculator">
         <Card className="clinical-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
@@ -343,10 +345,11 @@ export default function WaistHeightRatio() {
             )}
           </CardContent>
         </Card>
+        </ExportableTabPanel>
         )}
 
         {activeTab === "guidelines" && (
-          <div className="space-y-4">
+          <ExportableTabPanel title="Guidelines" className="space-y-4">
             <Card className="clinical-card border-primary/20">
               <CardHeader>
                 <CardTitle className="text-lg">WHtR Interpretation</CardTitle>
@@ -395,7 +398,7 @@ export default function WaistHeightRatio() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </ExportableTabPanel>
         )}
       </main>
     </div>
