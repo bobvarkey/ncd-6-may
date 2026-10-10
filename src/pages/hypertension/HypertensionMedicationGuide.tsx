@@ -5,7 +5,6 @@ import { Heart, AlertTriangle, ChevronDown, ChevronRight, Stethoscope, Search, X
 import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
-import ZoomableImage from "@/components/ZoomableImage";
 import mraPocketCard from "@/assets/mra-pocket-card.jpg.asset.json";
 
 /** Extract frequency tag from a dose range string like "8–16 mg OD" -> "OD" */
@@ -460,10 +459,9 @@ export default function HypertensionMedicationGuide() {
           <p className="text-sm text-muted-foreground">Choose the right beta-blocker for the right patient</p>
         </CardHeader>
         <CardContent className="p-3">
-          <ZoomableImage
-            src="/beta-blocker-selection.jpg"
-            alt="Beta-blocker selection by clinical phenotype"
-            caption="Beta-blockers are not interchangeable — choose based on patient's phenotype"
+          <ImageLink
+            imageId="beta-blocker-selection"
+            label="View Beta-Blocker Selection Guide →"
           />
         </CardContent>
       </Card>
@@ -655,11 +653,10 @@ export default function HypertensionMedicationGuide() {
                             <span className="text-xs font-medium text-muted-foreground">
                               MRA pocket card — steroidal vs nonsteroidal:
                             </span>
-                            <div className="mt-2 rounded-md overflow-hidden border border-border/60">
-                              <ZoomableImage
-                                src={mraPocketCard.url}
-                                alt="MRA pocket card — Spironolactone vs Eplerenone vs Finerenone"
-                                className="w-full h-auto"
+                            <div className="mt-2">
+                              <ImageLink
+                                imageId="mra-pocket-card"
+                                label="View MRA Pocket Card →"
                               />
                             </div>
                           </div>

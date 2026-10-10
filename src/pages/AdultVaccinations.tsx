@@ -12,7 +12,7 @@ import {
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
-import ZoomableImage from "@/components/ZoomableImage";
+import ImageLink from "@/components/ImageLink";
 import vaccinesLiveVsInactivatedAsset from "@/assets/vaccines-live-vs-inactivated.png.asset.json";
 
 // ══════════════════════════════════════════════
@@ -1072,10 +1072,9 @@ export default function AdultVaccinations() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ZoomableImage
-            src={vaccinesLiveVsInactivatedAsset.url}
-            alt="Live vs inactivated vaccines to consider before initiating immunosuppressive therapy"
-            className="w-full h-auto rounded-md"
+          <ImageLink
+            imageId="vaccines-live-vs-inactivated"
+            label="View Live vs Inactivated Vaccines Reference →"
           />
         </CardContent>
       </Card>

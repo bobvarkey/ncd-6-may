@@ -14,11 +14,11 @@ import {
   Copy,
   ClipboardList,
 } from "lucide-react";
-import ZoomableImage from "@/components/ZoomableImage";
+import ImageLink from "@/components/ImageLink";
 import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
-import definitionImg from "@/assets/constipation-definition-causes.png.asset.json";
-import managementImg from "@/assets/constipation-management.png.asset.json";
+
+
 
 const doodleCard =
   "relative rounded-2xl border-2 border-amber-800/30 bg-gradient-to-br from-amber-50/90 to-orange-50/80 p-4 shadow-sm";
@@ -278,11 +278,9 @@ export default function Constipation() {
             </div>
           </div>
         </div>
-        <ZoomableImage
-          src={definitionImg.url}
-          alt="Approach to constipation — definition and causes chart"
-          wrapperClassName="mt-2"
-          className="w-full rounded-xl border-2 border-amber-700/20"
+        <ImageLink
+          imageId="constipation-definition"
+          label="View Definition & Causes Chart →"
         />
       </CollapsibleSection>
 
@@ -359,11 +357,9 @@ export default function Constipation() {
             </tbody>
           </table>
         </div>
-        <ZoomableImage
-          src={managementImg.url}
-          alt="Management and treatment of constipation chart"
-          wrapperClassName="mt-2"
-          className="w-full rounded-xl border-2 border-amber-700/20"
+        <ImageLink
+          imageId="constipation-management"
+          label="View Management Chart →"
         />
       </CollapsibleSection>
 

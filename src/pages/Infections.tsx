@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import SeriousInfections from "./infections/SeriousInfections";
 import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
-import ZoomableImage from "@/components/ZoomableImage";
+import ImageLink from "@/components/ImageLink";
 import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
 
 function egfrBand(egfr: number): "normal" | "eGFR60_89" | "eGFR45_59" | "eGFR30_44" | "eGFR15_29" | "eGFRBelow15" {
@@ -748,11 +748,9 @@ export default function Infections() {
             Reference chart: gram-positive, gram-negative, and broad/mixed spectrum coverage with common examples.
           </p>
           <div className="rounded-md border border-border bg-muted/30 p-2">
-            <ZoomableImage
-              src={antibioticsSpectrum.url}
-              alt="Antibiotics by spectrum of activity — complete classification and examples"
-              className="w-full rounded-md"
-              wrapperClassName="rounded-md"
+            <ImageLink
+              imageId="antibiotics-spectrum"
+              label="View Antibiotics Spectrum in Gallery →"
             />
           </div>
         </section>

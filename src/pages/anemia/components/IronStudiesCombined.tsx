@@ -19,7 +19,7 @@ import {
   ganzoniDeficitMg,
   ganzoniDoseRecommendation,
 } from "@/lib/ganzoni";
-import ZoomableImage from "@/components/ZoomableImage";
+import ImageLink from "@/components/ImageLink";
 import ironProfileStory from "@/assets/iron-profile-story.png.asset.json";
 
 // ── Types ──────────────────────────────────────────────────────
@@ -1176,9 +1176,9 @@ export default function IronStudiesCombined() {
                     <ImageIcon className="h-3.5 w-3.5 text-primary" />
                     Iron profile patterns
                   </div>
-                  <ZoomableImage
-                    src={ironProfileStory.url}
-                    alt="Iron profile patterns comparing iron deficiency anaemia, anaemia of chronic disease and sideroblastic anaemia across serum iron, transferrin saturation, ferritin and TIBC"
+                  <ImageLink
+                    imageId="iron-profile-story"
+                    label="View in Image Gallery →"
                   />
                 </div>
               </ReadMore>

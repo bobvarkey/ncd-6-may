@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Download, FlaskConical, RotateCcw, ImageIcon } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
-import ZoomableImage from "@/components/ZoomableImage";
-import ironProfileStory from "@/assets/iron-profile-story.png.asset.json";
+import ImageLink from "@/components/ImageLink";
 
 
 type Category =
@@ -264,23 +263,13 @@ export default function IronInterpretation() {
           </Button>
         </div>
         <div className="rounded-lg border p-3 space-y-2">
-          <button
-            type="button"
-            onClick={() => zoomableImageRef.current?.openModal()}
-            className="text-xs font-semibold text-primary hover:underline flex items-center gap-1.5"
-          >
-            <ImageIcon className="h-3.5 w-3.5" />
-            Iron profile patterns — visual mnemonic
-          </button>
+          <ImageLink
+            imageId="iron-profile-story"
+            label="View Iron Profile Patterns in Gallery →"
+          />
           <p className="text-[11px] text-muted-foreground">
             IDA vs anaemia of chronic disease vs sideroblastic anaemia: serum iron, TSAT, ferritin and TIBC patterns.
           </p>
-          <ZoomableImage
-            ref={zoomableImageRef}
-            src={ironProfileStory.url}
-            alt="Iron profile patterns comparing iron deficiency anaemia, anaemia of chronic disease and sideroblastic anaemia across serum iron, transferrin saturation, ferritin and TIBC"
-            triggerType="none"
-          />
         </div>
         <p className="text-[11px] text-muted-foreground">
           Cut-offs: overload = ferritin &gt;300 µg/L + TSAT &gt;45%; absolute deficiency = ferritin &lt;{ferritinCut} µg/L; functional
