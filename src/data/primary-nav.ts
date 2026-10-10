@@ -18,6 +18,8 @@ export type PrimaryNavSection = {
   id: string;
   label: string;
   tone: EntryTone;
+  /** Optional header icon, rendered by CollapsibleHomeSections. */
+  icon?: LucideIcon;
   items: PrimaryNavItem[];
 };
 

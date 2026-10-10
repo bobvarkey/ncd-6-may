@@ -4,10 +4,7 @@ import {
   Activity, Droplet, Droplets, Heart, Scale, Syringe, Dna, FileText, Info,
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
-  Zap, Sun, Microscope, ArrowRight, FlaskConical, User, Scissors, Brain, Bone,
-  Settings as SettingsIcon, LayoutDashboard, Pizza, Pill, CalendarDays, TrendingDown,
-  ShieldAlert, HeartPulse, Bean, BookOpen, TableProperties, BookMarked, TriangleAlert as WarningTriangle,
-  MessageSquare, Trash2, Images, Eye, ArrowLeft,
+  Zap, Sun, Microscope, ArrowRight, User, Scissors, Brain, Bone, TrendingDown, ArrowLeft,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
@@ -29,8 +26,7 @@ import {
 import Seo from "@/components/Seo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
-import { CollapsibleHomeSections } from "@/components/CollapsibleHomeSections";
-import { PrimaryNavGrid } from "@/components/PrimaryNavGrid";
+import { AllNavigation } from "@/components/AllNavigation";
 import { ENTRY_TONES, type EntryTone } from "@/lib/entry-tones";
 import { cn } from "@/lib/utils";
 
@@ -293,159 +289,6 @@ function OCRUpload({ onValuesExtracted }: OCRUploadProps) {
         </CollapsibleContent>
       </Card>
     </Collapsible>
-  );
-}
-
-
-// ── Sidebar Navigation sections, moved to the homepage after sidebar removal ──
-
-type SidebarNavItem = { title: string; url: string; icon: React.ComponentType<{ className?: string }>; tone: EntryTone; keywords?: string };
-type SidebarNavSection = { id: string; label: string; tone: EntryTone; icon: React.ComponentType<{ className?: string }>; items: SidebarNavItem[] };
-
-const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
-  {
-    id: "overview",
-    label: "Overview",
-    tone: "orange",
-    icon: LayoutDashboard,
-    items: [
-      { title: "Dashboard", url: "/", icon: LayoutDashboard, tone: "orange" },
-      { title: "Patient", url: "/patient", icon: User, tone: "sky" },
-      { title: "Summary", url: "/summary", icon: FileText, tone: "violet" },
-      { title: "Progress", url: "/progress", icon: TrendingDown, tone: "teal" },
-      { title: "Image Gallery", url: "/images", icon: Images, tone: "fuchsia", keywords: "figures diagrams algorithms" },
-      { title: "Settings", url: "/settings", icon: SettingsIcon, tone: "slate", keywords: "offline mode theme dark light text size accessibility sync" },
-    ],
-  },
-  {
-    id: "diet",
-    label: "Diet & Lifestyle",
-    tone: "amber",
-    icon: UtensilsCrossed,
-    items: [
-      { title: "Foods", url: "/foods", icon: UtensilsCrossed, tone: "amber" },
-      { title: "Plate Method", url: "/plate", icon: Pizza, tone: "lime" },
-      { title: "Diet Plan", url: "/diet-plan", icon: CalendarDays, tone: "orange" },
-    ],
-  },
-  {
-    id: "medications",
-    label: "Medications & Insulin",
-    tone: "fuchsia",
-    icon: Pill,
-    items: [
-      { title: "Medications", url: "/medications", icon: Pill, tone: "fuchsia" },
-      { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, tone: "rose", keywords: "basal bolus" },
-      { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties, tone: "orange" },
-      { title: "Iron Calculator", url: "/anemia?tab=iron", icon: Syringe, tone: "amber", keywords: "ferritin tsat ganzoni iron deficit" },
-      { title: "Steroid Taper", url: "/steroid-taper", icon: TrendingDown, tone: "orange", keywords: "glucocorticoid prednisolone adrenal insufficiency hpa cortisol" },
-      { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, tone: "indigo", keywords: "semaglutide tirzepatide" },
-      { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, tone: "violet", keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
-      { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, tone: "sky", keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
-      { title: "GLP-1 Screening", url: "/glp1-screening", icon: Eye, tone: "cyan", keywords: "prescreen pre-screen eligibility contraindication naion optic nerve glaucoma retinopathy semaglutide tirzepatide" },
-      { title: "GLP-1 Pre-Initiation Screener", url: "/glp1-prescreen", icon: Syringe, tone: "emerald", keywords: "glp1 prescreening pre-initiation wizard mtc men2 pancreatitis scoff eating disorder dpp4 hypoglycaemia sarcopenia referral" },
-      { title: "Insulin Therapy", url: "/insulin-therapy", icon: BookMarked, tone: "rose" },
-    ],
-  },
-  {
-    id: "risk",
-    label: "Risk & Renal",
-    tone: "indigo",
-    icon: ShieldAlert,
-    items: [
-      { title: "Prediabetes", url: "/prediabetes", icon: HeartPulse, tone: "amber" },
-      { title: "Hypo Risk Score", url: "/hypo-risk", icon: ShieldAlert, tone: "rose" },
-      { title: "Renal Dosing", url: "/renal-dosing", icon: FlaskConical, tone: "orange", keywords: "egfr ckd mehran pci cin" },
-      { title: "KDIGO eGFR", url: "/gfr-calculator", icon: Calculator, tone: "cyan", keywords: "ckd-epi bsa kidney function" },
-      { title: "CKD Guideline", url: "/ckd-guideline", icon: Bean, tone: "cyan", keywords: "kdigo" },
-    ],
-  },
-  {
-    id: "algorithms",
-    label: "Algorithms & Guides",
-    tone: "orange",
-    icon: BookOpen,
-    items: [
-      { title: "Daily Management", url: "/daily-management", icon: BookOpen, tone: "orange" },
-      { title: "Type 1 DM", url: "/type1-management", icon: Activity, tone: "teal" },
-      { title: "T1D Pitfalls", url: "/type1-pitfalls", icon: WarningTriangle, tone: "rose" },
-      { title: "T2D Transition", url: "/type2-transition", icon: ArrowRight, tone: "violet" },
-      { title: "T1D Treatment Algorithm", url: "/type1-treatment-algorithm", icon: Brain, tone: "indigo" },
-      { title: "T2D Treatment Algorithm", url: "/type2-treatment-algorithm", icon: Brain, tone: "sky" },
-      { title: "Hyperglycemic Emergency", url: "/hyperglycemic-emergency", icon: AlertTriangle, tone: "fuchsia", keywords: "dka hhs" },
-    ],
-  },
-  {
-    id: "perioperative",
-    label: "Perioperative & Acute",
-    tone: "teal",
-    icon: Stethoscope,
-    items: [
-      { title: "Perioperative Scores", url: "/perioperative-calculators", icon: Stethoscope, tone: "indigo", keywords: "rcri asa mallampati caprini apgar stop-bang" },
-      { title: "cSDH", url: "/perioperative-calculators#csdh", icon: Brain, tone: "violet", keywords: "chronic subdural hematoma perioperative plan neurosurgery" },
-      { title: "AKI / AKD Criteria", url: "/aki-criteria", icon: Activity, tone: "orange", keywords: "acute kidney injury renal kdigo rifle akd" },
-    ],
-  },
-  {
-    id: "legal",
-    label: "Legal & Support",
-    tone: "slate",
-    icon: Shield,
-    items: [
-      { title: "Feedback & Tips", url: "/feedback", icon: MessageSquare, tone: "sky" },
-      { title: "Disclaimer", url: "/disclaimer", icon: WarningTriangle, tone: "amber" },
-      { title: "Privacy Policy", url: "/privacy", icon: Shield, tone: "indigo" },
-      { title: "Terms of Service", url: "/terms", icon: Scale, tone: "slate" },
-      { title: "Delete My Data", url: "/delete-account", icon: Trash2, tone: "rose" },
-    ],
-  },
-];
-
-const FULL_NAV_SECTIONS_STORAGE_KEY = "ncd_home_full_nav_sections_open";
-
-function SidebarNavGrid() {
-  return (
-    <section aria-labelledby="full-navigation-heading" className="space-y-8">
-      <div className="flex items-center gap-2">
-        <LayoutDashboard className="h-5 w-5 text-primary" />
-        <h2 id="full-navigation-heading" className="text-lg font-semibold">Full App Navigation</h2>
-      </div>
-      <CollapsibleHomeSections
-        storageKey={FULL_NAV_SECTIONS_STORAGE_KEY}
-        sections={SIDEBAR_NAV_SECTIONS}
-        renderItems={(section) => (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            {section.items.map((item) => {
-              const Icon = item.icon;
-              const tone = ENTRY_TONES[item.tone];
-              return (
-                <Link key={item.url + item.title} to={item.url} className="group block">
-                  <div
-                    className={cn(
-                      "relative h-full p-3.5 rounded-xl border transition-all duration-200 overflow-hidden",
-                      tone.card,
-                    )}
-                  >
-                    <div className={cn("absolute top-0 left-0 right-0 h-0.5", tone.bar)} />
-                    <div className="flex items-start gap-3">
-                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", tone.iconWrap)}>
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className={cn("text-sm font-medium text-foreground transition-colors truncate", tone.titleHover)}>{item.title}</h3>
-                        {item.keywords && (
-                          <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{item.keywords}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      />
-    </section>
   );
 }
 
@@ -987,8 +830,6 @@ export default function Home() {
         {/* Quick Access — one-click jumps to core sections */}
         <QuickAccessPanel />
 
-        <PrimaryNavGrid />
-
         {/* Image Upload + Analyzer — prominent at top */}
         <ImageUploadAnalyzer />
 
@@ -1164,10 +1005,9 @@ export default function Home() {
           </TabsContent>
         </Tabs>
 
-        {/* Quick Actions */}
-        <SidebarNavGrid />
+        {/* Every destination in one place, at the bottom of the page */}
+        <AllNavigation />
 
-        {/* Quick Actions */}
         <section className="pt-4 border-t border-border">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
