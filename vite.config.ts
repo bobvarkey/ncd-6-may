@@ -123,7 +123,7 @@ export default defineConfig(({ mode }) => {
       noDiscovery: true,
       include: [
         "react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime",
-        "@hookform/resolvers/zod", "@lovable.dev/cloud-auth-js", "@supabase/supabase-js",
+        "@hookform/resolvers/zod", "@supabase/supabase-js",
         "@tanstack/react-query", "@radix-ui/react-accordion", "@radix-ui/react-alert-dialog",
         "@radix-ui/react-aspect-ratio", "@radix-ui/react-avatar", "@radix-ui/react-checkbox",
         "@radix-ui/react-collapsible", "@radix-ui/react-context-menu", "@radix-ui/react-dialog",

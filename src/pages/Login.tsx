@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 
 type Mode = "signin" | "signup";
 
@@ -66,21 +65,6 @@ export default function Login() {
     }
   };
 
-  const googleSignIn = async () => {
-    setBusy(true);
-    setMessage(null);
-    sessionStorage.setItem("ncd-auth-next", safeNext);
-    console.log("[Login] Initiating Google OAuth sign-in");
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) {
-      console.error("[Login] Google OAuth error:", result.error);
-      setMessage(result.error.message);
-      setBusy(false);
-    } else {
-      console.log("[Login] Google OAuth result:", result);
-    }
-  };
-
   return (
     <main className="min-h-[calc(100vh-3rem)] grid place-items-center px-4 py-8">
       <Card className="w-full max-w-md border-border bg-card">
@@ -94,8 +78,6 @@ export default function Login() {
             <RestoreAccess onCancel={() => setRestoring(false)} />
           ) : (
             <>
-              <Button type="button" variant="outline" className="w-full" onClick={() => void googleSignIn()} disabled={busy}>Continue with Google</Button>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or use email<span className="h-px flex-1 bg-border" /></div>
               <form className="space-y-4" onSubmit={submit}>
                 {mode === "signup" && <div className="space-y-2"><Label htmlFor="display-name">Display name</Label><Input id="display-name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={80} autoComplete="name" /></div>}
                 <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" /></div>
