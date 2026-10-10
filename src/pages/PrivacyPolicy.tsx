@@ -115,7 +115,6 @@ export default function PrivacyPolicy() {
             <h3 className="text-sm font-heading font-bold mb-2">6. Third-Party Services</h3>
             <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
               <li><strong>Razorpay:</strong> Processes subscription authorization and recurring payments</li>
-              <li><strong>Google:</strong> Provides optional Google account sign-in</li>
             </ul>
           </section>
 
