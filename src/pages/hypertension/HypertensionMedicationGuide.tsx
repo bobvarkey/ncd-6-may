@@ -6,7 +6,6 @@ import { FrequencyBadge } from "@/components/FrequencyBadge";
 import ImageLink from "@/components/ImageLink";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { ExportableTabPanel } from "@/components/ResultExport";
-import mraPocketCard from "@/assets/mra-pocket-card.jpg.asset.json";
 
 /** Extract frequency tag from a dose range string like "8–16 mg OD" -> "OD" */
 function extractCardFreq(dose: string): string {

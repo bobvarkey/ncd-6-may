@@ -13,7 +13,6 @@ import { downloadTextFile } from "@/lib/clinical-utils";
 import { toast } from "sonner";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import ImageLink from "@/components/ImageLink";
-import vaccinesLiveVsInactivatedAsset from "@/assets/vaccines-live-vs-inactivated.png.asset.json";
 
 // ══════════════════════════════════════════════
 // Vaccine Data Schema

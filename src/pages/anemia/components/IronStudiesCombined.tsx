@@ -20,7 +20,6 @@ import {
   ganzoniDoseRecommendation,
 } from "@/lib/ganzoni";
 import ImageLink from "@/components/ImageLink";
-import ironProfileStory from "@/assets/iron-profile-story.png.asset.json";
 
 // ── Types ──────────────────────────────────────────────────────
 type IronPattern = "normal" | "A_high_ferritin_normal_TS" | "B_high_TS_high_ferritin" | "C_high_TS_normal_ferritin" | null;

@@ -8,7 +8,6 @@ import SeriousInfections from "./infections/SeriousInfections";
 import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
 import ImageLink from "@/components/ImageLink";
-import antibioticsSpectrum from "@/assets/antibiotics-spectrum.jpeg.asset.json";
 
 function egfrBand(egfr: number): "normal" | "eGFR60_89" | "eGFR45_59" | "eGFR30_44" | "eGFR15_29" | "eGFRBelow15" {
   if (egfr >= 90) return "normal";
