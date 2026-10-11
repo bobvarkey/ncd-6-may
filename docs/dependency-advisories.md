@@ -6,12 +6,15 @@ patched release exists. This file records that judgement so it does not get re-l
 someone opens the alerts widget, and so the next person knows which of the four is a real decision
 rather than an oversight.
 
+A later pass added a fifth (§1.4) that had gone unnoticed because the two lockfiles disagreed about
+it.
+
 Nothing here is a known crash, and nothing here changes what the app does. Read §2 before you touch
 Tailwind, and §1.3 before you touch the `esbuild` override.
 
 ---
 
-## 1. Closed: three of the four
+## 1. Closed: four of the five
 
 ### 1.1 `katex` (low, GHSA-238p-pmpm-9mq7) — the dependency was never used
 
@@ -63,6 +66,46 @@ claims to pin, which is exactly the kind of silent divergence the override was s
 `^0.28.2` is past the advisory and inside both ranges.
 
 If a future upgrade changes vite's peer range, recompute this value. Do not copy it forward.
+
+### 1.4 `brace-expansion` (five high, two moderate) — re-resolved in `bun.lock`, and *not* by an override
+
+The advisory range is `< 1.1.17`, and the tree held one vulnerable copy: the root
+`brace-expansion@1.1.12`, which exists to satisfy `minimatch@3.1.5` (`^1.1.7`). Five highs and two
+moderates are published against that range, all denial-of-service via pathological expansion of
+brace patterns.
+
+**Why it had been missed.** `package-lock.json` already resolved this node to `1.1.21`; `bun.lock`
+still said `1.1.12`. `npm audit` therefore reported clean and `bun audit` did not, and only the
+second one describes what this repository actually installs — `packageManager` is `bun@1.3.3`, so
+bun is what resolves, installs and builds. The two lockfiles disagreed, which is the failure mode §5
+warns about, and it is worth checking both after any dependency change rather than trusting the one
+whose output you happen to read.
+
+**Why not an `overrides` entry, unlike §1.2 and §1.3.** A flat override collapses *every* copy of a
+package in the tree to one version, and that is only safe when the package appears at one API line.
+This one legitimately appears at three, because its consumers are not interchangeable:
+
+```
+minimatch@3.1.5   -> brace-expansion ^1.1.7   (1.x)
+minimatch@5.1.9   -> brace-expansion ^2.0.1   (2.x)
+minimatch@9.0.9   -> brace-expansion ^2.0.2   (2.x)
+minimatch@10.2.6  -> brace-expansion ^5.0.8   (5.x)
+```
+
+Pinning `brace-expansion` to a 1.x release would drag the `2.1.7` and `5.0.12` copies down to 1.x and
+break every consumer on minimatch 9 and 10. The override pattern that worked in §1.2 and §1.3 does
+not transfer to a package that is present at several majors at once, so do not reach for it here.
+
+**What was done instead.** The single locked node was re-resolved at the same version line:
+`1.1.12` to `1.1.21`, whose dependencies are identical (`balanced-match ^1.0.0`, `concat-map 0.0.1`)
+and whose registry integrity hash is recorded in the entry. `bun install --frozen-lockfile` accepts
+the edited lockfile and rewrites nothing, which is the check that it is coherent rather than
+hand-waved.
+
+**This one is a lockfile pin, not a rule.** An override is sticky and a lockfile line is not: a
+later `bun update` or a regenerated lockfile can quietly resolve this node back down, and nothing in
+this repository would notice, because there is no CI to run `bun audit`. Re-run `bun audit` (not
+just `npm audit`) after any dependency work; see §5.
 
 ---
 
@@ -134,6 +177,25 @@ compiles zero files here — the root `tsconfig.json` is solution-style), the vi
 on the changed files only. `eslint .` reports roughly 5,600 CRLF false positives on untouched files
 in this repository and is not a signal.
 
+**For §1.4 the bar was lower, on purpose.** The full byte-identical build comparison above was not
+repeated, because the change is a patch on a single version line whose dependencies are unchanged:
+`brace-expansion` is reached only at build time, expanding the literal `content` globs in
+`tailwind.config.ts`, and 1.1.21 differs from 1.1.12 by a DoS mitigation rather than by a change in
+what those globs match. What was checked instead:
+
+| check | result |
+|---|---|
+| `bun audit` | 8 (6 high, 2 moderate) before, 1 (1 high) after |
+| survivor | `braces` only, the advisory §2 carries on purpose |
+| `bun install --frozen-lockfile` | exit 0, "Checked 875 installs across 924 packages (no changes)" |
+| installed `brace-expansion` copies | root 1.1.21; the `2.1.7` and `5.0.12` copies unmoved |
+| `tsc -p tsconfig.app.json --noEmit` | clean |
+| vitest | 387 passed, 44 files |
+| `bun run build` | exit 0, 2910 modules, CSS emitted at 205,924 bytes |
+
+The CSS byte count is the smoke test that matters for this package: a broken glob resolution would
+show up as a collapsed stylesheet, not as a failed build.
+
 ---
 
 ## 4. Why `npm audit` still shows six highs when Dependabot shows one
@@ -155,12 +217,20 @@ Every moderate and low is closed. The high count rises from 5 to 6 because `lova
 an advisory narrows to `tailwindcss -> braces` once the others are gone, and `npm audit` reports the
 severity of the advisory that reaches it. The six are one advisory and its parents, not six problems.
 
+`bun audit` counts only packages carrying an advisory of their own, so it describes the same tree as
+a single entry rather than six. After §1.4 it reports exactly that one, and it is this `braces`.
+
 ---
 
 ## 5. When you revisit this
 
 - Do the Tailwind 4 migration (§2). It is the only thing that closes the remaining alert.
-- After it, re-run `npm audit` and `bun install` and confirm the two lockfiles still agree. The
+- **Re-run `bun audit`, not just `npm audit`, after any dependency change.** The §1.4 miss was a
+  lockfile disagreement, and `npm audit` alone reports clean while bun installs the vulnerable tree.
+  Confirm the two lockfiles still agree before believing either one.
+- If you regenerate or `bun update` the lockfile, re-check §1.4. That fix is a re-resolved line rather
+  than an override, so it is the kind that a regeneration can undo silently.
+- After the migration, re-run the audits and confirm the two lockfiles still agree. The
   `overrides` in §1.2 and §1.3 become unnecessary only if their packages leave the tree; leaving them
   in place is harmless, leaving them *stale* is not — an override that sits outside a tool's peer
   range is a silent divergence (§1.3).
