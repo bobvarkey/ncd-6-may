@@ -164,6 +164,8 @@ const IMAGE_CATALOG: ImageEntry[] = [
   { id: "fst-infographic", src: "/images/fst-infographic.png", label: "FST Infographic", category: "Renal / AKI", description: "Furosemide Stress Test — predicting AKI progression", sourcePages: [{ label: "AKI Criteria", path: "/aki-criteria" }] },
   { id: "kdigo-staging-reference", src: "/kdigo-staging-reference.jpg", label: "KDIGO Staging Reference", category: "Renal / AKI", description: "KDIGO staging reference for acute kidney injury and chronic kidney disease", sourcePages: [{ label: "CKD Guideline", path: "/db/ckd-guideline" }, { label: "AKI / AKD", path: "/aki-criteria" }] },
   { id: "nice-ckd-algorithm", src: niceCkdAlgorithmImg, label: "NICE CKD Algorithm", category: "Renal / AKI", description: "NICE algorithm for the investigation and management of chronic kidney disease", sourcePages: [{ label: "CKD Guideline", path: "/db/ckd-guideline" }] },
+  { id: "hypernatremia-algorithm", src: "/hypernatremia-algorithm.jpg", label: "Hypernatremia Algorithm", category: "Renal / AKI", description: "Hypovolemic, euvolemic and hypervolemic branches with urine osmolality and sodium cut-offs, causes and treatment — plus free water deficit and correction rate", sourcePages: [{ label: "Hypernatremia", path: "/hypernatremia" }] },
+  { id: "hyponatremia-algorithm", src: "/hyponatremia-algorithm.jpg", label: "Hyponatremia Algorithm", category: "Renal / AKI", description: "Approach to hyponatremia — hypo-osmolar, iso-osmolar and hyper-osmolar branches by serum osmolality, then hypervolemic, euvolemic and hypovolemic sub-branches with urine sodium cut-offs and causes", sourcePages: [{ label: "Hyponatremia", path: "/hyponatremia" }] },
 
   // ─── Infections ───
   { id: "antibiotics-spectrum", src: antibioticsSpectrum.url, label: "Antibiotics by Spectrum", category: "Infections", description: "Complete classification of antibiotics by gram-positive, gram-negative, and broad/mixed spectrum coverage", sourcePages: [{ label: "Infections", path: "/infections" }] },
@@ -243,6 +245,26 @@ const IMAGE_CATALOG: ImageEntry[] = [
     sourcePages: [
       { label: "Bone Health", path: "/bone-health" },
       { label: "Vitamin D", path: "/vitamin-d" }
+    ]
+  },
+  {
+    id: "osteoporosis-risk-pathway",
+    src: "/osteoporosis-risk-pathway.png",
+    label: "Osteoporosis Risk Pathway",
+    category: "Endocrinology & Osteoporosis",
+    description: "Assess, classify, treat — FRAX and BMD criteria and the action for each of the five risk tiers (very high, high, moderate, low, unknown)",
+    sourcePages: [
+      { label: "Bone Health", path: "/bone-health" }
+    ]
+  },
+  {
+    id: "osteoporosis-pharmacological-treatment",
+    src: "/osteoporosis-pharmacological-treatment.png",
+    label: "Osteoporosis Treatment by Risk Tier",
+    category: "Endocrinology & Osteoporosis",
+    description: "Initial pharmacological treatment for adults with osteoporosis risk — FRAX and BMD criteria for each tier, the agents conditionally recommended, and the combination not recommended",
+    sourcePages: [
+      { label: "Bone Health", path: "/bone-health" }
     ]
   },
   {

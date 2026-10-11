@@ -12,6 +12,7 @@ import {
   Calculator, Thermometer,
 } from "lucide-react";
 import { downloadTextFile, parseClinicalValue } from "@/lib/clinical-utils";
+import ImageLink from "@/components/ImageLink";
 import { toast } from "sonner";
 
 // ══════════════════════════════════════════════
@@ -908,6 +909,41 @@ export default function Hypernatremia() {
             </div>
           </CardContent>
         )}
+      </Card>
+
+      {/* ── Full Algorithm ── */}
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-muted/5">
+        <CardHeader className="pb-3">
+          <div className="flex items-center space-x-2">
+            <Stethoscope className="h-5 w-5 text-primary" />
+            <CardTitle className="text-xl">Hypernatremia Algorithm</CardTitle>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Volume status → urine osmolality and sodium → cause → treatment, with the free water deficit
+            and correction-rate limits that apply to every patient
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-lg overflow-hidden border border-border">
+            <a
+              href="/hypernatremia-algorithm.jpg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <img
+                src="/hypernatremia-algorithm.jpg"
+                alt="Hypernatremia algorithm — hypovolemic, euvolemic and hypervolemic branches with urine osmolality and sodium cut-offs, causes and treatment, plus the free water deficit and correction rate formulas"
+                className="w-full h-auto object-contain"
+                loading="lazy"
+              />
+            </a>
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-muted-foreground">Click image to view full size</p>
+            <ImageLink imageId="hypernatremia-algorithm" label="View in Image Gallery →" />
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
