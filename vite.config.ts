@@ -134,7 +134,7 @@ export default defineConfig(({ mode }) => {
         "@radix-ui/react-slot", "@radix-ui/react-switch", "@radix-ui/react-tabs",
         "@radix-ui/react-toast", "@radix-ui/react-toggle", "@radix-ui/react-toggle-group",
         "@radix-ui/react-tooltip", "class-variance-authority", "clsx", "cmdk", "date-fns",
-        "dexie", "html2canvas", "jspdf", "lucide-react", "mermaid", "next-themes",
+        "dexie", "html2canvas", "jspdf", "lucide-react", "next-themes",
         "react-day-picker", "react-helmet-async", "react-hook-form", "react-resizable-panels",
         "react-router-dom", "recharts", "sonner", "tailwind-merge", "tesseract.js", "vaul", "zod",
       ],
