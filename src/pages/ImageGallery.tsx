@@ -259,7 +259,7 @@ const IMAGE_CATALOG: ImageEntry[] = [
   },
   {
     id: "osteoporosis-pharmacological-treatment",
-    src: "/osteoporosis-pharmacological-treatment.png",
+    src: "/osteoporosis-pharmacological-treatment.jpg",
     label: "Osteoporosis Treatment by Risk Tier",
     category: "Endocrinology & Osteoporosis",
     description: "Initial pharmacological treatment for adults with osteoporosis risk — FRAX and BMD criteria for each tier, the agents conditionally recommended, and the combination not recommended",

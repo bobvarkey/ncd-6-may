@@ -64,7 +64,7 @@ const SUMMARY_POSTERS = [
   {
     id: "treatment",
     title: "Pharmacological Treatment by Risk Tier",
-    src: "/osteoporosis-pharmacological-treatment.png",
+    src: "/osteoporosis-pharmacological-treatment.jpg",
     alt: "Initial pharmacological treatment for adults with osteoporosis risk — FRAX and BMD criteria for low, moderate, high and very high risk, with the recommended agents for each tier",
   },
 ] as const;
