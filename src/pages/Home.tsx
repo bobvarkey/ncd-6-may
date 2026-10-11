@@ -29,6 +29,7 @@ import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import { AllNavigation } from "@/components/AllNavigation";
 import { ENTRY_TONES, type EntryTone } from "@/lib/entry-tones";
 import { cn } from "@/lib/utils";
+import heroClinician from "@/assets/hero-clinician.jpg";
 
 interface PrescriptionState {
   content: React.ReactNode;
@@ -665,6 +666,21 @@ const QuickAction = React.memo(function QuickAction({ title, description, icon, 
   );
 });
 
+/** Hero copy, restored verbatim from the section `cd15824` deleted. The wording
+ *  is unchanged, but it no longer sits on the old fixed Sunset Blaze gradient:
+ *  the photo is now a band above it and the copy runs on the page background,
+ *  so it wears the page's own tokens instead of the white-on-gradient
+ *  `.hero-*` classes in index.css (which would be white-on-peach in light
+ *  mode). */
+const HERO_GUIDELINES = ["ADA 2026", "ESC/ESH 2024", "LAI 2023", "KDIGO", "GINA/GOLD"] as const;
+
+const HERO_CTAS: { to: string; label: string; Icon: typeof Heart }[] = [
+  { to: "/hypertension", label: "Hypertension", Icon: Heart },
+  { to: "/lipids",       label: "Lipids",       Icon: Droplet },
+  { to: "/renal-dosing", label: "Renal Dosing", Icon: Filter },
+  { to: "/images",       label: "Image Gallery", Icon: Scan },
+];
+
 const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Droplets; tone: EntryTone }[] = [
   { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets, tone: "teal" },
   { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart, tone: "rose" },
@@ -827,6 +843,69 @@ export default function Home() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 pb-16 space-y-8 min-w-0">
+        {/* ── Hero ── a photo band, with the copy in a block beneath it rather
+            than laid over the image: white on this photo's left third measures
+            2.71:1, which fails. Aspect steps up with the viewport, so the band
+            stays a band on a phone; at lg it matches the source's own 2.06:1 and
+            nothing is cropped. */}
+        <section aria-labelledby="home-hero-heading" className="space-y-5">
+          <div className="relative overflow-hidden rounded-3xl border border-border shadow-xl aspect-[4/3] sm:aspect-[16/9] lg:aspect-[2.06/1]">
+            <img
+              src={heroClinician}
+              alt="A smiling clinician in a white coat holding the diaphragm of a stethoscope up toward the camera, against a plain blue background"
+              width={2048}
+              height={995}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              className="absolute inset-0 h-full w-full object-cover object-[64%_50%]"
+            />
+          </div>
+
+          <div className="max-w-3xl space-y-4">
+            <Badge variant="outline" className="gap-1.5 px-3 py-1 text-xs font-medium">
+              <Sparkles className="h-3 w-3" /> Clinical Decision Support
+            </Badge>
+
+            <h1
+              id="home-hero-heading"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]"
+            >
+              Better decisions, <br className="hidden sm:block" />bedside to desktop.
+            </h1>
+
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+              Evidence-based scores, treatment algorithms, and prescribing guidance for chronic
+              disease — right where you see the patient.
+            </p>
+
+            <div className="flex flex-wrap gap-2 text-[11px] font-medium">
+              {HERO_GUIDELINES.map((guideline) => (
+                <Badge key={guideline} variant="outline" className="px-2.5 py-1">
+                  {guideline}
+                </Badge>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <Button asChild size="lg" className="rounded-full">
+                <Link to="/diabetes">
+                  <Stethoscope className="h-5 w-5" aria-hidden="true" />
+                  Start clinical assessment
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </Button>
+              {HERO_CTAS.map(({ to, label, Icon }) => (
+                <Button key={to} asChild variant="outline" className="rounded-full">
+                  <Link to={to}>
+                    <Icon className="h-4 w-4" aria-hidden="true" /> {label}
+                  </Link>
+                </Button>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Quick Access — one-click jumps to core sections */}
         <QuickAccessPanel />
 
