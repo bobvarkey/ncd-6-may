@@ -12,6 +12,8 @@ import BackToHome from "@/components/BackToHome";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RequireAccess } from "@/components/RequireAccess";
+import { LandingRoute } from "@/components/LandingRoute";
+import { RouteLoading } from "@/components/RouteLoading";
 import { OfflineProvider } from "@/lib/offline/OfflineContext";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import PWAInstallButton from "@/components/PWAInstallButton";
@@ -57,12 +59,6 @@ function lazyWithModuleRetry<T extends React.ComponentType<Record<string, unknow
   });
 }
 
-const RouteLoading = ({ fullScreen = false }: { fullScreen?: boolean }) => (
-  <div className={`flex items-center justify-center ${fullScreen ? "min-h-screen" : "min-h-[60vh]"}`}>
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-  </div>
-);
-
 class RouteErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
 
@@ -101,6 +97,7 @@ class RouteErrorBoundary extends Component<{ children: ReactNode }, { hasError: 
 
 // Lazy-loaded page components
 const Home = lazyWithModuleRetry(() => import("@/pages/Home"));
+const LandingPage = lazyWithModuleRetry(() => import("@/pages/LandingPage"));
 const Settings = lazyWithModuleRetry(() => import("@/pages/Settings"));
 const Subscription = lazyWithModuleRetry(() => import("@/pages/Subscription"));
 const Diabetes = lazyWithModuleRetry(() => import("@/pages/Diabetes"));
@@ -312,15 +309,17 @@ const App = () => {
         <RouteErrorBoundary>
         <Suspense fallback={<RouteLoading fullScreen />}>
         <Routes>
-          {/* Landing — redirect to main app */}
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/index" element={<Navigate to="/home" replace />} />
+          {/* Public entry — the offer has to load here. "/" used to hop straight
+              to the gated /home, which bounced everyone without access to the
+              sign-in card on /subscription, so the paywall never appeared. */}
+          <Route path="/" element={<LandingRoute onOffer={setShowPaywall}><LandingPage /></LandingRoute>} />
+          <Route path="/index" element={<LandingRoute onOffer={setShowPaywall}><LandingPage /></LandingRoute>} />
+          <Route path="/landing" element={<LandingRoute onOffer={setShowPaywall}><LandingPage /></LandingRoute>} />
 
           {/* Legacy redirects */}
           <Route path="/simple" element={<Navigate to="/home" replace />} />
           <Route path="/moderate" element={<Navigate to="/home" replace />} />
           <Route path="/hard" element={<Navigate to="/home" replace />} />
-          <Route path="/landing" element={<Navigate to="/home" replace />} />
           <Route path="/app" element={<Navigate to="/home" replace />} />
 
           {/* Legacy Diabetes Buddy routes — now served without sidebar */}
