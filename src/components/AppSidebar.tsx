@@ -72,6 +72,7 @@ const SECTIONS: Section[] = [
       { title: "KDIGO eGFR", url: "/gfr-calculator", icon: Calculator, keywords: "ckd-epi bsa kidney function" },
       { title: "CKD Guideline", url: "/ckd-guideline", icon: Bean, keywords: "kdigo" },
       { title: "Bone Health", url: "/bone-health", icon: Bone, keywords: "osteoporosis fracture risk assessment romosozumab teriparatide denosumab bisphosphonate" },
+      { title: "Weight Loss", url: "/weight-loss", icon: TrendingDown, keywords: "unintentional weight loss cachexia appetite polyuria tb malignancy depression malabsorption" },
     ],
   },
   {
