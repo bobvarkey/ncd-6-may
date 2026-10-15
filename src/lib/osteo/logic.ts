@@ -877,7 +877,7 @@ export function makeToken(s: OsteoState): string {
 export function buildReport(s: OsteoState, r: OsteoResult, dateISO: string): string {
   const list = (a: string[]) => (a.length ? a.join(" | ") : "none");
   return [
-    `OSTEOPOROSIS PATHWAY ${SPEC_VERSION} | ${dateISO} | token ${r.token}`,
+    `OSTEOPOROSIS PATHWAY ${SPEC_VERSION} | ${dateISO}`,
     `VALIDATION: ${r.blocked ? "BLOCKED" : r.issues.length ? "warnings present" : "no issues"} — ${list(r.issues.map((i) => `${i.severity}: ${i.message}`))}`,
     `GATE1 ${ENTRY_LABELS[r.entryRoute]} / ${PATHWAY_LABELS[r.pathway]} | GATE2 ${label(s.fragility_fracture)} | GATE3 ${label(s.dxa_status)} T=${s.lowest_valid_t_score ?? "—"} Z=${s.lowest_valid_z_score ?? "—"} | GATE4 ${list(s.dxa_risk_factors.map(label))}`,
     `DXA DECISION: ${DXA_LABELS[r.dxaDecision]}`,

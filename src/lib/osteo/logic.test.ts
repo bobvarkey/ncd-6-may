@@ -261,6 +261,15 @@ describe("low risk is reachable and fails closed (logic.ts:459-500)", () => {
     expect(report).toContain("RISK: Low risk");
   });
 
+  it("never puts the internal tok_ token into the copied report", () => {
+    const state = withState(LOW_RISK);
+    const r = evaluate(state, TODAY);
+    const report = buildReport(state, r, "2026-09-30");
+    expect(report).not.toContain("tok_");
+    expect(report).not.toContain(r.token);
+    expect(report.split("\n")[0]).toMatch(/\| 2026-09-30$/);
+  });
+
   // Each row flips exactly one criterion of the low gate away from a resolved
   // answer. Every one must fall out of "low": a missing answer is never "no".
   it.each(LOW_RISK_GAP_CASES)("does not return low when %s", (_label, patch, expected) => {
