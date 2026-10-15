@@ -268,6 +268,10 @@ describe("low risk is reachable and fails closed (logic.ts:459-500)", () => {
     expect(report).not.toContain("tok_");
     expect(report).not.toContain(r.token);
     expect(report.split("\n")[0]).toMatch(/\| 2026-09-30$/);
+    expect(report).not.toContain("Not an automatic prescription");
+    expect(report).not.toContain("VALIDATION:");
+    expect(report).not.toMatch(/\n\s*\n/);
+    expect(report.trimEnd().split("\n").at(-1)).toMatch(/^MISSING: /);
   });
 
   // Each row flips exactly one criterion of the low gate away from a resolved
