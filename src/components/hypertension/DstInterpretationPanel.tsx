@@ -4,15 +4,32 @@ import { GlossaryTerm } from "@/components/GlossaryTerm";
 
 /**
  * 1 mg overnight DST interpretation panel.
- * Threshold: post-dexamethasone 08:00 cortisol ≤50 nmol/L (1.8 µg/dL) rules out Cushing's.
+ * Threshold: post-dexamethasone 08:00 cortisol ≤50 nmol/L (1.8 µg/dL = 18 ng/mL = 0.018 µg/mL) rules out Cushing's.
  */
+type CortisolUnit = "nmol" | "ug" | "ugPerMl" | "ngPerMl";
+
+/** nmol/L equivalents: 1 µg/dL = 27.59 nmol/L; 1 µg/mL = 100 µg/dL; 1 ng/mL = 0.1 µg/dL. */
+const UNIT_TO_NMOL: Record<CortisolUnit, number> = {
+  nmol: 1,
+  ug: 27.59,
+  ugPerMl: 2759,
+  ngPerMl: 2.759,
+};
+
+const UNIT_PLACEHOLDER: Record<CortisolUnit, string> = {
+  nmol: "e.g. 42",
+  ug: "e.g. 1.5",
+  ugPerMl: "e.g. 0.018",
+  ngPerMl: "e.g. 18",
+};
+
 export default function DstInterpretationPanel() {
   const [value, setValue] = useState<string>("");
-  const [unit, setUnit] = useState<"nmol" | "ug">("nmol");
+  const [unit, setUnit] = useState<CortisolUnit>("nmol");
   const [dexa, setDexa] = useState<string>("");
 
   const num = parseFloat(value);
-  const nmol = Number.isFinite(num) ? (unit === "nmol" ? num : num * 27.59) : null;
+  const nmol = Number.isFinite(num) ? num * UNIT_TO_NMOL[unit] : null;
 
   const dexaNum = parseFloat(dexa);
   const dexaVal = Number.isFinite(dexaNum) ? dexaNum : null;
@@ -66,7 +83,7 @@ export default function DstInterpretationPanel() {
         1 mg Overnight <GlossaryTerm term="DST">DST</GlossaryTerm> — Interpretation
       </h4>
       <p className="text-xs text-muted-foreground mb-3">
-        1 mg dexamethasone at 23:00 → serum cortisol at 08:00. <strong>Threshold: ≤50 nmol/L (1.8 µg/dL) rules out Cushing's.</strong>{" "}
+        1 mg dexamethasone at 23:00 → serum cortisol at 08:00. <strong>Threshold: ≤50 nmol/L (1.8 µg/dL · 18 ng/mL · 0.018 µg/mL) rules out Cushing's.</strong>{" "}
         Random morning cortisol is <strong>not</strong> recommended for screening (too nonspecific).
       </p>
 
@@ -80,7 +97,7 @@ export default function DstInterpretationPanel() {
             type="text"
             inputMode="decimal"
             className="w-40 h-9 rounded-md border border-border bg-muted px-3 text-xs"
-            placeholder={unit === "nmol" ? "e.g. 42" : "e.g. 1.5"}
+            placeholder={UNIT_PLACEHOLDER[unit]}
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
@@ -91,10 +108,12 @@ export default function DstInterpretationPanel() {
             id="dst-unit"
             className="h-9 rounded-md border border-border bg-muted px-3 text-xs"
             value={unit}
-            onChange={(e) => setUnit(e.target.value as "nmol" | "ug")}
+            onChange={(e) => setUnit(e.target.value as CortisolUnit)}
           >
             <option value="nmol">nmol/L</option>
             <option value="ug">µg/dL</option>
+            <option value="ugPerMl">µg/mL</option>
+            <option value="ngPerMl">ng/mL</option>
           </select>
         </div>
         <div className="space-y-1.5">
@@ -178,7 +197,7 @@ export default function DstInterpretationPanel() {
             {result.label}
           </div>
           <div className="font-normal">
-            Entered: {nmol!.toFixed(0)} nmol/L ({(nmol! / 27.59).toFixed(2)} µg/dL). {result.note}
+            Entered: {unit === "ngPerMl" ? `${(nmol! / 2.759).toFixed(1)} ng/mL — ` : unit === "ugPerMl" ? `${(nmol! / 2759).toFixed(3)} µg/mL — ` : ""}{nmol!.toFixed(0)} nmol/L ({(nmol! / 27.59).toFixed(2)} µg/dL). {result.note}
           </div>
         </div>
       )}
