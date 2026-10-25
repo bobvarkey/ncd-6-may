@@ -36,7 +36,6 @@ class _LiveAppScreenState extends State<LiveAppScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.ncd;
-    final bottom = MediaQuery.paddingOf(context).bottom;
     return Scaffold(
       backgroundColor: c.background,
       body: PopScope(
@@ -50,28 +49,34 @@ class _LiveAppScreenState extends State<LiveAppScreen> {
           }
           if (mounted) SystemNavigator.pop();
         },
-        child: Stack(
+        child: Column(
           children: [
-            Positioned.fill(
+            Expanded(
               child: LiveAppView(key: _viewKey, url: liveAppUrl),
             ),
-            Positioned(
-              left: 12,
-              bottom: 12 + bottom,
-              child: Row(
-                children: [
-                  _OverlayAction(
-                    label: 'Offline tools',
-                    icon: Icons.offline_bolt_outlined,
-                    onTap: widget.onOpenOffline,
-                  ),
-                  const SizedBox(width: 8),
-                  _OverlayAction(
-                    label: 'Open in browser',
-                    icon: Icons.open_in_new_rounded,
-                    onTap: _openBrowser,
-                  ),
-                ],
+            SafeArea(
+              top: false,
+              child: Container(
+                height: 38,
+                decoration: BoxDecoration(
+                  color: c.background,
+                  border: Border(top: BorderSide(color: c.border)),
+                ),
+                child: Row(
+                  children: [
+                    _BarAction(
+                      label: 'Offline tools',
+                      icon: Icons.offline_bolt_outlined,
+                      onTap: widget.onOpenOffline,
+                    ),
+                    const Spacer(),
+                    _BarAction(
+                      label: 'Open in browser',
+                      icon: Icons.open_in_new_rounded,
+                      onTap: _openBrowser,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -81,8 +86,8 @@ class _LiveAppScreenState extends State<LiveAppScreen> {
   }
 }
 
-class _OverlayAction extends StatelessWidget {
-  const _OverlayAction({
+class _BarAction extends StatelessWidget {
+  const _BarAction({
     required this.label,
     required this.icon,
     required this.onTap,
@@ -99,21 +104,8 @@ class _OverlayAction extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(999),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
-          decoration: BoxDecoration(
-            color: const Color(0xE608070B),
-            borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: c.borderStrong),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

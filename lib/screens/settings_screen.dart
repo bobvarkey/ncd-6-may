@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../access/access_controller.dart';
 import '../core/app_state.dart';
 import '../core/theme.dart';
 import '../data/clinical_content.dart';
@@ -7,9 +8,10 @@ import 'calculators/calculator_scaffold.dart';
 import '../widgets/ui.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key, this.onOpenLive});
+  const SettingsScreen({super.key, this.onOpenLive, this.access});
 
   final VoidCallback? onOpenLive;
+  final AccessController? access;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,62 @@ class SettingsScreen extends StatelessWidget {
                 style: context.small,
               ),
               const SizedBox(height: 22),
+              if (access != null) ...[
+                CalcCard(
+                  title: 'Account & access',
+                  subtitle: access!.email ?? 'Signed in',
+                  icon: Icons.verified_user_outlined,
+                  tone: 'success',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      KeyValueRow(
+                        label: 'Access',
+                        value: access!.access?.label ?? 'Checking',
+                        tone: access!.access?.access == true
+                            ? 'success'
+                            : 'warning',
+                      ),
+                      if (access!.access?.accessUntil != null)
+                        KeyValueRow(
+                          label: 'Valid until',
+                          value: access!.access!.accessUntil!,
+                        ),
+                      const KeyValueRow(
+                        label: 'Verification',
+                        value: 'Server-side',
+                        tone: 'success',
+                        divider: false,
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlineButton(
+                              label: 'Refresh access',
+                              icon: Icons.refresh_rounded,
+                              tone: 'teal',
+                              onPressed: access!.busy
+                                  ? null
+                                  : () => access!.refreshAccess(),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            height: 44,
+                            child: OutlineButton(
+                              label: 'Sign out',
+                              icon: Icons.logout_rounded,
+                              tone: 'danger',
+                              onPressed: access!.signOut,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               if (onOpenLive != null)
                 CalcCard(
                   title: 'Live Clinical Tools',

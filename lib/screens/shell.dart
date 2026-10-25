@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_state.dart';
+import '../access/access_controller.dart';
 import '../core/theme.dart';
 import '../data/infection_repository.dart';
 import '../navigation.dart';
@@ -12,10 +13,16 @@ import 'settings_screen.dart';
 import 'tools_screen.dart';
 
 class Shell extends StatefulWidget {
-  const Shell({super.key, required this.repository, this.onOpenLive});
+  const Shell({
+    super.key,
+    required this.repository,
+    this.onOpenLive,
+    this.access,
+  });
 
   final InfectionRepository repository;
   final VoidCallback? onOpenLive;
+  final AccessController? access;
 
   @override
   State<Shell> createState() => _ShellState();
@@ -36,7 +43,7 @@ class _ShellState extends State<Shell> {
       const ToolsScreen(),
       ProtocolsScreen(repository: widget.repository),
       SavedScreen(repository: widget.repository),
-      SettingsScreen(onOpenLive: widget.onOpenLive),
+      SettingsScreen(onOpenLive: widget.onOpenLive, access: widget.access),
     ];
 
     final body = IndexedStack(index: _index, children: pages);
