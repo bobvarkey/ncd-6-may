@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'core/app_state.dart';
 import 'core/theme.dart';
 import 'data/infection_repository.dart';
-import 'screens/shell.dart';
+import 'live/wrapper_gate.dart';
 
 class NcdApp extends StatelessWidget {
   const NcdApp({super.key, required this.state, required this.repository});
@@ -24,7 +24,7 @@ class NcdApp extends StatelessWidget {
             theme: buildNcdTheme(Brightness.light),
             darkTheme: buildNcdTheme(Brightness.dark),
             themeMode: state.themeMode,
-            home: Shell(repository: repository),
+            home: WrapperGate(repository: repository),
           );
         },
       ),

@@ -7,7 +7,9 @@ import 'calculators/calculator_scaffold.dart';
 import '../widgets/ui.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, this.onOpenLive});
+
+  final VoidCallback? onOpenLive;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,29 @@ class SettingsScreen extends StatelessWidget {
                 style: context.small,
               ),
               const SizedBox(height: 22),
+              if (onOpenLive != null)
+                CalcCard(
+                  title: 'Live Clinical Tools',
+                  subtitle: 'The full web app, including account, trial and subscription',
+                  icon: Icons.public_rounded,
+                  tone: 'teal',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Open the live ncdapp.store experience inside the app. Use it for sign-in, trial, subscription and the full clinical catalogue.',
+                        style: context.small,
+                      ),
+                      const SizedBox(height: 12),
+                      OutlineButton(
+                        label: 'Open live app',
+                        icon: Icons.open_in_new_rounded,
+                        tone: 'teal',
+                        onPressed: onOpenLive,
+                      ),
+                    ],
+                  ),
+                ),
               CalcCard(
                 title: 'Appearance',
                 subtitle: 'The theme follows your choice on every screen',

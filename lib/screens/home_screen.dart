@@ -13,10 +13,12 @@ class HomeScreen extends StatelessWidget {
     super.key,
     required this.repository,
     required this.onSelectTab,
+    this.onOpenLive,
   });
 
   final InfectionRepository repository;
   final ValueChanged<int> onSelectTab;
+  final VoidCallback? onOpenLive;
 
   void _openSearch(BuildContext context) => openSearch(context, repository);
 
@@ -39,6 +41,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 12),
               _TopBar(
                 onSearch: () => _openSearch(context),
+                onOpenLive: onOpenLive,
                 onToggleTheme: () {
                   final isDark =
                       Theme.of(context).brightness == Brightness.dark;
@@ -225,16 +228,29 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _TopBar extends StatelessWidget {
-  const _TopBar({required this.onSearch, required this.onToggleTheme});
+  const _TopBar({
+    required this.onSearch,
+    required this.onToggleTheme,
+    this.onOpenLive,
+  });
 
   final VoidCallback onSearch;
   final VoidCallback onToggleTheme;
+  final VoidCallback? onOpenLive;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         const Expanded(child: BrandMark(showWordmark: true, size: 40)),
+        if (onOpenLive != null) ...[
+          _IconAction(
+            icon: Icons.public_rounded,
+            tooltip: 'Live Clinical Tools',
+            onTap: onOpenLive!,
+          ),
+          const SizedBox(width: 6),
+        ],
         _IconAction(
           icon: Icons.search_rounded,
           tooltip: 'Search',

@@ -12,9 +12,10 @@ import 'settings_screen.dart';
 import 'tools_screen.dart';
 
 class Shell extends StatefulWidget {
-  const Shell({super.key, required this.repository});
+  const Shell({super.key, required this.repository, this.onOpenLive});
 
   final InfectionRepository repository;
+  final VoidCallback? onOpenLive;
 
   @override
   State<Shell> createState() => _ShellState();
@@ -35,7 +36,7 @@ class _ShellState extends State<Shell> {
       const ToolsScreen(),
       ProtocolsScreen(repository: widget.repository),
       SavedScreen(repository: widget.repository),
-      const SettingsScreen(),
+      SettingsScreen(onOpenLive: widget.onOpenLive),
     ];
 
     final body = IndexedStack(index: _index, children: pages);
