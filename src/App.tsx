@@ -15,6 +15,7 @@ import { RequireAccess } from "@/components/RequireAccess";
 import { OfflineProvider } from "@/lib/offline/OfflineContext";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import PWAInstallButton from "@/components/PWAInstallButton";
+import AiAssistant from "@/components/AiAssistant";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -247,6 +248,7 @@ const AppHeader = ({ title }: { title: string }) => {
       <div className="ml-auto mr-2 flex items-center gap-2">
         <OfflineStatusBadge className="hidden sm:inline-flex" />
         <PWAInstallButton />
+        <AiAssistant />
         <Link
           to={user ? "/subscription" : "/login"}
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-muted"
