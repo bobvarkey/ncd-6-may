@@ -306,8 +306,8 @@ export function ResultCard({
             {stale
               ? "Inputs changed since you copied. The previous report is stale — copy again."
               : copiedToken
-                ? "Report copied."
-                : `Spec ${SPEC_VERSION}. Any edit makes an earlier copy stale.`}
+                ? "Report copied with its generation token."
+                : `Spec ${SPEC_VERSION}. Every copied report carries its token; any edit makes an earlier copy stale.`}
           </p>
         </div>
       </div>

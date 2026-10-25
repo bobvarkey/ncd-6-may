@@ -139,7 +139,6 @@ const IMAGE_CATALOG: ImageEntry[] = [
   { id: "constipation-management", src: constipationManagement.url, label: "Constipation Management", category: "Other", description: "Stepwise pharmacological and lifestyle management of constipation", sourcePages: [{ label: "Constipation", path: "/infections/constipation" }] },
   { id: "masld-overview", src: masldOverview.url, label: "MASLD Overview", category: "Other", description: "MASLD assessment, management and treatment overview infographic", sourcePages: [{ label: "Liver Mini App", path: "/liver" }] },
   { id: "fatigue-flowchart", src: "/fatigue-flowchart.jpg", label: "Fatigue Flowchart", category: "Other", description: "Fatigue evaluation flowchart", sourcePages: [{ label: "Fatigue", path: "/fatigue" }] },
-  { id: "weight-loss-flowchart", src: "/images/weight-loss-flowchart.jpg", label: "Weight Loss Flowchart", category: "Other", description: "Unintentional weight loss evaluation flowchart — appetite, polyuria/polydipsia, fever/night sweats, GI symptoms, mood changes", sourcePages: [{ label: "Weight Loss", path: "/weight-loss" }] },
   { id: "anticoagulation-cheatsheet", src: "/anticoagulation-cheatsheet.jpg", label: "Anticoagulation Cheatsheet", category: "Other", description: "Anticoagulation quick reference", sourcePages: [{ label: "Liver Mini App", path: "/liver" }] },
   { id: "doctor-monitors", src: "/doctor-monitors.jpg", label: "Doctor Monitors", category: "Other", description: "Landing page hero image", sourcePages: [{ label: "Landing Page", path: "/" }] },
   { id: "vitamin-d-chart", src: "/images/vitamin-d.png", label: "Vitamin D Reference Chart", category: "Other", description: "Vitamin D reference chart — sources, thresholds and interpretation", sourcePages: [{ label: "Vitamin D", path: "/vitamin-d" }] },
@@ -165,8 +164,6 @@ const IMAGE_CATALOG: ImageEntry[] = [
   { id: "fst-infographic", src: "/images/fst-infographic.png", label: "FST Infographic", category: "Renal / AKI", description: "Furosemide Stress Test — predicting AKI progression", sourcePages: [{ label: "AKI Criteria", path: "/aki-criteria" }] },
   { id: "kdigo-staging-reference", src: "/kdigo-staging-reference.jpg", label: "KDIGO Staging Reference", category: "Renal / AKI", description: "KDIGO staging reference for acute kidney injury and chronic kidney disease", sourcePages: [{ label: "CKD Guideline", path: "/db/ckd-guideline" }, { label: "AKI / AKD", path: "/aki-criteria" }] },
   { id: "nice-ckd-algorithm", src: niceCkdAlgorithmImg, label: "NICE CKD Algorithm", category: "Renal / AKI", description: "NICE algorithm for the investigation and management of chronic kidney disease", sourcePages: [{ label: "CKD Guideline", path: "/db/ckd-guideline" }] },
-  { id: "hypernatremia-algorithm", src: "/hypernatremia-algorithm.jpg", label: "Hypernatremia Algorithm", category: "Renal / AKI", description: "Hypovolemic, euvolemic and hypervolemic branches with urine osmolality and sodium cut-offs, causes and treatment — plus free water deficit and correction rate", sourcePages: [{ label: "Hypernatremia", path: "/hypernatremia" }] },
-  { id: "hyponatremia-algorithm", src: "/hyponatremia-algorithm.jpg", label: "Hyponatremia Algorithm", category: "Renal / AKI", description: "Approach to hyponatremia — hypo-osmolar, iso-osmolar and hyper-osmolar branches by serum osmolality, then hypervolemic, euvolemic and hypovolemic sub-branches with urine sodium cut-offs and causes", sourcePages: [{ label: "Hyponatremia", path: "/hyponatremia" }] },
 
   // ─── Infections ───
   { id: "antibiotics-spectrum", src: antibioticsSpectrum.url, label: "Antibiotics by Spectrum", category: "Infections", description: "Complete classification of antibiotics by gram-positive, gram-negative, and broad/mixed spectrum coverage", sourcePages: [{ label: "Infections", path: "/infections" }] },
@@ -246,26 +243,6 @@ const IMAGE_CATALOG: ImageEntry[] = [
     sourcePages: [
       { label: "Bone Health", path: "/bone-health" },
       { label: "Vitamin D", path: "/vitamin-d" }
-    ]
-  },
-  {
-    id: "osteoporosis-risk-pathway",
-    src: "/osteoporosis-risk-pathway.png",
-    label: "Osteoporosis Risk Pathway",
-    category: "Endocrinology & Osteoporosis",
-    description: "Assess, classify, treat — FRAX and BMD criteria and the action for each of the five risk tiers (very high, high, moderate, low, unknown)",
-    sourcePages: [
-      { label: "Bone Health", path: "/bone-health" }
-    ]
-  },
-  {
-    id: "osteoporosis-pharmacological-treatment",
-    src: "/osteoporosis-pharmacological-treatment.jpg",
-    label: "Osteoporosis Treatment by Risk Tier",
-    category: "Endocrinology & Osteoporosis",
-    description: "Initial pharmacological treatment for adults with osteoporosis risk — FRAX and BMD criteria for each tier, the agents conditionally recommended, and the combination not recommended",
-    sourcePages: [
-      { label: "Bone Health", path: "/bone-health" }
     ]
   },
   {

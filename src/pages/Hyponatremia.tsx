@@ -11,7 +11,6 @@ import {
   Calculator, Beaker, TestTube, FileText, Zap,
 } from "lucide-react";
 import { downloadTextFile } from "@/lib/clinical-utils";
-import ImageLink from "@/components/ImageLink";
 import { toast } from "sonner";
 
 // ══════════════════════════════════════════════
@@ -1330,41 +1329,6 @@ export default function Hyponatremia() {
             ))}
           </CardContent>
         )}
-      </Card>
-
-      {/* ── Full Algorithm ── */}
-      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-muted/5">
-        <CardHeader className="pb-3">
-          <div className="flex items-center space-x-2">
-            <Stethoscope className="h-5 w-5 text-primary" />
-            <CardTitle className="text-xl">Hyponatremia Algorithm</CardTitle>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Serum osmolality first — hypo-, iso- and hyper-osmolar branches — then volume status, with the
-            urine sodium cut-offs and causes for each
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="rounded-lg overflow-hidden border border-border">
-            <a
-              href="/hyponatremia-algorithm.jpg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
-            >
-              <img
-                src="/hyponatremia-algorithm.jpg"
-                alt="Approach to hyponatremia — hypo-osmolar, iso-osmolar and hyper-osmolar branches by serum osmolality, then hypervolemic, euvolemic and hypovolemic sub-branches with urine sodium cut-offs and causes"
-                className="w-full h-auto object-contain"
-                loading="lazy"
-              />
-            </a>
-          </div>
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">Click image to view full size</p>
-            <ImageLink imageId="hyponatremia-algorithm" label="View in Image Gallery →" />
-          </div>
-        </CardContent>
       </Card>
     </div>
   );

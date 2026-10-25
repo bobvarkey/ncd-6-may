@@ -153,7 +153,6 @@ const GLP1PreInitiationScreenerCalc = lazyWithModuleRetry(() => import("@/calcul
 const VisceralFatUltrasoundCalc = lazyWithModuleRetry(() => import("@/calculators/obesity/VisceralFatUltrasound"));
 const WomenHealth = lazyWithModuleRetry(() => import("@/pages/WomenHealth"));
 const Fatigue = lazyWithModuleRetry(() => import("@/pages/Fatigue"));
-const WeightLoss = lazyWithModuleRetry(() => import("@/pages/WeightLoss"));
 const VitaminD = lazyWithModuleRetry(() => import("@/pages/VitaminD"));
 const BoneHealth = lazyWithModuleRetry(() => import("@/pages/BoneHealth"));
 const Infections = lazyWithModuleRetry(() => import("@/pages/Infections"));
@@ -424,7 +423,6 @@ const App = () => {
           <Route path="/thyroid" element={withNav(<ThyroidCalculator />, "Thyroid")} />
           <Route path="/steroid-taper" element={withNav(<SteroidTaperCalculator />, "Steroid Taper")} />
           <Route path="/fatigue" element={withNav(<Fatigue />, "Fatigue")} />
-          <Route path="/weight-loss" element={withNav(<WeightLoss />, "Weight Loss")} />
           <Route path="/vitamin-d" element={withNav(<VitaminD />, "Vitamin D")} />
           <Route path="/bone-health" element={withNav(<BoneHealth />, "Bone Health")} />
           <Route path="/pcos" element={<Navigate to="/women-health?tab=pmos" replace />} />

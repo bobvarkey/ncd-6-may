@@ -21,7 +21,8 @@ import {
   type LiverCutoffs,
 } from "@/lib/liver-scores";
 import { toast } from "@/hooks/use-toast";
-import ImageLink from "@/components/ImageLink";
+import ZoomableImage from "@/components/ZoomableImage";
+import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 import MasldWorkup from "@/pages/liver/MasldWorkup";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 import { SmartLabelUpload, LIVER_FIELDS } from "@/components/SmartLabelUpload";
@@ -521,9 +522,12 @@ export default function LiverMiniApp() {
           </CollapsibleTrigger>
           <CollapsibleContent>
             <CardContent>
-              <ImageLink
-                imageId="masld-overview"
-                label="View MASLD Overview Chart →"
+              <ZoomableImage
+                src={masldOverviewAsset.url}
+                alt="MASLD assessment, management and treatment overview infographic"
+                className="w-full max-w-3xl mx-auto rounded-lg border object-contain"
+                wrapperClassName="max-w-3xl mx-auto"
+                loading="lazy"
               />
             </CardContent>
           </CollapsibleContent>
@@ -550,9 +554,11 @@ export default function LiverMiniApp() {
           </CollapsibleTrigger>
           <CollapsibleContent>
             <CardContent>
-              <ImageLink
-                imageId="anticoagulation-cheatsheet"
-                label="View Anticoagulation Cheatsheet →"
+              <img
+                src="/anticoagulation-cheatsheet.jpg"
+                alt="NASH / MASLD overview infographic"
+                className="w-full max-w-3xl mx-auto rounded-lg border object-contain"
+                loading="lazy"
               />
             </CardContent>
           </CollapsibleContent>

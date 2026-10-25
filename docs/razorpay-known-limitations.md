@@ -206,9 +206,7 @@ Not a defect in this integration, but you will hit it, so it is written down. Ru
 suite (`bun run vitest run`, 32 files / 260 tests) fails roughly one test in every second or third
 run, and **the failing test differs between runs** — `PrimaryNavGrid.test.tsx`'s deep-link tiles and
 `IronStudiesCombined.test.tsx` were the two observed. Each passes 3/3 when run in isolation, and
-both files are byte-identical to `main`. (`PrimaryNavGrid.test.tsx` has since been deleted along
-with the `PrimaryNavGrid` component it covered: nothing in the app rendered that component, so only
-`IronStudiesCombined.test.tsx` from this list survives.)
+both files are byte-identical to `main`.
 
 So: a single red run tells you nothing. Re-run, and only investigate a failure that reproduces.
 This predates the branch and is not attributable to it — though the branch does add four test

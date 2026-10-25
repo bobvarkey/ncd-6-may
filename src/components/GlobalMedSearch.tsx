@@ -174,9 +174,6 @@ const CLINICAL_TOPICS = [
   // ── Fatigue ──
   { id: "fatigue", label: "Fatigue Evaluation", path: "/fatigue", keywords: ["fatigue", "tiredness", "chronic fatigue", "exhaustion"] },
 
-  // ── Weight Loss ──
-  { id: "weight-loss", label: "Weight Loss Evaluation", path: "/weight-loss", keywords: ["weight loss", "unintentional weight loss", "cachexia", "wasting", "appetite", "tb", "hyperthyroid", "malabsorption"] },
-
   // ── Vitamin D ──
   { id: "vitamin-d", label: "Vitamin D", path: "/vitamin-d", keywords: ["vitamin d", "vitamin d deficiency", "25-oh", "calcitriol"] },
 
