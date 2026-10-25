@@ -95,15 +95,17 @@ class _VitaminDScreenState extends State<VitaminDScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _level,
-                    label: 'Serum 25(OH)D',
-                    suffix: 'ng/mL',
-                    hint: '18'),
+                  controller: _level,
+                  label: 'Serum 25(OH)D',
+                  suffix: 'ng/mL',
+                  hint: '18',
+                ),
                 second: NumField(
-                    controller: _weight,
-                    label: 'Weight (optional)',
-                    suffix: 'kg',
-                    hint: '70'),
+                  controller: _weight,
+                  label: 'Weight (optional)',
+                  suffix: 'kg',
+                  hint: '70',
+                ),
               ),
               const SizedBox(height: 14),
               const FieldLabel('Age group'),
@@ -203,7 +205,11 @@ class _VitaminDScreenState extends State<VitaminDScreen> {
                   title: 'Considerations',
                   icon: Icons.info_outline_rounded,
                   tone: 'amber',
-                  child: BulletList(items: result.notes, tone: 'amber', dense: true),
+                  child: BulletList(
+                    items: result.notes,
+                    tone: 'amber',
+                    dense: true,
+                  ),
                 ),
               ],
             ],
@@ -217,7 +223,11 @@ class _VitaminDScreenState extends State<VitaminDScreen> {
             const KeyValueRow(label: 'Severe deficiency', value: '<10 ng/mL'),
             const KeyValueRow(label: 'Deficiency', value: '10–19 ng/mL'),
             const KeyValueRow(label: 'Insufficiency', value: '20–29 ng/mL'),
-            const KeyValueRow(label: 'Adequate', value: '≥30 ng/mL', divider: false),
+            const KeyValueRow(
+              label: 'Adequate',
+              value: '≥30 ng/mL',
+              divider: false,
+            ),
             const SizedBox(height: 10),
             Text(
               'Dosing is educational. Adjust for the local formulary, product strength and the patient’s calcium and renal status. Avoid high-dose bolus therapy in pregnancy.',

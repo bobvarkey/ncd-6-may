@@ -26,7 +26,14 @@ class _LytesScreenState extends State<LytesScreen> {
 
   @override
   void dispose() {
-    for (final c in [_sodium, _glucose, _calcium, _albumin, _chloride, _bicarbonate]) {
+    for (final c in [
+      _sodium,
+      _glucose,
+      _calcium,
+      _albumin,
+      _chloride,
+      _bicarbonate,
+    ]) {
       c.dispose();
     }
     super.dispose();
@@ -73,7 +80,14 @@ class _LytesScreenState extends State<LytesScreen> {
 
   void _reset() {
     setState(() {
-      for (final c in [_sodium, _glucose, _calcium, _albumin, _chloride, _bicarbonate]) {
+      for (final c in [
+        _sodium,
+        _glucose,
+        _calcium,
+        _albumin,
+        _chloride,
+        _bicarbonate,
+      ]) {
         c.clear();
       }
       _error = null;
@@ -101,21 +115,25 @@ class _LytesScreenState extends State<LytesScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _sodium,
-                    label: 'Sodium',
-                    suffix: 'mmol/L',
-                    hint: '132'),
+                  controller: _sodium,
+                  label: 'Sodium',
+                  suffix: 'mmol/L',
+                  hint: '132',
+                ),
                 second: NumField(
-                    controller: _glucose,
-                    label: 'Glucose',
-                    suffix: 'mg/dL',
-                    hint: '480'),
+                  controller: _glucose,
+                  label: 'Glucose',
+                  suffix: 'mg/dL',
+                  hint: '480',
+                ),
               ),
               const SizedBox(height: 6),
               Text(
                 'Corrected sodium = measured Na + 0.016 × (glucose − 100).',
                 style: context.tiny.copyWith(
-                    fontWeight: FontWeight.w400, height: 1.35),
+                  fontWeight: FontWeight.w400,
+                  height: 1.35,
+                ),
               ),
             ],
           ),
@@ -126,15 +144,17 @@ class _LytesScreenState extends State<LytesScreen> {
           tone: 'violet',
           child: FieldPair(
             first: NumField(
-                controller: _calcium,
-                label: 'Total calcium',
-                suffix: 'mg/dL',
-                hint: '8.0'),
+              controller: _calcium,
+              label: 'Total calcium',
+              suffix: 'mg/dL',
+              hint: '8.0',
+            ),
             second: NumField(
-                controller: _albumin,
-                label: 'Albumin',
-                suffix: 'g/dL',
-                hint: '2.8'),
+              controller: _albumin,
+              label: 'Albumin',
+              suffix: 'g/dL',
+              hint: '2.8',
+            ),
           ),
         ),
         CalcCard(
@@ -146,15 +166,17 @@ class _LytesScreenState extends State<LytesScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _chloride,
-                    label: 'Chloride',
-                    suffix: 'mmol/L',
-                    hint: '102'),
+                  controller: _chloride,
+                  label: 'Chloride',
+                  suffix: 'mmol/L',
+                  hint: '102',
+                ),
                 second: NumField(
-                    controller: _bicarbonate,
-                    label: 'Bicarbonate',
-                    suffix: 'mmol/L',
-                    hint: '18'),
+                  controller: _bicarbonate,
+                  label: 'Bicarbonate',
+                  suffix: 'mmol/L',
+                  hint: '18',
+                ),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -232,20 +254,30 @@ class _LytesScreenState extends State<LytesScreen> {
           icon: Icons.functions_rounded,
           tone: 'violet',
           children: [
-            Text('Corrected Na = Na + 0.016 × (glucose − 100)',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'Corrected Na = Na + 0.016 × (glucose − 100)',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 6),
-            Text('Corrected Ca = Ca + 0.8 × (4.0 − albumin)',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'Corrected Ca = Ca + 0.8 × (4.0 − albumin)',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 6),
-            Text('Anion gap = Na − Cl − HCO₃',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'Anion gap = Na − Cl − HCO₃',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 6),
-            Text('Corrected AG = AG + 2.5 × (4.0 − albumin)',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'Corrected AG = AG + 2.5 × (4.0 − albumin)',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 6),
-            Text('Effective osmolality = 2 × Na + glucose ÷ 18',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'Effective osmolality = 2 × Na + glucose ÷ 18',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 10),
             Text(
               'The corrected sodium estimate is unreliable when glucose is changing rapidly, and should not replace serial measurement. Corrected calcium is an estimate in hypoalbuminaemia.',

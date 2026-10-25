@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/app_state.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
+import '../../ai_import/ai_import_screen.dart';
+import '../../ai_import/models/ai_targets.dart';
 import '../../logic/calculators.dart';
 import '../../widgets/ui.dart';
 import 'calculator_scaffold.dart';
@@ -51,9 +53,7 @@ class _EgfrScreenState extends State<EgfrScreen> {
     final value = double.tryParse(_uacr.text.trim());
     setState(() {
       if (value != null) {
-        _uacr.text = mgG
-            ? fmtNum(value / 0.113, 0)
-            : fmtNum(value * 0.113, 0);
+        _uacr.text = mgG ? fmtNum(value / 0.113, 0) : fmtNum(value * 0.113, 0);
       }
       _mgG = mgG;
       _result = null;
@@ -66,9 +66,7 @@ class _EgfrScreenState extends State<EgfrScreen> {
     final rawUacr = double.tryParse(_uacr.text.trim());
 
     final cr = rawCr == null ? null : (_mgDl ? rawCr : rawCr / 88.42);
-    final uacr = rawUacr == null
-        ? null
-        : (_mgG ? rawUacr : rawUacr / 0.113);
+    final uacr = rawUacr == null ? null : (_mgG ? rawUacr : rawUacr / 0.113);
 
     String? error;
     if (cr == null || cr <= 0) {
@@ -108,6 +106,75 @@ class _EgfrScreenState extends State<EgfrScreen> {
     });
   }
 
+  Future<void> _importWithAi() async {
+    final values = await Navigator.of(context).push<Map<String, String>>(
+      MaterialPageRoute(
+        builder: (_) => AiImportScreen(
+          target: kidneyTarget,
+          formLabel: 'eGFR & KDIGO',
+          currentValues: {
+            'creatinine': _creatinine.text,
+            'age': _age.text,
+            'sex': _sex,
+            'uacr': _uacr.text,
+          },
+        ),
+      ),
+    );
+    if (!mounted || values == null) return;
+    final previous = <String, dynamic>{
+      'creatinine': _creatinine.text,
+      'age': _age.text,
+      'uacr': _uacr.text,
+      'sex': _sex,
+      'mgDl': _mgDl,
+      'mgG': _mgG,
+    };
+    setState(() {
+      final creatinine = values['creatinine'];
+      if (creatinine != null && creatinine.isNotEmpty) {
+        _creatinine.text = creatinine;
+        _mgDl = true;
+      }
+      final age = values['age'];
+      if (age != null && age.isNotEmpty) _age.text = age;
+      final sex = values['sex'];
+      if (sex == 'male' || sex == 'female') _sex = sex!;
+      final uacr = values['uacr'];
+      if (uacr != null && uacr.isNotEmpty) {
+        _uacr.text = uacr;
+        _mgG = true;
+      }
+      _error = null;
+      _result = null;
+    });
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: const Text(
+            'AI values loaded. Review them before calculating.',
+          ),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              if (!mounted) return;
+              setState(() {
+                _creatinine.text = previous['creatinine'] as String;
+                _age.text = previous['age'] as String;
+                _uacr.text = previous['uacr'] as String;
+                _sex = previous['sex'] as String;
+                _mgDl = previous['mgDl'] as bool;
+                _mgG = previous['mgG'] as bool;
+                _result = null;
+              });
+            },
+          ),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = context.ncd;
@@ -118,6 +185,13 @@ class _EgfrScreenState extends State<EgfrScreen> {
       subtitle: 'CKD-EPI 2021 creatinine equation with albuminuria risk',
       icon: Icons.water_drop_outlined,
       tone: 'sky',
+      appBarActions: [
+        IconButton(
+          tooltip: 'Import with AI',
+          onPressed: _importWithAi,
+          icon: Icon(Icons.auto_awesome_outlined, color: context.ncd.violet),
+        ),
+      ],
       children: [
         CalcCard(
           title: 'Kidney function',
@@ -129,8 +203,10 @@ class _EgfrScreenState extends State<EgfrScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: Text('Creatinine units',
-                        style: context.label.copyWith(color: c.text)),
+                    child: Text(
+                      'Creatinine units',
+                      style: context.label.copyWith(color: c.text),
+                    ),
                   ),
                   SizedBox(
                     width: 170,
@@ -194,8 +270,10 @@ class _EgfrScreenState extends State<EgfrScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: Text('Albuminuria (optional)',
-                              style: context.label.copyWith(color: c.text)),
+                          child: Text(
+                            'Albuminuria (optional)',
+                            style: context.label.copyWith(color: c.text),
+                          ),
                         ),
                         SizedBox(
                           width: 132,
@@ -271,7 +349,8 @@ class _EgfrScreenState extends State<EgfrScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      result.gfr >= 60 && (result.aStage == null || result.aStage == 'A1')
+                      result.gfr >= 60 &&
+                              (result.aStage == null || result.aStage == 'A1')
                           ? 'Kidney function is preserved. Recheck eGFR and UACR at least annually if diabetes, hypertension or cardiovascular disease is present.'
                           : 'Reduced eGFR or increased albuminuria identifies higher risk. Review medications, BP, sodium and kidney-protective therapy.',
                       style: context.small,

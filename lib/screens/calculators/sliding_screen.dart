@@ -51,7 +51,8 @@ class _SlidingScreenState extends State<SlidingScreen> {
     } else if (egfr == null || egfr < 1 || egfr > 200) {
       error = 'Enter an eGFR between 1 and 200 mL/min/1.73m².';
     } else if (_steroid && (steroidDose < 0 || steroidDose > 200)) {
-      error = 'Enter a steroid dose between 0 and 200 mg prednisolone-equivalent.';
+      error =
+          'Enter a steroid dose between 0 and 200 mg prednisolone-equivalent.';
     }
 
     setState(() {
@@ -115,17 +116,23 @@ class _SlidingScreenState extends State<SlidingScreen> {
             children: [
               FieldTriple(
                 first: NumField(
-                    controller: _weight,
-                    label: 'Weight',
-                    suffix: 'kg',
-                    hint: '70'),
+                  controller: _weight,
+                  label: 'Weight',
+                  suffix: 'kg',
+                  hint: '70',
+                ),
                 second: NumField(
-                    controller: _age, label: 'Age', suffix: 'years', hint: '64'),
+                  controller: _age,
+                  label: 'Age',
+                  suffix: 'years',
+                  hint: '64',
+                ),
                 third: NumField(
-                    controller: _egfr,
-                    label: 'eGFR',
-                    suffix: 'mL/min',
-                    hint: '75'),
+                  controller: _egfr,
+                  label: 'eGFR',
+                  suffix: 'mL/min',
+                  hint: '75',
+                ),
               ),
               const SizedBox(height: 14),
               const FieldLabel('Diabetes type'),
@@ -216,8 +223,7 @@ class _SlidingScreenState extends State<SlidingScreen> {
                   _scale = v;
                   _result = null;
                 }),
-                hint:
-                    'Low is preferred with eGFR <30, older age, NPO or hypoglycaemia.',
+                hint: 'Low is preferred with eGFR <30, older age, NPO or hypoglycaemia.',
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -349,10 +355,10 @@ class _SlidingScreenState extends State<SlidingScreen> {
   }
 
   String _productLabel(String id) => switch (id) {
-        'nph' => 'NPH · basal only',
-        'premix' => 'Premix 30/70 · twice daily',
-        _ => 'Rapid-acting or regular · basal-bolus',
-      };
+    'nph' => 'NPH · basal only',
+    'premix' => 'Premix 30/70 · twice daily',
+    _ => 'Rapid-acting or regular · basal-bolus',
+  };
 }
 
 class _CorrectionTable extends StatelessWidget {
@@ -378,10 +384,14 @@ class _CorrectionTable extends StatelessWidget {
             border: Border(
               bottom: BorderSide(color: c.border),
               left: BorderSide(
-                color: active ? color.withValues(alpha: 0.25) : Colors.transparent,
+                color: active
+                    ? color.withValues(alpha: 0.25)
+                    : Colors.transparent,
               ),
               right: BorderSide(
-                color: active ? color.withValues(alpha: 0.25) : Colors.transparent,
+                color: active
+                    ? color.withValues(alpha: 0.25)
+                    : Colors.transparent,
               ),
             ),
           ),
@@ -416,12 +426,14 @@ class _CorrectionTable extends StatelessWidget {
                 width: 76,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 9),
-                  child: Text(row.range,
-                      style: context.small.copyWith(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w600,
-                        color: c.muted,
-                      )),
+                  child: Text(
+                    row.range,
+                    style: context.small.copyWith(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w600,
+                      color: c.muted,
+                    ),
+                  ),
                 ),
               ),
               cell('${row.low}', active: selected == 1),

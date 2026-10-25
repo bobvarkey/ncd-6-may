@@ -49,3 +49,6 @@ app.*.map.json
 
 # Local preview screenshots
 /preview-*.png
+
+# Live-site audit screenshots
+/audit/

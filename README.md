@@ -19,7 +19,7 @@ result, and no account or network dependency.
 - Kidney (KDIGO)
 - Serious infections (35 searchable protocols)
 
-**14 on-device calculators**
+**14 on-device calculators plus AI document import**
 
 | Tool | What it does |
 | --- | --- |
@@ -37,6 +37,7 @@ result, and no account or network dependency.
 | FIB-4 & liver scores | FIB-4, APRI and NAFLD fibrosis score |
 | Corrected Na & Ca | Corrected sodium/calcium, anion gap and osmolality |
 | HOMA-IR | Insulin resistance estimate |
+| AI document import | Text, image OCR, PDF, BYOK extraction and form autofill |
 
 **App-wide**
 
@@ -45,6 +46,21 @@ result, and no account or network dependency.
 - Dark and light themes
 - Responsive layout: bottom navigation on phones, a nav rail on wide screens
 - Guideline basis and clinical-safety notes on every relevant screen
+
+## AI text & document import
+
+The app includes an additive **AI Text & Document Import** module:
+
+- **Manual text** — paste or type, edit before extraction, copy, re-parse.
+- **Image OCR** — camera or gallery, multiple images, rotate, crop, enhance; Tesseract.js on web and Google ML Kit on iOS/Android. Images stay local during OCR.
+- **PDF import** — searchable text layers via `pdfrx`, with page selection and local OCR for scanned pages.
+- **BYOK providers** — Anthropic Claude, OpenAI and Google Gemini. Keys are session-only, held in memory, never written to disk, URLs, analytics or logs. Model IDs are configurable and model capabilities are checked.
+- **Structured extraction** — schema-aware JSON generated from the active form's fields, with local deterministic parsing as the no-AI fallback.
+- **Review and autofill** — current vs. extracted values, per-field accept/reject, source text/page verification, and no automatic save or submit. Integrated into the BMI, eGFR/KDIGO and ASCVD calculators, plus the Tools list.
+- **Encryption** — AES-256-GCM vault for the in-memory session cache; TLS for transit; no PHI persistence.
+- **Proxy mode** — optional HTTPS proxy for providers that block browser calls (notably OpenAI on web). The app sends the selected provider key only to that provider or the configured proxy.
+
+Limits: OCR/PDF/AI behavior on physical iOS/Android devices still needs a native build; this Mac has no CocoaPods or Android SDK. OpenAI direct calls are blocked in browsers by CORS, so use a proxy or the mobile app.
 
 ## Run the browser preview
 

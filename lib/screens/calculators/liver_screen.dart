@@ -117,19 +117,32 @@ class _LiverScreenState extends State<LiverScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _age, label: 'Age', suffix: 'years', hint: '52'),
+                  controller: _age,
+                  label: 'Age',
+                  suffix: 'years',
+                  hint: '52',
+                ),
                 second: NumField(
-                    controller: _platelets,
-                    label: 'Platelets',
-                    suffix: '×10⁹/L',
-                    hint: '180'),
+                  controller: _platelets,
+                  label: 'Platelets',
+                  suffix: '×10⁹/L',
+                  hint: '180',
+                ),
               ),
               const SizedBox(height: 14),
               FieldPair(
                 first: NumField(
-                    controller: _ast, label: 'AST', suffix: 'U/L', hint: '42'),
+                  controller: _ast,
+                  label: 'AST',
+                  suffix: 'U/L',
+                  hint: '42',
+                ),
                 second: NumField(
-                    controller: _alt, label: 'ALT', suffix: 'U/L', hint: '58'),
+                  controller: _alt,
+                  label: 'ALT',
+                  suffix: 'U/L',
+                  hint: '58',
+                ),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -148,12 +161,17 @@ class _LiverScreenState extends State<LiverScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _albumin,
-                    label: 'Albumin',
-                    suffix: 'g/dL',
-                    hint: '4.1'),
+                  controller: _albumin,
+                  label: 'Albumin',
+                  suffix: 'g/dL',
+                  hint: '4.1',
+                ),
                 second: NumField(
-                    controller: _bmi, label: 'BMI', suffix: 'kg/m²', hint: '31'),
+                  controller: _bmi,
+                  label: 'BMI',
+                  suffix: 'kg/m²',
+                  hint: '31',
+                ),
               ),
               const SizedBox(height: 8),
               SwitchRow(
@@ -185,13 +203,20 @@ class _LiverScreenState extends State<LiverScreen> {
                 title: 'APRI',
                 icon: Icons.analytics_outlined,
                 tone: result.apri.tone,
-                trailing: TagPill(label: result.apri.label, tone: result.apri.tone),
+                trailing: TagPill(
+                  label: result.apri.label,
+                  tone: result.apri.tone,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(fmtNum(result.apri.score, 2),
-                        style: context.h1.copyWith(
-                            fontSize: 26, color: toneColor(context, result.apri.tone))),
+                    Text(
+                      fmtNum(result.apri.score, 2),
+                      style: context.h1.copyWith(
+                        fontSize: 26,
+                        color: toneColor(context, result.apri.tone),
+                      ),
+                    ),
                     const SizedBox(height: 5),
                     Text(result.apri.detail, style: context.small),
                   ],
@@ -203,14 +228,19 @@ class _LiverScreenState extends State<LiverScreen> {
                   icon: Icons.analytics_outlined,
                   tone: result.nfs!.tone,
                   trailing: TagPill(
-                      label: result.nfs!.label, tone: result.nfs!.tone),
+                    label: result.nfs!.label,
+                    tone: result.nfs!.tone,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(fmtNum(result.nfs!.score, 3),
-                          style: context.h1.copyWith(
-                              fontSize: 26,
-                              color: toneColor(context, result.nfs!.tone))),
+                      Text(
+                        fmtNum(result.nfs!.score, 3),
+                        style: context.h1.copyWith(
+                          fontSize: 26,
+                          color: toneColor(context, result.nfs!.tone),
+                        ),
+                      ),
                       const SizedBox(height: 5),
                       Text(result.nfs!.detail, style: context.small),
                     ],
@@ -224,16 +254,27 @@ class _LiverScreenState extends State<LiverScreen> {
           icon: Icons.functions_rounded,
           tone: 'teal',
           children: [
-            Text('FIB-4 = (age × AST) ÷ (platelets × √ALT)',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'FIB-4 = (age × AST) ÷ (platelets × √ALT)',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 6),
-            Text('APRI = ((AST ÷ AST ULN) × 100) ÷ platelets',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'APRI = ((AST ÷ AST ULN) × 100) ÷ platelets',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 10),
-            const KeyValueRow(label: 'FIB-4 low risk', value: '<1.3 (<2.0 if ≥65)'),
+            const KeyValueRow(
+              label: 'FIB-4 low risk',
+              value: '<1.3 (<2.0 if ≥65)',
+            ),
             const KeyValueRow(label: 'FIB-4 high risk', value: '>2.67'),
             const KeyValueRow(label: 'APRI low risk', value: '<0.5'),
-            const KeyValueRow(label: 'APRI high risk', value: '>1.5', divider: false),
+            const KeyValueRow(
+              label: 'APRI high risk',
+              value: '>1.5',
+              divider: false,
+            ),
             const SizedBox(height: 10),
             Text(
               'FIB-4 and APRI are screening tools. An indeterminate result should prompt elastography or a specialist referral. AST ULN is assumed to be 40 U/L.',

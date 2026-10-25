@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Capture a clinical document for on-device OCR and optional AI-assisted extraction.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Select a clinical image for on-device OCR and optional AI-assisted extraction.</string>
 </dict>
 </plist>

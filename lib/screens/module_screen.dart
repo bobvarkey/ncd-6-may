@@ -51,11 +51,14 @@ class _ModuleScreenState extends State<ModuleScreen> {
           onPressed: () => Navigator.of(context).maybePop(),
           icon: const Icon(Icons.arrow_back_rounded),
         ),
-        title: Text('Module',
-            style: context.tiny.copyWith(
-                color: c.faint,
-                letterSpacing: 0.8,
-                fontWeight: FontWeight.w800)),
+        title: Text(
+          'Module',
+          style: context.tiny.copyWith(
+            color: c.faint,
+            letterSpacing: 0.8,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
         actions: [
           IconButton(
             tooltip: favorite ? 'Remove bookmark' : 'Bookmark',
@@ -85,18 +88,23 @@ class _ModuleScreenState extends State<ModuleScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     IconTile(
-                        icon: module.icon,
-                        tone: module.tone,
-                        size: 56,
-                        iconSize: 27),
+                      icon: module.icon,
+                      tone: module.tone,
+                      size: 56,
+                      iconSize: 27,
+                    ),
                     const SizedBox(width: 15),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(module.title,
-                              style: context.display
-                                  .copyWith(fontSize: 32, letterSpacing: -1)),
+                          Text(
+                            module.title,
+                            style: context.display.copyWith(
+                              fontSize: 32,
+                              letterSpacing: -1,
+                            ),
+                          ),
                           const SizedBox(height: 4),
                           Text(module.subtitle, style: context.small),
                         ],
@@ -110,7 +118,11 @@ class _ModuleScreenState extends State<ModuleScreen> {
                   runSpacing: 8,
                   children: [
                     for (final target in module.targets)
-                      TagPill(label: target, tone: module.tone, icon: Icons.flag_outlined),
+                      TagPill(
+                        label: target,
+                        tone: module.tone,
+                        icon: Icons.flag_outlined,
+                      ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -220,17 +232,23 @@ class _SectionCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(section.items[i].title,
-                        style: context.body.copyWith(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: c.text)),
+                    Text(
+                      section.items[i].title,
+                      style: context.body.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: c.text,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(section.items[i].body,
-                        style: context.small.copyWith(
-                            color: c.text.withValues(alpha: 0.82),
-                            height: 1.52,
-                            fontSize: 13)),
+                    Text(
+                      section.items[i].body,
+                      style: context.small.copyWith(
+                        color: c.text.withValues(alpha: 0.82),
+                        height: 1.52,
+                        fontSize: 13,
+                      ),
+                    ),
                   ],
                 ),
               ),

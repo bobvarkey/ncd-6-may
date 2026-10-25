@@ -58,17 +58,23 @@ class _ToolsScreenState extends State<ToolsScreen> {
               const SizedBox(height: 18),
               Row(
                 children: [
-                  Text('NCD Rx',
-                      style: context.tiny.copyWith(
-                          color: c.magenta,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.4)),
+                  Text(
+                    'NCD Rx',
+                    style: context.tiny.copyWith(
+                      color: c.magenta,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.4,
+                    ),
+                  ),
                   const Spacer(),
                   TagPill(label: '${kTools.length} tools', tone: 'violet'),
                 ],
               ),
               const SizedBox(height: 10),
-              Text('Calculators\n& scores', style: context.display.copyWith(fontSize: 32)),
+              Text(
+                'Calculators\n& scores',
+                style: context.display.copyWith(fontSize: 32),
+              ),
               const SizedBox(height: 8),
               Text(
                 'Clinical arithmetic with the formulas, cut-offs and caveats written next to the result.',
@@ -96,8 +102,7 @@ class _ToolsScreenState extends State<ToolsScreen> {
                 const EmptyState(
                   icon: Icons.search_off_rounded,
                   title: 'No matching tool',
-                  body:
-                      'Try a broader term such as “renal”, “insulin” or “risk”.',
+                  body: 'Try a broader term such as “renal”, “insulin” or “risk”.',
                 )
               else
                 ResponsiveGrid(
@@ -125,8 +130,7 @@ class _ToolsScreenState extends State<ToolsScreen> {
                 tone: 'violet',
                 icon: Icons.calculate_outlined,
                 title: 'How the tools are built',
-                text:
-                    'Every calculator shows its formula and interpretation limits. Values are computed on-device and are never uploaded. Always confirm against your local laboratory ranges and formulary.',
+                text: 'Every calculator shows its formula and interpretation limits. Values are computed on-device and are never uploaded. Always confirm against your local laboratory ranges and formulary.',
               ),
             ],
           ),

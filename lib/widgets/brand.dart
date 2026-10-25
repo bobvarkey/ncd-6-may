@@ -182,11 +182,7 @@ class DotMatrix extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _DotPainter(
-        spacing: spacing,
-        opacity: opacity,
-        color: color,
-      ),
+      painter: _DotPainter(spacing: spacing, opacity: opacity, color: color),
       child: const SizedBox.expand(),
     );
   }
@@ -217,9 +213,7 @@ class _DotPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _DotPainter old) =>
-      old.spacing != spacing ||
-      old.opacity != opacity ||
-      old.color != color;
+      old.spacing != spacing || old.opacity != opacity || old.color != color;
 }
 
 class GlowOrb extends StatelessWidget {
@@ -243,7 +237,10 @@ class GlowOrb extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [color.withValues(alpha: opacity), color.withValues(alpha: 0)],
+            colors: [
+              color.withValues(alpha: opacity),
+              color.withValues(alpha: 0),
+            ],
           ),
         ),
       ),
@@ -292,13 +289,19 @@ class HeroBackdrop extends StatelessWidget {
               left: -60,
               top: -70,
               child: GlowOrb(
-                  color: NcdPalette.coral, size: 240, opacity: c.isDark ? 0.18 : 0.28),
+                color: NcdPalette.coral,
+                size: 240,
+                opacity: c.isDark ? 0.18 : 0.28,
+              ),
             ),
             Positioned(
               right: -70,
               bottom: -90,
               child: GlowOrb(
-                  color: NcdPalette.violet, size: 280, opacity: c.isDark ? 0.2 : 0.24),
+                color: NcdPalette.violet,
+                size: 280,
+                opacity: c.isDark ? 0.2 : 0.24,
+              ),
             ),
             Positioned.fill(
               child: DotMatrix(
@@ -359,9 +362,10 @@ class _PulsingDotState extends State<PulsingDot>
   @override
   void initState() {
     super.initState();
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2))
-          ..repeat(reverse: true);
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
   }
 
   @override

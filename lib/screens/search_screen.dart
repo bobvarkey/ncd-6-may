@@ -29,8 +29,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _setQuery(String value) {
     _search.text = value;
-    _search.selection =
-        TextSelection.collapsed(offset: _search.text.length);
+    _search.selection = TextSelection.collapsed(offset: _search.text.length);
     setState(() => _query = value);
   }
 
@@ -85,79 +84,79 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: q.isEmpty
                     ? _EmptySearch(onPick: _setQuery)
                     : (total == 0
-                        ? EmptyState(
-                            icon: Icons.search_off_rounded,
-                            title: 'Nothing found',
-                            body:
-                                'No calculator, module or protocol matches “$_query”. Try a shorter term or a drug name.',
-                          )
-                        : ListView(
-                            padding: const EdgeInsets.only(bottom: 30),
-                            children: [
-                              const SizedBox(height: 6),
-                              Text(
-                                '$total result${total == 1 ? '' : 's'}',
-                                style: context.tiny.copyWith(
+                          ? EmptyState(
+                              icon: Icons.search_off_rounded,
+                              title: 'Nothing found',
+                              body:
+                                  'No calculator, module or protocol matches “$_query”. Try a shorter term or a drug name.',
+                            )
+                          : ListView(
+                              padding: const EdgeInsets.only(bottom: 30),
+                              children: [
+                                const SizedBox(height: 6),
+                                Text(
+                                  '$total result${total == 1 ? '' : 's'}',
+                                  style: context.tiny.copyWith(
                                     color: c.faint,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 12),
-                              if (tools.isNotEmpty) ...[
-                                SectionLabel('Calculators', tone: 'violet'),
-                                for (final tool in tools)
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: _SearchResult(
-                                      icon: tool.icon,
-                                      tone: tool.tone,
-                                      title: tool.title,
-                                      subtitle: tool.subtitle,
-                                      kind: tool.category,
-                                      onTap: () =>
-                                          openTool(context, tool.id),
-                                    ),
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                const SizedBox(height: 10),
-                              ],
-                              if (modules.isNotEmpty) ...[
-                                SectionLabel('Modules', tone: 'teal'),
-                                for (final module in modules)
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: _SearchResult(
-                                      icon: module.icon,
-                                      tone: module.tone,
-                                      title: module.title,
-                                      subtitle: module.subtitle,
-                                      kind: 'Module',
-                                      onTap: () =>
-                                          openModule(context, module),
+                                ),
+                                const SizedBox(height: 12),
+                                if (tools.isNotEmpty) ...[
+                                  SectionLabel('Calculators', tone: 'violet'),
+                                  for (final tool in tools)
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: _SearchResult(
+                                        icon: tool.icon,
+                                        tone: tool.tone,
+                                        title: tool.title,
+                                        subtitle: tool.subtitle,
+                                        kind: tool.category,
+                                        onTap: () => openTool(context, tool.id),
+                                      ),
                                     ),
-                                  ),
-                                const SizedBox(height: 10),
-                              ],
-                              if (protocols.isNotEmpty) ...[
-                                SectionLabel('Protocols', tone: 'coral'),
-                                for (final protocol in protocols)
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: _SearchResult(
-                                      icon: Icons.medication_outlined,
-                                      tone: protocol.emergency
-                                          ? 'danger'
-                                          : 'teal',
-                                      title: protocol.label,
-                                      subtitle: protocol.workingDx,
-                                      kind: protocol.emergency
-                                          ? 'Emergency'
-                                          : protocol.category,
-                                      onTap: () =>
-                                          openProtocol(context, protocol),
+                                  const SizedBox(height: 10),
+                                ],
+                                if (modules.isNotEmpty) ...[
+                                  SectionLabel('Modules', tone: 'teal'),
+                                  for (final module in modules)
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: _SearchResult(
+                                        icon: module.icon,
+                                        tone: module.tone,
+                                        title: module.title,
+                                        subtitle: module.subtitle,
+                                        kind: 'Module',
+                                        onTap: () =>
+                                            openModule(context, module),
+                                      ),
                                     ),
-                                  ),
+                                  const SizedBox(height: 10),
+                                ],
+                                if (protocols.isNotEmpty) ...[
+                                  SectionLabel('Protocols', tone: 'coral'),
+                                  for (final protocol in protocols)
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: _SearchResult(
+                                        icon: Icons.medication_outlined,
+                                        tone: protocol.emergency
+                                            ? 'danger'
+                                            : 'teal',
+                                        title: protocol.label,
+                                        subtitle: protocol.workingDx,
+                                        kind: protocol.emergency
+                                            ? 'Emergency'
+                                            : protocol.category,
+                                        onTap: () =>
+                                            openProtocol(context, protocol),
+                                      ),
+                                    ),
+                                ],
                               ],
-                            ],
-                          )),
+                            )),
               ),
             ),
           ],
@@ -213,8 +212,10 @@ class _EmptySearch extends StatelessWidget {
               GestureDetector(
                 onTap: () => onPick(suggestion),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 13,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: c.surface,
                     borderRadius: BorderRadius.circular(999),
@@ -225,8 +226,10 @@ class _EmptySearch extends StatelessWidget {
                     children: [
                       Icon(Icons.search_rounded, size: 13, color: c.faint),
                       const SizedBox(width: 5),
-                      Text(suggestion,
-                          style: context.label.copyWith(fontSize: 12.5)),
+                      Text(
+                        suggestion,
+                        style: context.label.copyWith(fontSize: 12.5),
+                      ),
                     ],
                   ),
                 ),
@@ -326,16 +329,22 @@ class _SearchResult extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: context.h3.copyWith(fontSize: 14),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
+                Text(
+                  title,
+                  style: context.h3.copyWith(fontSize: 14),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const SizedBox(height: 2),
-                Text(subtitle,
-                    style: context.tiny.copyWith(
-                        fontWeight: FontWeight.w400, height: 1.35),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis),
+                Text(
+                  subtitle,
+                  style: context.tiny.copyWith(
+                    fontWeight: FontWeight.w400,
+                    height: 1.35,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),

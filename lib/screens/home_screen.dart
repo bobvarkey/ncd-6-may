@@ -46,7 +46,10 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
-              _Hero(onSearch: () => _openSearch(context)),
+              _Hero(
+                onSearch: () => _openSearch(context),
+                onOpenAiImport: () => openTool(context, 'ai-import'),
+              ),
               const SizedBox(height: 28),
               const SectionHeader(
                 title: 'Clinical toolkit',
@@ -285,8 +288,9 @@ class _IconAction extends StatelessWidget {
 }
 
 class _Hero extends StatelessWidget {
-  const _Hero({required this.onSearch});
+  const _Hero({required this.onSearch, required this.onOpenAiImport});
   final VoidCallback onSearch;
+  final VoidCallback onOpenAiImport;
 
   @override
   Widget build(BuildContext context) {
@@ -359,7 +363,20 @@ class _Hero extends StatelessWidget {
                     onTap: onSearch,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlineButton(
+                      label: 'AI document import',
+                      icon: Icons.auto_awesome_outlined,
+                      tone: 'violet',
+                      onPressed: onOpenAiImport,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
                 Row(
                   children: [
                     PulsingDot(color: c.success),

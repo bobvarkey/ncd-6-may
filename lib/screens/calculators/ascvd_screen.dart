@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/app_state.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
+import '../../ai_import/ai_import_screen.dart';
+import '../../ai_import/models/ai_targets.dart';
 import '../../logic/calculators.dart';
 import '../../widgets/ui.dart';
 import 'calculator_scaffold.dart';
@@ -98,6 +100,100 @@ class _AscvdScreenState extends State<AscvdScreen> {
     });
   }
 
+  Future<void> _importWithAi() async {
+    final values = await Navigator.of(context).push<Map<String, String>>(
+      MaterialPageRoute(
+        builder: (_) => AiImportScreen(
+          target: ascvdTarget,
+          formLabel: 'ASCVD risk',
+          currentValues: {
+            'age': _age.text,
+            'sex': _sex,
+            'sbp': _sbp.text,
+            'totalCholesterol': _total.text,
+            'hdl': _hdl.text,
+            'egfr': _egfr.text,
+            'bmi': _bmi.text,
+            'diabetes': _diabetes ? 'yes' : 'no',
+            'smoker': _smoker ? 'yes' : 'no',
+            'bpMed': _bpMed ? 'yes' : 'no',
+            'statin': _statin ? 'yes' : 'no',
+          },
+        ),
+      ),
+    );
+    if (!mounted || values == null) return;
+    final previous = <String, dynamic>{
+      'age': _age.text,
+      'sbp': _sbp.text,
+      'total': _total.text,
+      'hdl': _hdl.text,
+      'egfr': _egfr.text,
+      'bmi': _bmi.text,
+      'sex': _sex,
+      'diabetes': _diabetes,
+      'smoker': _smoker,
+      'bpMed': _bpMed,
+      'statin': _statin,
+    };
+    setState(() {
+      final age = values['age'];
+      if (age != null && age.isNotEmpty) _age.text = age;
+      final sex = values['sex'];
+      if (sex == 'male' || sex == 'female') _sex = sex!;
+      final sbp = values['sbp'];
+      if (sbp != null && sbp.isNotEmpty) _sbp.text = sbp;
+      final total = values['totalCholesterol'];
+      if (total != null && total.isNotEmpty) _total.text = total;
+      final hdl = values['hdl'];
+      if (hdl != null && hdl.isNotEmpty) _hdl.text = hdl;
+      final egfr = values['egfr'];
+      if (egfr != null && egfr.isNotEmpty) _egfr.text = egfr;
+      final bmi = values['bmi'];
+      if (bmi != null && bmi.isNotEmpty) _bmi.text = bmi;
+      final diabetes = values['diabetes'];
+      if (diabetes != null) _diabetes = diabetes == 'yes';
+      final smoker = values['smoker'];
+      if (smoker != null) _smoker = smoker == 'yes';
+      final bpMed = values['bpMed'];
+      if (bpMed != null) _bpMed = bpMed == 'yes';
+      final statin = values['statin'];
+      if (statin != null) _statin = statin == 'yes';
+      _error = null;
+      _result = null;
+    });
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: const Text(
+            'AI values loaded. Review them before calculating.',
+          ),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              if (!mounted) return;
+              setState(() {
+                _age.text = previous['age'] as String;
+                _sbp.text = previous['sbp'] as String;
+                _total.text = previous['total'] as String;
+                _hdl.text = previous['hdl'] as String;
+                _egfr.text = previous['egfr'] as String;
+                _bmi.text = previous['bmi'] as String;
+                _sex = previous['sex'] as String;
+                _diabetes = previous['diabetes'] as bool;
+                _smoker = previous['smoker'] as bool;
+                _bpMed = previous['bpMed'] as bool;
+                _statin = previous['statin'] as bool;
+                _result = null;
+              });
+            },
+          ),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = context.ncd;
@@ -105,9 +201,17 @@ class _AscvdScreenState extends State<AscvdScreen> {
     return CalculatorScaffold(
       toolId: 'ascvd',
       title: 'ASCVD risk',
-      subtitle: 'AHA PREVENT 10-year cardiovascular risk for primary prevention',
+      subtitle:
+          'AHA PREVENT 10-year cardiovascular risk for primary prevention',
       icon: Icons.monitor_heart_outlined,
       tone: 'amber',
+      appBarActions: [
+        IconButton(
+          tooltip: 'Import with AI',
+          onPressed: _importWithAi,
+          icon: Icon(Icons.auto_awesome_outlined, color: context.ncd.violet),
+        ),
+      ],
       children: [
         CalcCard(
           title: 'Patient and blood pressure',
@@ -118,7 +222,11 @@ class _AscvdScreenState extends State<AscvdScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _age, label: 'Age', suffix: 'years', hint: '58'),
+                  controller: _age,
+                  label: 'Age',
+                  suffix: 'years',
+                  hint: '58',
+                ),
                 second: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -157,17 +265,23 @@ class _AscvdScreenState extends State<AscvdScreen> {
             children: [
               FieldTriple(
                 first: NumField(
-                    controller: _total,
-                    label: 'Total cholesterol',
-                    suffix: 'mg/dL',
-                    hint: '190'),
+                  controller: _total,
+                  label: 'Total cholesterol',
+                  suffix: 'mg/dL',
+                  hint: '190',
+                ),
                 second: NumField(
-                    controller: _hdl, label: 'HDL-C', suffix: 'mg/dL', hint: '45'),
+                  controller: _hdl,
+                  label: 'HDL-C',
+                  suffix: 'mg/dL',
+                  hint: '45',
+                ),
                 third: NumField(
-                    controller: _egfr,
-                    label: 'eGFR',
-                    suffix: 'mL/min',
-                    hint: '90'),
+                  controller: _egfr,
+                  label: 'eGFR',
+                  suffix: 'mL/min',
+                  hint: '90',
+                ),
               ),
               const SizedBox(height: 14),
               NumField(
@@ -226,8 +340,7 @@ class _AscvdScreenState extends State<AscvdScreen> {
                 value: '${fmtNum(result.riskPct, 1)}%',
                 label: '${result.category} 10-year ASCVD risk',
                 tone: result.tone,
-                detail:
-                    'AHA PREVENT base model · primary prevention in adults without established ASCVD',
+                detail: 'AHA PREVENT base model · primary prevention in adults without established ASCVD',
                 children: [
                   RiskMeter(
                     fraction: (result.riskPct / 25).clamp(0.0, 1.0),

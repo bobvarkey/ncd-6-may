@@ -32,8 +32,9 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
       category: _category,
       query: _query,
     );
-    final emergencyCount =
-        widget.repository.protocols.where((p) => p.emergency).length;
+    final emergencyCount = widget.repository.protocols
+        .where((p) => p.emergency)
+        .length;
 
     return SafeArea(
       bottom: false,
@@ -49,15 +50,20 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   const SizedBox(height: 18),
                   Row(
                     children: [
-                      Text('NCD Rx',
-                          style: context.tiny.copyWith(
-                              color: c.coral,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.4)),
+                      Text(
+                        'NCD Rx',
+                        style: context.tiny.copyWith(
+                          color: c.coral,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.4,
+                        ),
+                      ),
                       const Spacer(),
                       TagPill(
-                          label: '${widget.repository.protocols.length} protocols',
-                          tone: 'coral'),
+                        label:
+                            '${widget.repository.protocols.length} protocols',
+                        tone: 'coral',
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -65,28 +71,39 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Expanded(
-                        child: Text('Serious\ninfections',
-                            style: context.display.copyWith(fontSize: 32)),
+                        child: Text(
+                          'Serious\ninfections',
+                          style: context.display.copyWith(fontSize: 32),
+                        ),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 6),
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: toneSoft(context, 'danger', 0.1),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                              color: c.danger.withValues(alpha: 0.2)),
+                            color: c.danger.withValues(alpha: 0.2),
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.emergency_outlined,
-                                size: 13, color: c.danger),
+                            Icon(
+                              Icons.emergency_outlined,
+                              size: 13,
+                              color: c.danger,
+                            ),
                             const SizedBox(width: 5),
-                            Text('$emergencyCount emergencies',
-                                style: context.tiny.copyWith(
-                                    color: c.danger,
-                                    fontWeight: FontWeight.w800)),
+                            Text(
+                              '$emergencyCount emergencies',
+                              style: context.tiny.copyWith(
+                                color: c.danger,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -120,8 +137,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                         ? const EmptyState(
                             icon: Icons.search_off_rounded,
                             title: 'No matching protocol',
-                            body:
-                                'Try “sepsis”, “meningitis”, “malaria” or a drug name.',
+                            body: 'Try “sepsis”, “meningitis”, “malaria” or a drug name.',
                           )
                         : ListView.separated(
                             padding: const EdgeInsets.only(bottom: 20),
@@ -135,8 +151,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                                 category: protocol.category,
                                 workingDx: protocol.workingDx,
                                 emergency: protocol.emergency,
-                                onTap: () =>
-                                    openProtocol(context, protocol),
+                                onTap: () => openProtocol(context, protocol),
                               );
                             },
                           ),

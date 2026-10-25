@@ -111,14 +111,23 @@ class _HypoScreenState extends State<HypoScreen> {
             children: [
               FieldTriple(
                 first: NumField(
-                    controller: _age, label: 'Age', suffix: 'years', hint: '68'),
+                  controller: _age,
+                  label: 'Age',
+                  suffix: 'years',
+                  hint: '68',
+                ),
                 second: NumField(
-                    controller: _bmi, label: 'BMI', suffix: 'kg/m²', hint: '24'),
+                  controller: _bmi,
+                  label: 'BMI',
+                  suffix: 'kg/m²',
+                  hint: '24',
+                ),
                 third: NumField(
-                    controller: _egfr,
-                    label: 'eGFR',
-                    suffix: 'mL/min',
-                    hint: '55'),
+                  controller: _egfr,
+                  label: 'eGFR',
+                  suffix: 'mL/min',
+                  hint: '55',
+                ),
               ),
               const SizedBox(height: 10),
               SwitchRow(
@@ -146,7 +155,8 @@ class _HypoScreenState extends State<HypoScreen> {
         ),
         CalcCard(
           title: 'Additional risk factors',
-          subtitle: 'Age, BMI, eGFR, insulin and prior events activate automatically',
+          subtitle:
+              'Age, BMI, eGFR, insulin and prior events activate automatically',
           icon: Icons.checklist_rounded,
           tone: 'coral',
           child: Column(
@@ -154,8 +164,9 @@ class _HypoScreenState extends State<HypoScreen> {
             children: [
               for (final group in groups) ...[
                 SectionLabel(group, tone: 'coral'),
-                for (final factor in hypoFactors.where((f) =>
-                    f.category == group && !autoIds.contains(f.id)))
+                for (final factor in hypoFactors.where(
+                  (f) => f.category == group && !autoIds.contains(f.id),
+                ))
                   SwitchRow(
                     label: factor.label,
                     subtitle: factor.description,
@@ -233,11 +244,18 @@ class _HypoScreenState extends State<HypoScreen> {
           children: [
             const KeyValueRow(label: '0–3 points', value: 'Low · target <7.0%'),
             const KeyValueRow(
-                label: '4–8 points', value: 'Moderate · target <7.5%'),
+              label: '4–8 points',
+              value: 'Moderate · target <7.5%',
+            ),
             const KeyValueRow(
-                label: '9–15 points', value: 'High · target <8.0%'),
+              label: '9–15 points',
+              value: 'High · target <8.0%',
+            ),
             const KeyValueRow(
-                label: '16+ points', value: 'Very high · target <8.5%', divider: false),
+              label: '16+ points',
+              value: 'Very high · target <8.5%',
+              divider: false,
+            ),
             const SizedBox(height: 10),
             Text(
               'This is a structured risk checklist, not a validated prediction equation. Use it to prompt a conversation about deprescribing, monitoring and hypoglycaemia education.',

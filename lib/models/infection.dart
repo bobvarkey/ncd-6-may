@@ -12,11 +12,11 @@ class Regimen {
   final String? notes;
 
   factory Regimen.fromJson(Map<String, dynamic> json) => Regimen(
-        drug: json['drug'] as String? ?? '',
-        dose: json['dose'] as String? ?? '',
-        route: json['route'] as String? ?? '',
-        notes: json['notes'] as String?,
-      );
+    drug: json['drug'] as String? ?? '',
+    dose: json['dose'] as String? ?? '',
+    route: json['route'] as String? ?? '',
+    notes: json['notes'] as String?,
+  );
 }
 
 class RenalLiverAdjustments {
@@ -105,18 +105,19 @@ class InfectionProtocol {
       renalLiver: json['renalLiver'] == null
           ? null
           : RenalLiverAdjustments.fromJson(
-              json['renalLiver'] as Map<String, dynamic>),
+              json['renalLiver'] as Map<String, dynamic>,
+            ),
     );
   }
 
   String get searchText => [
-        label,
-        category,
-        workingDx,
-        ...empiric.map((r) => '${r.drug} ${r.dose} ${r.notes ?? ''}'),
-        duration,
-        ...redFlags,
-      ].join(' ').toLowerCase();
+    label,
+    category,
+    workingDx,
+    ...empiric.map((r) => '${r.drug} ${r.dose} ${r.notes ?? ''}'),
+    duration,
+    ...redFlags,
+  ].join(' ').toLowerCase();
 
   String toClinicalText() {
     final b = StringBuffer()
@@ -127,12 +128,16 @@ class InfectionProtocol {
       ..writeln()
       ..writeln('Empiric therapy:');
     for (final r in empiric) {
-      b.writeln('• ${r.drug} — ${r.dose} ${r.route}'
-          '${r.notes == null ? '' : ' (${r.notes})'}');
+      b.writeln(
+        '• ${r.drug} — ${r.dose} ${r.route}'
+        '${r.notes == null ? '' : ' (${r.notes})'}',
+      );
     }
     if (mrsaAdd != null) {
-      b.writeln('• MRSA add-on: ${mrsaAdd!.drug} — ${mrsaAdd!.dose} '
-          '${mrsaAdd!.route}');
+      b.writeln(
+        '• MRSA add-on: ${mrsaAdd!.drug} — ${mrsaAdd!.dose} '
+        '${mrsaAdd!.route}',
+      );
     }
     b
       ..writeln()

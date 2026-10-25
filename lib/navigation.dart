@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'data/clinical_content.dart';
 import 'data/infection_repository.dart';
 import 'models/infection.dart';
+import 'ai_import/ai_import_screen.dart';
+import 'ai_import/models/ai_targets.dart';
 import 'screens/calculators/ascvd_screen.dart';
 import 'screens/calculators/bmi_screen.dart';
 import 'screens/calculators/egfr_screen.dart';
@@ -37,6 +39,7 @@ void openTool(BuildContext context, String id) {
     'liver' => const LiverScreen(),
     'lytes' => const LytesScreen(),
     'homa' => const HomaScreen(),
+    'ai-import' => const AiImportScreen(target: labPanelTarget),
     _ => const SizedBox.shrink(),
   };
   Navigator.of(context).push(_route(page));
@@ -51,9 +54,8 @@ void openProtocol(BuildContext context, InfectionProtocol protocol) {
 }
 
 void openSearch(BuildContext context, InfectionRepository repository) {
-  Navigator.of(context).push(
-    _route(SearchScreen(repository: repository), fullscreen: true),
-  );
+  Navigator.of(context)
+      .push(_route(SearchScreen(repository: repository), fullscreen: true));
 }
 
 Route<T> _route<T>(Widget page, {bool fullscreen = false}) {

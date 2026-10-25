@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/app_state.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
+import '../../ai_import/ai_import_screen.dart';
+import '../../ai_import/models/ai_targets.dart';
 import '../../logic/calculators.dart';
 import '../../widgets/ui.dart';
 import 'calculator_scaffold.dart';
@@ -115,6 +117,68 @@ class _BmiScreenState extends State<BmiScreen> {
     });
   }
 
+  Future<void> _importWithAi() async {
+    final values = await Navigator.of(context).push<Map<String, String>>(
+      MaterialPageRoute(
+        builder: (_) => AiImportScreen(
+          target: bmiTarget,
+          formLabel: 'Body mass index',
+          currentValues: {
+            'heightCm': _height.text,
+            'weightKg': _weight.text,
+            'waistCm': _waist.text,
+            'sex': _sex,
+          },
+        ),
+      ),
+    );
+    if (!mounted || values == null) return;
+    final previous = <String, dynamic>{
+      'height': _height.text,
+      'weight': _weight.text,
+      'waist': _waist.text,
+      'sex': _sex,
+      'metric': _metric,
+    };
+    setState(() {
+      _metric = true;
+      final height = values['heightCm'];
+      if (height != null && height.isNotEmpty) _height.text = height;
+      final weight = values['weightKg'];
+      if (weight != null && weight.isNotEmpty) _weight.text = weight;
+      final waist = values['waistCm'];
+      if (waist != null && waist.isNotEmpty) _waist.text = waist;
+      final sex = values['sex'];
+      if (sex == 'male' || sex == 'female') _sex = sex!;
+      _error = null;
+      _result = null;
+    });
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: const Text(
+            'AI values loaded. Review them before calculating.',
+          ),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              if (!mounted) return;
+              setState(() {
+                _height.text = previous['height'] as String;
+                _weight.text = previous['weight'] as String;
+                _waist.text = previous['waist'] as String;
+                _sex = previous['sex'] as String;
+                _metric = previous['metric'] as bool;
+                _result = null;
+              });
+            },
+          ),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = context.ncd;
@@ -128,6 +192,13 @@ class _BmiScreenState extends State<BmiScreen> {
       subtitle: 'BMI with ethnicity-specific thresholds and central adiposity',
       icon: Icons.monitor_weight_outlined,
       tone: 'violet',
+      appBarActions: [
+        IconButton(
+          tooltip: 'Import with AI',
+          onPressed: _importWithAi,
+          icon: Icon(Icons.auto_awesome_outlined, color: context.ncd.violet),
+        ),
+      ],
       children: [
         CalcCard(
           title: 'Measurements',
@@ -139,8 +210,10 @@ class _BmiScreenState extends State<BmiScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: Text('Units',
-                        style: context.label.copyWith(color: c.text)),
+                    child: Text(
+                      'Units',
+                      style: context.label.copyWith(color: c.text),
+                    ),
                   ),
                   SizedBox(
                     width: 150,
@@ -213,8 +286,7 @@ class _BmiScreenState extends State<BmiScreen> {
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
-                Text(_error!,
-                    style: context.small.copyWith(color: c.danger)),
+                Text(_error!, style: context.small.copyWith(color: c.danger)),
               ],
             ],
           ),
@@ -240,8 +312,7 @@ class _BmiScreenState extends State<BmiScreen> {
           const NoteCard(
             tone: 'violet',
             icon: Icons.info_outline_rounded,
-            text:
-                'Enter height and weight to classify BMI. Add waist circumference to estimate waist-to-height ratio and central obesity risk.',
+            text: 'Enter height and weight to classify BMI. Add waist circumference to estimate waist-to-height ratio and central obesity risk.',
           ),
         ],
         const SizedBox(height: 14),
@@ -250,8 +321,10 @@ class _BmiScreenState extends State<BmiScreen> {
           icon: Icons.functions_rounded,
           tone: 'violet',
           children: [
-            Text('BMI = weight (kg) ÷ height (m)²',
-                style: context.mono.copyWith(fontWeight: FontWeight.w700)),
+            Text(
+              'BMI = weight (kg) ÷ height (m)²',
+              style: context.mono.copyWith(fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 10),
             const KeyValueRow(label: 'WHO normal range', value: '18.5–24.9'),
             const KeyValueRow(label: 'Asian-Pacific overweight', value: '≥23'),
@@ -259,7 +332,10 @@ class _BmiScreenState extends State<BmiScreen> {
             const KeyValueRow(label: 'Indian overweight', value: '23–24.9'),
             const KeyValueRow(label: 'Indian obesity', value: '≥25'),
             const KeyValueRow(
-                label: 'Waist-to-height target', value: '<0.50', divider: false),
+              label: 'Waist-to-height target',
+              value: '<0.50',
+              divider: false,
+            ),
             const SizedBox(height: 10),
             Text(
               'Waist thresholds: ≥94 cm in men and ≥80 cm in women indicate central obesity; Asian men use ≥90 cm. BMI is a screening tool and does not measure body composition directly.',
@@ -273,11 +349,7 @@ class _BmiScreenState extends State<BmiScreen> {
 }
 
 class _BmiResultView extends StatelessWidget {
-  const _BmiResultView({
-    super.key,
-    required this.result,
-    required this.metric,
-  });
+  const _BmiResultView({super.key, required this.result, required this.metric});
 
   final BmiResult result;
   final bool metric;
@@ -286,7 +358,9 @@ class _BmiResultView extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.ncd;
     final low = metric ? result.healthyLowKg : result.healthyLowKg / 0.45359237;
-    final high = metric ? result.healthyHighKg : result.healthyHighKg / 0.45359237;
+    final high = metric
+        ? result.healthyHighKg
+        : result.healthyHighKg / 0.45359237;
     final unit = metric ? 'kg' : 'lb';
     final whtr = result.whtr;
 
@@ -358,8 +432,7 @@ class _BmiResultView extends StatelessWidget {
                     'BMI is below the normal range. Screen for inadequate intake, malabsorption and systemic illness.'
                   else
                     'BMI is above the healthy range. Assess waist, BP, HbA1c, lipids and weight-related complications.',
-                  if (result.band.tone != 'success')
-                    'A 5–10% weight change is a clinically meaningful first target when treatment is indicated.',
+                  if (result.band.tone != 'success') 'A 5–10% weight change is a clinically meaningful first target when treatment is indicated.',
                   'Use the same classification system over time so trends remain comparable.',
                 ],
               ),

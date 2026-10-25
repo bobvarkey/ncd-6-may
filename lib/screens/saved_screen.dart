@@ -38,39 +38,45 @@ class SavedScreen extends StatelessWidget {
       if (key.startsWith('tool:')) {
         final tool = toolById(key.substring(5));
         if (tool == null) continue;
-        items.add(_SavedItem(
-          key: key,
-          title: tool.title,
-          subtitle: tool.subtitle,
-          kind: 'Calculator',
-          icon: tool.icon,
-          tone: tool.tone,
-          onTap: () => openTool(context, tool.id),
-        ));
+        items.add(
+          _SavedItem(
+            key: key,
+            title: tool.title,
+            subtitle: tool.subtitle,
+            kind: 'Calculator',
+            icon: tool.icon,
+            tone: tool.tone,
+            onTap: () => openTool(context, tool.id),
+          ),
+        );
       } else if (key.startsWith('module:')) {
         final module = moduleById(key.substring(7));
         if (module == null) continue;
-        items.add(_SavedItem(
-          key: key,
-          title: module.title,
-          subtitle: module.subtitle,
-          kind: 'Module',
-          icon: module.icon,
-          tone: module.tone,
-          onTap: () => openModule(context, module),
-        ));
+        items.add(
+          _SavedItem(
+            key: key,
+            title: module.title,
+            subtitle: module.subtitle,
+            kind: 'Module',
+            icon: module.icon,
+            tone: module.tone,
+            onTap: () => openModule(context, module),
+          ),
+        );
       } else if (key.startsWith('protocol:')) {
         final protocol = repository.byId(key.substring(9));
         if (protocol == null) continue;
-        items.add(_SavedItem(
-          key: key,
-          title: protocol.label,
-          subtitle: protocol.workingDx,
-          kind: protocol.emergency ? 'Emergency' : 'Protocol',
-          icon: Icons.medication_outlined,
-          tone: protocol.emergency ? 'danger' : 'teal',
-          onTap: () => openProtocol(context, protocol),
-        ));
+        items.add(
+          _SavedItem(
+            key: key,
+            title: protocol.label,
+            subtitle: protocol.workingDx,
+            kind: protocol.emergency ? 'Emergency' : 'Protocol',
+            icon: Icons.medication_outlined,
+            tone: protocol.emergency ? 'danger' : 'teal',
+            onTap: () => openProtocol(context, protocol),
+          ),
+        );
       }
     }
     return items;
@@ -96,18 +102,24 @@ class SavedScreen extends StatelessWidget {
               const SizedBox(height: 18),
               Row(
                 children: [
-                  Text('NCD Rx',
-                      style: context.tiny.copyWith(
-                          color: c.violet,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.4)),
+                  Text(
+                    'NCD Rx',
+                    style: context.tiny.copyWith(
+                      color: c.violet,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.4,
+                    ),
+                  ),
                   const Spacer(),
                   if (saved.isNotEmpty)
                     TagPill(label: '${saved.length} saved', tone: 'violet'),
                 ],
               ),
               const SizedBox(height: 10),
-              Text('Saved\n& recent', style: context.display.copyWith(fontSize: 32)),
+              Text(
+                'Saved\n& recent',
+                style: context.display.copyWith(fontSize: 32),
+              ),
               const SizedBox(height: 8),
               Text(
                 'Bookmarks and recent activity stay on this device. Nothing is sent to a server.',
@@ -118,14 +130,14 @@ class SavedScreen extends StatelessWidget {
                 const EmptyState(
                   icon: Icons.bookmark_border_rounded,
                   title: 'Nothing saved yet',
-                  body:
-                      'Tap the bookmark icon on a calculator, module or protocol and it will appear here for quick access.',
+                  body: 'Tap the bookmark icon on a calculator, module or protocol and it will appear here for quick access.',
                 )
               else ...[
                 if (saved.isNotEmpty) ...[
                   SectionHeader(
                     title: 'Bookmarks',
-                    subtitle: '${saved.length} item${saved.length == 1 ? '' : 's'}',
+                    subtitle:
+                        '${saved.length} item${saved.length == 1 ? '' : 's'}',
                   ),
                   const SizedBox(height: 10),
                   for (final item in saved)
@@ -136,8 +148,11 @@ class SavedScreen extends StatelessWidget {
                         trailing: IconButton(
                           tooltip: 'Remove bookmark',
                           onPressed: () => state.toggleFavorite(item.key),
-                          icon: Icon(Icons.bookmark_rounded,
-                              size: 19, color: c.magenta),
+                          icon: Icon(
+                            Icons.bookmark_rounded,
+                            size: 19,
+                            color: c.magenta,
+                          ),
                         ),
                       ),
                     ),
@@ -162,8 +177,7 @@ class SavedScreen extends StatelessWidget {
                   tone: 'violet',
                   icon: Icons.lock_outline_rounded,
                   title: 'Local by design',
-                  text:
-                      'Bookmarks and recent items are stored in the app’s local preferences. They can be cleared at any time from here or from Settings.',
+                  text: 'Bookmarks and recent items are stored in the app’s local preferences. They can be cleared at any time from here or from Settings.',
                 ),
               ],
             ],
@@ -189,8 +203,7 @@ class _SavedTile extends StatelessWidget {
       subtitle: item.subtitle,
       category: item.kind,
       onTap: item.onTap,
-      trailing: trailing ??
-          TagPill(label: item.kind, tone: item.tone),
+      trailing: trailing ?? TagPill(label: item.kind, tone: item.tone),
     );
   }
 }

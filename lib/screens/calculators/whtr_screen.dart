@@ -47,7 +47,9 @@ class _WhtrScreenState extends State<WhtrScreen> {
         return;
       }
       final ratio = waist! / height!;
-      final threshold = _sex == 'female' ? 80.0 : (_ethnicity == 'asian' ? 90.0 : 94.0);
+      final threshold = _sex == 'female'
+          ? 80.0
+          : (_ethnicity == 'asian' ? 90.0 : 94.0);
       _result = (
         ratio: roundTo(ratio, 2),
         band: whtrCategory(ratio),
@@ -89,12 +91,17 @@ class _WhtrScreenState extends State<WhtrScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _waist, label: 'Waist', suffix: 'cm', hint: '82'),
+                  controller: _waist,
+                  label: 'Waist',
+                  suffix: 'cm',
+                  hint: '82',
+                ),
                 second: NumField(
-                    controller: _height,
-                    label: 'Height',
-                    suffix: 'cm',
-                    hint: '170'),
+                  controller: _height,
+                  label: 'Height',
+                  suffix: 'cm',
+                  hint: '170',
+                ),
               ),
               const SizedBox(height: 14),
               FieldPair(
@@ -195,8 +202,7 @@ class _WhtrScreenState extends State<WhtrScreen> {
           const NoteCard(
             tone: 'violet',
             icon: Icons.info_outline_rounded,
-            text:
-                'Waist-to-height ratio performs well across sexes and ethnic groups. Measure the waist at the midpoint between the lowest rib and the iliac crest.',
+            text: 'Waist-to-height ratio performs well across sexes and ethnic groups. Measure the waist at the midpoint between the lowest rib and the iliac crest.',
           ),
         const SizedBox(height: 14),
         InfoAccordion(
@@ -204,12 +210,18 @@ class _WhtrScreenState extends State<WhtrScreen> {
           icon: Icons.functions_rounded,
           tone: 'violet',
           children: [
-            Text('WHtR = waist circumference ÷ height',
-                style: context.mono.copyWith(fontWeight: FontWeight.w700)),
+            Text(
+              'WHtR = waist circumference ÷ height',
+              style: context.mono.copyWith(fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 10),
             const KeyValueRow(label: 'Healthy', value: '<0.40–0.49'),
             const KeyValueRow(label: 'Increased risk', value: '0.50–0.59'),
-            const KeyValueRow(label: 'High risk', value: '≥0.60', divider: false),
+            const KeyValueRow(
+              label: 'High risk',
+              value: '≥0.60',
+              divider: false,
+            ),
             const SizedBox(height: 10),
             Text(
               'Waist thresholds: ≥94 cm in men and ≥80 cm in women indicate central obesity; Asian men use ≥90 cm. Keep the same measurement technique between visits.',

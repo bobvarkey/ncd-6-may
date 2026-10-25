@@ -121,20 +121,23 @@ class _SteroidScreenState extends State<SteroidScreen> {
               const SizedBox(height: 14),
               FieldTriple(
                 first: NumField(
-                    controller: _dose,
-                    label: 'Daily dose',
-                    suffix: 'mg',
-                    hint: '40'),
+                  controller: _dose,
+                  label: 'Daily dose',
+                  suffix: 'mg',
+                  hint: '40',
+                ),
                 second: NumField(
-                    controller: _duration,
-                    label: 'Duration so far',
-                    suffix: 'weeks',
-                    hint: '6'),
+                  controller: _duration,
+                  label: 'Duration so far',
+                  suffix: 'weeks',
+                  hint: '6',
+                ),
                 third: NumField(
-                    controller: _target,
-                    label: 'Target (pred-eq)',
-                    suffix: 'mg',
-                    hint: '0'),
+                  controller: _target,
+                  label: 'Target (pred-eq)',
+                  suffix: 'mg',
+                  hint: '0',
+                ),
               ),
               const SizedBox(height: 14),
               const FieldLabel('Taper pace'),
@@ -155,7 +158,9 @@ class _SteroidScreenState extends State<SteroidScreen> {
               Text(
                 taperSpeeds[_speed]?.note ?? '',
                 style: context.tiny.copyWith(
-                    fontWeight: FontWeight.w400, height: 1.35),
+                  fontWeight: FontWeight.w400,
+                  height: 1.35,
+                ),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -166,7 +171,8 @@ class _SteroidScreenState extends State<SteroidScreen> {
         ),
         CalcCard(
           title: 'Morning cortisol (optional)',
-          subtitle: '08:00 sample after prolonged use or with withdrawal symptoms',
+          subtitle:
+              '08:00 sample after prolonged use or with withdrawal symptoms',
           icon: Icons.science_outlined,
           tone: 'amber',
           child: Column(
@@ -175,8 +181,10 @@ class _SteroidScreenState extends State<SteroidScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: Text('Units',
-                        style: context.label.copyWith(color: c.text)),
+                    child: Text(
+                      'Units',
+                      style: context.label.copyWith(color: c.text),
+                    ),
                   ),
                   SizedBox(
                     width: 150,
@@ -307,8 +315,7 @@ class _TaperStepRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 11),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(
-              color: isLast ? Colors.transparent : c.border),
+          bottom: BorderSide(color: isLast ? Colors.transparent : c.border),
         ),
       ),
       child: Row(
@@ -321,12 +328,17 @@ class _TaperStepRow extends StatelessWidget {
             decoration: BoxDecoration(
               color: toneSoft(context, tone, 0.14),
               shape: BoxShape.circle,
-              border: Border.all(color: toneColor(context, tone).withValues(alpha: 0.25)),
+              border: Border.all(
+                color: toneColor(context, tone).withValues(alpha: 0.25),
+              ),
             ),
-            child: Text('$index',
-                style: context.tiny.copyWith(
-                    color: toneColor(context, tone),
-                    fontWeight: FontWeight.w800)),
+            child: Text(
+              '$index',
+              style: context.tiny.copyWith(
+                color: toneColor(context, tone),
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
           const SizedBox(width: 11),
           Expanded(
@@ -339,7 +351,9 @@ class _TaperStepRow extends StatelessWidget {
                       child: Text(
                         '${fmtNum(dose, 1)} mg $drug daily',
                         style: context.body.copyWith(
-                            fontSize: 14.5, fontWeight: FontWeight.w700),
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                     TagPill(label: '${step.weeks} wk', tone: tone),
@@ -349,7 +363,9 @@ class _TaperStepRow extends StatelessWidget {
                 Text(
                   '${fmtNum(step.predEq, 1)} mg pred-eq · ${step.phase}',
                   style: context.tiny.copyWith(
-                      fontWeight: FontWeight.w400, color: c.muted),
+                    fontWeight: FontWeight.w400,
+                    color: c.muted,
+                  ),
                 ),
               ],
             ),

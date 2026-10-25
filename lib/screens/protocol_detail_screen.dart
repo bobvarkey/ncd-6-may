@@ -107,32 +107,50 @@ class _ProtocolDetailScreenState extends State<ProtocolDetailScreen> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(protocol.label,
-                    style: context.display.copyWith(
-                        fontSize: 32, letterSpacing: -1.0)),
+                Text(
+                  protocol.label,
+                  style: context.display.copyWith(
+                    fontSize: 32,
+                    letterSpacing: -1.0,
+                  ),
+                ),
                 const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: toneSoft(context, protocol.emergency ? 'danger' : 'teal', 0.07),
+                    color: toneSoft(
+                      context,
+                      protocol.emergency ? 'danger' : 'teal',
+                      0.07,
+                    ),
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(
-                      color: toneColor(context, protocol.emergency ? 'danger' : 'teal')
-                          .withValues(alpha: 0.18),
+                      color: toneColor(
+                        context,
+                        protocol.emergency ? 'danger' : 'teal',
+                      ).withValues(alpha: 0.18),
                     ),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.medical_services_outlined,
-                          size: 18,
-                          color: toneColor(context,
-                              protocol.emergency ? 'danger' : 'teal')),
+                      Icon(
+                        Icons.medical_services_outlined,
+                        size: 18,
+                        color: toneColor(
+                          context,
+                          protocol.emergency ? 'danger' : 'teal',
+                        ),
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(protocol.workingDx,
-                            style: context.small.copyWith(
-                                color: c.text, height: 1.5)),
+                        child: Text(
+                          protocol.workingDx,
+                          style: context.small.copyWith(
+                            color: c.text,
+                            height: 1.5,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -297,25 +315,33 @@ class _ProtocolDetailScreenState extends State<ProtocolDetailScreen> {
                 const SizedBox(height: 18),
                 SurfaceCard(
                   padding: const EdgeInsets.all(14),
-                  tint: c.isDark ? const Color(0xFF161218) : const Color(0xFFFFF6EC),
+                  tint: c.isDark
+                      ? const Color(0xFF161218)
+                      : const Color(0xFFFFF6EC),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.lightbulb_outline,
-                          size: 18, color: c.amber),
+                      Icon(Icons.lightbulb_outline, size: 18, color: c.amber),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Scenario at the bedside',
-                                style: context.label.copyWith(
-                                    color: c.amber, fontWeight: FontWeight.w800)),
+                            Text(
+                              'Scenario at the bedside',
+                              style: context.label.copyWith(
+                                color: c.amber,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                             const SizedBox(height: 4),
-                            Text(protocol.presetScenario,
-                                style: context.small.copyWith(
-                                    color: c.text.withValues(alpha: 0.86),
-                                    height: 1.48)),
+                            Text(
+                              protocol.presetScenario,
+                              style: context.small.copyWith(
+                                color: c.text.withValues(alpha: 0.86),
+                                height: 1.48,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -351,8 +377,7 @@ class _RegimenRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(
-              color: isLast ? Colors.transparent : c.border),
+          bottom: BorderSide(color: isLast ? Colors.transparent : c.border),
         ),
       ),
       child: Column(
@@ -389,9 +414,13 @@ class _RegimenRow extends StatelessWidget {
           ),
           if (regimen.notes != null) ...[
             const SizedBox(height: 3),
-            Text(regimen.notes!,
-                style: context.tiny.copyWith(
-                    fontWeight: FontWeight.w400, height: 1.4)),
+            Text(
+              regimen.notes!,
+              style: context.tiny.copyWith(
+                fontWeight: FontWeight.w400,
+                height: 1.4,
+              ),
+            ),
           ],
         ],
       ),
@@ -434,12 +463,14 @@ class _FlagToggle extends StatelessWidget {
           children: [
             Icon(icon, size: 14, color: active ? color : context.ncd.faint),
             const SizedBox(width: 6),
-            Text(label,
-                style: context.label.copyWith(
-                  fontSize: 12,
-                  color: active ? color : context.ncd.muted,
-                  fontWeight: FontWeight.w700,
-                )),
+            Text(
+              label,
+              style: context.label.copyWith(
+                fontSize: 12,
+                color: active ? color : context.ncd.muted,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ],
         ),
       ),
@@ -480,21 +511,26 @@ class _InfoCard extends StatelessWidget {
               Icon(icon, size: 17, color: toneColor(context, tone)),
               const SizedBox(width: 7),
               Expanded(
-                child: Text(title,
-                    style: context.h3.copyWith(
-                      fontSize: 14.5,
-                      color: toneColor(context, tone),
-                    )),
+                child: Text(
+                  title,
+                  style: context.h3.copyWith(
+                    fontSize: 14.5,
+                    color: toneColor(context, tone),
+                  ),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 10),
           if (body != null)
-            Text(body!,
-                style: context.small.copyWith(
-                    color: c.text.withValues(alpha: 0.86), height: 1.5)),
-          if (items != null)
-            BulletList(items: items!, tone: tone, dense: true),
+            Text(
+              body!,
+              style: context.small.copyWith(
+                color: c.text.withValues(alpha: 0.86),
+                height: 1.5,
+              ),
+            ),
+          if (items != null) BulletList(items: items!, tone: tone, dense: true),
           if (rows != null)
             for (final row in rows!)
               Padding(
@@ -502,13 +538,21 @@ class _InfoCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(row.$1,
-                        style: context.tiny.copyWith(
-                            color: toneColor(context, tone),
-                            fontWeight: FontWeight.w800)),
+                    Text(
+                      row.$1,
+                      style: context.tiny.copyWith(
+                        color: toneColor(context, tone),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                     const SizedBox(height: 2),
-                    Text(row.$2, style: context.small.copyWith(
-                        color: c.text.withValues(alpha: 0.86), height: 1.45)),
+                    Text(
+                      row.$2,
+                      style: context.small.copyWith(
+                        color: c.text.withValues(alpha: 0.86),
+                        height: 1.45,
+                      ),
+                    ),
                   ],
                 ),
               ),

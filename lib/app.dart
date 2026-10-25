@@ -6,11 +6,7 @@ import 'data/infection_repository.dart';
 import 'screens/shell.dart';
 
 class NcdApp extends StatelessWidget {
-  const NcdApp({
-    super.key,
-    required this.state,
-    required this.repository,
-  });
+  const NcdApp({super.key, required this.state, required this.repository});
 
   final AppState state;
   final InfectionRepository repository;

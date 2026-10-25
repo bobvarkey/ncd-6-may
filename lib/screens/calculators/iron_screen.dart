@@ -118,25 +118,32 @@ class _IronScreenState extends State<IronScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _ferritin,
-                    label: 'Ferritin',
-                    suffix: 'ng/mL',
-                    hint: '18'),
+                  controller: _ferritin,
+                  label: 'Ferritin',
+                  suffix: 'ng/mL',
+                  hint: '18',
+                ),
                 second: NumField(
-                    controller: _tsat, label: 'TSAT', suffix: '%', hint: '12'),
+                  controller: _tsat,
+                  label: 'TSAT',
+                  suffix: '%',
+                  hint: '12',
+                ),
               ),
               const SizedBox(height: 14),
               FieldPair(
                 first: NumField(
-                    controller: _hb,
-                    label: 'Haemoglobin',
-                    suffix: 'g/dL',
-                    hint: '9.8'),
+                  controller: _hb,
+                  label: 'Haemoglobin',
+                  suffix: 'g/dL',
+                  hint: '9.8',
+                ),
                 second: NumField(
-                    controller: _weight,
-                    label: 'Weight',
-                    suffix: 'kg',
-                    hint: '70'),
+                  controller: _weight,
+                  label: 'Weight',
+                  suffix: 'kg',
+                  hint: '70',
+                ),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -253,8 +260,7 @@ class _IronScreenState extends State<IronScreen> {
                   tone: 'warning',
                   icon: Icons.warning_amber_rounded,
                   title: 'IV iron safety',
-                  text:
-                      'Have resuscitation equipment available and follow the product-specific test-dose or observation requirements. Avoid IV iron in the first trimester of pregnancy and in active systemic infection.',
+                  text: 'Have resuscitation equipment available and follow the product-specific test-dose or observation requirements. Avoid IV iron in the first trimester of pregnancy and in active systemic infection.',
                 ),
               ],
             ],

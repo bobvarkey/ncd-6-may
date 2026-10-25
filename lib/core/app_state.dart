@@ -43,14 +43,11 @@ class AppState extends ChangeNotifier {
     notifyListeners();
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-        _themeKey,
-        switch (mode) {
-          ThemeMode.light => 'light',
-          ThemeMode.system => 'system',
-          ThemeMode.dark => 'dark',
-        },
-      );
+      await prefs.setString(_themeKey, switch (mode) {
+        ThemeMode.light => 'light',
+        ThemeMode.system => 'system',
+        ThemeMode.dark => 'dark',
+      });
     } catch (_) {}
   }
 
@@ -88,7 +85,7 @@ class AppState extends ChangeNotifier {
 
 class AppScope extends InheritedNotifier<AppState> {
   const AppScope({super.key, required AppState state, required super.child})
-      : super(notifier: state);
+    : super(notifier: state);
 
   static AppState of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();

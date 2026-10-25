@@ -17,15 +17,15 @@ void main() {
 
     test('Asian and Indian thresholds classify at a lower BMI', () {
       expect(
-        calculateBmi(heightCm: 170, weightKg: 70, group: 'asian-pacific')
-            .band
-            .label,
+        calculateBmi(
+          heightCm: 170,
+          weightKg: 70,
+          group: 'asian-pacific',
+        ).band.label,
         'Overweight / at risk',
       );
       expect(
-        calculateBmi(heightCm: 170, weightKg: 70, group: 'indian')
-            .band
-            .label,
+        calculateBmi(heightCm: 170, weightKg: 70, group: 'indian').band.label,
         'Overweight',
       );
     });
@@ -46,19 +46,13 @@ void main() {
 
   group('eGFR and KDIGO', () {
     test('CKD-EPI 2021 is plausible for a 40-year-old man', () {
-      final gfr = ckdEpi2021(
-        creatinineMgDl: 1.0,
-        age: 40,
-        female: false,
-      );
+      final gfr = ckdEpi2021(creatinineMgDl: 1.0, age: 40, female: false);
       expect(gfr, closeTo(97.5, 2.5));
     });
 
     test('female sex and higher creatinine lower eGFR', () {
-      final male = ckdEpi2021(
-          creatinineMgDl: 1.2, age: 60, female: false);
-      final female = ckdEpi2021(
-          creatinineMgDl: 1.2, age: 60, female: true);
+      final male = ckdEpi2021(creatinineMgDl: 1.2, age: 60, female: false);
+      final female = ckdEpi2021(creatinineMgDl: 1.2, age: 60, female: true);
       expect(female, lessThan(male));
     });
 
@@ -233,8 +227,11 @@ void main() {
 
   group('Iron', () {
     test('classifies absolute deficiency and calculates Ganzoni deficit', () {
-      final diagnosis =
-          diagnoseIron(ferritin: 12, tsat: 10, inflammation: false);
+      final diagnosis = diagnoseIron(
+        ferritin: 12,
+        tsat: 10,
+        inflammation: false,
+      );
       expect(diagnosis.code, 'absolute');
       final plan = planIron(
         diagnosis: diagnosis,
@@ -253,8 +250,7 @@ void main() {
     });
 
     test('inflammation raises the ferritin threshold', () {
-      final result =
-          diagnoseIron(ferritin: 80, tsat: 10, inflammation: true);
+      final result = diagnoseIron(ferritin: 80, tsat: 10, inflammation: true);
       expect(result.code, 'absolute');
     });
   });
@@ -314,12 +310,7 @@ void main() {
 
   group('Liver scores', () {
     test('FIB-4 is indeterminate at the expected value', () {
-      final result = calculateFib4(
-        age: 50,
-        ast: 40,
-        alt: 40,
-        platelets: 200,
-      );
+      final result = calculateFib4(age: 50, ast: 40, alt: 40, platelets: 200);
       expect(result.score, closeTo(1.58, 0.02));
       expect(result.label, 'Indeterminate');
     });

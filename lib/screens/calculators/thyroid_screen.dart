@@ -109,20 +109,23 @@ class _ThyroidScreenState extends State<ThyroidScreen> {
             children: [
               FieldTriple(
                 first: NumField(
-                    controller: _tsh,
-                    label: 'TSH',
-                    suffix: 'mIU/L',
-                    hint: '0.4–4.0'),
+                  controller: _tsh,
+                  label: 'TSH',
+                  suffix: 'mIU/L',
+                  hint: '0.4–4.0',
+                ),
                 second: NumField(
-                    controller: _ft4,
-                    label: 'Free T4',
-                    suffix: 'ng/dL',
-                    hint: '0.8–1.8'),
+                  controller: _ft4,
+                  label: 'Free T4',
+                  suffix: 'ng/dL',
+                  hint: '0.8–1.8',
+                ),
                 third: NumField(
-                    controller: _ft3,
-                    label: 'T3 (optional)',
-                    suffix: 'pg/mL',
-                    hint: '2.3–4.2'),
+                  controller: _ft3,
+                  label: 'T3 (optional)',
+                  suffix: 'pg/mL',
+                  hint: '2.3–4.2',
+                ),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -140,12 +143,17 @@ class _ThyroidScreenState extends State<ThyroidScreen> {
             children: [
               FieldPair(
                 first: NumField(
-                    controller: _age, label: 'Age', suffix: 'years', hint: '45'),
+                  controller: _age,
+                  label: 'Age',
+                  suffix: 'years',
+                  hint: '45',
+                ),
                 second: NumField(
-                    controller: _weight,
-                    label: 'Weight',
-                    suffix: 'kg',
-                    hint: '70'),
+                  controller: _weight,
+                  label: 'Weight',
+                  suffix: 'kg',
+                  hint: '70',
+                ),
               ),
               const SizedBox(height: 8),
               SwitchRow(
@@ -221,7 +229,11 @@ class _ThyroidScreenState extends State<ThyroidScreen> {
                 title: 'Next steps',
                 icon: Icons.arrow_forward_rounded,
                 tone: 'amber',
-                child: BulletList(items: result.nextSteps, tone: 'amber', dense: true),
+                child: BulletList(
+                  items: result.nextSteps,
+                  tone: 'amber',
+                  dense: true,
+                ),
               ),
             ],
           ),
@@ -232,16 +244,26 @@ class _ThyroidScreenState extends State<ThyroidScreen> {
           tone: 'amber',
           children: [
             const KeyValueRow(
-                label: 'High TSH + low FT4', value: 'Overt hypothyroidism'),
+              label: 'High TSH + low FT4',
+              value: 'Overt hypothyroidism',
+            ),
             const KeyValueRow(
-                label: 'High TSH + normal FT4', value: 'Subclinical hypothyroidism'),
+              label: 'High TSH + normal FT4',
+              value: 'Subclinical hypothyroidism',
+            ),
             const KeyValueRow(
-                label: 'Low TSH + high FT4/T3', value: 'Overt thyrotoxicosis'),
+              label: 'Low TSH + high FT4/T3',
+              value: 'Overt thyrotoxicosis',
+            ),
             const KeyValueRow(
-                label: 'Low TSH + normal FT4/T3', value: 'Subclinical hyperthyroidism'),
+              label: 'Low TSH + normal FT4/T3',
+              value: 'Subclinical hyperthyroidism',
+            ),
             const KeyValueRow(
-                label: 'Low/normal TSH + low FT4', value: 'Central or non-thyroidal illness',
-                divider: false),
+              label: 'Low/normal TSH + low FT4',
+              value: 'Central or non-thyroidal illness',
+              divider: false,
+            ),
             const SizedBox(height: 10),
             Text(
               'Reference ranges vary by laboratory. Interpret against symptoms, goitre, pregnancy status, biotin and drugs such as amiodarone.',
@@ -268,18 +290,28 @@ class _MedLine extends StatelessWidget {
       decoration: BoxDecoration(
         color: toneSoft(context, tone, 0.07),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: toneColor(context, tone).withValues(alpha: 0.15)),
+        border: Border.all(
+          color: toneColor(context, tone).withValues(alpha: 0.15),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: context.label.copyWith(
-                  color: toneColor(context, tone), fontWeight: FontWeight.w800)),
+          Text(
+            label,
+            style: context.label.copyWith(
+              color: toneColor(context, tone),
+              fontWeight: FontWeight.w800,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(text,
-              style: context.small.copyWith(
-                  color: c.text.withValues(alpha: 0.86), height: 1.5)),
+          Text(
+            text,
+            style: context.small.copyWith(
+              color: c.text.withValues(alpha: 0.86),
+              height: 1.5,
+            ),
+          ),
         ],
       ),
     );

@@ -31,10 +31,7 @@ class _ShellState extends State<Shell> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      HomeScreen(
-        repository: widget.repository,
-        onSelectTab: _select,
-      ),
+      HomeScreen(repository: widget.repository, onSelectTab: _select),
       const ToolsScreen(),
       ProtocolsScreen(repository: widget.repository),
       SavedScreen(repository: widget.repository),
@@ -79,8 +76,16 @@ class _NavDestination {
 const _destinations = <_NavDestination>[
   _NavDestination('Home', Icons.grid_view_outlined, Icons.grid_view_rounded),
   _NavDestination('Tools', Icons.calculate_outlined, Icons.calculate_rounded),
-  _NavDestination('Protocols', Icons.medication_outlined, Icons.medication_rounded),
-  _NavDestination('Saved', Icons.bookmark_border_rounded, Icons.bookmark_rounded),
+  _NavDestination(
+    'Protocols',
+    Icons.medication_outlined,
+    Icons.medication_rounded,
+  ),
+  _NavDestination(
+    'Saved',
+    Icons.bookmark_border_rounded,
+    Icons.bookmark_rounded,
+  ),
   _NavDestination('Settings', Icons.tune_outlined, Icons.tune_rounded),
 ];
 
@@ -148,7 +153,9 @@ class _NavItem extends StatelessWidget {
                 width: 44,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: active ? toneSoft(context, 'magenta', 0.15) : Colors.transparent,
+                  color: active
+                      ? toneSoft(context, 'magenta', 0.15)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: active
@@ -206,9 +213,10 @@ class _NavRail extends StatelessWidget {
             const SizedBox(height: 18),
             const BrandMark(size: 42),
             const SizedBox(height: 10),
-            Text('NCD Rx',
-                style: context.h3.copyWith(
-                    fontSize: 12, letterSpacing: -0.1)),
+            Text(
+              'NCD Rx',
+              style: context.h3.copyWith(fontSize: 12, letterSpacing: -0.1),
+            ),
             const SizedBox(height: 14),
             _RailIcon(
               icon: Icons.search_rounded,
@@ -269,10 +277,14 @@ class _RailIcon extends StatelessWidget {
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: active ? toneSoft(context, 'magenta', 0.14) : Colors.transparent,
+            color: active
+                ? toneSoft(context, 'magenta', 0.14)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(13),
             border: Border.all(
-              color: active ? c.magenta.withValues(alpha: 0.2) : Colors.transparent,
+              color: active
+                  ? c.magenta.withValues(alpha: 0.2)
+                  : Colors.transparent,
             ),
           ),
           child: Column(
@@ -302,12 +314,14 @@ class _RailTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
     final c = context.ncd;
-    final isDark = state.themeMode == ThemeMode.dark ||
+    final isDark =
+        state.themeMode == ThemeMode.dark ||
         (state.themeMode == ThemeMode.system &&
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
     return IconButton(
       tooltip: isDark ? 'Switch to light' : 'Switch to dark',
-      onPressed: () => state.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
+      onPressed: () =>
+          state.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
       icon: Icon(
         isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
         size: 19,

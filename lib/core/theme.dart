@@ -20,7 +20,12 @@ class NcdPalette {
   static const gradientSoft = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0x33FF6B35), Color(0x22F7931E), Color(0x33E84393), Color(0x336C5CE7)],
+    colors: [
+      Color(0x33FF6B35),
+      Color(0x22F7931E),
+      Color(0x33E84393),
+      Color(0x336C5CE7),
+    ],
   );
 }
 
@@ -197,82 +202,82 @@ extension NcdContext on BuildContext {
   TextTheme get textStyles => Theme.of(this).textTheme;
 
   TextStyle get display => TextStyle(
-        fontFamily: 'SpaceGrotesk',
-        fontSize: 34,
-        height: 1.08,
-        letterSpacing: -1.1,
-        fontWeight: FontWeight.w700,
-        color: ncd.text,
-      );
+    fontFamily: 'SpaceGrotesk',
+    fontSize: 34,
+    height: 1.08,
+    letterSpacing: -1.1,
+    fontWeight: FontWeight.w700,
+    color: ncd.text,
+  );
 
   TextStyle get h1 => TextStyle(
-        fontFamily: 'SpaceGrotesk',
-        fontSize: 26,
-        height: 1.15,
-        letterSpacing: -0.7,
-        fontWeight: FontWeight.w700,
-        color: ncd.text,
-      );
+    fontFamily: 'SpaceGrotesk',
+    fontSize: 26,
+    height: 1.15,
+    letterSpacing: -0.7,
+    fontWeight: FontWeight.w700,
+    color: ncd.text,
+  );
 
   TextStyle get h2 => TextStyle(
-        fontFamily: 'SpaceGrotesk',
-        fontSize: 19,
-        height: 1.2,
-        letterSpacing: -0.35,
-        fontWeight: FontWeight.w600,
-        color: ncd.text,
-      );
+    fontFamily: 'SpaceGrotesk',
+    fontSize: 19,
+    height: 1.2,
+    letterSpacing: -0.35,
+    fontWeight: FontWeight.w600,
+    color: ncd.text,
+  );
 
   TextStyle get h3 => TextStyle(
-        fontFamily: 'SpaceGrotesk',
-        fontSize: 15.5,
-        height: 1.25,
-        letterSpacing: -0.15,
-        fontWeight: FontWeight.w600,
-        color: ncd.text,
-      );
+    fontFamily: 'SpaceGrotesk',
+    fontSize: 15.5,
+    height: 1.25,
+    letterSpacing: -0.15,
+    fontWeight: FontWeight.w600,
+    color: ncd.text,
+  );
 
   TextStyle get body => TextStyle(
-        fontFamily: 'SourceSans3',
-        fontSize: 15,
-        height: 1.5,
-        fontWeight: FontWeight.w400,
-        color: ncd.text,
-      );
+    fontFamily: 'SourceSans3',
+    fontSize: 15,
+    height: 1.5,
+    fontWeight: FontWeight.w400,
+    color: ncd.text,
+  );
 
   TextStyle get small => TextStyle(
-        fontFamily: 'SourceSans3',
-        fontSize: 13,
-        height: 1.45,
-        fontWeight: FontWeight.w400,
-        color: ncd.muted,
-      );
+    fontFamily: 'SourceSans3',
+    fontSize: 13,
+    height: 1.45,
+    fontWeight: FontWeight.w400,
+    color: ncd.muted,
+  );
 
   TextStyle get tiny => TextStyle(
-        fontFamily: 'SourceSans3',
-        fontSize: 11.5,
-        height: 1.35,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.2,
-        color: ncd.muted,
-      );
+    fontFamily: 'SourceSans3',
+    fontSize: 11.5,
+    height: 1.35,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.2,
+    color: ncd.muted,
+  );
 
   TextStyle get label => TextStyle(
-        fontFamily: 'SourceSans3',
-        fontSize: 13,
-        height: 1.2,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.1,
-        color: ncd.muted,
-      );
+    fontFamily: 'SourceSans3',
+    fontSize: 13,
+    height: 1.2,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.1,
+    color: ncd.muted,
+  );
 
   TextStyle get mono => TextStyle(
-        fontFamily: 'SourceSans3',
-        fontFeatures: const [FontFeature.tabularFigures()],
-        fontSize: 13,
-        height: 1.4,
-        color: ncd.text,
-      );
+    fontFamily: 'SourceSans3',
+    fontFeatures: const [FontFeature.tabularFigures()],
+    fontSize: 13,
+    height: 1.4,
+    color: ncd.text,
+  );
 }
 
 ThemeData buildNcdTheme(Brightness brightness) {

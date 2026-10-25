@@ -25,11 +25,14 @@ class SettingsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 18),
-              Text('NCD Rx',
-                  style: context.tiny.copyWith(
-                      color: c.amber,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.4)),
+              Text(
+                'NCD Rx',
+                style: context.tiny.copyWith(
+                  color: c.amber,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.4,
+                ),
+              ),
               const SizedBox(height: 10),
               Text('Settings', style: context.display.copyWith(fontSize: 32)),
               const SizedBox(height: 8),
@@ -58,10 +61,7 @@ class SettingsScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        _Swatch(
-                          label: 'Coral',
-                          color: c.coral,
-                        ),
+                        _Swatch(label: 'Coral', color: c.coral),
                         const SizedBox(width: 8),
                         _Swatch(label: 'Amber', color: c.amber),
                         const SizedBox(width: 8),
@@ -74,7 +74,9 @@ class SettingsScreen extends StatelessWidget {
                     Text(
                       'Sunset Blaze palette, carried from the NCD Rx web toolkit.',
                       style: context.tiny.copyWith(
-                          fontWeight: FontWeight.w400, height: 1.35),
+                        fontWeight: FontWeight.w400,
+                        height: 1.35,
+                      ),
                     ),
                   ],
                 ),
@@ -113,9 +115,11 @@ class SettingsScreen extends StatelessWidget {
                               if (!context.mounted) return;
                               ScaffoldMessenger.of(context)
                                 ..hideCurrentSnackBar()
-                                ..showSnackBar(const SnackBar(
-                                    content:
-                                        Text('Recent activity cleared')));
+                                ..showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Recent activity cleared'),
+                                  ),
+                                );
                             },
                     ),
                   ],
@@ -135,13 +139,19 @@ class SettingsScreen extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.check_circle_outline_rounded,
-                                size: 15, color: c.violet),
+                            Icon(
+                              Icons.check_circle_outline_rounded,
+                              size: 15,
+                              color: c.violet,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: Text(source,
-                                  style: context.small.copyWith(
-                                      color: c.text.withValues(alpha: 0.86))),
+                              child: Text(
+                                source,
+                                style: context.small.copyWith(
+                                  color: c.text.withValues(alpha: 0.86),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -150,7 +160,9 @@ class SettingsScreen extends StatelessWidget {
                     Text(
                       'Guidelines change. Confirm against the current official document and your local formulary before prescribing.',
                       style: context.tiny.copyWith(
-                          fontWeight: FontWeight.w400, height: 1.4),
+                        fontWeight: FontWeight.w400,
+                        height: 1.4,
+                      ),
                     ),
                   ],
                 ),
@@ -166,7 +178,9 @@ class SettingsScreen extends StatelessWidget {
                     Text(
                       'A point-of-care clinical decision support toolkit for diabetes, hypertension, lipids, obesity, kidney disease and serious infections. Built from the NCD Rx clinical web toolkit.',
                       style: context.small.copyWith(
-                          color: c.text.withValues(alpha: 0.86), height: 1.5),
+                        color: c.text.withValues(alpha: 0.86),
+                        height: 1.5,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     const KeyValueRow(
@@ -191,7 +205,9 @@ class SettingsScreen extends StatelessWidget {
                 child: Text(
                   'NCD Rx · Built for clinicians',
                   style: context.tiny.copyWith(
-                      color: c.faint, fontWeight: FontWeight.w400),
+                    color: c.faint,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
             ],
@@ -220,11 +236,14 @@ class _Swatch extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(label,
-              style: context.tiny.copyWith(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w600,
-                  color: context.ncd.faint)),
+          Text(
+            label,
+            style: context.tiny.copyWith(
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
+              color: context.ncd.faint,
+            ),
+          ),
         ],
       ),
     );

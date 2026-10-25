@@ -123,7 +123,10 @@ class _InsulinScreenState extends State<InsulinScreen> {
                 label: 'Basal insulin',
                 value: _insulinType,
                 options: const [
-                  (value: 'Glargine (Lantus / Basaglar)', label: 'Glargine (Lantus / Basaglar)'),
+                  (
+                    value: 'Glargine (Lantus / Basaglar)',
+                    label: 'Glargine (Lantus / Basaglar)',
+                  ),
                   (value: 'Degludec (Tresiba)', label: 'Degludec (Tresiba)'),
                   (value: 'Detemir (Levemir)', label: 'Detemir (Levemir)'),
                   (value: 'NPH (Humulin N)', label: 'NPH (Humulin N)'),
@@ -200,15 +203,20 @@ class _InsulinScreenState extends State<InsulinScreen> {
                     children: [
                       SizedBox(
                         width: 50,
-                        child: Text('Day ${i + 1}',
-                            style: context.tiny.copyWith(
-                                color: c.muted, fontWeight: FontWeight.w600)),
+                        child: Text(
+                          'Day ${i + 1}',
+                          style: context.tiny.copyWith(
+                            color: c.muted,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                       Expanded(
                         child: TextField(
                           controller: _readings[i],
-                          keyboardType:
-                              const TextInputType.numberWithOptions(decimal: true),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                           onChanged: (_) => setState(() => _result = null),
                           style: context.body.copyWith(
                             fontSize: 15.5,
@@ -218,7 +226,9 @@ class _InsulinScreenState extends State<InsulinScreen> {
                           decoration: InputDecoration(
                             hintText: 'FBG mg/dL',
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 12),
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
                             suffixText: _status(i),
                             suffixStyle: context.tiny.copyWith(
                               color: _statusColor(i, context),
@@ -230,7 +240,11 @@ class _InsulinScreenState extends State<InsulinScreen> {
                       if (_readings.length > 3)
                         IconButton(
                           onPressed: () => _removeDay(i),
-                          icon: Icon(Icons.close_rounded, size: 17, color: c.faint),
+                          icon: Icon(
+                            Icons.close_rounded,
+                            size: 17,
+                            color: c.faint,
+                          ),
                           visualDensity: VisualDensity.compact,
                         ),
                     ],
@@ -240,8 +254,10 @@ class _InsulinScreenState extends State<InsulinScreen> {
                 const SizedBox(height: 4),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(_error!,
-                      style: context.small.copyWith(color: c.danger)),
+                  child: Text(
+                    _error!,
+                    style: context.small.copyWith(color: c.danger),
+                  ),
                 ),
               ],
             ],
@@ -259,11 +275,13 @@ class _InsulinScreenState extends State<InsulinScreen> {
             label: result.adjustment == 0
                 ? 'Continue the current dose'
                 : (result.adjustment > 0
-                    ? 'Increase by ${fmtNum(result.adjustment, 0)} units'
-                    : 'Reduce by ${fmtNum(result.adjustment.abs(), 0)} units'),
+                      ? 'Increase by ${fmtNum(result.adjustment, 0)} units'
+                      : 'Reduce by ${fmtNum(result.adjustment.abs(), 0)} units'),
             tone: result.hasSevereHypo
                 ? 'danger'
-                : (result.hasHypo ? 'warning' : (result.atTarget ? 'success' : 'amber')),
+                : (result.hasHypo
+                      ? 'warning'
+                      : (result.atTarget ? 'success' : 'amber')),
             detail: '$_insulinType · ${protocol.label}',
             children: [
               Row(
@@ -297,7 +315,8 @@ class _InsulinScreenState extends State<InsulinScreen> {
                 KeyValueRow(label: 'Rule applied', value: result.rule),
                 KeyValueRow(
                   label: 'Current dose',
-                  value: '${fmtNum(double.tryParse(_dose.text.trim()) ?? 0, 0)} U',
+                  value:
+                      '${fmtNum(double.tryParse(_dose.text.trim()) ?? 0, 0)} U',
                 ),
                 KeyValueRow(
                   label: 'Recommended dose',
@@ -388,10 +407,12 @@ class _MiniStat extends StatelessWidget {
         children: [
           Text(label, style: context.tiny.copyWith(color: c.muted)),
           const SizedBox(height: 2),
-          Text(value,
-              style: context.h3.copyWith(fontSize: 14),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis),
+          Text(
+            value,
+            style: context.h3.copyWith(fontSize: 14),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );

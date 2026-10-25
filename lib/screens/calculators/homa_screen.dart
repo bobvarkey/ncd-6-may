@@ -87,8 +87,10 @@ class _HomaScreenState extends State<HomaScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: Text('Glucose units',
-                        style: context.label.copyWith(color: c.text)),
+                    child: Text(
+                      'Glucose units',
+                      style: context.label.copyWith(color: c.text),
+                    ),
                   ),
                   SizedBox(
                     width: 176,
@@ -110,15 +112,17 @@ class _HomaScreenState extends State<HomaScreen> {
               const SizedBox(height: 14),
               FieldPair(
                 first: NumField(
-                    controller: _insulin,
-                    label: 'Fasting insulin',
-                    suffix: 'µIU/mL',
-                    hint: '12'),
+                  controller: _insulin,
+                  label: 'Fasting insulin',
+                  suffix: 'µIU/mL',
+                  hint: '12',
+                ),
                 second: NumField(
-                    controller: _glucose,
-                    label: 'Fasting glucose',
-                    suffix: _mmol ? 'mmol/L' : 'mg/dL',
-                    hint: _mmol ? '5.4' : '98'),
+                  controller: _glucose,
+                  label: 'Fasting glucose',
+                  suffix: _mmol ? 'mmol/L' : 'mg/dL',
+                  hint: _mmol ? '5.4' : '98',
+                ),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -141,8 +145,7 @@ class _HomaScreenState extends State<HomaScreen> {
                 value: fmtNum(result.value, 2),
                 label: result.label,
                 tone: result.tone,
-                detail:
-                    'HOMA-IR ≈ 1 in a healthy young adult. Higher values suggest reduced insulin sensitivity.',
+                detail: 'HOMA-IR ≈ 1 in a healthy young adult. Higher values suggest reduced insulin sensitivity.',
                 children: [
                   RiskMeter(
                     fraction: (result.value / 8).clamp(0.0, 1.0),
@@ -157,8 +160,7 @@ class _HomaScreenState extends State<HomaScreen> {
                 tone: 'warning',
                 icon: Icons.info_outline_rounded,
                 title: 'Interpretation caveat',
-                text:
-                    'HOMA-IR is not standardised across assays and is unreliable in insulin-treated patients, in acute illness and during pregnancy. Use it as supporting evidence, not as a stand-alone diagnosis.',
+                text: 'HOMA-IR is not standardised across assays and is unreliable in insulin-treated patients, in acute illness and during pregnancy. Use it as supporting evidence, not as a stand-alone diagnosis.',
               ),
             ],
           ),
@@ -168,14 +170,22 @@ class _HomaScreenState extends State<HomaScreen> {
           icon: Icons.functions_rounded,
           tone: 'violet',
           children: [
-            Text('HOMA-IR = (fasting insulin × fasting glucose) ÷ 405 (mg/dL)',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'HOMA-IR = (fasting insulin × fasting glucose) ÷ 405 (mg/dL)',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 6),
-            Text('HOMA-IR = (fasting insulin × fasting glucose) ÷ 22.5 (mmol/L)',
-                style: context.mono.copyWith(fontSize: 12.5)),
+            Text(
+              'HOMA-IR = (fasting insulin × fasting glucose) ÷ 22.5 (mmol/L)',
+              style: context.mono.copyWith(fontSize: 12.5),
+            ),
             const SizedBox(height: 10),
             const KeyValueRow(label: 'Typical reference', value: '<2.0–2.5'),
-            const KeyValueRow(label: 'Suggested resistance', value: '>2.5', divider: false),
+            const KeyValueRow(
+              label: 'Suggested resistance',
+              value: '>2.5',
+              divider: false,
+            ),
             const SizedBox(height: 10),
             Text(
               'Pair HOMA-IR with waist circumference, HbA1c, triglycerides and clinical context. It does not distinguish hepatic from peripheral insulin resistance.',

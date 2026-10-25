@@ -40,11 +40,14 @@ class CalculatorScaffold extends StatelessWidget {
           onPressed: () => Navigator.of(context).maybePop(),
           icon: const Icon(Icons.arrow_back_rounded),
         ),
-        title: Text('NCD Rx', style: context.tiny.copyWith(
-          color: c.faint,
-          letterSpacing: 1.2,
-          fontWeight: FontWeight.w800,
-        )),
+        title: Text(
+          'NCD Rx',
+          style: context.tiny.copyWith(
+            color: c.faint,
+            letterSpacing: 1.2,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
         actions: [
           ...appBarActions,
           if (showFavorite)
@@ -56,9 +59,11 @@ class CalculatorScaffold extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
                     SnackBar(
-                      content: Text(favorite
-                          ? 'Removed from bookmarks'
-                          : 'Saved to bookmarks'),
+                      content: Text(
+                        favorite
+                            ? 'Removed from bookmarks'
+                            : 'Saved to bookmarks',
+                      ),
                       duration: const Duration(seconds: 1),
                     ),
                   );
@@ -155,8 +160,13 @@ class CalcCard extends StatelessWidget {
                       Text(title, style: context.h3),
                       if (subtitle != null) ...[
                         const SizedBox(height: 2),
-                        Text(subtitle!, style: context.tiny.copyWith(
-                            fontWeight: FontWeight.w400, height: 1.35)),
+                        Text(
+                          subtitle!,
+                          style: context.tiny.copyWith(
+                            fontWeight: FontWeight.w400,
+                            height: 1.35,
+                          ),
+                        ),
                       ],
                     ],
                   ),
@@ -190,13 +200,7 @@ class FieldPair extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < breakpoint) {
-          return Column(
-            children: [
-              first,
-              const SizedBox(height: 14),
-              second,
-            ],
-          );
+          return Column(children: [first, const SizedBox(height: 14), second]);
         }
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -139,19 +139,31 @@ class WhtrBand {
 
 WhtrBand whtrCategory(double ratio) {
   if (ratio < 0.4) {
-    return const WhtrBand('Underweight', Tone.warning,
-        'Nutritional assessment recommended.');
+    return const WhtrBand(
+      'Underweight',
+      Tone.warning,
+      'Nutritional assessment recommended.',
+    );
   }
   if (ratio < 0.5) {
     return const WhtrBand(
-        'Healthy', Tone.success, 'Maintain current lifestyle.');
+      'Healthy',
+      Tone.success,
+      'Maintain current lifestyle.',
+    );
   }
   if (ratio < 0.6) {
-    return const WhtrBand('Increased risk', Tone.amber,
-        'Lifestyle modification recommended.');
+    return const WhtrBand(
+      'Increased risk',
+      Tone.amber,
+      'Lifestyle modification recommended.',
+    );
   }
-  return const WhtrBand('High risk', Tone.danger,
-      'Intensive intervention recommended.');
+  return const WhtrBand(
+    'High risk',
+    Tone.danger,
+    'Intensive intervention recommended.',
+  );
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -232,7 +244,12 @@ const _riskMatrix = <List<int>>[
   [3, 3, 3],
 ];
 
-const _riskLabels = ['Low risk', 'Moderate risk', 'High risk', 'Very high risk'];
+const _riskLabels = [
+  'Low risk',
+  'Moderate risk',
+  'High risk',
+  'Very high risk',
+];
 const _riskTones = [Tone.success, Tone.warning, Tone.coral, Tone.danger];
 
 EgfrResult calculateEgfr({
@@ -241,11 +258,10 @@ EgfrResult calculateEgfr({
   required bool female,
   double? uacrMgG,
 }) {
-  final gfr = roundTo(ckdEpi2021(
-    creatinineMgDl: creatinineMgDl,
-    age: age,
-    female: female,
-  ), 1);
+  final gfr = roundTo(
+    ckdEpi2021(creatinineMgDl: creatinineMgDl, age: age, female: female),
+    1,
+  );
   final g = gStageFor(gfr);
 
   String? aStage;
@@ -284,19 +300,55 @@ EgfrResult calculateEgfr({
 // ─────────────────────────────────────────────────────────────
 
 const _femaleAscvd = <double>[
-  0.719883, 0.117697, -0.151185, -0.083536, 0.359285,
-  0.834858, 0.483108, 0.0, 0.0, 0.486462, 0.039778,
-  0.226531, -0.059237, -0.039576, 0.084442, -0.056784,
-  0.032569, -0.103598, -0.241754, -0.079114, 0.0,
-  -0.167149, -3.819975,
+  0.719883,
+  0.117697,
+  -0.151185,
+  -0.083536,
+  0.359285,
+  0.834858,
+  0.483108,
+  0.0,
+  0.0,
+  0.486462,
+  0.039778,
+  0.226531,
+  -0.059237,
+  -0.039576,
+  0.084442,
+  -0.056784,
+  0.032569,
+  -0.103598,
+  -0.241754,
+  -0.079114,
+  0.0,
+  -0.167149,
+  -3.819975,
 ];
 
 const _maleAscvd = <double>[
-  0.709985, 0.165866, -0.114429, -0.283721, 0.323998,
-  0.71896, 0.395697, 0.0, 0.0, 0.369007, 0.020362,
-  0.203652, -0.086558, -0.032292, 0.114563, -0.03,
-  0.023275, -0.092702, -0.201852, -0.097053, 0.0,
-  -0.121708, -3.500655,
+  0.709985,
+  0.165866,
+  -0.114429,
+  -0.283721,
+  0.323998,
+  0.71896,
+  0.395697,
+  0.0,
+  0.0,
+  0.369007,
+  0.020362,
+  0.203652,
+  -0.086558,
+  -0.032292,
+  0.114563,
+  -0.03,
+  0.023275,
+  -0.092702,
+  -0.201852,
+  -0.097053,
+  0.0,
+  -0.121708,
+  -3.500655,
 ];
 
 class PreventResult {
@@ -342,9 +394,19 @@ PreventResult calculatePrevent({
   final statinT = statin ? 1.0 : 0.0;
 
   final terms = <double>[
-    ageT, nonHdl, hdlT, sbpLow, sbpHigh,
-    dm, smoke, bmiLow, bmiHigh,
-    egfrLow, egfrHigh, bpTx, statinT,
+    ageT,
+    nonHdl,
+    hdlT,
+    sbpLow,
+    sbpHigh,
+    dm,
+    smoke,
+    bmiLow,
+    bmiHigh,
+    egfrLow,
+    egfrHigh,
+    bpTx,
+    statinT,
     bpTx * sbpHigh,
     statinT * nonHdl,
     ageT * nonHdl,
@@ -374,36 +436,60 @@ PreventResult calculatePrevent({
   final steps = <String>[];
   if (pct < 5) {
     steps.add('Statin therapy is not routinely indicated at this risk level.');
-    steps.add('Emphasise diet, activity, weight management and smoking cessation.');
-    steps.add('Reassess risk every 4–6 years or when a new risk factor appears.');
+    steps.add(
+      'Emphasise diet, activity, weight management and smoking cessation.',
+    );
+    steps.add(
+      'Reassess risk every 4–6 years or when a new risk factor appears.',
+    );
   } else if (pct < 7.5) {
-    steps.add('Have a clinician–patient risk discussion before starting a statin.');
-    steps.add('Check risk-enhancing factors: premature family history, Lp(a), hsCRP, metabolic syndrome, CKD.');
-    steps.add('If risk-enhancing factors are present, a moderate-intensity statin is reasonable.');
-    steps.add('CAC scoring can refine the decision: CAC 0 supports deferral; CAC ≥100 favours treatment.');
+    steps.add(
+      'Have a clinician–patient risk discussion before starting a statin.',
+    );
+    steps.add(
+      'Check risk-enhancing factors: premature family history, Lp(a), hsCRP, metabolic syndrome, CKD.',
+    );
+    steps.add(
+      'If risk-enhancing factors are present, a moderate-intensity statin is reasonable.',
+    );
+    steps.add(
+      'CAC scoring can refine the decision: CAC 0 supports deferral; CAC ≥100 favours treatment.',
+    );
   } else if (pct < 20) {
     steps.add('A moderate- to high-intensity statin is generally indicated.');
     steps.add('Consider CAC scoring when the decision is uncertain.');
     steps.add('Target LDL-C <100 mg/dL or a ≥50% reduction from baseline.');
     steps.add('Recheck lipids 4–12 weeks after starting therapy.');
     if (diabetes) {
-      steps.add('Diabetes: start at least a moderate-intensity statin regardless of risk; target LDL-C <70 mg/dL.');
+      steps.add(
+        'Diabetes: start at least a moderate-intensity statin regardless of risk; target LDL-C <70 mg/dL.',
+      );
     }
   } else {
-    steps.add('High-intensity statin therapy is indicated (atorvastatin 40–80 mg or rosuvastatin 20–40 mg).');
+    steps.add(
+      'High-intensity statin therapy is indicated (atorvastatin 40–80 mg or rosuvastatin 20–40 mg).',
+    );
     steps.add('Target LDL-C <70 mg/dL or a ≥50% reduction from baseline.');
-    steps.add('If LDL-C remains above goal, add ezetimibe; consider a PCSK9 inhibitor next.');
+    steps.add(
+      'If LDL-C remains above goal, add ezetimibe; consider a PCSK9 inhibitor next.',
+    );
     steps.add('Optimise BP, HbA1c and smoking cessation.');
     steps.add('Recheck lipids at 4–12 weeks, then every 3–12 months.');
   }
   if (smoker) {
-    steps.add('Active smoking: cessation is the single most impactful intervention. Offer pharmacotherapy and support.');
+    steps.add(
+      'Active smoking: cessation is the single most impactful intervention. Offer pharmacotherapy and support.',
+    );
   }
   if (egfr < 60) {
-    steps.add('CKD (eGFR <60) independently increases cardiovascular risk. Ensure kidney-protective therapy.');
+    steps.add(
+      'CKD (eGFR <60) independently increases cardiovascular risk. Ensure kidney-protective therapy.',
+    );
   }
   if (bmi >= 30) {
-    steps.add('Obesity: structured weight management adds cardiometabolic benefit.');
+    steps.add(
+      'Obesity: structured weight management adds cardiometabolic benefit.',
+    );
   }
 
   return PreventResult(
@@ -448,12 +534,16 @@ const insulinProtocols = <InsulinProtocol>[
   InsulinProtocol(
     id: 'simple',
     label: 'ADA simple (±2 U every 3 days)',
-    description:
-        'Increase by 2 units every 3 days if fasting glucose is above 130 mg/dL. Reduce by 2 units if below 70 mg/dL.',
+    description: 'Increase by 2 units every 3 days if fasting glucose is above 130 mg/dL. Reduce by 2 units if below 70 mg/dL.',
     targetLow: 80,
     targetHigh: 130,
     rules: [
-      TitrationRule(0, 54, -4, 'Severe hypoglycaemia — reduce 4 U and contact the prescriber'),
+      TitrationRule(
+        0,
+        54,
+        -4,
+        'Severe hypoglycaemia — reduce 4 U and contact the prescriber',
+      ),
       TitrationRule(54, 70, -2, 'Hypoglycaemia — reduce 2 U'),
       TitrationRule(70, 80, -1, 'Near-low — reduce 1 U'),
       TitrationRule(80, 130, 0, 'At target — no change'),
@@ -464,8 +554,7 @@ const insulinProtocols = <InsulinProtocol>[
   InsulinProtocol(
     id: 'treat-to-target',
     label: 'Treat-to-Target (Riddle)',
-    description:
-        'Titrate on the 3-day average fasting glucose. Target fasting glucose 70–130 mg/dL.',
+    description: 'Titrate on the 3-day average fasting glucose. Target fasting glucose 70–130 mg/dL.',
     targetLow: 70,
     targetHigh: 130,
     rules: [
@@ -480,12 +569,16 @@ const insulinProtocols = <InsulinProtocol>[
   InsulinProtocol(
     id: 'conservative',
     label: 'Conservative (elderly or CKD)',
-    description:
-        'For age >65, eGFR <30 or hypoglycaemia-prone patients. Relaxed target 100–150 mg/dL and slower titration.',
+    description: 'For age >65, eGFR <30 or hypoglycaemia-prone patients. Relaxed target 100–150 mg/dL and slower titration.',
     targetLow: 100,
     targetHigh: 150,
     rules: [
-      TitrationRule(0, 70, -4, 'Hypoglycaemia — reduce 4 U and alert the prescriber'),
+      TitrationRule(
+        0,
+        70,
+        -4,
+        'Hypoglycaemia — reduce 4 U and alert the prescriber',
+      ),
       TitrationRule(70, 100, -2, 'Below target — reduce 2 U'),
       TitrationRule(100, 150, 0, 'At target — maintain the dose'),
       TitrationRule(150, 200, 2, 'Above target — increase 2 U'),
@@ -565,7 +658,12 @@ InsulinProtocol? insulinProtocolById(String id) {
 
 class HypoFactor {
   const HypoFactor(
-      this.id, this.label, this.description, this.points, this.category);
+    this.id,
+    this.label,
+    this.description,
+    this.points,
+    this.category,
+  );
   final String id;
   final String label;
   final String description;
@@ -574,48 +672,153 @@ class HypoFactor {
 }
 
 const hypoFactors = <HypoFactor>[
-  HypoFactor('age65', 'Age ≥65 years',
-      'Impaired counter-regulation and slower symptom recognition.', 2, 'Demographics'),
-  HypoFactor('age75', 'Age ≥75 years',
-      'Cognitive decline, falls and polypharmacy compound the risk.', 3, 'Demographics'),
-  HypoFactor('lowBmi', 'BMI <20',
-      'Reduced glycogen stores and less metabolic reserve.', 1, 'Demographics'),
-  HypoFactor('ckd3', 'CKD stage 3 (eGFR 30–59)',
-      'Reduced insulin clearance prolongs drug action.', 2, 'Clinical'),
-  HypoFactor('ckd4', 'CKD stage 4–5 (eGFR <30)',
-      'Severely reduced insulin clearance.', 4, 'Clinical'),
-  HypoFactor('hf', 'Heart failure (NYHA ≥II)',
-      'Hepatic congestion impairs gluconeogenesis.', 2, 'Clinical'),
-  HypoFactor('liver', 'Hepatic impairment',
-      'Reduced glycogen storage and gluconeogenesis.', 3, 'Clinical'),
-  HypoFactor('cognitive', 'Cognitive impairment or dementia',
-      'Cannot reliably recognise or self-treat hypoglycaemia.', 3, 'Clinical'),
-  HypoFactor('neuropathy', 'Autonomic neuropathy',
-      'Impaired counter-regulatory response and hypo unawareness.', 3, 'Clinical'),
-  HypoFactor('malnutrition', 'Poor intake or malnutrition',
-      'Inadequate carbohydrate substrate.', 2, 'Clinical'),
-  HypoFactor('dysphagia', 'Dysphagia',
-      'Cannot self-treat with oral glucose.', 2, 'Clinical'),
-  HypoFactor('insulin', 'On insulin therapy',
-      'Dose-dependent risk, especially with basal-bolus regimens.', 3, 'Medication'),
-  HypoFactor('su', 'On a sulfonylurea',
-      'Glimepiride, gliclazide or glipizide are insulin secretagogues.', 3, 'Medication'),
-  HypoFactor('meglitinide', 'On a meglitinide',
-      'Short-acting secretagogue with meal-time risk.', 1, 'Medication'),
-  HypoFactor('insulinSu', 'Insulin plus sulfonylurea',
-      'Synergistic risk; avoid the combination when possible.', 2, 'Medication'),
-  HypoFactor('polypharmacy', 'Five or more medications',
-      'Interactions and adherence problems increase risk.', 1, 'Medication'),
-  HypoFactor('priorHypo', 'Prior hypoglycaemia',
-      'The strongest predictor of future hypoglycaemia.', 4, 'History'),
-  HypoFactor('severeHypo', 'Prior severe hypoglycaemia',
-      'Needed assistance; high recurrence risk.', 5, 'History'),
-  HypoFactor('unawareness', 'Hypoglycaemia unawareness',
-      'Cannot feel symptoms below 54 mg/dL.', 5, 'History'),
-  HypoFactor('recentHospital', 'Recent hospitalisation (<3 months)',
-      'Medication changes, deconditioning and altered intake.', 2, 'History'),
-  HypoFactor('longDm', 'Diabetes duration >10 years',
-      'Progressive beta-cell failure and impaired counter-regulation.', 1, 'History'),
+  HypoFactor(
+    'age65',
+    'Age ≥65 years',
+    'Impaired counter-regulation and slower symptom recognition.',
+    2,
+    'Demographics',
+  ),
+  HypoFactor(
+    'age75',
+    'Age ≥75 years',
+    'Cognitive decline, falls and polypharmacy compound the risk.',
+    3,
+    'Demographics',
+  ),
+  HypoFactor(
+    'lowBmi',
+    'BMI <20',
+    'Reduced glycogen stores and less metabolic reserve.',
+    1,
+    'Demographics',
+  ),
+  HypoFactor(
+    'ckd3',
+    'CKD stage 3 (eGFR 30–59)',
+    'Reduced insulin clearance prolongs drug action.',
+    2,
+    'Clinical',
+  ),
+  HypoFactor(
+    'ckd4',
+    'CKD stage 4–5 (eGFR <30)',
+    'Severely reduced insulin clearance.',
+    4,
+    'Clinical',
+  ),
+  HypoFactor(
+    'hf',
+    'Heart failure (NYHA ≥II)',
+    'Hepatic congestion impairs gluconeogenesis.',
+    2,
+    'Clinical',
+  ),
+  HypoFactor(
+    'liver',
+    'Hepatic impairment',
+    'Reduced glycogen storage and gluconeogenesis.',
+    3,
+    'Clinical',
+  ),
+  HypoFactor(
+    'cognitive',
+    'Cognitive impairment or dementia',
+    'Cannot reliably recognise or self-treat hypoglycaemia.',
+    3,
+    'Clinical',
+  ),
+  HypoFactor(
+    'neuropathy',
+    'Autonomic neuropathy',
+    'Impaired counter-regulatory response and hypo unawareness.',
+    3,
+    'Clinical',
+  ),
+  HypoFactor(
+    'malnutrition',
+    'Poor intake or malnutrition',
+    'Inadequate carbohydrate substrate.',
+    2,
+    'Clinical',
+  ),
+  HypoFactor(
+    'dysphagia',
+    'Dysphagia',
+    'Cannot self-treat with oral glucose.',
+    2,
+    'Clinical',
+  ),
+  HypoFactor(
+    'insulin',
+    'On insulin therapy',
+    'Dose-dependent risk, especially with basal-bolus regimens.',
+    3,
+    'Medication',
+  ),
+  HypoFactor(
+    'su',
+    'On a sulfonylurea',
+    'Glimepiride, gliclazide or glipizide are insulin secretagogues.',
+    3,
+    'Medication',
+  ),
+  HypoFactor(
+    'meglitinide',
+    'On a meglitinide',
+    'Short-acting secretagogue with meal-time risk.',
+    1,
+    'Medication',
+  ),
+  HypoFactor(
+    'insulinSu',
+    'Insulin plus sulfonylurea',
+    'Synergistic risk; avoid the combination when possible.',
+    2,
+    'Medication',
+  ),
+  HypoFactor(
+    'polypharmacy',
+    'Five or more medications',
+    'Interactions and adherence problems increase risk.',
+    1,
+    'Medication',
+  ),
+  HypoFactor(
+    'priorHypo',
+    'Prior hypoglycaemia',
+    'The strongest predictor of future hypoglycaemia.',
+    4,
+    'History',
+  ),
+  HypoFactor(
+    'severeHypo',
+    'Prior severe hypoglycaemia',
+    'Needed assistance; high recurrence risk.',
+    5,
+    'History',
+  ),
+  HypoFactor(
+    'unawareness',
+    'Hypoglycaemia unawareness',
+    'Cannot feel symptoms below 54 mg/dL.',
+    5,
+    'History',
+  ),
+  HypoFactor(
+    'recentHospital',
+    'Recent hospitalisation (<3 months)',
+    'Medication changes, deconditioning and altered intake.',
+    2,
+    'History',
+  ),
+  HypoFactor(
+    'longDm',
+    'Diabetes duration >10 years',
+    'Progressive beta-cell failure and impaired counter-regulation.',
+    1,
+    'History',
+  ),
 ];
 
 class HypoResult {
@@ -661,29 +864,29 @@ HypoResult calculateHypoRisk({
 
   final (level, tone, target, rec) = switch (score) {
     <= 3 => (
-        'Low',
-        Tone.success,
-        '<7.0%',
-        'Standard glycaemic targets are appropriate. Continue routine monitoring.'
-      ),
+      'Low',
+      Tone.success,
+      '<7.0%',
+      'Standard glycaemic targets are appropriate. Continue routine monitoring.',
+    ),
     <= 8 => (
-        'Moderate',
-        Tone.warning,
-        '<7.5%',
-        'Consider relaxed targets. Avoid sulfonylureas where possible and prefer low-hypoglycaemia agents (GLP-1 RA, SGLT2i, DPP-4i).'
-      ),
+      'Moderate',
+      Tone.warning,
+      '<7.5%',
+      'Consider relaxed targets. Avoid sulfonylureas where possible and prefer low-hypoglycaemia agents (GLP-1 RA, SGLT2i, DPP-4i).',
+    ),
     <= 15 => (
-        'High',
-        Tone.coral,
-        '<8.0%',
-        'Use a relaxed HbA1c target. De-escalate sulfonylureas or insulin when safe. Ensure a hypoglycaemia kit is available, educate the caregiver and consider CGM.'
-      ),
+      'High',
+      Tone.coral,
+      '<8.0%',
+      'Use a relaxed HbA1c target. De-escalate sulfonylureas or insulin when safe. Ensure a hypoglycaemia kit is available, educate the caregiver and consider CGM.',
+    ),
     _ => (
-        'Very high',
-        Tone.danger,
-        '<8.5%',
-        'Avoid hypoglycaemia-causing agents. Prioritise safety over tight control. CGM is strongly recommended, caregiver education is critical and endocrinology referral should be considered.'
-      ),
+      'Very high',
+      Tone.danger,
+      '<8.5%',
+      'Avoid hypoglycaemia-causing agents. Prioritise safety over tight control. CGM is strongly recommended, caregiver education is critical and endocrinology referral should be considered.',
+    ),
   };
 
   return HypoResult(
@@ -733,17 +936,17 @@ const taperSpeeds = <String, ({String label, double multiplier, String note})>{
   'faster': (
     label: 'Faster',
     multiplier: 0.5,
-    note: 'Short courses, good control, urgent withdrawal'
+    note: 'Short courses, good control, urgent withdrawal',
   ),
   'standard': (
     label: 'Standard',
     multiplier: 1,
-    note: 'Default for most chronic courses'
+    note: 'Default for most chronic courses',
   ),
   'slower': (
     label: 'Slower',
     multiplier: 2,
-    note: 'Long duration, prior flares, symptomatic withdrawal'
+    note: 'Long duration, prior flares, symptomatic withdrawal',
   ),
 };
 
@@ -764,8 +967,7 @@ List<TaperStep> buildTaperSchedule({
       > 5 => (1.0, 2, '10 → 5 mg', 'ten_to_five'),
       _ => (0.5, 4, 'Near 5 mg / HPA', 'near_physiologic'),
     };
-    final next = math.max(
-        targetPredEq, (roundTo(current - dec, 2)).toDouble());
+    final next = math.max(targetPredEq, (roundTo(current - dec, 2)).toDouble());
     final adjustedWeeks = math.max(1, (weeks * multiplier).round());
     steps.add(TaperStep(phase, next, adjustedWeeks, band));
     current = next;
@@ -850,10 +1052,12 @@ ThyroidResult interpretThyroid({
     diagnosis = 'Overt primary hypothyroidism';
     tone = Tone.success;
     rationale.add(
-        'High TSH with low FT4 is the classic pattern of primary hypothyroidism.');
+      'High TSH with low FT4 is the classic pattern of primary hypothyroidism.',
+    );
     if (tpo) {
       rationale.add(
-          'Anti-TPO positivity supports autoimmune thyroiditis, usually Hashimoto disease.');
+        'Anti-TPO positivity supports autoimmune thyroiditis, usually Hashimoto disease.',
+      );
     }
   } else if (tshHigh && !ft4Low && !ft4High) {
     diagnosis = 'Subclinical hypothyroidism';
@@ -861,41 +1065,46 @@ ThyroidResult interpretThyroid({
     rationale.add('High TSH with normal FT4 fits subclinical hypothyroidism.');
     if (tpo) {
       rationale.add(
-          'Positive thyroid antibodies increase the chance of progression to overt disease.');
+        'Positive thyroid antibodies increase the chance of progression to overt disease.',
+      );
     }
   } else if (tshLow && (ft4High || t3High)) {
     diagnosis = 'Overt thyrotoxicosis / hyperthyroidism';
     tone = Tone.danger;
     rationale.add(
-        'Low or suppressed TSH with elevated FT4 or T3 indicates overt thyrotoxicosis.');
-    rationale.add(trab
-        ? 'Positive TRAb/TSI strongly supports Graves disease.'
-        : 'If TRAb is negative, consider toxic nodular disease, thyroiditis or exogenous thyroid hormone.');
+      'Low or suppressed TSH with elevated FT4 or T3 indicates overt thyrotoxicosis.',
+    );
+    rationale.add(
+      trab ? 'Positive TRAb/TSI strongly supports Graves disease.' : 'If TRAb is negative, consider toxic nodular disease, thyroiditis or exogenous thyroid hormone.',
+    );
   } else if (tshLow && !ft4High && !ft4Low) {
     diagnosis = 'Subclinical hyperthyroidism or early thyrotoxicosis';
     tone = Tone.warning;
     rationale.add(
-        'Low TSH with normal FT4 and non-elevated T3 suggests subclinical hyperthyroidism, early Graves disease, thyroiditis or over-replacement.');
+      'Low TSH with normal FT4 and non-elevated T3 suggests subclinical hyperthyroidism, early Graves disease, thyroiditis or over-replacement.',
+    );
   } else if (!tshHigh && !tshLow && ft4Low) {
     diagnosis = 'Possible central hypothyroidism';
     tone = Tone.danger;
     rationale.add(
-        'A low FT4 without an appropriately elevated TSH suggests pituitary or hypothalamic disease, or severe non-thyroidal illness.');
+      'A low FT4 without an appropriately elevated TSH suggests pituitary or hypothalamic disease, or severe non-thyroidal illness.',
+    );
     rationale.add(
-        'Interpret with clinical context and pituitary review; TSH alone is unreliable here.');
+      'Interpret with clinical context and pituitary review; TSH alone is unreliable here.',
+    );
   } else {
     diagnosis = 'Near-euthyroid or indeterminate pattern';
     tone = Tone.info;
     rationale.add(
-        'These values do not fit a single classic pattern. Recheck against the local reference range, medication use, illness state and pregnancy-specific thresholds.');
+      'These values do not fit a single classic pattern. Recheck against the local reference range, medication use, illness state and pregnancy-specific thresholds.',
+    );
   }
 
   var levoText =
       'Levothyroxine is not automatically suggested from this pattern.';
   if (diagnosis == 'Overt primary hypothyroidism') {
     if (cardiac || age >= 65) {
-      levoText =
-          'Suggested starting levothyroxine: 25 mcg daily, with cautious titration every 4–6 weeks because older age, frailty or coronary disease lowers the starting dose.';
+      levoText = 'Suggested starting levothyroxine: 25 mcg daily, with cautious titration every 4–6 weeks because older age, frailty or coronary disease lowers the starting dose.';
     } else if (weight > 0) {
       final dose = (weight * 1.6).round();
       levoText =
@@ -912,8 +1121,7 @@ ThyroidResult interpretThyroid({
       levoText =
           'Treatment can be considered because ${reasons.join(', ')}. A common starting dose is $dose mcg daily, then retest in 6–8 weeks.';
     } else {
-      levoText =
-          'Observation with repeat TSH and FT4 in 6–12 weeks is reasonable if symptoms are mild and there is no pregnancy, strong antibody signal or TSH ≥10.';
+      levoText = 'Observation with repeat TSH and FT4 in 6–12 weeks is reasonable if symptoms are mild and there is no pregnancy, strong antibody signal or TSH ≥10.';
     }
   }
 
@@ -926,8 +1134,7 @@ ThyroidResult interpretThyroid({
         : (ft4 > 2 || ft3 > 6 ? 'moderate' : 'mild');
     final dose = severity == 'mild' ? 10 : (severity == 'moderate' ? 20 : 30);
     if (pregnant) {
-      methimazoleText =
-          'In pregnancy, antithyroid drug choice depends on the trimester. Propylthiouracil is generally preferred in the first trimester; methimazole is more commonly used later. Specialist review is advised.';
+      methimazoleText = 'In pregnancy, antithyroid drug choice depends on the trimester. Propylthiouracil is generally preferred in the first trimester; methimazole is more commonly used later. Specialist review is advised.';
     } else {
       methimazoleText =
           'Estimated starting methimazole dose: $dose mg/day for $severity biochemical hyperthyroidism, with FT4 and T3 follow-up at about 4 weeks and dose reduction once euthyroid. Check baseline CBC and liver profile before treatment.';
@@ -937,24 +1144,31 @@ ThyroidResult interpretThyroid({
   final nextSteps = <String>[];
   if (diagnosis.contains('hypothyroidism')) {
     nextSteps.add(
-        'Repeat TSH about 6 weeks after starting or changing levothyroxine.');
+      'Repeat TSH about 6 weeks after starting or changing levothyroxine.',
+    );
     nextSteps.add(
-        'Consider anti-TPO if the aetiology is unclear and it is not already known.');
+      'Consider anti-TPO if the aetiology is unclear and it is not already known.',
+    );
   }
   if (diagnosis.contains('thyrotoxicosis') ||
       diagnosis.contains('hyperthyroidism')) {
     nextSteps.add(
-        'Order TRAb/TSI if Graves disease is suspected and antibody status is unknown.');
+      'Order TRAb/TSI if Graves disease is suspected and antibody status is unknown.',
+    );
     nextSteps.add(
-        'Consider a thyroid uptake scan when the aetiology is unclear and pregnancy is excluded.');
+      'Consider a thyroid uptake scan when the aetiology is unclear and pregnancy is excluded.',
+    );
     nextSteps.add('Check baseline CBC and LFTs before antithyroid therapy.');
   }
   if (diagnosis.contains('central')) {
-    nextSteps.add('Assess the other pituitary axes and consider pituitary imaging.');
+    nextSteps.add(
+      'Assess the other pituitary axes and consider pituitary imaging.',
+    );
   }
   if (nextSteps.isEmpty) {
     nextSteps.add(
-        'Interpret against symptoms, goitre, drugs such as amiodarone or biotin, and the local assay reference range.');
+      'Interpret against symptoms, goitre, drugs such as amiodarone or biotin, and the local assay reference range.',
+    );
   }
 
   return ThyroidResult(
@@ -1062,14 +1276,17 @@ IronPlan planIron({
   required bool rapid,
   required bool bloodLoss,
 }) {
-  final isIv = hb < 10 ||
+  final isIv =
+      hb < 10 ||
       diagnosis.code == 'functional' ||
       ckd ||
       esa ||
       intolerance ||
       rapid ||
       bloodLoss;
-  final targetHb = pregnancy ? 11.0 : (ckd ? 12.0 : (weightKg >= 35 ? 14.0 : 13.0));
+  final targetHb = pregnancy
+      ? 11.0
+      : (ckd ? 12.0 : (weightKg >= 35 ? 14.0 : 13.0));
   final stores = weightKg >= 35 ? 500.0 : 15 * weightKg;
   final raw = weightKg * (targetHb - hb) * 2.4 + stores;
   final deficit = math.max(0.0, raw);
@@ -1079,15 +1296,15 @@ IronPlan planIron({
     if (deficit <= 500) {
       doseText = '${deficit.round()} mg → 500 mg IV iron as a single dose';
     } else if (deficit <= 1000) {
-      doseText = '${deficit.round()} mg → 1000 mg IV iron, single or split dose';
+      doseText =
+          '${deficit.round()} mg → 1000 mg IV iron, single or split dose';
     } else {
       final rounded = (deficit / 100).ceil() * 100;
       doseText =
           '${deficit.round()} mg → $rounded mg IV iron, split over 1–2 doses (usually max 1000–1500 mg/week per product)';
     }
   } else {
-    doseText =
-        '40–65 mg elemental iron by mouth daily or every other day (ferrous sulfate 325 mg provides 65 mg elemental iron)';
+    doseText = '40–65 mg elemental iron by mouth daily or every other day (ferrous sulfate 325 mg provides 65 mg elemental iron)';
   }
   return IronPlan(
     isIv: isIv,
@@ -1129,9 +1346,11 @@ VitaminDResult calculateVitaminD({
   final deficient = level >= 10 && level < 20;
   final insufficient = level >= 20 && level < 30;
   final multiplier =
-      (flags.contains('obesity') || flags.contains('malabsorption') || flags.contains('bariatric'))
-          ? 2.5
-          : 1.0;
+      (flags.contains('obesity') ||
+          flags.contains('malabsorption') ||
+          flags.contains('bariatric'))
+      ? 2.5
+      : 1.0;
   final child = ageGroup == 'child';
   final elderly = ageGroup == 'elderly';
 
@@ -1148,8 +1367,7 @@ VitaminDResult calculateVitaminD({
       correctionDose = '$base–${base * 2} IU/day';
       duration = '6–8 weeks';
     } else {
-      correctionDose =
-          '${(60000 * multiplier).round()} IU/week';
+      correctionDose = '${(60000 * multiplier).round()} IU/week';
       duration = '8 weeks';
     }
   } else if (deficient) {
@@ -1160,8 +1378,7 @@ VitaminDResult calculateVitaminD({
       correctionDose = '$base–${base * 2} IU/day';
       duration = '6–8 weeks';
     } else {
-      correctionDose =
-          '${(60000 * multiplier).round()} IU/week';
+      correctionDose = '${(60000 * multiplier).round()} IU/week';
       duration = '6–8 weeks';
     }
   } else if (insufficient) {
@@ -1211,35 +1428,43 @@ VitaminDResult calculateVitaminD({
   final notes = <String>[];
   if (flags.contains('obesity')) {
     notes.add(
-        'Obesity may require 2–3× higher doses because vitamin D is sequestered in adipose tissue.');
+      'Obesity may require 2–3× higher doses because vitamin D is sequestered in adipose tissue.',
+    );
   }
   if (flags.contains('malabsorption')) {
     notes.add(
-        'Malabsorption: consider higher doses or intramuscular vitamin D and monitor levels closely.');
+      'Malabsorption: consider higher doses or intramuscular vitamin D and monitor levels closely.',
+    );
   }
   if (flags.contains('bariatric')) {
     notes.add(
-        'After bariatric surgery, lifelong higher-dose supplementation (2,000–6,000 IU/day) is often needed.');
+      'After bariatric surgery, lifelong higher-dose supplementation (2,000–6,000 IU/day) is often needed.',
+    );
   }
   if (flags.contains('ckd')) {
     notes.add(
-        'CKD may require active vitamin D analogues under specialist supervision. Monitor calcium, phosphate and PTH.');
+      'CKD may require active vitamin D analogues under specialist supervision. Monitor calcium, phosphate and PTH.',
+    );
   }
   if (flags.contains('anticonvulsants')) {
     notes.add(
-        'Anticonvulsants induce CYP450 and accelerate vitamin D catabolism; 2–3× higher doses may be needed.');
+      'Anticonvulsants induce CYP450 and accelerate vitamin D catabolism; 2–3× higher doses may be needed.',
+    );
   }
   if (flags.contains('pregnancy')) {
     notes.add(
-        'Pregnancy: target 25(OH)D ≥30 ng/mL. Avoid high-dose bolus therapy and monitor calcium.');
+      'Pregnancy: target 25(OH)D ≥30 ng/mL. Avoid high-dose bolus therapy and monitor calcium.',
+    );
   }
   if (flags.contains('osteoporosis')) {
     notes.add(
-        'Osteoporosis: target 25(OH)D ≥30 ng/mL (some guidelines suggest ≥40). Ensure adequate calcium intake.');
+      'Osteoporosis: target 25(OH)D ≥30 ng/mL (some guidelines suggest ≥40). Ensure adequate calcium intake.',
+    );
   }
   if (elderly) {
     notes.add(
-        'Older adults have reduced cutaneous synthesis and renal activation; supplement and monitor.');
+      'Older adults have reduced cutaneous synthesis and renal activation; supplement and monitor.',
+    );
   }
   if (weight != null && weight < 40 && !child && weight > 0) {
     notes.add('Low body weight: use the lower end of the dosing range.');
@@ -1335,7 +1560,9 @@ SlidingResult calculateSliding({
   }
   if (egfr < 30 || dialysis) {
     factor -= 0.1;
-    adjustments.add('eGFR <30 or dialysis: total daily dose reduced by 0.1 U/kg');
+    adjustments.add(
+      'eGFR <30 or dialysis: total daily dose reduced by 0.1 U/kg',
+    );
   } else if (egfr < 45) {
     factor -= 0.05;
     adjustments.add('eGFR 30–44: total daily dose reduced by 0.05 U/kg');
@@ -1351,7 +1578,8 @@ SlidingResult calculateSliding({
   if (steroid && steroidDose >= 10) {
     factor += 0.1;
     adjustments.add(
-        'Glucocorticoid ${roundTo(steroidDose, 0)} mg prednisolone-equivalent: total daily dose increased by 0.1 U/kg');
+      'Glucocorticoid ${roundTo(steroidDose, 0)} mg prednisolone-equivalent: total daily dose increased by 0.1 U/kg',
+    );
   }
   factor = math.max(0.2, factor);
   final tdd = totalDailyDose != null && totalDailyDose > 0
@@ -1386,18 +1614,21 @@ SlidingResult calculateSliding({
       basalAm = (basal * 2 / 3).round();
       basalHs = (basal * 1 / 3).round();
       warnings.add(
-          'NPH is basal only. Use a short-acting insulin for correction doses.');
+        'NPH is basal only. Use a short-acting insulin for correction doses.',
+      );
       break;
     case 'premix':
       premixBreakfast = (tdd * 2 / 3).round();
       premixDinner = (tdd * 1 / 3).round();
       if (npo) {
         warnings.add(
-            'Premix 30/70 is not appropriate while NPO. Switch to basal NPH plus a short-acting correction insulin.');
+          'Premix 30/70 is not appropriate while NPO. Switch to basal NPH plus a short-acting correction insulin.',
+        );
       }
       if (diabetesType == 'type1') {
         warnings.add(
-            'Type 1 diabetes should not be managed on premix 30/70 because of inter-meal hypoglycaemia and DKA risk.');
+          'Type 1 diabetes should not be managed on premix 30/70 because of inter-meal hypoglycaemia and DKA risk.',
+        );
       }
       break;
     default:
@@ -1407,19 +1638,25 @@ SlidingResult calculateSliding({
 
   if (diabetesType == 'type1') {
     warnings.add(
-        'Type 1 diabetes requires scheduled basal insulin. Never use correction-only insulin as routine care.');
+      'Type 1 diabetes requires scheduled basal insulin. Never use correction-only insulin as routine care.',
+    );
   }
   if (npo && product == 'short') {
-    warnings.add('While NPO, hold prandial doses and give basal plus correction every 4–6 hours.');
+    warnings.add(
+      'While NPO, hold prandial doses and give basal plus correction every 4–6 hours.',
+    );
   }
   if (steroid) {
     warnings.add(
-        'Steroid-related hyperglycaemia peaks after lunch and in the afternoon. Match NPH timing to the steroid dose.');
+      'Steroid-related hyperglycaemia peaks after lunch and in the afternoon. Match NPH timing to the steroid dose.',
+    );
   }
 
   final resolvedScale = scale;
   if ((egfr < 30 || dialysis) && resolvedScale != 'low') {
-    warnings.add('Severe renal impairment: the low correction scale is strongly preferred.');
+    warnings.add(
+      'Severe renal impairment: the low correction scale is strongly preferred.',
+    );
   }
 
   final rows = slidingScales;
@@ -1462,19 +1699,19 @@ LiverRisk calculateFib4({
       ? (
           'Low risk',
           Tone.success,
-          'FIB-4 below the rule-out threshold. Advanced fibrosis is unlikely; recheck if the clinical picture changes.'
+          'FIB-4 below the rule-out threshold. Advanced fibrosis is unlikely; recheck if the clinical picture changes.',
         )
       : (score <= 2.67
-          ? (
-              'Indeterminate',
-              Tone.warning,
-              'FIB-4 is in the indeterminate range. Consider elastography or an enhanced liver fibrosis test.'
-            )
-          : (
-              'High risk',
-              Tone.danger,
-              'FIB-4 above 2.67 suggests advanced fibrosis. Refer for hepatology assessment and elastography.'
-            ));
+            ? (
+                'Indeterminate',
+                Tone.warning,
+                'FIB-4 is in the indeterminate range. Consider elastography or an enhanced liver fibrosis test.',
+              )
+            : (
+                'High risk',
+                Tone.danger,
+                'FIB-4 above 2.67 suggests advanced fibrosis. Refer for hepatology assessment and elastography.',
+              ));
   return LiverRisk(roundTo(score, 2), label, tone, detail);
 }
 
@@ -1488,19 +1725,19 @@ LiverRisk calculateApri({
       ? (
           'Low risk',
           Tone.success,
-          'APRI below 0.5 makes significant fibrosis unlikely.'
+          'APRI below 0.5 makes significant fibrosis unlikely.',
         )
       : (score <= 1.5
-          ? (
-              'Indeterminate',
-              Tone.warning,
-              'APRI is indeterminate. Use another non-invasive test or elastography.'
-            )
-          : (
-              'High risk',
-              Tone.danger,
-              'APRI above 1.5 suggests significant fibrosis; refer for specialist assessment.'
-            ));
+            ? (
+                'Indeterminate',
+                Tone.warning,
+                'APRI is indeterminate. Use another non-invasive test or elastography.',
+              )
+            : (
+                'High risk',
+                Tone.danger,
+                'APRI above 1.5 suggests significant fibrosis; refer for specialist assessment.',
+              ));
   return LiverRisk(roundTo(score, 2), label, tone, detail);
 }
 
@@ -1513,7 +1750,8 @@ LiverRisk calculateNfs({
   required double ast,
   required double alt,
 }) {
-  final score = -1.675 +
+  final score =
+      -1.675 +
       0.037 * age +
       0.094 * bmi +
       1.13 * (hyperglycemia ? 1 : 0) +
@@ -1521,10 +1759,22 @@ LiverRisk calculateNfs({
       0.013 * platelets -
       0.66 * albumin;
   final (label, tone, detail) = score < -1.455
-      ? ('Low risk', Tone.success, 'The NAFLD fibrosis score is low; advanced fibrosis is unlikely.')
+      ? (
+          'Low risk',
+          Tone.success,
+          'The NAFLD fibrosis score is low; advanced fibrosis is unlikely.',
+        )
       : (score <= 0.676
-          ? ('Indeterminate', Tone.warning, 'The NAFLD fibrosis score is indeterminate. Consider elastography.')
-          : ('High risk', Tone.danger, 'The NAFLD fibrosis score is high; refer for hepatology assessment.'));
+            ? (
+                'Indeterminate',
+                Tone.warning,
+                'The NAFLD fibrosis score is indeterminate. Consider elastography.',
+              )
+            : (
+                'High risk',
+                Tone.danger,
+                'The NAFLD fibrosis score is high; refer for hepatology assessment.',
+              ));
   return LiverRisk(roundTo(score, 3), label, tone, detail);
 }
 
@@ -1567,15 +1817,20 @@ ElectrolyteResult calculateElectrolytes({
   final correctedAnionGap = anionGap != null && albumin != null
       ? anionGap + 2.5 * (4.0 - albumin)
       : null;
-  final osmolality =
-      sodium != null && glucose != null ? 2 * sodium + glucose / 18 : null;
+  final osmolality = sodium != null && glucose != null
+      ? 2 * sodium + glucose / 18
+      : null;
   return ElectrolyteResult(
-    correctedSodium: correctedSodium == null ? null : roundTo(correctedSodium, 1),
-    correctedCalcium:
-        correctedCalcium == null ? null : roundTo(correctedCalcium, 2),
+    correctedSodium: correctedSodium == null
+        ? null
+        : roundTo(correctedSodium, 1),
+    correctedCalcium: correctedCalcium == null
+        ? null
+        : roundTo(correctedCalcium, 2),
     anionGap: anionGap == null ? null : roundTo(anionGap, 1),
-    correctedAnionGap:
-        correctedAnionGap == null ? null : roundTo(correctedAnionGap, 1),
+    correctedAnionGap: correctedAnionGap == null
+        ? null
+        : roundTo(correctedAnionGap, 1),
     osmolality: osmolality == null ? null : roundTo(osmolality, 1),
   );
 }
@@ -1594,13 +1849,29 @@ HomaResult calculateHoma({
 }) {
   final value = mmol ? (insulin * glucose) / 22.5 : (insulin * glucose) / 405;
   if (value < 1.0) {
-    return HomaResult(roundTo(value, 2), 'Low insulin resistance', Tone.success);
+    return HomaResult(
+      roundTo(value, 2),
+      'Low insulin resistance',
+      Tone.success,
+    );
   }
   if (value <= 2.5) {
-    return HomaResult(roundTo(value, 2), 'Within the usual range', Tone.success);
+    return HomaResult(
+      roundTo(value, 2),
+      'Within the usual range',
+      Tone.success,
+    );
   }
   if (value <= 5.0) {
-    return HomaResult(roundTo(value, 2), 'Insulin resistance likely', Tone.warning);
+    return HomaResult(
+      roundTo(value, 2),
+      'Insulin resistance likely',
+      Tone.warning,
+    );
   }
-  return HomaResult(roundTo(value, 2), 'Marked insulin resistance', Tone.danger);
+  return HomaResult(
+    roundTo(value, 2),
+    'Marked insulin resistance',
+    Tone.danger,
+  );
 }
