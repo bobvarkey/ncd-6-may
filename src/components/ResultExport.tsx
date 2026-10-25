@@ -1,5 +1,6 @@
 import { createContext, useContext, useRef, type ReactNode } from "react";
-import { Copy, Download } from "lucide-react";
+import { Bot, Copy, Download } from "lucide-react";
+import { explainResultsPrompt, openAiAssistant } from "@/components/AiAssistant";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
@@ -35,6 +36,12 @@ export function ResultExport({ getRoot, title }: { getRoot: () => HTMLElement | 
         if (content) downloadTextFile(resultFilename(content.label), content.text);
       }}>
         <Download className="h-4 w-4" /> Download TXT
+      </Button>
+      <Button type="button" variant="outline" size="sm" onClick={() => {
+        const content = getContent();
+        if (content) openAiAssistant(explainResultsPrompt(content.label, content.text));
+      }}>
+        <Bot className="h-4 w-4" /> Explain with AI
       </Button>
     </div>
   );

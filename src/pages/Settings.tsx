@@ -26,6 +26,7 @@ import { listConflicts, resolveConflict, type OfflineRecord } from "@/lib/offlin
 import { downloadBackup, importBackupFromFile, type ImportMode } from "@/lib/offline/backup";
 import { useToast } from "@/hooks/use-toast";
 import Seo from "@/components/Seo";
+import AiKeySettings from "@/components/AiKeySettings";
 
 const TEXT_SCALE_KEY = "ncd-text-scale";
 const SCALES = [
@@ -141,6 +142,8 @@ export default function Settings() {
           <h1 className="text-3xl font-heading font-semibold text-foreground">Settings</h1>
           <p className="text-muted-foreground">Offline availability, appearance and accessibility.</p>
         </header>
+
+        <AiKeySettings />
 
         {/* Connection status */}
         <Card>
