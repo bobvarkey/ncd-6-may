@@ -1,0 +1,37 @@
+import 'package:flutter/material.dart';
+
+import 'core/app_state.dart';
+import 'core/theme.dart';
+import 'data/infection_repository.dart';
+import 'screens/shell.dart';
+
+class NcdApp extends StatelessWidget {
+  const NcdApp({
+    super.key,
+    required this.state,
+    required this.repository,
+  });
+
+  final AppState state;
+  final InfectionRepository repository;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppScope(
+      state: state,
+      child: AnimatedBuilder(
+        animation: state,
+        builder: (context, _) {
+          return MaterialApp(
+            title: 'NCD Rx',
+            debugShowCheckedModeBanner: false,
+            theme: buildNcdTheme(Brightness.light),
+            darkTheme: buildNcdTheme(Brightness.dark),
+            themeMode: state.themeMode,
+            home: Shell(repository: repository),
+          );
+        },
+      ),
+    );
+  }
+}
