@@ -473,6 +473,26 @@ export default function BmiCalculator() {
                         Please enter a valid height ({units === "metric" ? "100–250 cm" : "39–98 in"})
                       </p>
                     )}
+                    {(() => {
+                      const raw = Number(watch("height"));
+                      const cm = units === "metric" ? raw : raw * 2.54;
+                      const sx = watch("sex");
+                      const cutoff = sx === "male" ? 162.5 : sx === "female" ? 150 : null;
+                      const isShort = !!cm && cutoff !== null && cm < cutoff;
+                      return (
+                        <div className="rounded-md border border-border bg-muted/40 p-2 text-xs space-y-1">
+                          <p className="font-semibold text-foreground">Short stature cutoffs — 18 years (adult)</p>
+                          <p className="text-muted-foreground">Male: under 162.5 cm (approx 5'4") · Female: under 150.0 cm (approx 4'11")</p>
+                          {isShort && (
+                            <p className="font-semibold text-destructive">Short stature: {cm.toFixed(1)} cm is below the {cutoff} cm cutoff.</p>
+                          )}
+                          {sx === "female" && !!cm && cm < 145 && (
+                            <p className="font-semibold text-destructive">Below 145 cm — severe public health marker (obstetric risk).</p>
+                          )}
+                          <p className="text-muted-foreground">Note: For an adult woman in India, a final height below 140 cm or 145 cm is historically flagged as a severe public health marker (obstetric risk), while the strict clinical short stature cutoff is 150 cm.</p>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Weight Input */}
