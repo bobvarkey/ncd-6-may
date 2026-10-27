@@ -19,13 +19,19 @@ import {
   ganzoniDeficitMg,
   ganzoniDoseRecommendation,
 } from "@/lib/ganzoni";
+import {
+  ASH_FERRITIN_SOURCE,
+  ashFerritinCutoff,
+  diagnoseIronDeficiency,
+  ferritinBelowCutoff,
+  type AshFerritinCutoff,
+} from "@/lib/ash-ferritin";
 import ZoomableImage from "@/components/ZoomableImage";
 import ironProfileStory from "@/assets/iron-profile-story.png.asset.json";
 
 // ── Types ──────────────────────────────────────────────────────
 type IronPattern = "normal" | "A_high_ferritin_normal_TS" | "B_high_TS_high_ferritin" | "C_high_TS_normal_ferritin" | null;
 type OverloadType = "none" | "reactive" | "primary_hh" | "primary_non_hfe" | "secondary" | null;
-type DeficiencyType = "absolute" | "functional" | "early" | "borderline" | "none" | "other" | "unknown";
 
 // ── Range dropdown helper ──────────────────────────────────────
 type Range = { label: string; value: number };
@@ -253,13 +259,15 @@ function OptionalBlock({
 }
 
 // ── Differential Diagnosis Table ───────────────────────────────
-function DifferentialDiagnosisTable({ ferritin, tsVal, sex, inflammation, ckd, pregnancy }: {
-  ferritin: number; tsVal: number; sex: string; inflammation: boolean; ckd: boolean; pregnancy: boolean;
+function DifferentialDiagnosisTable({ ferritin, tsVal, sex, ckd, ashCutoff }: {
+  ferritin: number; tsVal: number; sex: string; inflammation?: boolean; ckd: boolean; pregnancy?: boolean;
+  ashCutoff: AshFerritinCutoff;
 }) {
   const ferritinThreshold = sex === "female" ? 200 : 300;
   const tsHigh = tsVal >= 45;
   const ferritinHigh = ferritin > ferritinThreshold;
-  const ferritinLow = inflammation ? ferritin < 100 : ferritin < 30;
+  const ferritinLow = ferritinBelowCutoff(ferritin, ashCutoff);
+  const inflamSetting = ashCutoff.band === "inflammatory";
   const tsLow = tsVal < 20;
 
   const conditions = useMemo(() => {
@@ -268,9 +276,9 @@ function DifferentialDiagnosisTable({ ferritin, tsVal, sex, inflammation, ckd, p
     // Iron deficiency
     if (ferritinLow && tsLow) {
       list.push({ condition: "Absolute Iron Deficiency Anemia", pattern: "Low ferritin + low TSAT", ferritin: `${ferritin.toFixed(0)} µg/L`, tsat: `${tsVal.toFixed(1)}%`, probability: "High", color: "bg-red-500/15 text-red-400" });
-    } else if (ferritin > 0 && ferritin < (inflammation ? 100 : 30) && !tsLow) {
+    } else if (ferritin > 0 && ferritinLow && !tsLow) {
       list.push({ condition: "Early / Marginal Iron Deficiency", pattern: "Low ferritin, normal TSAT", ferritin: `${ferritin.toFixed(0)} µg/L`, tsat: `${tsVal.toFixed(1)}%`, probability: "Moderate", color: "bg-amber-500/15 text-amber-400" });
-    } else if (ferritin >= 100 && ferritin < 300 && tsLow && inflammation) {
+    } else if (ferritin >= 100 && ferritin < 300 && tsLow && inflamSetting) {
       list.push({ condition: "Functional Iron Deficiency (ACD)", pattern: "Normal ferritin + low TSAT + inflammation", ferritin: `${ferritin.toFixed(0)} µg/L`, tsat: `${tsVal.toFixed(1)}%`, probability: "High", color: "bg-amber-500/15 text-amber-400" });
     }
 
@@ -287,7 +295,7 @@ function DifferentialDiagnosisTable({ ferritin, tsVal, sex, inflammation, ckd, p
     }
 
     // Anemia of chronic disease
-    if (ferritin >= 30 && ferritin < 300 && tsLow && inflammation) {
+    if (ferritin >= 100 && ferritin < 300 && tsLow && inflamSetting) {
       list.push({ condition: "Anemia of Chronic Disease (ACD)", pattern: "Normal/high ferritin + low TSAT + inflammation", ferritin: `${ferritin.toFixed(0)} µg/L`, tsat: `${tsVal.toFixed(1)}%`, probability: "High", color: "bg-blue-500/15 text-blue-400" });
     }
 
@@ -302,7 +310,7 @@ function DifferentialDiagnosisTable({ ferritin, tsVal, sex, inflammation, ckd, p
     }
 
     return list;
-  }, [ferritin, tsVal, sex, inflammation, ckd, ferritinLow, tsLow, tsHigh, ferritinHigh]);
+  }, [ferritin, tsVal, sex, ckd, ferritinLow, inflamSetting, tsLow, tsHigh, ferritinHigh]);
 
   if (conditions.length === 0) return null;
 
@@ -375,6 +383,9 @@ export default function IronStudiesCombined() {
 
   // ── Deficiency context ──
   const [pregnancy, setPregnancy] = useState(false);
+  const [hmb, setHmb] = useState(false);
+  const [symptomatic, setSymptomatic] = useState(false);
+  const [cancer, setCancer] = useState(false);
   const [esa, setEsa] = useState(false);
   const [chf, setChf] = useState(false);
   const [ibd, setIbd] = useState(false);
@@ -441,9 +452,10 @@ export default function IronStudiesCombined() {
     if (metabolicSyndrome) causes.push("Metabolic syndrome");
     if (ckd) causes.push("CKD");
     if (inflammation) causes.push("Inflammation / infection");
+    if (cancer) causes.push("Cancer");
     if (viralHepatitis) causes.push("Viral hepatitis");
     return causes;
-  }, [nafld, alcohol, metabolicSyndrome, ckd, inflammation, viralHepatitis]);
+  }, [nafld, alcohol, metabolicSyndrome, ckd, inflammation, cancer, viralHepatitis]);
 
   const hasSecondary = secondaryCauses.length > 0;
   const hasReactive = reactiveCauses.length > 0;
@@ -461,37 +473,28 @@ export default function IronStudiesCombined() {
     return null;
   }, [pattern, hasSecondary, hfeStatus]);
 
-  // ── Deficiency Diagnosis ──
+  const pregnancyAnemia = pregnancy && n(hemoglobin) > 0 && n(hemoglobin) < 11;
+  const ashCutoff = useMemo(
+    () =>
+      ashFerritinCutoff({
+        ageYears: age.trim() === "" ? null : parseFloat(age),
+        pregnancy,
+        hmb,
+        symptomatic,
+        inflammation,
+        ibd,
+        cancer,
+        pregnancyAnemia,
+      }),
+    [age, pregnancy, hmb, symptomatic, inflammation, ibd, cancer, pregnancyAnemia],
+  );
+
+  // ── Deficiency Diagnosis (ASH ferritin bands; Ganzoni math is separate) ──
   const deficiencyDiagnosis = useMemo(() => {
     const f = n(ferritin);
     if (!f && !tsVal) return null;
-    const hasInflam = inflammation;
-    const ferritinAbsLow = hasInflam ? f < 100 : f < 30;
-    const ferritinFunctional = f >= 100 && f < 300;
-    const ferritinReplete = f >= 300;
-    const tsatLow = tsVal < 20;
-    const tsatNormal = tsVal >= 20;
-
-    if (ferritinAbsLow && tsatLow)
-      return { diagnosis: "Absolute Iron Deficiency", detail: "Ferritin <30 (no inflammation) or <100 (with inflammation) + TSAT <20%. Definitive iron deficiency.", label: "absolute" as DeficiencyType };
-    if (ferritinFunctional && tsatLow) {
-      if (hasInflam)
-        return { diagnosis: "Functional Iron Deficiency", detail: "Ferritin 100–300 ng/mL with TSAT <20% in setting of inflammation — iron trapped in storage.", label: "functional" as DeficiencyType };
-      return { diagnosis: "Functional Iron Deficiency (CKD/ESA)", detail: "Ferritin 100–300 with low TSAT — iron available but not utilized. IV iron indicated per guidelines.", label: "functional" as DeficiencyType };
-    }
-    if (!hasInflam && f >= 30 && f < 100) {
-      if (tsatNormal)
-        return { diagnosis: "Early/Marginal Iron Deficiency", detail: "Ferritin 30–100 with normal TSAT. Low stores, still sufficient for erythropoiesis. Oral iron may benefit.", label: "early" as DeficiencyType };
-      return { diagnosis: "Absolute Iron Deficiency (Borderline)", detail: "Ferritin 30–100 with low TSAT — consistent with absolute iron deficiency despite borderline ferritin.", label: "absolute" as DeficiencyType };
-    }
-    if (ferritinReplete && tsatNormal)
-      return { diagnosis: "Iron Deficiency Unlikely", detail: "Ferritin ≥300 ng/mL and TSAT ≥20%. Adequate iron stores.", label: "none" as DeficiencyType };
-    if (ferritinReplete && tsatLow)
-      return { diagnosis: "Low TSAT with Replete Ferritin", detail: "Consider anemia of chronic disease, mixed deficiency, or lab error. Further workup needed.", label: "other" as DeficiencyType };
-    if (ferritinFunctional && tsatNormal)
-      return { diagnosis: "Iron Deficiency Unlikely", detail: "Ferritin 100–300 with normal TSAT — adequate iron for erythropoiesis.", label: "none" as DeficiencyType };
-    return { diagnosis: "Unable to Classify", detail: "Check input values.", label: "unknown" as DeficiencyType };
-  }, [ferritin, tsVal, inflammation]);
+    return diagnoseIronDeficiency(f, tsVal, ashCutoff);
+  }, [ferritin, tsVal, ashCutoff]);
 
   const autoTargetHb = defaultTargetHb(n(weight) || 70, { pregnancy, ckd });
   const autoStores = n(weight) ? defaultIronStores(n(weight)) : 500;
@@ -604,6 +607,7 @@ export default function IronStudiesCombined() {
       `  TIBC: ${tibc || "—"} µg/dL`,
       `  Transferrin saturation: ${computedTs ? computedTs + "% (computed)" : ts ? ts + "%" : "—"}`,
       `  Ferritin: ${ferritin || "—"} µg/L`,
+      `  Ferritin ID cut-off (${ASH_FERRITIN_SOURCE}): ${ashCutoff.inequality}`,
       `  Hemoglobin: ${hemoglobin || "—"} g/dL`,
       `  Weight: ${weight || "—"} kg`,
       `  ALT: ${alt || "—"} / AST: ${ast || "—"}`,
@@ -656,8 +660,8 @@ export default function IronStudiesCombined() {
     setSex(""); setAge("");
     setTransfusions(false); setThalassemia(false); setSickleCell(false); setChronicAnemia(false); setMds(false);
     setViralHepatitis(false); setAlcohol(false); setNafld(false); setMetabolicSyndrome(false); setCkd(false);
-    setInflammation(false); setHemolysis(false); setPct(false);
-    setPregnancy(false); setEsa(false); setChf(false); setIbd(false); setRls(false); setBariatric(false);
+    setInflammation(false); setHemolysis(false); setPct(false); setCancer(false);
+    setPregnancy(false); setHmb(false); setSymptomatic(false); setEsa(false); setChf(false); setIbd(false); setRls(false); setBariatric(false);
     setOralIntolerance(false); setRapidCorrection(false); setOngoingBloodLoss(false);
     setSymptomsFatigue(false); setSymptomsArthralgia(false); setSymptomsDiabetes(false); setSymptomsCardiac(false); setSymptomsHypogonadism(false);
     setFamilyHx(false); setHfeStatus("unknown"); setShowAdvanced(false);
@@ -667,7 +671,7 @@ export default function IronStudiesCombined() {
   const hasIronParams = n(ferritin) > 0 || tsVal > 0 || n(serumIron) > 0 || n(tibc) > 0;
   const contextFlagCount = [
     transfusions, thalassemia, sickleCell, chronicAnemia, mds, viralHepatitis, alcohol, nafld,
-    metabolicSyndrome, ckd, inflammation, hemolysis, pct, pregnancy, esa, chf, ibd, rls,
+    metabolicSyndrome, ckd, inflammation, cancer, hemolysis, pct, pregnancy, hmb, symptomatic, esa, chf, ibd, rls,
     bariatric, oralIntolerance, rapidCorrection, ongoingBloodLoss, symptomsFatigue,
     symptomsArthralgia, symptomsDiabetes, symptomsCardiac, symptomsHypogonadism, familyHx,
   ].filter(Boolean).length;
@@ -727,7 +731,7 @@ export default function IronStudiesCombined() {
               value={ferritin} 
               onChange={setFerritin} 
               ranges={RANGES.ferritin} 
-              tooltip="Reflects total body iron stores. Also an acute-phase reactant (can be falsely high in inflammation). Ref: 30-300 µg/L."
+              tooltip="Reflects total body iron stores. Acute-phase reactant (can be high in inflammation). ASH ID cut-off depends on context — default ≤30 ng/mL."
             />
             <RangeOrExact 
               id="hemoglobin" 
@@ -817,6 +821,15 @@ export default function IronStudiesCombined() {
               ranges={RANGES.ast} 
               tooltip="Aspartate Transaminase. Liver enzyme used alongside ALT to assess liver health. Ref: 10-40 U/L."
             />
+            <p
+              data-testid="ash-ferritin-cutoff"
+              className="sm:col-span-2 text-[11px] text-muted-foreground leading-snug"
+            >
+              <span className="font-medium text-foreground">ASH ferritin ID</span>
+              {" — "}
+              {ashCutoff.shortLabel}
+              <span className="text-muted-foreground/80"> · {ASH_FERRITIN_SOURCE}</span>
+            </p>
           </CardContent>
           {computedTs && (
             <CardContent className="pt-0">
@@ -875,7 +888,7 @@ export default function IronStudiesCombined() {
       <OptionalBlock
         title="Clinical context"
         icon={<Stethoscope className="h-4 w-4 text-primary" />}
-        hint={contextFlagCount > 0 ? `${contextFlagCount} selected` : "Pregnancy, CKD, inflammation…"}
+        hint={contextFlagCount > 0 ? `${contextFlagCount} selected` : "HMB, pregnancy, inflammation…"}
       >
         <div className="grid lg:grid-cols-3 gap-4">
           <div>
@@ -910,6 +923,7 @@ export default function IronStudiesCombined() {
                 ["metsyn","Metabolic syndrome", metabolicSyndrome, setMetabolicSyndrome],
                 ["ckd","CKD", ckd, setCkd],
                 ["inflam","Inflammation / infection", inflammation, setInflammation],
+                ["cancer","Cancer", cancer, setCancer],
                 ["viralhep","Viral hepatitis", viralHepatitis, setViralHepatitis],
               ].map(([id, label, val, setter]: any) => (
                 <label key={id} className="flex items-center gap-2 text-xs cursor-pointer">
@@ -926,6 +940,8 @@ export default function IronStudiesCombined() {
             <div className="grid grid-cols-2 gap-x-3 gap-y-2">
               {[
                 ["preg","Pregnancy", pregnancy, setPregnancy],
+                ["hmb","Heavy menstrual bleeding", hmb, setHmb],
+                ["symptomatic","Symptomatic", symptomatic, setSymptomatic],
                 ["esa","On ESA therapy", esa, setEsa],
                 ["chf","Chronic heart failure", chf, setChf],
                 ["ibd","IBD / GI inflammation", ibd, setIbd],
@@ -1029,9 +1045,8 @@ export default function IronStudiesCombined() {
                     {(() => {
                       const f = n(ferritin);
                       const overloadCut = sex === "female" ? 200 : 300;
-                      const lowCut = inflammation ? 100 : 30;
                       if (f > overloadCut) return <Badge className="bg-red-500/15 text-red-400 border-red-500/30">High</Badge>;
-                      if (f > 0 && f < lowCut) return <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low</Badge>;
+                      if (ferritinBelowCutoff(f, ashCutoff)) return <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Low</Badge>;
                       if (f > 0) return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Normal</Badge>;
                       return <Badge variant="outline">—</Badge>;
                     })()}
@@ -1073,6 +1088,10 @@ export default function IronStudiesCombined() {
                     <p className="text-sm font-bold">No iron deficiency</p>
                   </div>
                 )}
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  ASH cut-off {ashCutoff.inequality}
+                  {n(hemoglobin) > 0 && n(hemoglobin) >= (pregnancy ? 11 : 12) ? " · normal Hb/CBC does not exclude ID" : ""}
+                </p>
                 {(deficiencyDiagnosis || deficiencyNotes.length > 0) && (
                   <div className="mt-2">
                     <ReadMore summary="Read more">
@@ -1139,6 +1158,7 @@ export default function IronStudiesCombined() {
                   inflammation={inflammation}
                   ckd={ckd}
                   pregnancy={pregnancy}
+                  ashCutoff={ashCutoff}
                 />
               </ReadMore>
             )}
@@ -1166,10 +1186,21 @@ export default function IronStudiesCombined() {
                   <li>TS ≥ 45% suggests iron overload</li>
                   <li>Ferritin &gt; 300 µg/L (men) or &gt; 200 µg/L (women) strengthens suspicion</li>
                   <li>TS &lt; 20% suggests inadequate iron for erythropoiesis</li>
-                  <li>Ferritin &lt; 30 (no inflammation) or &lt; 100 (with inflammation) = absolute iron deficiency</li>
+                  <li>Active ASH ferritin ID cut-off: {ashCutoff.inequality} ({ashCutoff.shortLabel})</li>
                 </ul>
+                <p className="font-medium text-foreground pt-1">{ASH_FERRITIN_SOURCE} — ferritin ID cut-offs</p>
+                <ul className="list-disc list-inside space-y-0.5">
+                  <li>≤30 ng/mL — adults, menstruating &amp; pregnant</li>
+                  <li>≤50 ng/mL — high-risk: HMB, symptomatic, pregnancy with anaemia/risk factors</li>
+                  <li>&lt;100 ng/mL or TSAT &lt;20% — inflammation, cancer, IBD, or infection</li>
+                  <li>≤20 ng/mL — children 9 months–4 years</li>
+                  <li>A normal Hb/CBC does not exclude iron deficiency</li>
+                </ul>
+                <p>Why it matters: In India, screening is still largely Hb-centric, so iron deficiency without anaemia can be missed — especially in menstruating women and pregnancy.</p>
+                <p>Practical shift: don’t wait for microcytosis or low Hb before considering iron stores.</p>
+                <p>Caveat: higher cut-offs should mean better diagnosis, not blind iron supplementation — the cause of anaemia still matters.</p>
                 <p className="text-[10px] text-muted-foreground/70">
-                  Sources: AASLD, EASL, BC Guidelines, Mayo Clinic Laboratories, NCBI, ESGAR/SAR, ACG Clinical Guideline 2023, KDIGO
+                  Sources: {ASH_FERRITIN_SOURCE}; AASLD, EASL, BC Guidelines, Mayo Clinic Laboratories, NCBI, ESGAR/SAR, ACG Clinical Guideline 2023, KDIGO
                 </p>
                 <div className="rounded-lg border p-3 space-y-2 bg-background/40">
                   <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
