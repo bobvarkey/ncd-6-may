@@ -26,6 +26,37 @@ function PmosTab() {
         </p>
       </div>
 
+      {/* PMOS at a glance */}
+      <Card className="border-primary/40">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            PMOS at a Glance
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm text-muted-foreground">
+          <p>
+            <strong className="text-foreground">PMOS</strong> = updated PCOS nomenclature; <strong className="text-foreground">reproductive + cardiometabolic + dermatologic + mental health</strong> features.
+          </p>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-1">Suspect with</h3>
+            <p>Hyperandrogenism, irregular cycles, polycystic ovarian morphology, acanthosis nigricans, obesity.</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-1">Workup</h3>
+            <p>LH/FSH, testosterone/free androgen index, TSH, prolactin; add 17-OHP, AMH, Cushing/anabolic drug evaluation.</p>
+          </div>
+          <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/30">
+            <p className="text-xs font-semibold text-destructive mb-1">Red flag</p>
+            <p className="text-sm">Total testosterone &gt;5 nmol/L or rapid virilization → <strong className="text-foreground">urgent tumor exclusion</strong>.</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-1">Annual cardiometabolic screening</h3>
+            <p>BP, A1c, lipids, LFT/FIB-4, OSA; lifestyle + 5%–10% weight loss beneficial.</p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Rotterdam Criteria */}
       <Card className="border-border/60">
         <CardHeader className="pb-3">
