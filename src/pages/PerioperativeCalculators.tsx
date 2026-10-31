@@ -35,7 +35,7 @@ import ZoomableImage from "@/components/ZoomableImage";
 import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import mallampatiAsset from "@/assets/mallampati-score.png.asset.json";
 import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
-import { SURGERY_OPTIONS, suggestCalculators } from "@/lib/periop-suggestions";
+import { PATIENT_HISTORY_OPTIONS, SURGERY_OPTIONS, suggestCalculators } from "@/lib/periop-suggestions";
 
 // ─── RCRI (Revised Cardiac Risk Index) ───
 interface RCRIFactor {
@@ -524,7 +524,8 @@ const PerioperativeCalculators = () => {
   const [selectorAnswers, setSelectorAnswers] = useLocalStorage<{
     surgeryType: string;
     clinicalFocus: string;
-  }>("periop-selector-answers", { surgeryType: "", clinicalFocus: "" });
+    patientHistory?: string;
+  }>("periop-selector-answers", { surgeryType: "", clinicalFocus: "", patientHistory: "" });
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -549,8 +550,8 @@ const PerioperativeCalculators = () => {
   }, [location.search, location.hash]);
 
   const suggestions = useMemo(
-    () => suggestCalculators(selectorAnswers.surgeryType, selectorAnswers.clinicalFocus),
-    [selectorAnswers.surgeryType, selectorAnswers.clinicalFocus]
+    () => suggestCalculators(selectorAnswers.surgeryType, selectorAnswers.clinicalFocus, selectorAnswers.patientHistory),
+    [selectorAnswers.surgeryType, selectorAnswers.clinicalFocus, selectorAnswers.patientHistory]
   );
 
   const toggleToolComparison = (val: string) => {
@@ -597,7 +598,7 @@ const PerioperativeCalculators = () => {
                 variant="ghost" 
                 size="icon" 
                 className="h-8 w-8 text-muted-foreground"
-                onClick={() => setSelectorAnswers({ surgeryType: "", clinicalFocus: "" })}
+                onClick={() => setSelectorAnswers({ surgeryType: "", clinicalFocus: "", patientHistory: "" })}
                 title="Reset selector"
               >
                 <Save className="h-4 w-4 rotate-180" />
@@ -608,7 +609,28 @@ const PerioperativeCalculators = () => {
         <CardContent className="space-y-4">
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">1. What is the surgery type?</Label>
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Step 1 first: Does the patient have cardiac disease or a prior stroke?</Label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2" role="radiogroup" aria-label="Patient cardiac or stroke history">
+                {PATIENT_HISTORY_OPTIONS.map((h) => {
+                  const on = (selectorAnswers.patientHistory || "") === h.id;
+                  return (
+                    <button key={h.id || "none"} type="button" role="radio" aria-checked={on}
+                      onClick={() => {
+                        setSelectorAnswers(prev => ({ ...prev, patientHistory: h.id }));
+                        const first = suggestCalculators(selectorAnswers.surgeryType, selectorAnswers.clinicalFocus, h.id)[0];
+                        if (first) setActiveTab(first);
+                      }}
+                      className={`flex flex-col items-start p-2.5 rounded-lg border text-left transition-all ${on ? "bg-primary text-primary-foreground border-transparent shadow-md" : "bg-background border-border hover:border-primary hover:bg-primary/5"}`}>
+                      <span className="text-xs font-bold">{h.label}</span>
+                      <span className={`text-[10px] ${on ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{h.desc}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">2. What is the surgery type?</Label>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: 'non-cardiac', label: 'Non-cardiac', target: 'rcri', desc: 'General, Ortho, Vascular' },
@@ -620,7 +642,7 @@ const PerioperativeCalculators = () => {
                     key={type.id}
                     onClick={() => {
                       setSelectorAnswers(prev => ({ ...prev, surgeryType: type.id }));
-                      const first = suggestCalculators(type.id, selectorAnswers.clinicalFocus)[0];
+                      const first = suggestCalculators(type.id, selectorAnswers.clinicalFocus, selectorAnswers.patientHistory)[0];
                       if (first) setActiveTab(first);
                       const el = document.getElementById(type.target);
                       el?.scrollIntoView({ behavior: 'smooth' });
@@ -641,7 +663,7 @@ const PerioperativeCalculators = () => {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">2. What is the clinical focus?</Label>
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">3. What is the clinical focus?</Label>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: 'airway', label: 'Airway / OSA', target: 'mallampati', desc: 'Intubation, STOP-Bang' },
@@ -676,7 +698,7 @@ const PerioperativeCalculators = () => {
                 value={selectorAnswers.surgeryType || undefined}
                 onValueChange={(v) => {
                   setSelectorAnswers(prev => ({ ...prev, surgeryType: v }));
-                  const first = suggestCalculators(v, selectorAnswers.clinicalFocus)[0];
+                  const first = suggestCalculators(v, selectorAnswers.clinicalFocus, selectorAnswers.patientHistory)[0];
                   if (first) setActiveTab(first);
                 }}
               >
@@ -689,7 +711,7 @@ const PerioperativeCalculators = () => {
             {suggestions.length > 0 && (
               <div className="rounded-lg border border-primary/40 bg-primary/10 p-3 space-y-2" aria-live="polite">
                 <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                  <CheckCircle className="w-3.5 h-3.5 text-primary" /> Suggested calculators for {SURGERY_OPTIONS.find(s => s.id === selectorAnswers.surgeryType)?.label}
+                  <CheckCircle className="w-3.5 h-3.5 text-primary" /> Suggested calculators{SURGERY_OPTIONS.find(s => s.id === selectorAnswers.surgeryType) ? ` for ${SURGERY_OPTIONS.find(s => s.id === selectorAnswers.surgeryType)?.label}` : " for this patient"}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {suggestions.map((v, i) => (
@@ -2055,12 +2077,22 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
     <div className="space-y-4">
       <div className="rounded-lg border border-primary/40 bg-primary/10 p-4 space-y-2 text-sm">
         <p className="font-semibold text-foreground">Woo is preferred for stroke patients</p>
-        <p className="text-foreground/90">When evaluating stroke patients who are undergoing non-cardiac surgery, the Woo score is highly preferred over the Revised Cardiac Risk Index (RCRI) for predicting perioperative stroke risk.</p>
+        <p className="text-foreground/90">When evaluating stroke patients who are undergoing non-cardiac surgery, the Woo score is highly preferred over the Revised Cardiac Risk Index (RCRI) for predicting perioperative stroke risk.<sup>1,2</sup></p>
         <ul className="list-disc pl-5 space-y-1 text-foreground/80">
-          <li><strong>RCRI</strong> predicts 30-day major cardiac events (MI, cardiac arrest, heart block); poor stroke discrimination (AUC ~0.74).</li>
-          <li><strong>Woo</strong> was built on NSQIP data specifically for postoperative ischemic stroke; high discrimination (AUC ~0.86–0.87).</li>
-          <li><strong>Use both in tandem:</strong> Woo for stroke vulnerability, RCRI (or ACS-NSQIP) for concurrent cardiac risk. If Woo is unavailable, MICA or ACS-NSQIP also outperform RCRI for stroke.</li>
+          <li><strong>RCRI</strong> predicts 30-day major cardiac events (MI, cardiac arrest, heart block); poor stroke discrimination (AUC ~0.74).<sup>2,3</sup></li>
+          <li><strong>Woo</strong> was built on NSQIP data specifically for postoperative ischemic stroke; high discrimination (AUC ~0.86–0.87).<sup>1</sup></li>
+          <li><strong>Use both in tandem:</strong> Woo for stroke vulnerability, RCRI (or ACS-NSQIP) for concurrent cardiac risk. If Woo is unavailable, MICA or ACS-NSQIP also outperform RCRI for stroke.<sup>2,4</sup></li>
         </ul>
+        <div className="border-t border-border/40 pt-2 text-xs text-muted-foreground space-y-1">
+          <p className="font-semibold text-foreground/80">References</p>
+          <ol className="list-decimal pl-5 space-y-0.5">
+            <li>Woo SH, Marhefka GD, Cowan SW, Ackermann L. Development and validation of a prediction model for stroke, cardiac, and mortality risk after non-cardiac surgery. <em>J Am Heart Assoc</em>. 2021;10(4):e018013. <a className="text-primary underline" href="https://doi.org/10.1161/JAHA.120.018013" target="_blank" rel="noreferrer">doi:10.1161/JAHA.120.018013</a></li>
+            <li>Lee TH, Marcantonio ER, Mangione CM, et al. Derivation and prospective validation of a simple index for prediction of cardiac risk of major noncardiac surgery. <em>Circulation</em>. 1999;100(10):1043–1049. <a className="text-primary underline" href="https://doi.org/10.1161/01.CIR.100.10.1043" target="_blank" rel="noreferrer">doi:10.1161/01.CIR.100.10.1043</a></li>
+            <li>Ford MK, Beattie WS, Wijeysundera DN. Systematic review: prediction of perioperative cardiac complications and mortality by the Revised Cardiac Risk Index. <em>Ann Intern Med</em>. 2010;152(1):26–35. <a className="text-primary underline" href="https://doi.org/10.7326/0003-4819-152-1-201001050-00007" target="_blank" rel="noreferrer">doi:10.7326/0003-4819-152-1-201001050-00007</a></li>
+            <li>Bilimoria KY, Liu Y, Paruch JL, et al. Development and evaluation of the universal ACS NSQIP surgical risk calculator. <em>J Am Coll Surg</em>. 2013;217(5):833–842. <a className="text-primary underline" href="https://doi.org/10.1016/j.jamcollsurg.2013.07.385" target="_blank" rel="noreferrer">doi:10.1016/j.jamcollsurg.2013.07.385</a></li>
+          </ol>
+          <p>Last reviewed: 31 October 2026</p>
+        </div>
       </div>
       <Card className="border-border/40">
         <CardHeader className="pb-2">
