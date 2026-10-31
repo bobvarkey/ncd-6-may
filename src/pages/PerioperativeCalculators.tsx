@@ -620,6 +620,8 @@ const PerioperativeCalculators = () => {
                     key={type.id}
                     onClick={() => {
                       setSelectorAnswers(prev => ({ ...prev, surgeryType: type.id }));
+                      const first = suggestCalculators(type.id, selectorAnswers.clinicalFocus)[0];
+                      if (first) setActiveTab(first);
                       const el = document.getElementById(type.target);
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
@@ -857,7 +859,7 @@ const PerioperativeCalculators = () => {
         </Card>
       )}
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs id="periop-tabs" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="flex-wrap h-auto gap-1 p-1">
           <TabsTrigger value="rcri" className="text-sm">RCRI</TabsTrigger>
           <TabsTrigger value="asa" className="text-sm">ASA Class</TabsTrigger>
