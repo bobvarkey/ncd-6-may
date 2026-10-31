@@ -17,6 +17,7 @@ export const SURGERY_OPTIONS: SurgeryOption[] = [
   { id: "spine", label: "Spine surgery", group: "Specific procedure", tools: ["caprini", "asa", "rcri", "meds"] },
   { id: "csdh", label: "Burr-hole / chronic subdural (cSDH)", group: "Specific procedure", tools: ["csdh", "woo", "asa", "meds"] },
   { id: "craniotomy", label: "Craniotomy", group: "Specific procedure", tools: ["asa", "caprini", "rcri", "meds"] },
+  { id: "prior-stroke", label: "Non-cardiac surgery in a stroke / TIA patient", group: "Specific procedure", tools: ["woo", "rcri", "asa", "meds"] },
   { id: "ent-airway", label: "ENT / airway surgery", group: "Specific procedure", tools: ["mallampati", "stopbang", "asa"] },
   { id: "cataract", label: "Cataract / low-risk day case", group: "Specific procedure", tools: ["asa", "labs"] },
   { id: "urology", label: "Urology (TURP, nephrectomy)", group: "Specific procedure", tools: ["rcri", "caprini", "asa", "labs"] },
