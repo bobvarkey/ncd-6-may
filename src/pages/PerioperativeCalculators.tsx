@@ -2053,6 +2053,15 @@ const WooRiskCalculator = ({ onSwitchToASA }: { onSwitchToASA?: () => void }) =>
 
   return (
     <div className="space-y-4">
+      <div className="rounded-lg border border-primary/40 bg-primary/10 p-4 space-y-2 text-sm">
+        <p className="font-semibold text-foreground">Woo is preferred for stroke patients</p>
+        <p className="text-foreground/90">When evaluating stroke patients who are undergoing non-cardiac surgery, the Woo score is highly preferred over the Revised Cardiac Risk Index (RCRI) for predicting perioperative stroke risk.</p>
+        <ul className="list-disc pl-5 space-y-1 text-foreground/80">
+          <li><strong>RCRI</strong> predicts 30-day major cardiac events (MI, cardiac arrest, heart block); poor stroke discrimination (AUC ~0.74).</li>
+          <li><strong>Woo</strong> was built on NSQIP data specifically for postoperative ischemic stroke; high discrimination (AUC ~0.86–0.87).</li>
+          <li><strong>Use both in tandem:</strong> Woo for stroke vulnerability, RCRI (or ACS-NSQIP) for concurrent cardiac risk. If Woo is unavailable, MICA or ACS-NSQIP also outperform RCRI for stroke.</li>
+        </ul>
+      </div>
       <Card className="border-border/40">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
