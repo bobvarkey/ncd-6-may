@@ -15,3 +15,12 @@ describe("perioperative calculator suggestions", () => {
     expect(suggestCalculators("")).toEqual([]);
   });
 });
+
+describe("patient history selector", () => {
+  it("puts Woo first for a prior stroke patient", () => {
+    expect(suggestCalculators("hip-knee", "", "stroke")[0]).toBe("woo");
+  });
+  it("puts RCRI first for a cardiac patient", () => {
+    expect(suggestCalculators("laparoscopic", "", "cardiac")[0]).toBe("rcri");
+  });
+});

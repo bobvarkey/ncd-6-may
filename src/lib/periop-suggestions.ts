@@ -24,6 +24,19 @@ export const SURGERY_OPTIONS: SurgeryOption[] = [
   { id: "gyn-onc", label: "Gynaecology / cancer surgery", group: "Specific procedure", tools: ["caprini", "rcri", "apgar", "asa"] },
 ];
 
+export const PATIENT_HISTORY_OPTIONS = [
+  { id: "", label: "Neither", desc: "No cardiac or stroke history" },
+  { id: "cardiac", label: "Cardiac disease", desc: "IHD, HF, arrhythmia, valve" },
+  { id: "stroke", label: "Prior stroke / TIA", desc: "Cerebrovascular disease" },
+  { id: "both", label: "Both", desc: "Cardiac + stroke/TIA" },
+];
+
+const HISTORY_TOOLS: Record<string, string[]> = {
+  cardiac: ["rcri", "goldman"],
+  stroke: ["woo", "rcri"],
+  both: ["woo", "rcri", "goldman"],
+};
+
 const FOCUS_TOOLS: Record<string, string[]> = {
   airway: ["mallampati", "stopbang"],
   vte: ["caprini"],
@@ -31,8 +44,10 @@ const FOCUS_TOOLS: Record<string, string[]> = {
   meds: ["meds"],
 };
 
-export function suggestCalculators(surgeryId: string, focusId = ""): string[] {
+export function suggestCalculators(surgeryId: string, focusId = "", historyId = ""): string[] {
   const base = SURGERY_OPTIONS.find((s) => s.id === surgeryId)?.tools ?? [];
   const focus = FOCUS_TOOLS[focusId] ?? [];
-  return Array.from(new Set([...focus, ...base]));
+  const history = HISTORY_TOOLS[historyId] ?? [];
+  if (!base.length && !history.length) return [];
+  return Array.from(new Set([...history, ...focus, ...base]));
 }
