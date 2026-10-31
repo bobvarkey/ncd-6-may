@@ -711,7 +711,7 @@ const PerioperativeCalculators = () => {
             {suggestions.length > 0 && (
               <div className="rounded-lg border border-primary/40 bg-primary/10 p-3 space-y-2" aria-live="polite">
                 <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                  <CheckCircle className="w-3.5 h-3.5 text-primary" /> Suggested calculators for {SURGERY_OPTIONS.find(s => s.id === selectorAnswers.surgeryType)?.label}
+                  <CheckCircle className="w-3.5 h-3.5 text-primary" /> Suggested calculators{SURGERY_OPTIONS.find(s => s.id === selectorAnswers.surgeryType) ? ` for ${SURGERY_OPTIONS.find(s => s.id === selectorAnswers.surgeryType)?.label}` : " for this patient"}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {suggestions.map((v, i) => (
