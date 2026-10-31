@@ -1,5 +1,6 @@
-import { createContext, useContext, useRef, type ReactNode } from "react";
-import { Bot, Copy, Download } from "lucide-react";
+import { createContext, useContext, useRef, useState, type ReactNode } from "react";
+import { Bot, Copy, Download, RotateCcw } from "lucide-react";
+import { ResetKeyRegistryContext } from "@/hooks/useLocalStorage";
 import { explainResultsPrompt, openAiAssistant } from "@/components/AiAssistant";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ import { collectResultText, resultFilename } from "@/lib/result-export";
 const ClinicalExportContext = createContext(false);
 export const useClinicalExport = () => useContext(ClinicalExportContext);
 
-export function ResultExport({ getRoot, title }: { getRoot: () => HTMLElement | null; title?: string }) {
+export function ResultExport({ getRoot, title, onReset }: { getRoot: () => HTMLElement | null; title?: string; onReset?: () => void }) {
   const getContent = () => {
     const root = getRoot();
     if (!root) return null;
@@ -43,6 +44,11 @@ export function ResultExport({ getRoot, title }: { getRoot: () => HTMLElement | 
       }}>
         <Bot className="h-4 w-4" /> Explain with AI
       </Button>
+      {onReset && (
+        <Button type="button" variant="destructive" size="sm" onClick={onReset}>
+          <RotateCcw className="h-4 w-4" /> Reset page
+        </Button>
+      )}
     </div>
   );
 }
@@ -50,10 +56,21 @@ export function ResultExport({ getRoot, title }: { getRoot: () => HTMLElement | 
 /** Also covers custom button-based tabs and tools without Radix panels. */
 export function ClinicalExportScope({ title, children }: { title: string; children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
+  const [registry] = useState(() => new Set<string>());
+  const [resetCount, setResetCount] = useState(0);
+  const resetPage = () => {
+    registry.forEach((key) => { try { window.localStorage.removeItem(key); } catch { /* ignore */ } });
+    registry.clear();
+    setResetCount((n) => n + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    toast.success("All inputs on this page were reset");
+  };
   return (
     <ClinicalExportContext.Provider value={true}>
-      <ResultExport title={title} getRoot={() => root.current} />
-      <div ref={root}>{children}</div>
+      <ResultExport title={title} getRoot={() => root.current} onReset={resetPage} />
+      <ResetKeyRegistryContext.Provider value={registry}>
+        <div ref={root} key={resetCount}>{children}</div>
+      </ResetKeyRegistryContext.Provider>
     </ClinicalExportContext.Provider>
   );
 }

@@ -35,6 +35,7 @@ import ZoomableImage from "@/components/ZoomableImage";
 import { CsdhRiskCalculator } from "@/calculators/perioperative/CsdhRiskCalculator";
 import mallampatiAsset from "@/assets/mallampati-score.png.asset.json";
 import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
+import { SURGERY_OPTIONS, suggestCalculators } from "@/lib/periop-suggestions";
 
 // ─── RCRI (Revised Cardiac Risk Index) ───
 interface RCRIFactor {
@@ -547,6 +548,11 @@ const PerioperativeCalculators = () => {
     }
   }, [location.search, location.hash]);
 
+  const suggestions = useMemo(
+    () => suggestCalculators(selectorAnswers.surgeryType, selectorAnswers.clinicalFocus),
+    [selectorAnswers.surgeryType, selectorAnswers.clinicalFocus]
+  );
+
   const toggleToolComparison = (val: string) => {
     const next = new Set(selectedTools);
     if (next.has(val)) next.delete(val);
@@ -614,6 +620,8 @@ const PerioperativeCalculators = () => {
                     key={type.id}
                     onClick={() => {
                       setSelectorAnswers(prev => ({ ...prev, surgeryType: type.id }));
+                      const first = suggestCalculators(type.id, selectorAnswers.clinicalFocus)[0];
+                      if (first) setActiveTab(first);
                       const el = document.getElementById(type.target);
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
@@ -662,6 +670,37 @@ const PerioperativeCalculators = () => {
                 ))}
               </div>
             </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Or pick the specific surgery</Label>
+              <Select
+                value={selectorAnswers.surgeryType || undefined}
+                onValueChange={(v) => {
+                  setSelectorAnswers(prev => ({ ...prev, surgeryType: v }));
+                  const first = suggestCalculators(v, selectorAnswers.clinicalFocus)[0];
+                  if (first) setActiveTab(first);
+                }}
+              >
+                <SelectTrigger aria-label="Planned surgery"><SelectValue placeholder="Select planned surgery…" /></SelectTrigger>
+                <SelectContent>
+                  {SURGERY_OPTIONS.map(s => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            {suggestions.length > 0 && (
+              <div className="rounded-lg border border-primary/40 bg-primary/10 p-3 space-y-2" aria-live="polite">
+                <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5 text-primary" /> Suggested calculators for {SURGERY_OPTIONS.find(s => s.id === selectorAnswers.surgeryType)?.label}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {suggestions.map((v, i) => (
+                    <Button key={v} type="button" size="sm" variant={activeTab === v ? "default" : "outline"} className="h-7 text-xs"
+                      onClick={() => { setActiveTab(v); document.getElementById("periop-tabs")?.scrollIntoView({ behavior: "smooth" }); }}>
+                      {i + 1}. {CALCULATOR_CARDS.find(c => c.value === v)?.title ?? v}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <div className="pt-3 border-t border-border/40">
             <p className="text-[10px] text-muted-foreground italic mb-2">
@@ -820,7 +859,7 @@ const PerioperativeCalculators = () => {
         </Card>
       )}
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs id="periop-tabs" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="flex-wrap h-auto gap-1 p-1">
           <TabsTrigger value="rcri" className="text-sm">RCRI</TabsTrigger>
           <TabsTrigger value="asa" className="text-sm">ASA Class</TabsTrigger>
