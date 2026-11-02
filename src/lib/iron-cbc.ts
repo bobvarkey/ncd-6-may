@@ -23,8 +23,29 @@ export function assessIronCbc(inputs: IronCbcInputs) {
   const anemia = hemoglobin < hbLowerLimit;
   const elevatedRdw = rdw > rdwUpperLimit;
   const morphology = mcv < 80 ? "microcytic" : mcv <= 100 ? "normocytic" : "macrocytic";
-  const pattern = !anemia ? "no-anemia" : morphology === "macrocytic" ? "macrocytic-anemia"
-    : morphology === "microcytic" ? "microcytic-anemia"
-    : elevatedRdw ? "normocytic-high-rdw" : "normocytic-normal-rdw";
-  return { status: "ready" as const, anemia, elevatedRdw, morphology, pattern };
+  let pattern: "no-anemia" | "microcytic-anemia" | "normocytic-high-rdw" | "normocytic-normal-rdw" | "macrocytic-anemia";
+  let condition: string;
+  let ironDeficiencyFit: "compatible" | "possible" | "not-typical";
+  if (!anemia) {
+    pattern = "no-anemia";
+    condition = "Hb is at or above the entered lower reference limit";
+    ironDeficiencyFit = "possible";
+  } else if (mcv < 80) {
+    pattern = "microcytic-anemia";
+    condition = "Hb is below the reference limit and MCV <80 fL";
+    ironDeficiencyFit = "compatible";
+  } else if (mcv <= 100 && elevatedRdw) {
+    pattern = "normocytic-high-rdw";
+    condition = "Hb is below the reference limit, MCV is 80–100 fL, and RDW-CV exceeds its upper reference limit";
+    ironDeficiencyFit = "compatible";
+  } else if (mcv <= 100) {
+    pattern = "normocytic-normal-rdw";
+    condition = "Hb is below the reference limit, MCV is 80–100 fL, and RDW-CV is not elevated";
+    ironDeficiencyFit = "possible";
+  } else {
+    pattern = "macrocytic-anemia";
+    condition = "Hb is below the reference limit and MCV >100 fL";
+    ironDeficiencyFit = "not-typical";
+  }
+  return { status: "ready" as const, anemia, elevatedRdw, morphology, pattern, condition, ironDeficiencyFit };
 }
