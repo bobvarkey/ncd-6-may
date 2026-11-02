@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { Bot, Copy, Download, RotateCcw } from "lucide-react";
 import { ResetKeyRegistryContext } from "@/hooks/useLocalStorage";
 import { explainResultsPrompt, openAiAssistant } from "@/components/AiAssistant";
@@ -9,6 +9,20 @@ import { collectResultText, resultFilename } from "@/lib/result-export";
 
 const ClinicalExportContext = createContext(false);
 export const useClinicalExport = () => useContext(ClinicalExportContext);
+
+/** Fired on window when the page-level Reset button is pressed, so pages with their own state can clear it. */
+export const PAGE_RESET_EVENT = "ncd:page-reset";
+
+/** Runs `handler` whenever the shared page-level Reset button is pressed. */
+export function usePageReset(handler: () => void) {
+  const handlerRef = useRef(handler);
+  handlerRef.current = handler;
+  useEffect(() => {
+    const listener = () => handlerRef.current();
+    window.addEventListener(PAGE_RESET_EVENT, listener);
+    return () => window.removeEventListener(PAGE_RESET_EVENT, listener);
+  }, []);
+}
 
 export function ResultExport({ getRoot, title, onReset }: { getRoot: () => HTMLElement | null; title?: string; onReset?: () => void }) {
   const getContent = () => {
@@ -61,6 +75,7 @@ export function ClinicalExportScope({ title, children }: { title: string; childr
   const resetPage = () => {
     registry.forEach((key) => { try { window.localStorage.removeItem(key); } catch { /* ignore */ } });
     registry.clear();
+    window.dispatchEvent(new CustomEvent(PAGE_RESET_EVENT));
     setResetCount((n) => n + 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
     toast.success("All inputs on this page were reset");

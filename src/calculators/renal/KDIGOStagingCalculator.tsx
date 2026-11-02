@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Calculator, RotateCcw, ArrowLeftRight, AlertTriangle, Info, Copy, Download } from "lucide-react";
 import { copyToClipboard, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { BsaAdjustmentFields } from "@/components/calculator/BsaAdjustmentFields";
+import { usePageReset } from "@/components/ResultExport";
 import {
   adjustEgfrForBsa,
   calculateMostellerBsa,
@@ -214,6 +215,8 @@ export default function KDIGOStagingCalculator() {
     setGfr(null);
     setErrors({});
   };
+
+  usePageReset(reset);
 
   const gStage = gfr !== null ? getGStage(gfr) : null;
   const uacrMgG = uacr.trim() ? getUacrMgG() : null;
