@@ -7,7 +7,21 @@ describe("Iron CBC pattern assessment", () => {
     expect(assess()).toMatchObject({ status: "ready", morphology: "normocytic", pattern: "normocytic-high-rdw", anemia: true });
   });
   it("does not exclude deficiency when both indices are normal", () => {
-    expect(assess({ rdw: "14" })).toMatchObject({ pattern: "normocytic-normal-rdw" });
+    expect(assess({ rdw: "14" })).toMatchObject({ pattern: "normocytic-normal-rdw", ironDeficiencyFit: "possible" });
+  });
+  it("marks normocytic anemia with elevated RDW as compatible, not diagnostic", () => {
+    expect(assess({ mcv: "88", rdw: "16" })).toMatchObject({ ironDeficiencyFit: "compatible" });
+    expect(assess()).not.toHaveProperty("probability");
+    expect(assess()).not.toHaveProperty("dose");
+  });
+  it("marks microcytic anemia as compatible but does not require elevated RDW", () => {
+    expect(assess({ mcv: "75", rdw: "14" })).toMatchObject({ pattern: "microcytic-anemia", ironDeficiencyFit: "compatible" });
+  });
+  it("does not treat macrocytosis as typical isolated iron deficiency", () => {
+    expect(assess({ mcv: "105" })).toMatchObject({ pattern: "macrocytic-anemia", ironDeficiencyFit: "not-typical" });
+  });
+  it("allows possible deficiency without anemia regardless of morphology", () => {
+    expect(assess({ hemoglobin: "13", mcv: "75" })).toMatchObject({ pattern: "no-anemia", ironDeficiencyFit: "possible" });
   });
   it("includes 80 and 100 fL in the normocytic interval", () => {
     expect(assess({ mcv: "80" })).toMatchObject({ morphology: "normocytic" });

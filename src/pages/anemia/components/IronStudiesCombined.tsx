@@ -835,6 +835,9 @@ export default function IronStudiesCombined() {
               </div>
             </CardContent>
           )}
+          <div className="border-t border-border px-6 pb-6 pt-4">
+            <IronCbcAssessment inputs={{ ...cbcInputs, hemoglobin }} sharedHemoglobin onChange={(key, value) => setCbcInputs(previous => ({ ...previous, [key]: value }))} />
+          </div>
         </Card>
 
         {/* Patient + Context */}
