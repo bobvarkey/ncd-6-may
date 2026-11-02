@@ -17,7 +17,7 @@ import Anticoagulants from './anemia/components/Anticoagulants';
 import Erythrocytosis from './anemia/components/Erythrocytosis';
 import { Microscope, AlertTriangle } from 'lucide-react';
 import { headerTabClass, headerTabListClass } from '@/lib/header-tabs';
-import { ExportableTabPanel } from "@/components/ResultExport";
+import { ExportableTabPanel, usePageReset } from "@/components/ResultExport";
 import TestSuggestionAlgorithm from './anemia/components/TestSuggestionAlgorithm';
 
 const EMPTY_CBC: CBCValues = { hgb: '', rbc: '', mcv: '', mch: '', mchc: '', rdw: '', hct: '' };
@@ -73,6 +73,17 @@ export default function Anemia() {
     setCbc(EMPTY_CBC);
     setResult(null);
   }
+
+  // Shared page-level Reset button: clear this page's own saved values too.
+  usePageReset(() => {
+    try {
+      localStorage.removeItem('ncd_anemia_cbc');
+      localStorage.removeItem('ncd_anemia_sex');
+    } catch { /* ignore */ }
+    setCbc(EMPTY_CBC);
+    setSex('male');
+    setResult(null);
+  });
 
   const hgbNum = parseFloat(cbc.hgb);
   const mcvNum = parseFloat(cbc.mcv);
