@@ -1,7 +1,9 @@
 # Roadmap
 
+- [x] Add MCV/RDW iron-deficiency screening with normocytic interpretation, references, reset/export support, and tests; 18 tests and signed-in desktop/mobile checks passed.
+
 - [x] Add shared Copy results and Download TXT controls to all clinical tabs and standalone tools; test current values, tab isolation, and downloads.
-- [ ] Complete signed-in browser export verification: the requesting account has no active clinical access and redirects to subscription; requires an account with active trial, Pro, or developer access.
+- [x] Complete signed-in browser export verification: developer account copied and downloaded the MCV/RDW result with current values and no inactive iron-study content.
 
 - [x] Fix the nullable subscription-expiry compilation error; 18 regression tests passed, signed-in subscription rendered without runtime errors, and the automatic build reported build OK.
 
