@@ -10,6 +10,7 @@ import {
   Activity, Droplets, Gauge, Stethoscope, Heart, TrendingUp, FlaskConical
 , Copy, Download} from "lucide-react";
 import ImageLink from "@/components/ImageLink";
+import { usePageReset } from "@/components/ResultExport";
 
 type CreatinineUnit = "mgdl" | "umol";
 type Sex = "male" | "female";
@@ -328,6 +329,8 @@ export default function AKICriteria() {
     setCalculated(false);
     setErrors({});
   };
+
+  usePageReset(reset);
 
   // Derived values
   const crMgdl = parseFloat(currentCr) ? getCrMgdl(currentCr) : 0;

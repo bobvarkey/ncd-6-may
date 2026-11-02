@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calculator, RotateCcw, ArrowLeftRight, Info } from "lucide-react";
 import { BsaAdjustmentFields } from "@/components/calculator/BsaAdjustmentFields";
+import { usePageReset } from "@/components/ResultExport";
 import {
   adjustEgfrForBsa,
   calculateMostellerBsa,
@@ -291,6 +292,8 @@ export default function GfrCalculator({ onResultChange }: GfrCalculatorProps) {
     setErrors({});
     onResultChange?.(null);
   };
+
+  usePageReset(reset);
 
   function handleSmartParse(values: Record<string, string>) {
     Object.entries(values).forEach(([key, value]) => {
