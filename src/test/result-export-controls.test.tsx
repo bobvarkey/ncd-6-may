@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { ClinicalExportScope, ExportableTabPanel } from "@/components/ResultExport";
+import { ClinicalExportScope, ExportableTabPanel, PAGE_RESET_EVENT, usePageReset } from "@/components/ResultExport";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { copyToClipboard, downloadTextFile } from "@/lib/clinical-utils";
@@ -66,5 +67,26 @@ describe("clinical export controls", () => {
     render(<ExportableTabPanel title="Solo"><p>Value: 1</p></ExportableTabPanel>);
     expect(screen.queryByRole("button", { name: "Copy results" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Download TXT" })).toBeNull();
+  });
+
+  it("Reset page clears saved inputs and notifies page-owned state", () => {
+    localStorage.setItem("ncd_test_reset_input", JSON.stringify("42"));
+    let pageResetFired = 0;
+    function Probe() {
+      const [value] = useLocalStorage("ncd_test_reset_input", "");
+      usePageReset(() => { pageResetFired += 1; });
+      return <p>Saved: {value}</p>;
+    }
+    render(<ClinicalExportScope title="Reset test"><Probe /></ClinicalExportScope>);
+    expect(screen.getByText("Saved: 42")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Reset page" }));
+    expect(localStorage.getItem("ncd_test_reset_input")).toBeNull();
+    expect(pageResetFired).toBe(1);
+    expect(screen.getByText("Saved:")).toBeTruthy();
+    expect(window.location.href).toContain("localhost");
+  });
+
+  it("Reset page event name is stable for page listeners", () => {
+    expect(PAGE_RESET_EVENT).toBe("ncd:page-reset");
   });
 });
