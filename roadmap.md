@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Embed MCV/RDW within iron calculators instead of a separate tab; add explicit if/else interpretations and prominent diagnostic limitations, then verify tests and the signed-in flow.
+
 - [x] Add MCV/RDW iron-deficiency screening with normocytic interpretation, references, reset/export support, and tests; 18 tests and signed-in desktop/mobile checks passed.
 
 - [x] Add shared Copy results and Download TXT controls to all clinical tabs and standalone tools; test current values, tab isolation, and downloads.
