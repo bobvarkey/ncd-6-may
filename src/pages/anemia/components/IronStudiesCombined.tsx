@@ -21,6 +21,9 @@ import {
 } from "@/lib/ganzoni";
 import ZoomableImage from "@/components/ZoomableImage";
 import ironProfileStory from "@/assets/iron-profile-story.png.asset.json";
+import { IronCbcAssessment } from "@/calculators/iron/IronCbcTab";
+import { assessIronCbc, EMPTY_IRON_CBC, type IronCbcInputs } from "@/lib/iron-cbc";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 // ── Types ──────────────────────────────────────────────────────
 type IronPattern = "normal" | "A_high_ferritin_normal_TS" | "B_high_TS_high_ferritin" | "C_high_TS_normal_ferritin" | null;
@@ -342,12 +345,13 @@ function DifferentialDiagnosisTable({ ferritin, tsVal, sex, inflammation, ckd, p
 
 // ── Main Component ─────────────────────────────────────────────
 export default function IronStudiesCombined() {
+  const [cbcInputs, setCbcInputs] = useLocalStorage<IronCbcInputs>("ncd_inputs_iron_cbc", EMPTY_IRON_CBC);
   // ── Labs ──
   const [ts, setTs] = useState("");
   const [ferritin, setFerritin] = useState("");
   const [serumIron, setSerumIron] = useState("");
   const [tibc, setTibc] = useState("");
-  const [hemoglobin, setHemoglobin] = useState("");
+  const [hemoglobin, setHemoglobin] = useState(() => cbcInputs.hemoglobin);
   const [weight, setWeight] = useState("");
   const [targetHbInput, setTargetHbInput] = useState("");
   const [ironStoresInput, setIronStoresInput] = useState("");
@@ -594,6 +598,7 @@ export default function IronStudiesCombined() {
 
   // ── Build Summary ──
   const buildSummary = () => {
+    const cbc = assessIronCbc({ ...cbcInputs, hemoglobin });
     const lines = [
       "COMPREHENSIVE IRON STUDIES ASSESSMENT",
       "=".repeat(50),
@@ -605,6 +610,10 @@ export default function IronStudiesCombined() {
       `  Transferrin saturation: ${computedTs ? computedTs + "% (computed)" : ts ? ts + "%" : "—"}`,
       `  Ferritin: ${ferritin || "—"} µg/L`,
       `  Hemoglobin: ${hemoglobin || "—"} g/dL`,
+      `  MCV: ${cbcInputs.mcv || "—"} fL / RDW-CV: ${cbcInputs.rdw || "—"}%`,
+      `  Hb lower limit: ${cbcInputs.hbLowerLimit} g/dL / RDW-CV upper limit: ${cbcInputs.rdwUpperLimit}%`,
+      cbc.status === "ready" ? `  CBC pattern: ${cbc.pattern}; if ${cbc.condition}, iron-deficiency fit: ${cbc.ironDeficiencyFit}.` : `  CBC assessment: ${cbc.status}`,
+      "  Diagnostic limitations: MCV/RDW cannot confirm or exclude iron deficiency or determine probability/dose. Normocytic anemia can reflect early or mixed deficiency; RDW is nonspecific. Assess ferritin/TSAT with inflammation context; ferritin may be falsely normal/high.",
       `  Weight: ${weight || "—"} kg`,
       `  ALT: ${alt || "—"} / AST: ${ast || "—"}`,
       "",
@@ -651,6 +660,7 @@ export default function IronStudiesCombined() {
   };
 
   const handleReset = () => {
+    setCbcInputs(EMPTY_IRON_CBC);
     setTs(""); setFerritin(""); setSerumIron(""); setTibc(""); setHemoglobin(""); setWeight("");
     setTargetHbInput(""); setIronStoresInput(""); setAlt(""); setAst("");
     setSex(""); setAge("");
@@ -734,7 +744,7 @@ export default function IronStudiesCombined() {
               label="Hemoglobin" 
               unit="g/dL" 
               value={hemoglobin} 
-              onChange={setHemoglobin} 
+              onChange={value => { setHemoglobin(value); setCbcInputs(previous => ({ ...previous, hemoglobin: value })); }} 
               ranges={RANGES.hemoglobin} 
               tooltip="The iron-containing oxygen-transport metalloprotein in red blood cells. Ref: 12-16 (F), 13.5-17.5 (M) g/dL."
             />
@@ -825,6 +835,9 @@ export default function IronStudiesCombined() {
               </div>
             </CardContent>
           )}
+          <div className="border-t border-border px-6 pb-6 pt-4">
+            <IronCbcAssessment inputs={{ ...cbcInputs, hemoglobin }} sharedHemoglobin onChange={(key, value) => setCbcInputs(previous => ({ ...previous, [key]: value }))} />
+          </div>
         </Card>
 
         {/* Patient + Context */}

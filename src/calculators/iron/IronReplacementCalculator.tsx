@@ -36,6 +36,9 @@ import { copyToClipboard, formatClinicalNote, downloadTextFile, parseClinicalVal
 import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { ExportableTabPanel } from "@/components/ResultExport";
+import { IronCbcAssessment } from "@/calculators/iron/IronCbcTab";
+import { EMPTY_IRON_CBC, type IronCbcInputs } from "@/lib/iron-cbc";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 // ── Types ──────────────────────────────────────────────────────
 type TabKey = "calculator" | "reference";
@@ -529,6 +532,7 @@ function IronParametersLive({
 export default function IronReplacementCalculator() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabKey>("calculator");
+  const [cbcInputs, setCbcInputs] = useLocalStorage<IronCbcInputs>("ncd_inputs_iron_replacement_cbc", EMPTY_IRON_CBC);
   
   // Initialize from localStorage if available
   const [inputs, setInputs] = useState<PatientInputs>(() => {
@@ -629,6 +633,7 @@ export default function IronReplacementCalculator() {
   }
 
   function handleReset() {
+    setCbcInputs(EMPTY_IRON_CBC);
     setInputs(EMPTY_INPUTS);
     setFlags(DEFAULT_FLAGS);
     setCalcResult(null);
@@ -807,6 +812,10 @@ export default function IronReplacementCalculator() {
                 })()}
               </CardContent>
             </Card>
+
+            <div className="border-t border-border py-5">
+              <IronCbcAssessment inputs={{ ...cbcInputs, hemoglobin: inputs.hemoglobin }} sharedHemoglobin onChange={(key, value) => setCbcInputs(previous => ({ ...previous, [key]: value }))} />
+            </div>
 
             {/* Clinical Flags */}
             <Card className="clinical-card">

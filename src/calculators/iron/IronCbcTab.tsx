@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { AlertTriangle } from "lucide-react";
 import { assessIronCbc, type IronCbcInputs } from "@/lib/iron-cbc";
 
 const interpretations: Record<string, { title: string; detail: string }> = {
@@ -26,9 +27,10 @@ const interpretations: Record<string, { title: string; detail: string }> = {
   },
 };
 
-export function IronCbcTab({ inputs, onChange }: {
+export function IronCbcAssessment({ inputs, onChange, sharedHemoglobin = false }: {
   inputs: IronCbcInputs;
   onChange: (key: keyof IronCbcInputs, value: string) => void;
+  sharedHemoglobin?: boolean;
 }) {
   const result = assessIronCbc(inputs);
   const fields: { key: keyof IronCbcInputs; label: string; placeholder: string }[] = [
@@ -46,13 +48,14 @@ export function IronCbcTab({ inputs, onChange }: {
         <p className="text-sm text-muted-foreground">Adult CBC pattern assessment. Iron deficiency may be present even with a normal MCV (80–100 fL). These indices cannot confirm deficiency or estimate an iron dose.</p>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {fields.map(field => (
+        {fields.filter(field => !sharedHemoglobin || field.key !== "hemoglobin").map(field => (
           <div key={field.key} className="space-y-2">
             <Label htmlFor={`iron-cbc-${field.key}`}>{field.label}</Label>
             <Input id={`iron-cbc-${field.key}`} type="text" inputMode="decimal" value={inputs[field.key]} placeholder={field.placeholder} onChange={event => onChange(field.key, event.target.value)} />
           </div>
         ))}
       </div>
+      {sharedHemoglobin && <p className="text-sm text-muted-foreground">Hemoglobin: {inputs.hemoglobin || "not entered"} {inputs.hemoglobin ? "g/dL" : ""} — uses the Hemoglobin value above.</p>}
       <p className="text-sm text-muted-foreground">Use the laboratory’s reference limits and the patient’s age, sex, pregnancy status, and altitude. The starting Hb limit of 12 g/dL is not universal. Enter RDW-CV in %, not RDW-SD in fL; 14.5% is a starting upper limit, not a universal cutoff.</p>
       <div aria-live="polite" className="space-y-3 border-t border-border pt-4">
         {result.status === "incomplete" && <p className="text-muted-foreground">Enter Hb, MCV, RDW-CV, and both reference limits to assess the pattern.</p>}
@@ -62,12 +65,22 @@ export function IronCbcTab({ inputs, onChange }: {
             <Badge variant="outline">{result.morphology} ({inputs.mcv} fL)</Badge>
             <Badge variant="outline">RDW-CV {result.elevatedRdw ? "elevated" : "not elevated"} ({inputs.rdw}%)</Badge>
           </div>
+          <p className="text-sm text-foreground"><strong>If:</strong> {result.condition}. <strong>Then:</strong> {result.ironDeficiencyFit === "compatible" ? "this pattern may fit iron deficiency, but is not specific." : result.ironDeficiencyFit === "possible" ? "iron deficiency remains possible; this pattern cannot rule it out." : "this is not typical of isolated iron deficiency; assess other or mixed causes."}</p>
           <h3 className="font-semibold text-foreground">{interpretation.title}</h3>
           <p className="text-sm text-foreground">{interpretation.detail}</p>
           <p className="text-sm text-foreground"><strong>Next assessment:</strong> ferritin and transferrin saturation (TSAT), with CRP/inflammation context. Consider a blood film, reticulocyte count, renal function, and B12/folate testing as indicated. Ferritin may be falsely normal or elevated with inflammation.</p>
-          <p className="text-sm text-muted-foreground">No validated probability or iron-deficit estimate is derived from MCV/RDW alone. Confirm iron status before choosing iron treatment; use the Calculator tab for the existing iron studies and Ganzoni assessment.</p>
         </>}
       </div>
+      <aside aria-label="Diagnostic limitations" className="space-y-2 border-l-4 border-warning bg-warning/10 p-4 text-sm text-foreground">
+        <h3 className="flex items-center gap-2 font-semibold"><AlertTriangle className="h-4 w-4 shrink-0 text-warning" />Diagnostic limitations</h3>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>MCV and RDW cannot confirm or exclude iron deficiency, calculate a validated probability, or determine an iron dose.</li>
+          <li>Normal MCV and RDW do not rule out early iron deficiency. Mixed iron and B12/folate deficiency may mask microcytosis.</li>
+          <li>Elevated RDW is nonspecific: transfusion, reticulocytosis, hemolysis, and other nutritional deficiencies can alter the pattern. Microcytosis also occurs in thalassemia and chronic inflammation.</li>
+          <li>Assess ferritin and TSAT in the clinical context; ferritin may be falsely normal or high during inflammation. Consider CRP, a blood film, reticulocyte count, renal function, and B12/folate as indicated.</li>
+          <li>This adult screening uses MCV 80–100 fL and the entered Hb/RDW reference limits. Confirm iron status before treatment; the existing iron studies and Ganzoni calculations remain independent.</li>
+        </ul>
+      </aside>
       <div className="space-y-2 border-t border-border pt-4 text-sm text-muted-foreground">
         <h3 className="font-semibold text-foreground">References</h3>
         <p><a href="https://www.aafp.org/afp/2010/1101/p1117" target="_blank" rel="noopener noreferrer" className="text-primary underline">AAFP: Evaluation of Microcytosis</a> — RDW is not sufficiently sensitive or specific to distinguish iron deficiency from thalassemia.</p>
