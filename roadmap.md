@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Add MCV/RDW iron-deficiency screening with normocytic interpretation, references, reset/export support, and tests.
+
 - [x] Add shared Copy results and Download TXT controls to all clinical tabs and standalone tools; test current values, tab isolation, and downloads.
 - [ ] Complete signed-in browser export verification: the requesting account has no active clinical access and redirects to subscription; requires an account with active trial, Pro, or developer access.
 
