@@ -36,16 +36,12 @@ import { copyToClipboard, formatClinicalNote, downloadTextFile, parseClinicalVal
 import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { ExportableTabPanel } from "@/components/ResultExport";
-import { IronCbcTab } from "./IronCbcTab";
-import { EMPTY_IRON_CBC, type IronCbcInputs } from "@/lib/iron-cbc";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 // ── Types ──────────────────────────────────────────────────────
-type TabKey = "calculator" | "cbc" | "reference";
+type TabKey = "calculator" | "reference";
 
 const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
   { key: "calculator", label: "Calculator", icon: <Calculator className="h-4 w-4" /> },
-  { key: "cbc", label: "MCV & RDW", icon: <Activity className="h-4 w-4" /> },
   { key: "reference", label: "Reference", icon: <BookOpen className="h-4 w-4" /> },
 ];
 
@@ -533,7 +529,6 @@ function IronParametersLive({
 export default function IronReplacementCalculator() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabKey>("calculator");
-  const [cbcInputs, setCbcInputs] = useLocalStorage<IronCbcInputs>("ncd_inputs_iron_cbc", EMPTY_IRON_CBC);
   
   // Initialize from localStorage if available
   const [inputs, setInputs] = useState<PatientInputs>(() => {
@@ -634,7 +629,6 @@ export default function IronReplacementCalculator() {
   }
 
   function handleReset() {
-    setCbcInputs(EMPTY_IRON_CBC);
     setInputs(EMPTY_INPUTS);
     setFlags(DEFAULT_FLAGS);
     setCalcResult(null);
@@ -672,7 +666,7 @@ export default function IronReplacementCalculator() {
           </div>
           <div className={cn(headerTabListClass, "pb-2 overflow-x-auto no-print overscroll-x-contain")}>
             {TABS.map((tab) => (
-              <Button
+              <button
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveTab(tab.key)}
@@ -681,7 +675,7 @@ export default function IronReplacementCalculator() {
               >
                 {tab.icon}
                 {tab.label}
-              </Button>
+              </button>
             ))}
           </div>
         </div>
@@ -1155,12 +1149,6 @@ export default function IronReplacementCalculator() {
                 )}
               </div>
             )}
-          </ExportableTabPanel>
-        )}
-
-        {activeTab === "cbc" && (
-          <ExportableTabPanel title="MCV & RDW — iron deficiency assessment">
-            <IronCbcTab inputs={cbcInputs} onChange={(key, value) => setCbcInputs(previous => ({ ...previous, [key]: value }))} />
           </ExportableTabPanel>
         )}
 

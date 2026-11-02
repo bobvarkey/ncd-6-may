@@ -70,8 +70,9 @@ export function IronCbcTab({ inputs, onChange }: {
       </div>
       <div className="space-y-2 border-t border-border pt-4 text-sm text-muted-foreground">
         <h3 className="font-semibold text-foreground">References</h3>
-        <p><a href="https://www.merckmanuals.com/professional/hematology-and-oncology/approach-to-the-patient-with-anemia/evaluation-of-anemia" target="_blank" rel="noopener noreferrer" className="text-primary underline">Merck Manual: Evaluation of anemia</a> — MCV classification and RDW limitations, including mixed deficiencies.</p>
-        <p><a href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/bc-guidelines/iron-deficiency" target="_blank" rel="noopener noreferrer" className="text-primary underline">BC Guidelines: Iron Deficiency — Diagnosis and Management</a> — CBC and ferritin assessment; inflammation and TSAT.</p>
+        <p><a href="https://www.aafp.org/afp/2010/1101/p1117" target="_blank" rel="noopener noreferrer" className="text-primary underline">AAFP: Evaluation of Microcytosis</a> — RDW is not sufficiently sensitive or specific to distinguish iron deficiency from thalassemia.</p>
+        <p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8515119/" target="_blank" rel="noopener noreferrer" className="text-primary underline">British Society of Gastroenterology: Iron deficiency anaemia guidelines (2021)</a> — ferritin, inflammation, TSAT, and limitations of red-cell indices.</p>
+        <p><a href="https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/haematology/iron-deficiency-guidelines/" target="_blank" rel="noopener noreferrer" className="text-primary underline">NHS Highland: Iron deficiency guidelines</a> — a normal full blood count does not rule out iron deficiency.</p>
         <p>Last reviewed: 2 November 2026. Clinical decision support; not a diagnosis.</p>
       </div>
     </section>
