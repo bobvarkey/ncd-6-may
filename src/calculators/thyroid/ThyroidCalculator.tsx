@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
 import ImageLink from "@/components/ImageLink";
-import { ExportableTabPanel } from "@/components/ResultExport";
+import { ExportableTabPanel, usePageReset } from "@/components/ResultExport";
 
 type TabKey = "calculator" | "reference" | "about";
 
@@ -329,6 +329,8 @@ export default function ThyroidCalculator() {
     setCalculated(true);
     localStorage.removeItem("ncd_inputs_thyroid");
   }
+
+  usePageReset(resetForm);
 
   const colors = result ? colorClasses[result.dx.color] : colorClasses.primary;
 

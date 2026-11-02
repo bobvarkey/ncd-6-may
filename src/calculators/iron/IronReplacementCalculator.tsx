@@ -35,7 +35,7 @@ import {
 import { copyToClipboard, formatClinicalNote, downloadTextFile, parseClinicalValue, roundClinical } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
-import { ExportableTabPanel } from "@/components/ResultExport";
+import { ExportableTabPanel, usePageReset } from "@/components/ResultExport";
 import { IronCbcAssessment } from "@/calculators/iron/IronCbcTab";
 import { EMPTY_IRON_CBC, type IronCbcInputs } from "@/lib/iron-cbc";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -640,6 +640,8 @@ export default function IronReplacementCalculator() {
     localStorage.removeItem("ncd_inputs_iron");
     localStorage.removeItem("ncd_flags_iron");
   }
+
+  usePageReset(handleReset);
 
   const colors = calcResult ? dxColors[calcResult.dx.label] ?? dxColors.unknown : dxColors.unknown;
 

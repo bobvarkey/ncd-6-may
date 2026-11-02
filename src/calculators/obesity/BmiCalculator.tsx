@@ -47,7 +47,7 @@ import {
   type ObesityCDSAssessment,
 } from "./obesity-cds-engine";
 import IcmrIndiab from "./IcmrIndiab";
-import { ExportableTabPanel } from "@/components/ResultExport";
+import { ExportableTabPanel, usePageReset } from "@/components/ResultExport";
 
 const bmiSchema = z.object({
   height: z.coerce.number().min(30).max(300).describe("Height"),
@@ -290,6 +290,8 @@ export default function BmiCalculator() {
     setShowTreatment(false);
     setCdsAssessment(null);
   };
+
+  usePageReset(reset);
 
   const runCdsAssessment = () => {
     if (!result) return;
