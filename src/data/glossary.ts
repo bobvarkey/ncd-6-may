@@ -65,6 +65,12 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   RVS: { term: "RVS", full: "Renal Vein Sampling" },
   JG: { term: "JG", full: "Juxtaglomerular", description: "Refers to the renin-producing cells of the kidney." },
   CFS: { term: "CFS", full: "Clinical Frailty Scale", description: "9-point Rockwood scale classifying frailty by function and dependence.", synonyms: ["Rockwood Clinical Frailty Scale"] },
+  "F2–F3 fibrosis": {
+    term: "F2–F3 fibrosis",
+    full: "Non-Invasive Elastography Criteria (FibroScan / Liver Stiffness)",
+    description: "Vibration-controlled transient elastography (FibroScan) measures liver stiffness in kilopascals (kPa). Stage F2: typically 7.5–10 kPa (moderate scarring). Stage F3: typically 10–14 kPa (severe/advanced scarring).",
+    synonyms: ["Significant fibrosis", "FibroScan F2 F3"],
+  },
 };
 
 export function lookupGlossary(term: string): GlossaryEntry | undefined {
