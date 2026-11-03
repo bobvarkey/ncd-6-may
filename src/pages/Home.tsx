@@ -676,13 +676,13 @@ const HOME_TABS = [
 ] as const;
 
 // Angle of each tab from vertical (degrees); symmetric fan, inner tabs higher.
-const SUNBURST_ANGLES = [-52, -17, 17, 52];
+const SUNBURST_ANGLES = [-48, -16, 16, 48];
 const SUNBURST_RAYS = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75];
 
 function sunburstPosition(angleDeg: number): { left: string; top: string } {
   const rad = (angleDeg * Math.PI) / 180;
   return {
-    left: `${50 + 40 * Math.sin(rad)}%`,
+    left: `${50 + 36 * Math.sin(rad)}%`,
     top: `${100 - 92 * Math.cos(rad)}%`,
   };
 }
