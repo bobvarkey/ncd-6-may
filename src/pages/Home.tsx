@@ -861,19 +861,50 @@ export default function Home() {
 
         {/* ── Tabbed topic navigation ── */}
         <Tabs defaultValue="quick-actions">
-          <TabsList className="w-full max-w-full min-w-0 h-auto flex flex-wrap justify-start gap-1.5 p-1.5 bg-muted/40">
-            <TabsTrigger value="quick-actions" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.violet.tab)}>
-              <Calculator className="h-4 w-4 mr-1.5 shrink-0" /> Quick Actions
-            </TabsTrigger>
-            <TabsTrigger value="cardiometabolic" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.rose.tab)}>
-              <Heart className="h-4 w-4 mr-1.5 shrink-0" /> Cardiometabolic & Renal
-            </TabsTrigger>
-            <TabsTrigger value="specialty" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.emerald.tab)}>
-              <Dna className="h-4 w-4 mr-1.5 shrink-0" /> Specialty Medicine
-            </TabsTrigger>
-            <TabsTrigger value="infections" className={cn("flex-1 min-w-0 h-auto py-2 whitespace-normal", ENTRY_TONES.amber.tab)}>
-              <Bug className="h-4 w-4 mr-1.5 shrink-0" /> Infections & General
-            </TabsTrigger>
+          <TabsList
+            aria-label="Home page topics"
+            className="relative block w-full max-w-full min-w-0 h-44 md:h-52 p-0 bg-transparent overflow-visible"
+          >
+            {/* Decorative sunburst rays + sun, radiating from bottom-center */}
+            <svg
+              aria-hidden
+              className="absolute inset-0 h-full w-full pointer-events-none text-primary"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              {SUNBURST_RAYS.map((a) => {
+                const rad = (a * Math.PI) / 180;
+                return (
+                  <line
+                    key={a}
+                    x1="50"
+                    y1="100"
+                    x2={50 + 62 * Math.sin(rad)}
+                    y2={100 - 62 * Math.cos(rad)}
+                    stroke="currentColor"
+                    strokeWidth="0.35"
+                    className="opacity-20"
+                  />
+                );
+              })}
+              <circle cx="50" cy="100" r="9" className="fill-primary/20" />
+              <circle cx="50" cy="100" r="4.5" className="fill-primary/40" />
+            </svg>
+            {HOME_TABS.map(({ value, label, Icon, tone }, i) => (
+              <TabsTrigger
+                key={value}
+                value={value}
+                style={sunburstPosition(SUNBURST_ANGLES[i])}
+                className={cn(
+                  "absolute -translate-x-1/2 -translate-y-1/2 h-auto max-w-[9.5rem] md:max-w-[11rem] py-2 px-3",
+                  "whitespace-normal text-center text-xs md:text-sm leading-tight rounded-xl border shadow-sm",
+                  "transition-transform data-[state=active]:scale-110 data-[state=active]:shadow-md data-[state=active]:z-10",
+                  tone,
+                )}
+              >
+                <Icon className="h-4 w-4 mr-1.5 shrink-0 inline-block align-[-0.2em]" /> {label}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           {/* Quick Actions tab */}
