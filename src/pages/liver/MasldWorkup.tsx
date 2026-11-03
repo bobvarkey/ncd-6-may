@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import { GlossaryTerm } from "@/components/GlossaryTerm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
@@ -86,16 +87,30 @@ const RowTable = ({ rows }: { rows: Row[] }) => (
   </div>
 );
 
-const BulletList = ({ items }: { items: string[] }) => (
+const BulletList = ({ items }: { items: ReactNode[] }) => (
   <ul className="space-y-1.5">
-    {items.map(i => (
-      <li key={i} className="text-xs text-muted-foreground flex gap-2">
+    {items.map((i, idx) => (
+      <li key={idx} className="text-xs text-muted-foreground flex gap-2">
         <span className="text-primary mt-1">•</span>
         <span>{i}</span>
       </li>
     ))}
   </ul>
 );
+
+// Wraps the F2–F3 fibrosis mention in a glossary hover popup (FibroScan kPa criteria).
+const withF23Popup = (text: string): ReactNode => {
+  const marker = "F2–F3 fibrosis";
+  const at = text.indexOf(marker);
+  if (at === -1) return text;
+  return (
+    <>
+      {text.slice(0, at)}
+      <GlossaryTerm term="F2–F3 fibrosis">{marker}</GlossaryTerm>
+      {text.slice(at + marker.length)}
+    </>
+  );
+};
 
 export default function MasldWorkup() {
   const [openInv, setOpenInv] = useState(false);
@@ -226,7 +241,7 @@ export default function MasldWorkup() {
 
               <div>
                 <h4 className="text-sm font-semibold mb-1.5">Pharmacological &amp; metabolic care</h4>
-                <BulletList items={PHARM} />
+                <BulletList items={PHARM.map(withF23Popup)} />
               </div>
 
               <div>

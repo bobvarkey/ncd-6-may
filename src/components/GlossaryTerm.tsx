@@ -14,7 +14,11 @@ export function GlossaryTerm({ term, children, className = "" }: GlossaryTermPro
   if (!entry) return <>{children ?? term}</>;
 
   return (
-    <span className={`relative inline ${className}`}>
+    <span
+      className={`relative inline ${className}`}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
