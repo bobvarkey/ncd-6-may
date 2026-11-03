@@ -666,6 +666,27 @@ const QuickAction = React.memo(function QuickAction({ title, description, icon, 
   );
 });
 
+// Sunburst tab bar: tabs fan out along an arc radiating from a central "sun".
+// Radix Tabs underneath keeps role=tablist and arrow-key navigation intact.
+const HOME_TABS = [
+  { value: "quick-actions",   label: "Quick Actions",          Icon: Calculator, tone: ENTRY_TONES.violet.tab },
+  { value: "cardiometabolic", label: "Cardiometabolic & Renal", Icon: Heart,      tone: ENTRY_TONES.rose.tab },
+  { value: "specialty",       label: "Specialty Medicine",      Icon: Dna,        tone: ENTRY_TONES.emerald.tab },
+  { value: "infections",      label: "Infections & General",    Icon: Bug,        tone: ENTRY_TONES.amber.tab },
+] as const;
+
+// Angle of each tab from vertical (degrees); symmetric fan, inner tabs higher.
+const SUNBURST_ANGLES = [-52, -17, 17, 52];
+const SUNBURST_RAYS = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75];
+
+function sunburstPosition(angleDeg: number): { left: string; top: string } {
+  const rad = (angleDeg * Math.PI) / 180;
+  return {
+    left: `${50 + 40 * Math.sin(rad)}%`,
+    top: `${100 - 92 * Math.cos(rad)}%`,
+  };
+}
+
 const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Droplets; tone: EntryTone }[] = [
   { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets, tone: "teal" },
   { to: "/hypertension", label: "Hypertension", desc: "ESC/ESH assessment & Rx",     Icon: Heart, tone: "rose" },
