@@ -538,6 +538,22 @@
     border-color: hsl(var(--sunset-coral) / 0.35) !important;
   }
 
+  /* Sunburst tab fan (home page): tabs are absolutely positioned along an
+     arc, so the list needs a fixed height, no wrapping, no strip styling. */
+  [role="tablist"].sunburst-tablist {
+    height: 11rem !important;
+    display: block !important;
+    flex-wrap: nowrap !important;
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+  @media (min-width: 768px) {
+    [role="tablist"].sunburst-tablist {
+      height: 13rem !important;
+    }
+  }
+
   [role="tablist"] > [role="tab"].header-tab,
   .header-tablist > .header-tab {
     --htab-fill: var(--htab-1-fill);

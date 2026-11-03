@@ -863,7 +863,7 @@ export default function Home() {
         <Tabs defaultValue="quick-actions">
           <TabsList
             aria-label="Home page topics"
-            className="relative block w-full max-w-full min-w-0 h-44 md:h-52 p-0 bg-transparent overflow-visible"
+            className="sunburst-tablist relative block w-full max-w-full min-w-0 p-0 bg-transparent overflow-visible"
           >
             {/* Decorative sunburst rays + sun, radiating from bottom-center */}
             <svg
