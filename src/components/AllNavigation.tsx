@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Images, LayoutDashboard } from "lucide-react";
 import { CollapsibleHomeSections } from "@/components/CollapsibleHomeSections";
-import { PRIMARY_NAV_SECTIONS, type PrimaryNavItem, type PrimaryNavSection } from "@/data/primary-nav";
+import { PRIMARY_NAV_SECTIONS, type PrimaryNavItem } from "@/data/primary-nav";
 import { FULL_NAV_SECTIONS } from "@/data/full-nav";
 import { ENTRY_TONES } from "@/lib/entry-tones";
 import { cn } from "@/lib/utils";
@@ -23,27 +23,8 @@ const IMAGE_GALLERY_ITEM: PrimaryNavItem = {
   keywords: "figures diagrams algorithms",
 };
 
-/**
- * The clinical sections and the old sidebar listed many of the same destinations, so the
- * two lists are merged into one accordion and each destination is kept once: whichever
- * section lists it first wins, and sections left empty drop out entirely.
- */
-export function mergeNavSections(
-  groups: readonly PrimaryNavSection[][],
-): PrimaryNavSection[] {
-  const seen = new Set<string>();
-  return groups
-    .flat()
-    .map((section) => ({
-      ...section,
-      items: section.items.filter((item) => {
-        if (item.path === GALLERY_PATH || seen.has(item.path)) return false;
-        seen.add(item.path);
-        return true;
-      }),
-    }))
-    .filter((section) => section.items.length > 0);
-}
+export { mergeNavSections } from "@/data/merge-nav";
+import { mergeNavSections } from "@/data/merge-nav";
 
 function NavTile({ item, className }: { item: PrimaryNavItem; className?: string }) {
   const Icon = item.icon;

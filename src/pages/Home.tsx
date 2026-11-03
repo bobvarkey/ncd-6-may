@@ -28,6 +28,7 @@ import Seo from "@/components/Seo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import { AllNavigation } from "@/components/AllNavigation";
+import HomeSunburst from "@/components/HomeSunburst";
 import { ENTRY_TONES, type EntryTone } from "@/lib/entry-tones";
 import { cn } from "@/lib/utils";
 
@@ -852,6 +853,9 @@ export default function Home() {
       <main className="max-w-6xl mx-auto px-6 py-8 pb-16 space-y-8 min-w-0">
         {/* Quick Access — one-click jumps to core sections */}
         <QuickAccessPanel />
+
+        {/* Sunburst map of every section → page → sub-page */}
+        <HomeSunburst />
 
         {/* Image Upload + Analyzer — prominent at top */}
         <ImageUploadAnalyzer />
