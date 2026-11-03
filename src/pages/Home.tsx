@@ -5,6 +5,7 @@ import {
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
   Zap, Sun, Microscope, ArrowRight, User, Scissors, Brain, Bone, TrendingDown, ArrowLeft,
+  Images,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
@@ -672,6 +673,7 @@ const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Drop
   { to: "/obesity/bmi-calculator", label: "Body weight issues", desc: "BMI, obesity & GLP-1 tools", Icon: Weight, tone: "violet" },
   { to: "/anemia?tab=iron", label: "Iron Calculator", desc: "Iron deficit & replacement", Icon: Syringe, tone: "orange" },
   { to: "/gfr-calculator",    label: "eGFR + BSA",  desc: "CKD-EPI with optional BSA", Icon: Activity, tone: "cyan" },
+  { to: "/images",         label: "Image Gallery", desc: "Figures, diagrams & algorithms", Icon: Images, tone: "emerald" },
 ];
 
 function QuickAccessPanel() {
