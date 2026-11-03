@@ -686,7 +686,7 @@ function QuickAccessPanel() {
         <span className="text-xs text-muted-foreground hidden sm:inline">One-click jumps</span>
       </div>
       <nav aria-label="Quick access shortcuts">
-        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2.5">
           {QUICK_ACCESS.map(({ to, label, desc, Icon, tone }) => {
             const t = ENTRY_TONES[tone];
             return (
