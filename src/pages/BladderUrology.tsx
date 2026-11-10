@@ -217,6 +217,17 @@ export default function BladderUrology() {
             </p>
           </div>
 
+          <div className="mx-auto max-w-lg space-y-4">
+            <ZoomableImage
+              src="/images/bladder-pharmacology.jpg"
+              alt="Bladder pharmacology infographic: improve storage — mirabegron beta-3 agonist relaxes detrusor, oxybutynin muscarinic antagonist reduces detrusor contractions (overactive bladder); improve emptying — bethanechol muscarinic agonist contracts detrusor for nonobstructive urinary retention (contraindicated in mechanical obstruction), tamsulosin alpha-1 blocker relaxes bladder neck and prostate for BPH urinary symptoms"
+              className="w-full rounded-xl border border-border"
+            />
+            <p className="mt-2 text-center font-handwritten text-xs text-amber-700/60">
+              Drug classes mapped to storage versus emptying — tap to zoom
+            </p>
+          </div>
+
           <div className="rounded-xl border-2 border-amber-700/30 bg-amber-50/60 p-4">
             <div className="mb-3 flex items-center gap-2">
               <Pill className="h-5 w-5 text-amber-700" />
