@@ -197,6 +197,7 @@ const Hyponatremia = lazyWithModuleRetry(() => import("@/pages/Hyponatremia"));
 const Hypernatremia = lazyWithModuleRetry(() => import("@/pages/Hypernatremia"));
 const Hypokalemia = lazyWithModuleRetry(() => import("@/pages/Hypokalemia"));
 const Hyperkalemia = lazyWithModuleRetry(() => import("@/pages/Hyperkalemia"));
+const BladderUrology = lazyWithModuleRetry(() => import("@/pages/BladderUrology"));
 const Hypomagnesemia = lazyWithModuleRetry(() => import("@/pages/Hypomagnesemia"));
 const Hypermagnesemia = lazyWithModuleRetry(() => import("@/pages/Hypermagnesemia"));
 const Hypophosphatemia = lazyWithModuleRetry(() => import("@/pages/Hypophosphatemia"));
@@ -440,6 +441,7 @@ const App = () => {
           <Route path="/hypernatremia" element={withNav(<Hypernatremia />, "Hypernatremia")} />
           <Route path="/hypokalemia" element={withNav(<Hypokalemia />, "Hypokalemia")} />
           <Route path="/hyperkalemia" element={withNav(<Hyperkalemia />, "Hyperkalemia")} />
+          <Route path="/bladder-urology" element={withNav(<BladderUrology />, "Bladder & Urology")} />
           <Route path="/hypocalcemia" element={withNav(<Hypocalcemia />, "Hypocalcemia")} />
           <Route path="/hypercalcemia" element={withNav(<Hypercalcemia />, "Hypercalcemia")} />
           <Route path="/hypomagnesemia" element={withNav(<Hypomagnesemia />, "Hypomagnesemia")} />

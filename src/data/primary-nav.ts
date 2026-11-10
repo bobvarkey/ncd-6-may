@@ -70,6 +70,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/hypermagnesemia", label: "Hypermagnesemia", icon: Gem, tone: "indigo" },
       { path: "/hypophosphatemia", label: "Hypophosphatemia", icon: Bone, tone: "lime" },
       { path: "/hyperphosphatemia", label: "Hyperphosphatemia", icon: Gem, tone: "fuchsia" },
+      { path: "/bladder-urology", label: "Bladder & Urology", icon: Droplets, tone: "violet", keywords: "bladder overactive retention bph luts mirabegron oxybutynin bethanechol tamsulosin incontinence" },
     ],
   },
   {
