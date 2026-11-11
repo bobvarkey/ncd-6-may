@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Settings as SettingsIcon,
-  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope, Eye, Calculator, Bone,
+  LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope, Eye, Calculator, Bone, AppWindow,
   type LucideIcon,
 } from "lucide-react";
 
@@ -29,6 +29,7 @@ const SECTIONS: Section[] = [
       { title: "Summary", url: "/summary", icon: FileText },
       { title: "Progress", url: "/progress", icon: TrendingDown },
       { title: "Image Gallery", url: "/images", icon: Images, keywords: "figures diagrams algorithms" },
+      { title: "Clinical Apps", url: "/clinical-apps", icon: AppWindow, keywords: "external companion apps dementia endocrine diabetes epilepsy gait falls ms multiple sclerosis myositis myopathy neuropathy oncology oncology meds radiology rheumatology rheum stroke" },
        { title: "Settings", url: "/settings", icon: SettingsIcon, keywords: "offline mode theme dark light text size accessibility sync" },
        { title: "Account & Subscription", url: "/subscription", icon: User, keywords: "login sign in pro plan trial payment" },
     ],
