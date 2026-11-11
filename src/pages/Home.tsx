@@ -1065,11 +1065,20 @@ export default function Home() {
             </DiseaseGroup>
           </TabsContent>
 
-          {/* Clinical Apps tab — alphabetical directory of companion apps */}
+          {/* Clinical Apps tab — alphabetical directory of companion apps.
+              Rendered outside DiseaseGroup because its own grid would otherwise be
+              squeezed into one column of the card grid. */}
           <TabsContent value="clinical-apps" className="mt-4">
-            <DiseaseGroup title="Clinical Apps" icon={<AppWindow className="h-3.5 w-3.5 text-cyan-400" />}>
+            <section>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-6 h-6 rounded-md bg-muted flex items-center justify-center">
+                  <AppWindow className="h-3.5 w-3.5 text-cyan-400" />
+                </div>
+                <h2 className="text-sm font-semibold text-foreground/80 uppercase tracking-wider">Clinical Apps</h2>
+                <div className="flex-1 h-px bg-border/60" />
+              </div>
               <ClinicalAppsGrid />
-            </DiseaseGroup>
+            </section>
           </TabsContent>
         </Tabs>
 
