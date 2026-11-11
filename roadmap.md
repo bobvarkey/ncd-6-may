@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Add a Clinical Apps directory: home-page sunburst tab, standalone page, sidebar entry and quick-access tile, all fed by one alphabetical data file; 5 new tests plus the full 426-test suite passed and signed-in desktop/mobile checks confirmed the 11 links, tab keyboard navigation, and no mobile overlap.
+
 - [x] Embed MCV/RDW within iron calculators instead of a separate tab; explicit if/else interpretations and diagnostic limitations added. All 18 focused tests passed; signed-in checks verified shared Hb, pattern changes, integrated copy, reset, and no runtime errors.
 
 - [x] Add MCV/RDW iron-deficiency screening with normocytic interpretation, references, reset/export support, and tests; 18 tests and signed-in desktop/mobile checks passed.
