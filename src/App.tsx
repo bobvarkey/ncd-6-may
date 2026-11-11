@@ -214,6 +214,7 @@ const AKIAKDMiniApp = lazyWithModuleRetry(() => import("@/pages/AKIAKDMiniApp"))
 const MetabolicSyndrome = lazyWithModuleRetry(() => import("@/pages/MetabolicSyndrome"));
 const NotFound = lazyWithModuleRetry(() => import("@/components/NotFound"));
 const Login = lazyWithModuleRetry(() => import("@/pages/Login"));
+const ClinicalApps = lazyWithModuleRetry(() => import("@/pages/ClinicalApps"));
 
 const queryClient = new QueryClient();
 
@@ -476,6 +477,17 @@ const App = () => {
           <Route path="/account/delete" element={<Navigate to="/delete-account" replace />} />
           <Route path="/images" element={withNav(<ImageGallery />, "Image Gallery")} />
           <Route path="/image-gallery" element={<Navigate to="/images" replace />} />
+          {/* Link directory, not a calculator: no results to copy, so no export bar. */}
+          <Route
+            path="/clinical-apps"
+            element={
+              <RequireAccess>
+                <PageShell title="Clinical Apps">
+                  <ClinicalApps />
+                </PageShell>
+              </RequireAccess>
+            }
+          />
           <Route path="/guides/mme-cdc" element={withNav(<MMEGuide />, "MME Guide")} />
           <Route path="/dev/tools" element={withNav(<DevTools />, "Dev Tools")} />
 
