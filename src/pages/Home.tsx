@@ -5,7 +5,7 @@ import {
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
   Zap, Sun, Microscope, ArrowRight, User, Scissors, Brain, Bone, TrendingDown, ArrowLeft,
-  Images,
+  Images, AppWindow,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
@@ -29,6 +29,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import { AllNavigation } from "@/components/AllNavigation";
 import HomeSunburst from "@/components/HomeSunburst";
+import { ClinicalAppsGrid } from "@/components/ClinicalAppsGrid";
 import { ENTRY_TONES, type EntryTone } from "@/lib/entry-tones";
 import { cn } from "@/lib/utils";
 
@@ -674,10 +675,11 @@ const HOME_TABS = [
   { value: "cardiometabolic", label: "Cardiometabolic & Renal", Icon: Heart,      tone: ENTRY_TONES.rose.tab },
   { value: "specialty",       label: "Specialty Medicine",      Icon: Dna,        tone: ENTRY_TONES.emerald.tab },
   { value: "infections",      label: "Infections & General",    Icon: Bug,        tone: ENTRY_TONES.amber.tab },
+  { value: "clinical-apps",   label: "Clinical Apps",           Icon: AppWindow,  tone: ENTRY_TONES.cyan.tab },
 ] as const;
 
 // Angle of each tab from vertical (degrees); symmetric fan, inner tabs higher.
-const SUNBURST_ANGLES = [-48, -16, 16, 48];
+const SUNBURST_ANGLES = [-56, -28, 0, 28, 56];
 const SUNBURST_RAYS = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75];
 
 function sunburstPosition(angleDeg: number): { left: string; top: string } {
@@ -696,6 +698,7 @@ const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Drop
   { to: "/anemia?tab=iron", label: "Iron Calculator", desc: "Iron deficit & replacement", Icon: Syringe, tone: "orange" },
   { to: "/gfr-calculator",    label: "eGFR + BSA",  desc: "CKD-EPI with optional BSA", Icon: Activity, tone: "cyan" },
   { to: "/images",         label: "Image Gallery", desc: "Figures, diagrams & algorithms", Icon: Images, tone: "emerald" },
+  { to: "/clinical-apps",  label: "Clinical Apps", desc: "Companion apps, A–Z", Icon: AppWindow, tone: "cyan" },
 ];
 
 function QuickAccessPanel() {
@@ -708,7 +711,7 @@ function QuickAccessPanel() {
         <span className="text-xs text-muted-foreground hidden sm:inline">One-click jumps</span>
       </div>
       <nav aria-label="Quick access shortcuts">
-        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2.5">
+        <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2.5">
           {QUICK_ACCESS.map(({ to, label, desc, Icon, tone }) => {
             const t = ENTRY_TONES[tone];
             return (
@@ -1059,6 +1062,13 @@ export default function Home() {
                 tone="indigo"
                 badge="WHO"
               />
+            </DiseaseGroup>
+          </TabsContent>
+
+          {/* Clinical Apps tab — alphabetical directory of companion apps */}
+          <TabsContent value="clinical-apps" className="mt-4">
+            <DiseaseGroup title="Clinical Apps" icon={<AppWindow className="h-3.5 w-3.5 text-cyan-400" />}>
+              <ClinicalAppsGrid />
             </DiseaseGroup>
           </TabsContent>
         </Tabs>
