@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
+import { METANEPHRINE_SAMPLING_CLAUSE } from "@/lib/secondary-htn-sampling";
 import {
   Activity,
   AlertTriangle,
@@ -194,8 +195,8 @@ const SECONDARY_WORKUP: WorkupCategory[] = [
     category: "Pheochromocytoma",
     group: "Endocrine",
     tests: [
-      { name: "24-hour urine metanephrines", tag: "screening", reference: "Metanephrines >400 µg/24h", detail: "High sensitivity screening test" },
-      { name: "Plasma metanephrines", tag: "screening", reference: "Normetanephrines >0.9 nmol/L", detail: "Preferred if high clinical suspicion" },
+      { name: "24-hour urine metanephrines", tag: "screening", reference: "Metanephrines >400 µg/24h", detail: "High sensitivity screening test — fractionated (metanephrine + normetanephrine)" },
+      { name: "Plasma metanephrines", tag: "screening", reference: "Normetanephrines >0.9 nmol/L", detail: `Preferred if high clinical suspicion; ${METANEPHRINE_SAMPLING_CLAUSE}` },
       { name: "CT/MRI adrenal glands", tag: "localization", detail: "MRI preferred; 10% rule (extra-adrenal, bilateral)" },
       { name: "MIBG scan if positive", tag: "localization", detail: "Localize catecholamine-secreting tissue" },
     ],

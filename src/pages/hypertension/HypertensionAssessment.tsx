@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AbbrText } from "@/components/AbbreviationHover";
+import { METANEPHRINE_SAMPLING_CLAUSE } from "@/lib/secondary-htn-sampling";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -270,7 +271,7 @@ const secondaryHtnChecklist: SecondaryHtnItem[] = [
     id: "episodic_htn",
     category: "Symptoms",
     feature: "Episodic hypertension with sweating, palpitations, headache",
-    workup: "Plasma free or urinary fractionated metanephrines",
+    workup: `Plasma free or urinary fractionated metanephrines — ${METANEPHRINE_SAMPLING_CLAUSE}`,
   },
   {
     id: "cushing_features",

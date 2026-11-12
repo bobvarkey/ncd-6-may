@@ -11,6 +11,7 @@ import {
 import ImageLink from "@/components/ImageLink";
 import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 import { copyToClipboard } from "@/lib/clinical-utils";
+import { METANEPHRINE_SAMPLING_CLAUSE, METANEPHRINE_SAMPLING_NOTE } from "@/lib/secondary-htn-sampling";
 import { Copy, Check, CheckSquare, Square } from "lucide-react";
 
 interface EvaluationItem {
@@ -115,7 +116,12 @@ const evaluationItems: EvaluationItem[] = [
   {
     id: 'pheochromocytoma',
     condition: 'Pheochromocytoma',
-    tests: ['Plasma metanephrines', '24h urinary metanephrines', 'Adrenal CT/MRI', 'Genetic testing'],
+    tests: [
+      `Fractionated metanephrines (plasma free metanephrine + normetanephrine) — ${METANEPHRINE_SAMPLING_CLAUSE}`,
+      '24h urinary fractionated metanephrines',
+      'Adrenal CT/MRI',
+      'Genetic testing',
+    ],
     icon: <Syringe className="h-5 w-5" />,
     category: 'endocrine'
   },
@@ -361,7 +367,7 @@ export default function SecondaryHtnMiniApp() {
 
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">•</span>
-                  <span><strong>Pheochromocytoma:</strong> Measure plasma metanephrines (supine ≥30 min, LC-MS/MS). Avoid TCAs, SNRIs, levodopa 2 weeks before. If positive, CT/MRI abdomen + 123I-MIBG or 68Ga-DOTATATE PET.</span>
+                  <span><strong>Pheochromocytoma:</strong> {METANEPHRINE_SAMPLING_NOTE} Use LC-MS/MS. Avoid TCAs, SNRIs, levodopa 2 weeks before. If positive, CT/MRI abdomen + 123I-MIBG or 68Ga-DOTATATE PET.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">•</span>
