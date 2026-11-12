@@ -19,6 +19,12 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   KDIGO: { term: "KDIGO", full: "Kidney Disease Improving Global Outcomes", description: "CKD staging by eGFR (G) and albuminuria (A)." },
   CKD: { term: "CKD", full: "Chronic Kidney Disease" },
   AKI: { term: "AKI", full: "Acute Kidney Injury" },
+  "Fractionated metanephrines": {
+    term: "Fractionated metanephrines",
+    full: "Plasma free metanephrine + normetanephrine",
+    description: "Pheochromocytoma screening test. Draw after 20 minutes of supine rest.",
+    synonyms: ["Plasma free metanephrines", "Urinary fractionated metanephrines"],
+  },
   "FIB-4": { term: "FIB-4", full: "Fibrosis-4 Index", description: "Non-invasive liver fibrosis triage score." },
   APRI: { term: "APRI", full: "AST-to-Platelet Ratio Index" },
   NFS: { term: "NFS", full: "NAFLD Fibrosis Score" },

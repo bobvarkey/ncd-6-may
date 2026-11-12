@@ -14,6 +14,7 @@ import {
 import DstInterpretationPanel from "@/components/hypertension/DstInterpretationPanel";
 import ImageLink from "@/components/ImageLink";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
+import { METANEPHRINE_SAMPLING_CLAUSE, METANEPHRINE_SAMPLING_NOTE } from "@/lib/secondary-htn-sampling";
 
 // ── Reninoma Clinical Probability Evaluator ──
 function ReninomaEvaluator() {
@@ -208,7 +209,12 @@ const evaluationItems: EvaluationItem[] = [
   {
     id: 'pheochromocytoma',
     condition: 'Pheochromocytoma',
-    tests: ['Plasma metanephrines', '24h urinary metanephrines', 'Adrenal CT/MRI', 'Genetic testing'],
+    tests: [
+      `Fractionated metanephrines (plasma free metanephrine + normetanephrine) — ${METANEPHRINE_SAMPLING_CLAUSE}`,
+      '24h urinary fractionated metanephrines',
+      'Adrenal CT/MRI',
+      'Genetic testing',
+    ],
     icon: <Syringe className="h-5 w-5" />,
     category: 'endocrine'
   },
@@ -411,6 +417,7 @@ export default function SecondaryHtnPage() {
                     <div className="p-2 rounded bg-background/60 border">
                       <strong>2. HU ≥ 10 or high malignancy concern → Plasma free metanephrines</strong>
                       <div className="mt-0.5 text-muted-foreground">(or 24-h urinary fractionated metanephrines) — rule out pheochromocytoma</div>
+                      <div className="mt-1 text-amber-600">{METANEPHRINE_SAMPLING_NOTE}</div>
                     </div>
                     <div className="p-2 rounded bg-background/60 border">
                       <strong>3. Hypertension and/or hypokalemia + lipid-rich lesion → Plasma ARR</strong>
@@ -475,7 +482,7 @@ export default function SecondaryHtnPage() {
 
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">•</span>
-                  <span><strong>Pheochromocytoma:</strong> Measure plasma metanephrines (supine ≥30 min, LC-MS/MS). Avoid TCAs, SNRIs, levodopa 2 weeks before. If positive, CT/MRI abdomen + 123I-MIBG or 68Ga-DOTATATE PET.</span>
+                  <span><strong>Pheochromocytoma:</strong> {METANEPHRINE_SAMPLING_NOTE} Use LC-MS/MS. Avoid TCAs, SNRIs, levodopa 2 weeks before. If positive, CT/MRI abdomen + 123I-MIBG or 68Ga-DOTATATE PET.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">•</span>

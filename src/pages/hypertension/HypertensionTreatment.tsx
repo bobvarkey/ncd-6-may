@@ -10,6 +10,7 @@ import {
   GitBranch, ChevronRight, ChevronDown, RotateCcw, Gauge, CheckCircle, Brain, Baby,
 } from "lucide-react";
 import HtnAlgorithmFlowchart from "@/components/hypertension/HtnAlgorithmFlowchart";
+import { METANEPHRINE_SAMPLING_CLAUSE } from "@/lib/secondary-htn-sampling";
 import ImageLink from "@/components/ImageLink";
 import { headerTabClass, headerTabListClass } from "@/lib/header-tabs";
 import { AbbreviationHover } from "@/components/AbbreviationHover";
@@ -436,7 +437,7 @@ const checklistItems: ChecklistItem[] = [
   {
     id: 'pheochromocytoma',
     condition: 'Pheochromocytoma / Paraganglioma',
-    tests: ['Plasma free metanephrines', '24-hour urinary metanephrines', 'Adrenal CT/MRI', 'Genetic testing if indicated'],
+    tests: [`Plasma free metanephrines — ${METANEPHRINE_SAMPLING_CLAUSE}`, '24-hour urinary fractionated metanephrines', 'Adrenal CT/MRI', 'Genetic testing if indicated'],
     icon: <Syringe className="h-5 w-5" />,
     category: 'endocrine'
   },
