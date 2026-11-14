@@ -10,6 +10,7 @@ import { ALL_MEDICATIONS } from "@/calculators/obesity/medication-database";
 const OBESITY_MEDS = Object.values(ALL_MEDICATIONS).flat();
 import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMedicationGuide";
 import { GLOSSARY } from "@/data/glossary";
+import { POLYCYTHEMIA_SEARCH } from "@/pages/anemia/components/polycythemiaPathway";
 
 // Normalize HTN meds into the same shape used by the search (drug/drugClass/normalDose).
 const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
@@ -141,6 +142,7 @@ const CLINICAL_TOPICS = [
   { id: "bleeding-clotting", label: "Bleeding / Clotting Disorders", path: "/anemia?tab=bleeding-clotting", keywords: ["bleeding", "clotting", "coagulation", "hemophilia", "dvt"] },
   { id: "iron-calculator", label: "Iron Calculator", path: "/anemia?tab=iron", keywords: ["iron", "ferritin", "transferrin", "tsat", "iron studies", "ganzoni", "iron deficit", "iron replacement", "iron dosing", "iron infusion", "ferric"] },
   { id: "esr", label: "ESR (Erythrocyte Sedimentation Rate)", path: "/anemia?tab=esr", keywords: ["esr", "sed rate", "inflammation marker"] },
+  { id: POLYCYTHEMIA_SEARCH.id, label: POLYCYTHEMIA_SEARCH.label, path: POLYCYTHEMIA_SEARCH.path, keywords: [...POLYCYTHEMIA_SEARCH.keywords] },
 
   // ── Thyroid ──
   { id: "thyroid", label: "Thyroid Calculator", path: "/thyroid", keywords: ["thyroid", "tsh", "t4", "t3", "thyroid function"] },
@@ -223,6 +225,30 @@ const CLINICAL_TOPICS = [
   { id: "delete-account", label: "Delete Account & Data", path: "/delete-account", keywords: ["delete", "account", "erase", "wipe", "remove data", "clear data", "reset app", "privacy"] },
 ];
 
+export type ClinicalTopic = { id: string; label: string; path: string; keywords: string[] };
+
+/** Same ranking the topic search uses, so tests can assert a search hit. */
+export function rankClinicalTopics(term: string, topics: ClinicalTopic[] = CLINICAL_TOPICS) {
+  const query = term.trim().toLowerCase();
+  if (!query) return [];
+  return topics
+    .map((topic) => ({
+      ...topic,
+      score:
+        topic.label.toLowerCase() === query
+          ? 100
+          : topic.label.toLowerCase().startsWith(query)
+            ? 75
+            : topic.label.toLowerCase().includes(query)
+              ? 50
+              : topic.keywords.some((keyword) => keyword.toLowerCase().includes(query))
+                ? 25
+                : 0,
+    }))
+    .filter((topic) => topic.score > 0)
+    .sort((a, b) => b.score - a.score);
+}
+
 export function GlobalMedSearch() {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
@@ -252,13 +278,7 @@ export function GlobalMedSearch() {
       .slice(0, 8)
       .map(m => ({ type: 'medication' as const, ...m }));
 
-    const topicResults = CLINICAL_TOPICS
-      .map((t) => ({
-        ...t,
-        score: t.label.toLowerCase() === term ? 100 : t.label.toLowerCase().startsWith(term) ? 75 : t.label.toLowerCase().includes(term) ? 50 : t.keywords?.some(k => k.toLowerCase().includes(term)) ? 25 : 0,
-      }))
-      .filter((t) => t.score > 0)
-      .sort((a, b) => b.score - a.score)
+    const topicResults = rankClinicalTopics(term)
       .slice(0, 5)
       .map(t => ({ type: 'topic' as const, ...t }));
 

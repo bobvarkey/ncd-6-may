@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Calculator, FileText, X, ArrowRight } from "lucide-react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { POLYCYTHEMIA_SEARCH } from "@/pages/anemia/components/polycythemiaPathway";
 
 interface SearchItem {
   id: string;
@@ -13,7 +14,7 @@ interface SearchItem {
 }
 
 // All searchable routes
-const SEARCH_ITEMS: SearchItem[] = [
+export const SEARCH_ITEMS: SearchItem[] = [
   // Calculators
   { id: "diabetes", label: "Diabetes Medication Algorithm", category: "calculator", path: "/diabetes", keywords: ["glucose", "a1c", "metformin", "GLP1", "diabetes"] },
   { id: "hypo-risk", label: "Hypoglycemia Risk Score", category: "calculator", path: "/diabetes/hypo-risk", keywords: ["hypoglycemia", "low blood sugar"] },
@@ -44,6 +45,7 @@ const SEARCH_ITEMS: SearchItem[] = [
   { id: "thyroid", label: "Thyroid Calculator", category: "calculator", path: "/thyroid", keywords: ["tsh", "thyroid", "t4", "t3"] },
   { id: "steroid-taper", label: "Steroid Taper", category: "calculator", path: "/steroid-taper", keywords: ["steroid", "taper", "glucocorticoid", "prednisolone", "prednisone", "adrenal", "cortisol", "hpa"] },
   { id: "iron", label: "Iron Calculator", category: "calculator", path: "/anemia?tab=iron", keywords: ["ferritin", "iron", "tsat", "iron deficiency", "ganzoni", "iron deficit"] },
+  { id: POLYCYTHEMIA_SEARCH.id, label: POLYCYTHEMIA_SEARCH.label, category: "page", path: POLYCYTHEMIA_SEARCH.path, keywords: [...POLYCYTHEMIA_SEARCH.keywords] },
   { id: "liver", label: "Liver", category: "calculator", path: "/liver", keywords: ["liver", "hepatic", "lft", "fib-4", "fib4", "apri", "nfs", "meld", "child-pugh", "auto-calc", "masld", "nafld"] },
   { id: "metabolic-syndrome", label: "Metabolic Syndrome Criteria", category: "calculator", path: "/metabolic-syndrome", keywords: ["metabolic syndrome", "mets", "syndrome x", "ncep", "atp iii", "idf", "south asian", "waist", "triglycerides", "hdl", "fasting glucose"] },
   // Guidelines (placeholder - could expand)
