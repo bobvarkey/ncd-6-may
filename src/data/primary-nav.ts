@@ -57,7 +57,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/anemia?tab=bleeding-clotting", label: "Bleeding / Clotting", icon: Bandage, tone: "orange" },
       { path: "/anemia?tab=iron", label: "Iron Calculator", icon: Syringe, tone: "amber", keywords: "ferritin tsat ganzoni" },
       { path: "/anemia?tab=esr", label: "ESR", icon: Timer, tone: "slate" },
-      { path: "/anemia?tab=erythrocytosis", label: "Erythrocytosis / PV", icon: Droplet, tone: "rose" },
+      { path: "/anemia?tab=erythrocytosis", label: "Erythrocytosis / PV", icon: Droplet, tone: "rose", keywords: "polycythemia polycythaemia erythrocytosis JAK2 EPO" },
       { path: "/anemia?tab=anticoagulants", label: "Anticoagulants", icon: Pill, tone: "indigo" },
       { path: "/electrolytes", label: "Electrolytes", icon: Zap, tone: "violet" },
       { path: "/hyponatremia", label: "Hyponatremia", icon: Droplet, tone: "sky" },

@@ -3,6 +3,7 @@ import {
   Droplet, AlertTriangle, ChevronDown, ChevronUp, Dna, Microscope,
   Stethoscope, TestTube, Pill, Info, ArrowDown, FlaskConical, Activity,
 } from "lucide-react";
+import PolycythemiaEvaluation from "./PolycythemiaEvaluation";
 
 /* ─────────────────────────────────────────────────────────────
    Erythrocytosis / Polycythemia Vera — educational reference
@@ -136,6 +137,8 @@ export default function Erythrocytosis() {
           Click any image to view full size.
         </p>
       </div>
+
+      <PolycythemiaEvaluation />
 
       {/* 1. Approach */}
       <SectionCard title="1. Approach to Erythrocytosis" icon={Stethoscope}>
