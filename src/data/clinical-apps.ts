@@ -21,10 +21,32 @@ export type ClinicalApp = {
 };
 
 export const CLINICAL_APPS: ClinicalApp[] = [
+
+  {
+    name: "Ataxias",
+    url: "https://ataxia-eval-app.lovable.app/",
+    description: "Ataxia evaluation and differential",
+    icon: Footprints,
+    tone: "orange",
+  },
   {
     name: "Dementia",
     url: "https://dementia-exam.lovable.app/",
     description: "Cognitive assessment and dementia workup",
+    icon: Brain,
+    tone: "violet",
+  },
+  {
+    name: "Encephalitis",
+    url: "https://encephalitis.lovable.app/",
+    description: "Encephalitis recognition and workup",
+    icon: Brain,
+    tone: "rose",
+  },
+  {
+    name: "Encephalitis & Paraneoplasia",
+    url: "https://paraneoplasia.lovable.app/",
+    description: "Autoimmune encephalitis and paraneoplastic syndromes",
     icon: Brain,
     tone: "violet",
   },
@@ -50,10 +72,24 @@ export const CLINICAL_APPS: ClinicalApp[] = [
     tone: "orange",
   },
   {
+    name: "Infections",
+    url: "https://infection-abx.lovable.app/",
+    description: "Infection management and antibiotic choice",
+    icon: Pill,
+    tone: "lime",
+  },
+  {
     name: "MS (Multiple Sclerosis)",
     url: "https://multiple-sclerosis.lovable.app/",
     description: "Multiple sclerosis diagnosis and management",
     icon: Activity,
+    tone: "sky",
+  },
+  {
+    name: "Muscle & Nerve Ultrasound",
+    url: "https://sono-guide-app.lovable.app/",
+    description: "Neuromuscular ultrasound guide",
+    icon: ScanLine,
     tone: "sky",
   },
   {
@@ -78,6 +114,13 @@ export const CLINICAL_APPS: ClinicalApp[] = [
     tone: "rose",
   },
   {
+    name: "Parkinson's",
+    url: "https://parkinson-diff-aide.lovable.app/",
+    description: "Parkinsonism differential diagnosis",
+    icon: Activity,
+    tone: "amber",
+  },
+  {
     name: "Radiology",
     url: "https://radiology-interpretation.lovable.app/",
     description: "Imaging interpretation reference",
@@ -92,11 +135,25 @@ export const CLINICAL_APPS: ClinicalApp[] = [
     tone: "fuchsia",
   },
   {
+    name: "Sleep",
+    url: "https://sleepwell-analyzer.lovable.app/",
+    description: "Sleep disorder assessment",
+    icon: Waves,
+    tone: "indigo",
+  },
+  {
     name: "Stroke",
     url: "https://stroke-diagnostic-compass.lovable.app/",
     description: "Stroke diagnostic compass",
     icon: ExternalLink,
     tone: "emerald",
+  },
+  {
+    name: "Tinnitus",
+    url: "https://tinnitus-final.lovable.app/",
+    description: "Tinnitus evaluation",
+    icon: Waves,
+    tone: "cyan",
   },
 ];
 
