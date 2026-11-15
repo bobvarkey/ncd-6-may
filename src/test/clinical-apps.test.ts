@@ -4,24 +4,24 @@ import { CLINICAL_APPS, clinicalAppHost } from "@/data/clinical-apps";
 /** The links exactly as supplied, normalised to https with a trailing slash. */
 const EXPECTED_URLS = [
   "https://ataxia-eval-app.lovable.app/",
+  "https://dementia-exam.lovable.app/",
   "https://encephalitis.lovable.app/",
   "https://paraneoplasia.lovable.app/",
-  "https://infection-abx.lovable.app/",
-  "https://sono-guide-app.lovable.app/",
-  "https://parkinson-diff-aide.lovable.app/",
-  "https://sleepwell-analyzer.lovable.app/",
-  "https://tinnitus-final.lovable.app/",
-  "https://dementia-exam.lovable.app/",
   "https://diabetes-treatment-complete.lovable.app/",
   "https://status-epilepticus.lovable.app/",
   "https://gait-and-falls.lovable.app/",
+  "https://infection-abx.lovable.app/",
   "https://multiple-sclerosis.lovable.app/",
+  "https://sono-guide-app.lovable.app/",
   "https://myositis-myopathy.lovable.app/",
   "https://neuropathy-eval.lovable.app/",
   "https://oncomeds.lovable.app/",
+  "https://parkinson-diff-aide.lovable.app/",
   "https://radiology-interpretation.lovable.app/",
   "https://rheum-buddy.lovable.app/",
+  "https://sleepwell-analyzer.lovable.app/",
   "https://stroke-diagnostic-compass.lovable.app/",
+  "https://tinnitus-final.lovable.app/",
 ];
 
 describe("clinical apps directory", () => {
