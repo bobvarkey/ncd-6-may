@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, Calculator, FileText, X, ArrowRight } from "lucide-react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { POLYCYTHEMIA_SEARCH } from "@/pages/anemia/components/polycythemiaPathway";
+import { CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH } from "@/components/lipids/CarotidFemoralPlaqueUltrasound";
 
 interface SearchItem {
   id: string;
@@ -34,6 +35,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: "glossary", label: "Clinical Glossary", category: "page", path: "/glossary", keywords: ["glossary", "definitions", "synonyms", "acronyms", "macs", "dst"] },
   { id: "sleep-apnea", label: "Sleep Apnea Screening", category: "calculator", path: "/hypertension/secondary-htn", keywords: ["sleep apnea", "osa", "polysomnography", "cpap", "snoring"] },
   { id: "ascvd", label: "ASCVD Risk Calculator", category: "calculator", path: "/lipids/ascvd-risk", keywords: ["cardiovascular", "heart risk", "heart score", "ascvd"] },
+  { id: CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH.id, label: CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH.label, category: "page", path: CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH.path, keywords: [...CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH.keywords] },
   { id: "obesity-bmi", label: "BMI Calculator", category: "calculator", path: "/obesity/bmi-calculator", keywords: ["weight", "bmi", "body mass index"] },
   { id: "waist-height", label: "Waist-to-Height Ratio", category: "calculator", path: "/obesity/waist-height-ratio", keywords: ["waist", "waist height", "waist ratio"] },
   { id: "visceral-fat-us", label: "Visceral Fat Ultrasound", category: "calculator", path: "/obesity/visceral-fat-ultrasound", keywords: ["visceral fat", "vat", "subcutaneous fat", "ultrasound", "intra-abdominal fat"] },
