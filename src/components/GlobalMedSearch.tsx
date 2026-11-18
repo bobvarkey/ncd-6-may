@@ -11,6 +11,7 @@ const OBESITY_MEDS = Object.values(ALL_MEDICATIONS).flat();
 import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMedicationGuide";
 import { GLOSSARY } from "@/data/glossary";
 import { POLYCYTHEMIA_SEARCH } from "@/pages/anemia/components/polycythemiaPathway";
+import { COAGULATION_PATTERNS_SEARCH } from "@/pages/anemia/components/coagulationPatterns";
 
 // Normalize HTN meds into the same shape used by the search (drug/drugClass/normalDose).
 const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
@@ -140,6 +141,7 @@ const CLINICAL_TOPICS = [
   { id: "anemia-chronic-disease", label: "Anemia of Chronic Disease", path: "/anemia", keywords: ["anemia chronic disease", "anemia inflammation", "normocytic anemia"] },
   { id: "thrombocytopenia", label: "Thrombocytopenia", path: "/anemia?tab=thrombocytopenia", keywords: ["thrombocytopenia", "low platelets", "itp", "platelet"] },
   { id: "bleeding-clotting", label: "Bleeding / Clotting Disorders", path: "/anemia?tab=bleeding-clotting", keywords: ["bleeding", "clotting", "coagulation", "hemophilia", "dvt"] },
+  { id: COAGULATION_PATTERNS_SEARCH.id, label: COAGULATION_PATTERNS_SEARCH.label, path: COAGULATION_PATTERNS_SEARCH.path, keywords: [...COAGULATION_PATTERNS_SEARCH.keywords] },
   { id: "iron-calculator", label: "Iron Calculator", path: "/anemia?tab=iron", keywords: ["iron", "ferritin", "transferrin", "tsat", "iron studies", "ganzoni", "iron deficit", "iron replacement", "iron dosing", "iron infusion", "ferric"] },
   { id: "esr", label: "ESR (Erythrocyte Sedimentation Rate)", path: "/anemia?tab=esr", keywords: ["esr", "sed rate", "inflammation marker"] },
   { id: POLYCYTHEMIA_SEARCH.id, label: POLYCYTHEMIA_SEARCH.label, path: POLYCYTHEMIA_SEARCH.path, keywords: [...POLYCYTHEMIA_SEARCH.keywords] },
