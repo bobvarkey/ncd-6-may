@@ -115,6 +115,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
     label: "Reference",
     tone: "slate",
     items: [
+      { path: "/calculators", label: "Common Calculators", icon: Calculator, tone: "cyan", keywords: "bland cts carpal tunnel nerve conduction grading apb cmap house brackmann facial palsy" },
       { path: "/images", label: "Images", icon: Image, tone: "sky", keywords: "figures diagrams" },
       { path: "/glossary", label: "Clinical Glossary", icon: BookOpen, tone: "slate" },
     ],

@@ -162,6 +162,7 @@ const FrailtyCalculator = lazyWithModuleRetry(() => import("@/pages/FrailtyCalcu
 const VaccineCalculator = lazyWithModuleRetry(() => import("@/pages/VaccineCalculator"));
 const RespiratoryPage = lazyWithModuleRetry(() => import("@/pages/Respiratory"));
 const PerioperativeCalculators = lazyWithModuleRetry(() => import("@/pages/PerioperativeCalculators"));
+const CommonCalculators = lazyWithModuleRetry(() => import("@/pages/CommonCalculators"));
 const DiabeticFootScoring = lazyWithModuleRetry(() => import("@/pages/DiabeticFootScoring"));
 const DevTools = lazyWithModuleRetry(() => import("@/pages/dev/DevTools"));
 const ImageGallery = lazyWithModuleRetry(() => import("@/pages/ImageGallery"));
@@ -454,6 +455,7 @@ const App = () => {
           <Route path="/type2-treatment-algorithm" element={withNav(<Type2TreatmentAlgorithm />, "T2D Treatment Algorithm")} />
           <Route path="/hyperglycemic-emergency" element={withNav(<HyperglycemicEmergency />, "Hyperglycemic Emergency")} />
           <Route path="/perioperative-calculators" element={withNav(<PerioperativeCalculators />, "Perioperative Tools")} />
+          <Route path="/calculators" element={withNav(<CommonCalculators />, "Common Calculators")} />
           <Route path="/daily-management" element={withNav(<DailyManagementGuide />, "Daily Management")} />
           <Route path="/type1-management" element={withNav(<Type1DMManagement />, "Type 1 DM")} />
           <Route path="/type1-pitfalls" element={withNav(<Type1Pitfalls />, "T1D Pitfalls")} />

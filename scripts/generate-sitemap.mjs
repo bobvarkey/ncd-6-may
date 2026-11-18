@@ -30,6 +30,7 @@ const entries = [
   { path: "/ascvd-risk", priority: "0.8", changefreq: "monthly" },
   { path: "/gfr-calculator", priority: "0.7", changefreq: "monthly" },
   { path: "/drug-interactions", priority: "0.7", changefreq: "monthly" },
+  { path: "/calculators", priority: "0.7", changefreq: "monthly" },
   { path: "/goldman-cardiac", priority: "0.6", changefreq: "monthly" },
   { path: "/perioperative", priority: "0.6", changefreq: "monthly" },
   { path: "/pep", priority: "0.6", changefreq: "monthly" },

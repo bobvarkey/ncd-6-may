@@ -671,15 +671,16 @@ const QuickAction = React.memo(function QuickAction({ title, description, icon, 
 // Sunburst tab bar: tabs fan out along an arc radiating from a central "sun".
 // Radix Tabs underneath keeps role=tablist and arrow-key navigation intact.
 const HOME_TABS = [
-  { value: "quick-actions",   label: "Quick Actions",          Icon: Calculator, tone: ENTRY_TONES.violet.tab },
-  { value: "cardiometabolic", label: "Cardiometabolic & Renal", Icon: Heart,      tone: ENTRY_TONES.rose.tab },
-  { value: "specialty",       label: "Specialty Medicine",      Icon: Dna,        tone: ENTRY_TONES.emerald.tab },
-  { value: "infections",      label: "Infections & General",    Icon: Bug,        tone: ENTRY_TONES.amber.tab },
-  { value: "clinical-apps",   label: "Clinical Apps",           Icon: AppWindow,  tone: ENTRY_TONES.cyan.tab },
+  { value: "quick-actions",      label: "Quick Actions",          Icon: Calculator, tone: ENTRY_TONES.violet.tab },
+  { value: "common-calculators", label: "Common Calculators",     Icon: Calculator, tone: ENTRY_TONES.sky.tab },
+  { value: "cardiometabolic",    label: "Cardiometabolic & Renal", Icon: Heart,      tone: ENTRY_TONES.rose.tab },
+  { value: "specialty",          label: "Specialty Medicine",      Icon: Dna,        tone: ENTRY_TONES.emerald.tab },
+  { value: "infections",         label: "Infections & General",    Icon: Bug,        tone: ENTRY_TONES.amber.tab },
+  { value: "clinical-apps",      label: "Clinical Apps",           Icon: AppWindow,  tone: ENTRY_TONES.cyan.tab },
 ] as const;
 
 // Angle of each tab from vertical (degrees); symmetric fan, inner tabs higher.
-const SUNBURST_ANGLES = [-56, -28, 0, 28, 56];
+const SUNBURST_ANGLES = [-60, -36, -12, 12, 36, 60];
 const SUNBURST_RAYS = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75];
 
 function sunburstPosition(angleDeg: number): { left: string; top: string } {
@@ -927,6 +928,64 @@ export default function Home() {
                 ))}
               </div>
             </section>
+          </TabsContent>
+
+          {/* Common Calculators tab */}
+          <TabsContent value="common-calculators" className="mt-4">
+            <DiseaseGroup title="Common Calculators" icon={<Calculator className="h-3.5 w-3.5 text-cyan-500" />}>
+              <DiseaseCard
+                title="CTS Grading (Bland)"
+                description="Guided Bland grading for carpal tunnel syndrome with an NCS report impression"
+                icon={<Activity className="h-5 w-5" />}
+                to="/calculators"
+                tone="cyan"
+                badge="NCS"
+              />
+              <DiseaseCard
+                title="House–Brackmann"
+                description="Facial nerve grading for facial palsy, grades I–VI with a clinical impression"
+                icon={<Activity className="h-5 w-5" />}
+                to="/calculators?tab=house-brackmann"
+                tone="indigo"
+                badge="Facial"
+              />
+              <DiseaseCard
+                title="BMI Calculator"
+                description="Body mass index with WHO, Asian-Pacific and Indian thresholds"
+                icon={<Weight className="h-5 w-5" />}
+                to="/obesity/bmi-calculator"
+                tone="violet"
+              />
+              <DiseaseCard
+                title="eGFR + KDIGO Staging"
+                description="CKD-EPI 2021 eGFR with optional BSA and KDIGO staging"
+                icon={<Activity className="h-5 w-5" />}
+                to="/gfr-calculator"
+                tone="orange"
+                badge="KDIGO"
+              />
+              <DiseaseCard
+                title="ASCVD Risk"
+                description="10-year atherosclerotic cardiovascular disease risk estimate"
+                icon={<Heart className="h-5 w-5" />}
+                to="/ascvd-risk"
+                tone="fuchsia"
+              />
+              <DiseaseCard
+                title="Iron Calculator"
+                description="Iron deficit and replacement dosing (Ganzoni)"
+                icon={<Syringe className="h-5 w-5" />}
+                to="/anemia?tab=iron"
+                tone="amber"
+              />
+              <DiseaseCard
+                title="Steroid Taper"
+                description="Glucocorticoid withdrawal and dose-band taper schedules"
+                icon={<TrendingDown className="h-5 w-5" />}
+                to="/steroid-taper"
+                tone="emerald"
+              />
+            </DiseaseGroup>
           </TabsContent>
 
           {/* Cardiometabolic & Renal tab */}
