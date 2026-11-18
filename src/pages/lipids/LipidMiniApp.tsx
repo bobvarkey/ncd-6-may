@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,10 @@ import {
 } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
 import SubclinicalAtherosclerosisExplainer from "@/components/lipids/SubclinicalAtherosclerosisExplainer";
+import CarotidFemoralPlaqueUltrasound, {
+  CAROTID_FEMORAL_PLAQUE_ULTRASOUND_ID,
+  CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SCREENING_ID,
+} from "@/components/lipids/CarotidFemoralPlaqueUltrasound";
 
 import {
   Activity,
@@ -921,7 +926,11 @@ function ScenarioCard({
 }
 
 /* ---------- main component ---------- */
+const SUBCLINICAL_IMAGING_GROUP = "Subclinical Atherosclerosis (LAI 2023 imaging)";
+const SUBCLINICAL_SCREENING_GROUP = "Screening for Subclinical Atherosclerosis — Who to Image (age ≥30)";
+
 export default function LipidMiniApp() {
+  const location = useLocation();
   const [i, setI] = useState<Inputs>(EMPTY);
   const set = <K extends keyof Inputs>(k: K, v: Inputs[K]) =>
     setI((p) => ({ ...p, [k]: v }));
@@ -1577,6 +1586,9 @@ export default function LipidMiniApp() {
           <div className="space-y-2">
             {LAI_MODIFIER_GROUPS.map((group, groupIndex) => {
               const count = modifierCounts[group.title];
+              const openForAnchor =
+                (group.title === SUBCLINICAL_IMAGING_GROUP && location.hash === `#${CAROTID_FEMORAL_PLAQUE_ULTRASOUND_ID}`) ||
+                (group.title === SUBCLINICAL_SCREENING_GROUP && location.hash === `#${CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SCREENING_ID}`);
               const modifierTones = [
                 "border-destructive/60 bg-destructive/10 text-destructive",
                 "border-success/60 bg-success/10 text-success",
@@ -1587,7 +1599,7 @@ export default function LipidMiniApp() {
               ];
               const modifierTone = modifierTones[groupIndex % modifierTones.length];
               return (
-                <Collapsible key={group.title} defaultOpen={count > 0 || group.title === "Established ASCVD"} className="group/modifier">
+                <Collapsible key={openForAnchor ? `${group.title}-anchor` : group.title} defaultOpen={count > 0 || group.title === "Established ASCVD" || openForAnchor} className="group/modifier">
                   <CollapsibleTrigger asChild>
                     <button className={cn("flex w-full items-center justify-between rounded-lg border-l-4 border-y border-r px-4 py-2.5 transition-all hover:brightness-125 data-[state=open]:rounded-b-none data-[state=open]:shadow-sm", modifierTone)}>
                       <div className="flex items-center gap-2">
@@ -1611,6 +1623,20 @@ export default function LipidMiniApp() {
                     {group.title === "Established ASCVD" && (
                       <div className="mt-2 border-t border-border pt-2">
                         <SubclinicalAtherosclerosisExplainer />
+                      </div>
+                    )}
+                    {group.title === SUBCLINICAL_IMAGING_GROUP && (
+                      <div className="mt-2 border-t border-border pt-2">
+                        <CarotidFemoralPlaqueUltrasound id={CAROTID_FEMORAL_PLAQUE_ULTRASOUND_ID} />
+                      </div>
+                    )}
+                    {group.title === SUBCLINICAL_SCREENING_GROUP && (
+                      <div className="mt-2 border-t border-border pt-2">
+                        <CarotidFemoralPlaqueUltrasound
+                          id={CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SCREENING_ID}
+                          collapsible
+                          defaultOpen={location.hash === `#${CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SCREENING_ID}`}
+                        />
                       </div>
                     )}
                   </CollapsibleContent>
