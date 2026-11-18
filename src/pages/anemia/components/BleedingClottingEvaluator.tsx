@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { SectionCard } from "@/components/ui/section-card";
 import ImageLink from "@/components/ImageLink";
+import CoagulationPatterns from "./CoagulationPatterns";
 import {
   Table,
   TableBody,
@@ -1348,6 +1349,8 @@ export default function BleedingClottingEvaluator() {
           </div>
           <p className="text-xs text-muted-foreground">Comprehensive reference: DOAC comparison, AF/VTE dosing, INR targets, reversal agents, landmark trials, selection guide.</p>
         </button>
+
+        <CoagulationPatterns />
 
         <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-warning/100/5 px-3 py-2 text-xs text-amber-700 dark:text-warning">
           <AlertTriangle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
