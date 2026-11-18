@@ -12,6 +12,7 @@ import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMe
 import { GLOSSARY } from "@/data/glossary";
 import { POLYCYTHEMIA_SEARCH } from "@/pages/anemia/components/polycythemiaPathway";
 import { COAGULATION_PATTERNS_SEARCH } from "@/pages/anemia/components/coagulationPatterns";
+import { CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH } from "@/components/lipids/CarotidFemoralPlaqueUltrasound";
 
 // Normalize HTN meds into the same shape used by the search (drug/drugClass/normalDose).
 const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
@@ -127,6 +128,7 @@ const CLINICAL_TOPICS = [
   { id: "lipids-treatment", label: "Lipids Treatment", path: "/lipids/treatment", keywords: ["lipids treatment", "statin", "ezetimibe", "pcsk9", "lipid lowering"] },
   { id: "statins", label: "Statin Therapy", path: "/lipids", keywords: ["statins", "atorvastatin", "rosuvastatin", "simvastatin", "cholesterol"] },
   { id: "familial-hypercholesterolemia", label: "Familial Hypercholesterolemia", path: "/lipids", keywords: ["familial hypercholesterolemia", "fh", "ldl", "atherosclerosis"] },
+  { id: CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH.id, label: CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH.label, path: CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH.path, keywords: [...CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH.keywords] },
   { id: "ascvd-risk", label: "ASCVD Risk Calculator", path: "/ascvd-risk", keywords: ["ascvd", "cardiovascular risk", "heart risk", "pooled cohort"] },
   { id: "lipid-panel", label: "Lipid Panel Analysis", path: "/lipid-panel", keywords: ["lipid panel", "lipid profile", "cholesterol panel"] },
 
