@@ -3,6 +3,7 @@ import { Activity, AlertTriangle, CheckCircle2, Copy, Info, RotateCcw } from "lu
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChoiceGroup } from "@/components/ui/choice-group";
+import ZoomableImage from "@/components/ZoomableImage";
 import { copyToClipboard } from "@/lib/clinical-utils";
 import { cn } from "@/lib/utils";
 import {
@@ -12,6 +13,7 @@ import {
   type HbSelections,
   type HbSide,
 } from "@/lib/house-brackmann";
+import houseBrackmannScale from "@/assets/house-brackmann-scale.png";
 
 const GRADE_NUMBER: Record<string, number> = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6 };
 
@@ -165,6 +167,12 @@ export default function HouseBrackmannMiniApp() {
           <CardTitle className="text-base">Reference chart</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
+          <ZoomableImage
+            src={houseBrackmannScale}
+            alt="House–Brackmann scale chart showing grades I to VI with facial function, resting symmetry, eye closure, mouth movement and forehead findings"
+            className="w-full rounded-lg border border-border/40 bg-white"
+            caption="House–Brackmann scale chart (supplied reference) — tap to enlarge."
+          />
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
