@@ -950,6 +950,14 @@ export default function Home() {
                 badge="Facial"
               />
               <DiseaseCard
+                title="ABI Calculator"
+                description="Ankle–brachial index with PAD categories and a report impression"
+                icon={<Activity className="h-5 w-5" />}
+                to="/calculators?tab=abi"
+                tone="rose"
+                badge="Vascular"
+              />
+              <DiseaseCard
                 title="BMI Calculator"
                 description="Body mass index with WHO, Asian-Pacific and Indian thresholds"
                 icon={<Weight className="h-5 w-5" />}
