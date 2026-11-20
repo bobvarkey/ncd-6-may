@@ -669,12 +669,12 @@ const QuickAction = React.memo(function QuickAction({ title, description, icon, 
 
 // Homepage topic tabs. Radix Tabs keeps role=tablist and arrow-key navigation.
 const HOME_TABS = [
-  { value: "quick-actions",      label: "Quick Actions",          Icon: Calculator, tone: ENTRY_TONES.violet.tab },
-  { value: "common-calculators", label: "Common Calculators",     Icon: Calculator, tone: ENTRY_TONES.sky.tab },
-  { value: "cardiometabolic",    label: "Cardiometabolic & Renal", Icon: Heart,      tone: ENTRY_TONES.rose.tab },
-  { value: "specialty",          label: "Specialty Medicine",      Icon: Dna,        tone: ENTRY_TONES.emerald.tab },
-  { value: "infections",         label: "Infections & General",    Icon: Bug,        tone: ENTRY_TONES.amber.tab },
-  { value: "clinical-apps",      label: "Clinical Apps",           Icon: AppWindow,  tone: ENTRY_TONES.cyan.tab },
+  { value: "quick-actions",      label: "Quick Actions",           Icon: Calculator },
+  { value: "common-calculators", label: "Common Calculators",      Icon: Calculator },
+  { value: "cardiometabolic",    label: "Cardiometabolic & Renal", Icon: Heart },
+  { value: "specialty",          label: "Specialty Medicine",      Icon: Dna },
+  { value: "infections",         label: "Infections & General",    Icon: Bug },
+  { value: "clinical-apps",      label: "Clinical Apps",           Icon: AppWindow },
 ] as const;
 
 const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Droplets; tone: EntryTone }[] = [
@@ -852,17 +852,18 @@ export default function Home() {
 
         {/* ── Tabbed topic navigation ── */}
         <Tabs defaultValue="quick-actions">
-          <TabsList className="w-full max-w-full min-w-0 h-auto flex flex-wrap justify-start gap-1.5 p-1.5 bg-muted/40">
-            {HOME_TABS.map(({ value, label, Icon, tone }) => (
+          <TabsList
+            aria-label="Home page topics"
+            className="grid w-full grid-cols-2 gap-2 p-2 sm:grid-cols-3 xl:grid-cols-6"
+          >
+            {HOME_TABS.map(({ value, label, Icon }) => (
               <TabsTrigger
                 key={value}
                 value={value}
-                className={cn(
-                  "flex-1 min-w-0 h-auto py-2 whitespace-normal text-xs md:text-sm leading-tight rounded-xl border shadow-sm",
-                  tone,
-                )}
+                className="h-auto min-h-[3.5rem] w-full justify-start gap-2 whitespace-normal rounded-xl border px-3 py-2 text-left text-xs leading-snug md:text-sm"
               >
-                <Icon className="h-4 w-4 mr-1.5 shrink-0" /> {label}
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="min-w-0">{label}</span>
               </TabsTrigger>
             ))}
           </TabsList>

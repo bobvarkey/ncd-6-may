@@ -53,13 +53,20 @@ export default function CommonCalculators() {
       </div>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="flex-wrap h-auto gap-1 p-1">
+        <TabsList
+          aria-label="Common calculators"
+          className="grid w-full grid-cols-2 gap-2 p-1.5 sm:grid-cols-3 lg:grid-cols-6"
+        >
           {CALCULATORS.map((calculator) => {
             const Icon = TAB_ICONS[calculator.value];
             return (
-              <TabsTrigger key={calculator.value} value={calculator.value} className="text-sm">
-                {Icon ? <Icon className="mr-1.5 h-4 w-4" /> : null}
-                {calculator.label}
+              <TabsTrigger
+                key={calculator.value}
+                value={calculator.value}
+                className="h-auto min-h-[2.75rem] w-full justify-start gap-1.5 whitespace-normal rounded-xl border px-2.5 py-2 text-left text-xs sm:text-sm"
+              >
+                {Icon ? <Icon className="h-4 w-4 shrink-0" /> : null}
+                <span className="min-w-0">{calculator.label}</span>
               </TabsTrigger>
             );
           })}
