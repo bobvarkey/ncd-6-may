@@ -1,15 +1,17 @@
 import { useSearchParams } from "react-router-dom";
-import { Activity, Calculator, ClipboardList, HeartPulse, type LucideIcon } from "lucide-react";
+import { Activity, Calculator, ClipboardList, Droplet, HeartPulse, type LucideIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CtsGradingMiniApp from "@/calculators/neuro/CtsGradingMiniApp";
 import HouseBrackmannMiniApp from "@/calculators/neuro/HouseBrackmannMiniApp";
 import AbiCalculator from "@/calculators/vascular/AbiCalculator";
+import CeapCalculator from "@/calculators/vascular/CeapCalculator";
 import { CtsGradingCalculator, CtsGradingReference } from "@/calculators/neuro/CtsGradingCalculator";
 
 const CALCULATORS = [
   { value: "cts-grading", label: "CTS Grading" },
   { value: "house-brackmann", label: "House–Brackmann" },
   { value: "abi", label: "ABI Calculator" },
+  { value: "ceap", label: "CEAP (Venous)" },
   { value: "cts-quick", label: "CTS Quick Grade" },
   { value: "cts-reference", label: "CTS Reference" },
 ] as const;
@@ -20,6 +22,7 @@ const TAB_ICONS: Partial<Record<CalculatorTab, LucideIcon>> = {
   "cts-grading": ClipboardList,
   "house-brackmann": Activity,
   abi: HeartPulse,
+  ceap: Droplet,
 };
 
 const DEFAULT_TAB: CalculatorTab = "cts-grading";
@@ -72,6 +75,10 @@ export default function CommonCalculators() {
 
         <TabsContent value="abi" className="mt-4 space-y-4">
           <AbiCalculator />
+        </TabsContent>
+
+        <TabsContent value="ceap" className="mt-4 space-y-4">
+          <CeapCalculator />
         </TabsContent>
 
         <TabsContent value="cts-quick" className="mt-4 space-y-4">

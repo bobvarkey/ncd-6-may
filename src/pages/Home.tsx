@@ -910,6 +910,14 @@ export default function Home() {
                 badge="Vascular"
               />
               <DiseaseCard
+                title="CEAP Classification"
+                description="Chronic venous disease grading with photo-based clinical classes and a report"
+                icon={<Activity className="h-5 w-5" />}
+                to="/calculators?tab=ceap"
+                tone="violet"
+                badge="Venous"
+              />
+              <DiseaseCard
                 title="BMI Calculator"
                 description="Body mass index with WHO, Asian-Pacific and Indian thresholds"
                 icon={<Weight className="h-5 w-5" />}
