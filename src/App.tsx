@@ -15,6 +15,7 @@ import { RequireAccess } from "@/components/RequireAccess";
 import { OfflineProvider } from "@/lib/offline/OfflineContext";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import PWAInstallButton from "@/components/PWAInstallButton";
+import { TabNavigation } from "@/components/TabNavigation";
 import AiAssistant from "@/components/AiAssistant";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -280,6 +281,7 @@ const PageShell = ({ title, children, exportResults = false }: { title: string; 
 
 const withNav = (element: ReactNode, title: string) => (
   <RequireAccess>
+    <TabNavigation />
     <PageShell title={title} exportResults>{element}</PageShell>
   </RequireAccess>
 );
@@ -353,7 +355,7 @@ const App = () => {
           <Route path="/db/*" element={<NotFound />} />
 
           {/* Main App — unified interface */}
-          <Route path="/home" element={<RequireAccess><Home /></RequireAccess>} />
+          <Route path="/home" element={<RequireAccess><TabNavigation /><Home /></RequireAccess>} />
           <Route path="/glossary" element={withNav(<GlossaryPage />, "Glossary")} />
           <Route path="/settings" element={withNav(<Settings />, "Settings")} />
           <Route path="/login" element={<PageShell title="Account"><Login /></PageShell>} />
@@ -484,6 +486,7 @@ const App = () => {
             path="/clinical-apps"
             element={
               <RequireAccess>
+                <TabNavigation />
                 <PageShell title="Clinical Apps">
                   <ClinicalApps />
                 </PageShell>

@@ -28,7 +28,6 @@ import Seo from "@/components/Seo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import OfflineStatusBadge from "@/components/OfflineStatusBadge";
 import { AllNavigation } from "@/components/AllNavigation";
-import HomeSunburst from "@/components/HomeSunburst";
 import { ClinicalAppsGrid } from "@/components/ClinicalAppsGrid";
 import { ENTRY_TONES, type EntryTone } from "@/lib/entry-tones";
 import { cn } from "@/lib/utils";
@@ -668,8 +667,7 @@ const QuickAction = React.memo(function QuickAction({ title, description, icon, 
   );
 });
 
-// Sunburst tab bar: tabs fan out along an arc radiating from a central "sun".
-// Radix Tabs underneath keeps role=tablist and arrow-key navigation intact.
+// Homepage topic tabs. Radix Tabs keeps role=tablist and arrow-key navigation.
 const HOME_TABS = [
   { value: "quick-actions",      label: "Quick Actions",          Icon: Calculator, tone: ENTRY_TONES.violet.tab },
   { value: "common-calculators", label: "Common Calculators",     Icon: Calculator, tone: ENTRY_TONES.sky.tab },
@@ -678,18 +676,6 @@ const HOME_TABS = [
   { value: "infections",         label: "Infections & General",    Icon: Bug,        tone: ENTRY_TONES.amber.tab },
   { value: "clinical-apps",      label: "Clinical Apps",           Icon: AppWindow,  tone: ENTRY_TONES.cyan.tab },
 ] as const;
-
-// Angle of each tab from vertical (degrees); symmetric fan, inner tabs higher.
-const SUNBURST_ANGLES = [-60, -36, -12, 12, 36, 60];
-const SUNBURST_RAYS = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75];
-
-function sunburstPosition(angleDeg: number): { left: string; top: string } {
-  const rad = (angleDeg * Math.PI) / 180;
-  return {
-    left: `${50 + 36 * Math.sin(rad)}%`,
-    top: `${100 - 92 * Math.cos(rad)}%`,
-  };
-}
 
 const QUICK_ACCESS: { to: string; label: string; desc: string; Icon: typeof Droplets; tone: EntryTone }[] = [
   { to: "/diabetes",     label: "Diabetes",     desc: "ADA 2026 algorithms & meds",  Icon: Droplets, tone: "teal" },
@@ -858,9 +844,6 @@ export default function Home() {
         {/* Quick Access — one-click jumps to core sections */}
         <QuickAccessPanel />
 
-        {/* Sunburst map of every section → page → sub-page */}
-        <HomeSunburst />
-
         {/* Image Upload + Analyzer — prominent at top */}
         <ImageUploadAnalyzer />
 
@@ -869,48 +852,17 @@ export default function Home() {
 
         {/* ── Tabbed topic navigation ── */}
         <Tabs defaultValue="quick-actions">
-          <TabsList
-            aria-label="Home page topics"
-            className="sunburst-tablist relative block w-full max-w-full min-w-0 p-0 bg-transparent overflow-visible"
-          >
-            {/* Decorative sunburst rays + sun, radiating from bottom-center */}
-            <svg
-              aria-hidden
-              className="absolute inset-0 h-full w-full pointer-events-none text-primary"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-            >
-              {SUNBURST_RAYS.map((a) => {
-                const rad = (a * Math.PI) / 180;
-                return (
-                  <line
-                    key={a}
-                    x1="50"
-                    y1="100"
-                    x2={50 + 62 * Math.sin(rad)}
-                    y2={100 - 62 * Math.cos(rad)}
-                    stroke="currentColor"
-                    strokeWidth="0.35"
-                    className="opacity-20"
-                  />
-                );
-              })}
-              <circle cx="50" cy="100" r="9" className="fill-primary/20" />
-              <circle cx="50" cy="100" r="4.5" className="fill-primary/40" />
-            </svg>
-            {HOME_TABS.map(({ value, label, Icon, tone }, i) => (
+          <TabsList className="w-full max-w-full min-w-0 h-auto flex flex-wrap justify-start gap-1.5 p-1.5 bg-muted/40">
+            {HOME_TABS.map(({ value, label, Icon, tone }) => (
               <TabsTrigger
                 key={value}
                 value={value}
-                style={sunburstPosition(SUNBURST_ANGLES[i])}
                 className={cn(
-                  "absolute -translate-x-1/2 -translate-y-1/2 h-auto max-w-[9.5rem] md:max-w-[11rem] py-2 px-3",
-                  "whitespace-normal text-center text-xs md:text-sm leading-tight rounded-xl border shadow-sm",
-                  "transition-transform data-[state=active]:scale-110 data-[state=active]:shadow-md data-[state=active]:z-10",
+                  "flex-1 min-w-0 h-auto py-2 whitespace-normal text-xs md:text-sm leading-tight rounded-xl border shadow-sm",
                   tone,
                 )}
               >
-                <Icon className="h-4 w-4 mr-1.5 shrink-0 inline-block align-[-0.2em]" /> {label}
+                <Icon className="h-4 w-4 mr-1.5 shrink-0" /> {label}
               </TabsTrigger>
             ))}
           </TabsList>
