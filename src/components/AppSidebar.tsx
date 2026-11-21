@@ -24,7 +24,7 @@ const SECTIONS: Section[] = [
     label: "Overview",
     color: "text-[#ff6b35]",
     items: [
-      { title: "Dashboard", url: "/", icon: LayoutDashboard },
+      { title: "Dashboard", url: "/db/dashboard", icon: LayoutDashboard },
       { title: "Patient", url: "/patient", icon: User },
       { title: "Summary", url: "/summary", icon: FileText },
       { title: "Progress", url: "/progress", icon: TrendingDown },
@@ -53,7 +53,7 @@ const SECTIONS: Section[] = [
       { title: "Insulin Titration", url: "/insulin-titration", icon: Syringe, keywords: "basal bolus" },
       { title: "Sliding Scale Insulin", url: "/sliding-scale", icon: TableProperties },
       { title: "Iron Calculator", url: "/anemia?tab=iron", icon: Syringe, keywords: "ferritin tsat ganzoni iron deficit" },
-      { title: "GLP-1 Administration", url: "/glp1-administration", icon: Droplet, keywords: "semaglutide tirzepatide" },
+      { title: "GLP-1 Administration", url: "/obesity/glp1-dosing", icon: Droplet, keywords: "semaglutide tirzepatide" },
       { title: "Drug Schedule", url: "/drug-schedule", icon: CalendarDays, keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
       { title: "Drug Calculator", url: "/drug-calculator", icon: Calculator, keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
 
