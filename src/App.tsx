@@ -329,6 +329,18 @@ const App = () => {
           <Route path="/hard" element={<Navigate to="/home" replace />} />
           <Route path="/landing" element={<Navigate to="/home" replace />} />
           <Route path="/app" element={<Navigate to="/home" replace />} />
+          {/* Paths that were linked but never registered. Each target is the one page that already serves that tool. */}
+          <Route path="/glp1-administration" element={<Navigate to="/obesity/glp1-dosing" replace />} />
+          <Route path="/dashboard" element={<Navigate to="/db/dashboard" replace />} />
+          <Route path="/infections/constipation" element={<Navigate to="/acute-diarrhoea" replace />} />
+          <Route path="/diabetes/hypo-risk" element={<Navigate to="/hypo-risk" replace />} />
+          <Route path="/diabetes/insulin-titration" element={<Navigate to="/insulin-titration" replace />} />
+          <Route path="/diabetes/sliding-scale" element={<Navigate to="/sliding-scale" replace />} />
+          <Route path="/diabetes/renal-dosing" element={<Navigate to="/renal-dosing" replace />} />
+          <Route path="/hypertension/gfr" element={<Navigate to="/gfr-calculator" replace />} />
+          <Route path="/hypertension/drug-interactions" element={<Navigate to="/drug-interactions" replace />} />
+          <Route path="/lipids/ascvd-risk" element={<Navigate to="/ascvd-risk" replace />} />
+          <Route path="/respiratory/copd" element={<Navigate to="/respiratory" replace />} />
 
           {/* Legacy Diabetes Buddy routes — now served without sidebar */}
           <Route path="/db/dashboard" element={withNav(<Dashboard />, "Dashboard")} />

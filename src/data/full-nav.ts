@@ -24,7 +24,7 @@ export const FULL_NAV_SECTIONS: PrimaryNavSection[] = [
     tone: "orange",
     icon: LayoutDashboard,
     items: [
-      { path: "/", label: "Dashboard", icon: LayoutDashboard, tone: "orange" },
+      { path: "/db/dashboard", label: "Dashboard", icon: LayoutDashboard, tone: "orange" },
       { path: "/patient", label: "Patient", icon: User, tone: "sky" },
       { path: "/summary", label: "Summary", icon: FileText, tone: "violet" },
       { path: "/progress", label: "Progress", icon: TrendingDown, tone: "teal" },
@@ -53,7 +53,7 @@ export const FULL_NAV_SECTIONS: PrimaryNavSection[] = [
       { path: "/sliding-scale", label: "Sliding Scale Insulin", icon: TableProperties, tone: "orange" },
       { path: "/anemia?tab=iron", label: "Iron Calculator", icon: Syringe, tone: "amber", keywords: "ferritin tsat ganzoni iron deficit" },
       { path: "/steroid-taper", label: "Steroid Taper", icon: TrendingDown, tone: "orange", keywords: "glucocorticoid prednisolone adrenal insufficiency hpa cortisol" },
-      { path: "/glp1-administration", label: "GLP-1 Administration", icon: Droplet, tone: "indigo", keywords: "semaglutide tirzepatide" },
+      { path: "/obesity/glp1-dosing", label: "GLP-1 Administration", icon: Droplet, tone: "indigo", keywords: "semaglutide tirzepatide" },
       { path: "/drug-schedule", label: "Drug Schedule", icon: CalendarDays, tone: "violet", keywords: "schedule dates injection sites side effects semaglutide tirzepatide" },
       { path: "/drug-calculator", label: "Drug Calculator", icon: Calculator, tone: "sky", keywords: "glp1 dose weight bmi titration injection sites semaglutide tirzepatide" },
       { path: "/glp1-screening", label: "GLP-1 Screening", icon: Eye, tone: "cyan", keywords: "prescreen pre-screen eligibility contraindication naion optic nerve glaucoma retinopathy semaglutide tirzepatide" },

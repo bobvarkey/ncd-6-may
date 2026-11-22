@@ -1,19 +1,40 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState, type ComponentType } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Home, Droplets, Heart, Droplet, Dna, Microscope, Weight, AirVent, Moon, Bug, UtensilsCrossed, Shield, Syringe, Zap, Bandage, Timer, Thermometer, Flame, Bone, Gem, Sun, Stethoscope, Filter, Search, User, Image, Pill, Activity, Eye, Calculator, BookOpen, AppWindow } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home, Droplet, Syringe, Zap, Bandage, Timer, Thermometer, Flame, Bone, Gem, Search, Pill, Calculator, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  BLOOD_SIDE_TABS,
+  ELECTROLYTE_SIDE_TABS,
+  EXTRA_SIDE_SECTIONS,
+  GLOSSARY_SIDE_TAB,
+  HTN_SIDE_TABS,
+  IMAGE_SIDE_TAB,
+  LIVER_SIDE_TABS,
+  MAIN_SIDE_TABS,
+  MISC_SIDE_TABS,
+  OBESITY_SIDE_TABS,
+  WOMEN_HEALTH_SIDE_TABS,
+  type SideTab,
+} from "@/data/side-nav";
 
-const bloodSubItems: { tab: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { tab: "anemia", label: "Anemia Evaluator", icon: Droplet },
-  { tab: "thrombocytopenia", label: "Thrombocytopenia", icon: Bandage },
-  { tab: "bleeding-clotting", label: "Bleeding / Clotting", icon: Bandage },
-  { tab: "iron", label: "Iron Parameters", icon: Syringe },
-  { tab: "ganzoni", label: "Ganzoni Deficit", icon: Calculator },
-  { tab: "esr", label: "ESR", icon: Timer },
-  { tab: "erythrocytosis", label: "Erythrocytosis / PV", icon: Droplet },
+type Icon = ComponentType<{ className?: string }>;
 
-  { tab: "anticoagulants", label: "Anticoagulants", icon: Pill },
-];
+const BLOOD_ICONS: Record<string, Icon> = {
+  anemia: Droplet,
+  thrombocytopenia: Bandage,
+  "bleeding-clotting": Bandage,
+  iron: Syringe,
+  ganzoni: Calculator,
+  esr: Timer,
+  erythrocytosis: Droplet,
+  anticoagulants: Pill,
+};
+
+const bloodSubItems: { tab: string; label: string; icon: Icon }[] = BLOOD_SIDE_TABS.map((item) => ({
+  tab: item.tab,
+  label: item.label,
+  icon: BLOOD_ICONS[item.tab] ?? Droplet,
+}));
 
 function BloodSubNav() {
   const [searchParams] = useSearchParams();
@@ -44,9 +65,10 @@ function BloodSubNav() {
   );
 }
 
-const htnSubItems: { path: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { path: "/hypertension/secondary-htn", label: "Secondary HTN", icon: Search },
-];
+const htnSubItems: { path: string; label: string; icon: Icon }[] = HTN_SIDE_TABS.map((item) => ({
+  ...item,
+  icon: Search,
+}));
 
 function HtnSubNav() {
   const location = useLocation();
@@ -76,9 +98,10 @@ function HtnSubNav() {
   );
 }
 
-const liverSubItems: { path: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { path: "/liver/auto-calc", label: "Liver Auto-Calc", icon: Calculator },
-];
+const liverSubItems: { path: string; label: string; icon: Icon }[] = LIVER_SIDE_TABS.map((item) => ({
+  ...item,
+  icon: Calculator,
+}));
 
 function LiverSubNav() {
   const location = useLocation();
@@ -108,10 +131,15 @@ function LiverSubNav() {
   );
 }
 
-const obesitySubItems: { path: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { path: "/obesity/bmi-calculator", label: "BMI Calculator", icon: Calculator },
-  { path: "/obesity/glp1-dosing", label: "GLP-1 Doses & Schedules", icon: Syringe },
-];
+const OBESITY_ICONS: Record<string, Icon> = {
+  "/obesity/bmi-calculator": Calculator,
+  "/obesity/glp1-dosing": Syringe,
+};
+
+const obesitySubItems: { path: string; label: string; icon: Icon }[] = OBESITY_SIDE_TABS.map((item) => ({
+  ...item,
+  icon: OBESITY_ICONS[item.path] ?? Calculator,
+}));
 
 function ObesitySubNav() {
   const location = useLocation();
@@ -143,27 +171,23 @@ function ObesitySubNav() {
 
 
 
-type NavItem = {
-  path: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  /** Tailwind classes for active state (must be static so JIT picks them up) */
-  active: string;
-  emoji?: string;
+const ELECTROLYTE_ICONS: Record<string, Icon> = {
+  "/hyponatremia": Droplet,
+  "/hypernatremia": Thermometer,
+  "/hyperkalemia": Zap,
+  "/hypokalemia": Zap,
+  "/hypocalcemia": Bone,
+  "/hypercalcemia": Flame,
+  "/hypomagnesemia": Bone,
+  "/hypermagnesemia": Gem,
+  "/hypophosphatemia": Bone,
+  "/hyperphosphatemia": Gem,
 };
 
-const electrolyteSubItems: { path: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { path: "/hyponatremia", label: "Hyponatremia", icon: Droplet },
-  { path: "/hypernatremia", label: "Hypernatremia", icon: Thermometer },
-  { path: "/hyperkalemia", label: "Hyperkalemia", icon: Zap },
-  { path: "/hypokalemia", label: "Hypokalemia", icon: Zap },
-  { path: "/hypocalcemia", label: "Hypocalcemia", icon: Bone },
-  { path: "/hypercalcemia", label: "Hypercalcemia", icon: Flame },
-  { path: "/hypomagnesemia", label: "Hypomagnesemia", icon: Bone },
-  { path: "/hypermagnesemia", label: "Hypermagnesemia", icon: Gem },
-  { path: "/hypophosphatemia", label: "Hypophosphatemia", icon: Bone },
-  { path: "/hyperphosphatemia", label: "Hyperphosphatemia", icon: Gem },
-];
+const electrolyteSubItems: { path: string; label: string; icon: Icon }[] = ELECTROLYTE_SIDE_TABS.map((item) => ({
+  ...item,
+  icon: ELECTROLYTE_ICONS[item.path] ?? Droplet,
+}));
 
 function ElectrolyteSubNav() {
   const location = useLocation();
@@ -193,36 +217,13 @@ function ElectrolyteSubNav() {
   );
 }
 
-const navItems: NavItem[] = [
-  { path: "/home",                    label: "Home",      icon: Home, active: "bg-primary/10 text-primary border-primary/30", emoji: "🏠" },
-  { path: "/diabetes",                label: "Diabetes",  icon: Droplets, active: "bg-red-500/10 text-red-400 border-red-500/30", emoji: "🩸" },
-  { path: "/hypertension",            label: "Hypertension", icon: Heart, active: "bg-orange-500/10 text-orange-400 border-orange-500/30", emoji: "❤️" },
-  { path: "/lipids",                  label: "Lipids",    icon: Droplet, active: "bg-blue-500/10 text-blue-400 border-blue-500/30", emoji: "💧" },
-  { path: "/liver",                   label: "Liver",     icon: Dna, active: "bg-lime-500/10 text-lime-400 border-lime-500/30", emoji: "🫀" },
-  { path: "/thyroid",                 label: "Thyroid",   icon: Microscope, active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", emoji: "🦋" },
-  { path: "/obesity/bmi-calculator",  label: "Body weight issues",   icon: Weight, active: "bg-violet-500/10 text-violet-400 border-violet-500/30", emoji: "⚖️" },
-  { path: "/obesity/glp1-dosing",     label: "GLP-1 Doses & Schedules", icon: Syringe, active: "bg-violet-500/10 text-violet-400 border-violet-500/30", emoji: "💉" },
-  { path: "/glp1-screening",          label: "GLP-1 Screening", icon: Eye, active: "bg-pink-500/10 text-pink-400 border-pink-500/30", emoji: "👁️" },
-  { path: "/respiratory",             label: "Asthma and COPD", icon: AirVent, active: "sunset-active border-cyan-500/30", emoji: "🫁" },
-  { path: "/aki-criteria",            label: "AKI / AKD Criteria", icon: Activity, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🧪" },
-  { path: "/renal-dosing",            label: "Renal",     icon: Filter, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🫘" },
-  { path: "/anemia",                  label: "Blood",     icon: Droplet, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "🩸" },
-  { path: "/fatigue",                label: "Fatigue",   icon: Moon, active: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30", emoji: "😴" },
-  { path: "/infections",             label: "Infections", icon: Bug, active: "bg-rose-500/10 text-rose-400 border-rose-500/30", emoji: "🦠" },
-  { path: "/acute-diarrhoea",        label: "Diarrhoea and constipation", icon: UtensilsCrossed, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "💩" },
-  { path: "/food-poisoning",        label: "Food Poisoning", icon: UtensilsCrossed, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "🤢" },
-  { path: "/pep",                   label: "Post exposure prophylaxis (PEP)",icon: Shield, active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", emoji: "💉" },
-  { path: "/adult-vaccinations",    label: "Vaccinations",  icon: Syringe, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "💉" },
-  { path: "/vitamin-d",            label: "Vitamin D",  icon: Sun, active: "bg-amber-500/10 text-amber-400 border-amber-500/30", emoji: "☀️" },
-  { path: "/geriatrics",           label: "Geriatrics", icon: User, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "👴" },
-  { path: "/frailty-calculator",   label: "Frailty Calculator", icon: User, active: "bg-sky-500/10 text-sky-400 border-sky-500/30", emoji: "🧍" },
-  { path: "/vaccine-calculator",   label: "Vaccine Calculator", icon: Syringe, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "🧮" },
-  { path: "/electrolytes",          label: "Electrolytes", icon: Zap, active: "sunset-active border-cyan-500/30", emoji: "⚡" },
-  { path: "/perioperative-calculators", label: "Perioperative Tools", icon: Stethoscope, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "🏥" },
-];
-
-const imageItem: NavItem = { path: "/images", label: "Images", icon: Image, active: "bg-purple-500/10 text-purple-400 border-purple-500/30", emoji: "🖼️" };
-const glossaryItem: NavItem = { path: "/glossary", label: "Clinical Glossary", icon: BookOpen, active: "bg-teal-500/10 text-teal-400 border-teal-500/30", emoji: "📖" };
+const navItems: SideTab[] = MAIN_SIDE_TABS;
+const imageItem: SideTab = IMAGE_SIDE_TAB;
+const glossaryItem = {
+  ...GLOSSARY_SIDE_TAB,
+  icon: BookOpen,
+  active: "bg-teal-500/10 text-teal-400 border-teal-500/30",
+};
 
 // Section separator helper
 function SectionLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
@@ -236,15 +237,22 @@ function SectionLabel({ label, collapsed }: { label: string; collapsed: boolean 
   );
 }
 
-const miscItems: NavItem[] = [
-  { path: "/calculators", label: "Common Calculators", icon: Calculator, active: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30", emoji: "🧮" },
-  { path: "/clinical-apps", label: "Clinical Apps", icon: AppWindow, active: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30", emoji: "🧩" },
-];
+const miscItems: SideTab[] = MISC_SIDE_TABS;
+const womenHealthItems: SideTab[] = WOMEN_HEALTH_SIDE_TABS;
 
-const womenHealthItems: NavItem[] = [
-  { path: "/women-health?tab=pmos",  label: "PMOS / PCOS", icon: Stethoscope, active: "bg-rose-500/10 text-rose-400 border-rose-500/30", emoji: "🌸" },
-  { path: "/women-health?tab=hrt",  label: "HRT Algorithm", icon: Heart, active: "bg-pink-500/10 text-pink-400 border-pink-500/30", emoji: "💊" },
-];
+function isSideTabActive(href: string, pathname: string, search: string, hash: string): boolean {
+  const [pathAndQuery, hrefHash = ""] = href.split("#");
+  const [path, query = ""] = pathAndQuery.split("?");
+  if (path !== pathname) return false;
+  if (hrefHash && hrefHash !== hash.replace(/^#/, "")) return false;
+  if (!query) return true;
+  const expected = new URLSearchParams(query);
+  const actual = new URLSearchParams(search);
+  for (const [key, value] of expected) {
+    if (actual.get(key) !== value) return false;
+  }
+  return true;
+}
 
 export function TabNavigation() {
   const location = useLocation();
@@ -344,7 +352,7 @@ export function TabNavigation() {
             {/* Women's Health section */}
             <SectionLabel label="Women's Health" collapsed={collapsed} />
             {womenHealthItems.map((item) => {
-              const isActive = currentPath.startsWith("/women-health") && currentPath === item.path;
+              const isActive = isSideTabActive(item.path, location.pathname, location.search, location.hash);
               return (
                 <li key={item.path}>
                   <Link
@@ -425,6 +433,34 @@ export function TabNavigation() {
                 </li>
               );
             })}
+            {EXTRA_SIDE_SECTIONS.map((section) => (
+              <Fragment key={section.id}>
+                <SectionLabel label={section.label} collapsed={collapsed} />
+                {section.items.map((item) => {
+                  const isActive = isSideTabActive(item.path, location.pathname, location.search, location.hash);
+                  return (
+                    <li key={item.path}>
+                      <Link
+                        to={item.path}
+                        title={item.label}
+                        onClick={handleNavClick}
+                        className={cn(
+                          "flex items-center gap-2 px-2 py-2 rounded-xl text-sm font-medium transition-all border border-white/[0.06]",
+                          collapsed && "justify-center",
+                          isActive
+                            ? "sunset-active"
+                            : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+                        )}
+                        aria-current={isActive ? "page" : undefined}
+                      >
+                        {item.emoji && <span className="text-base">{item.emoji}</span>}
+                        {!collapsed && <span className="truncate">{item.label}</span>}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </Fragment>
+            ))}
           </ul>
         </nav>
 

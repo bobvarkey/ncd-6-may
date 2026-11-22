@@ -282,8 +282,8 @@ export function LabAutoCalculator() {
     });
   }, [config, parsedValues]);
 
-  if (!config) return null;
-
+  // These memos stay above the empty-state return. Moving between a page with
+  // no lab panel and one that has one must not change the hook count.
   const numeric = useMemo(() => {
     const out: Record<string, number> = {};
     for (const [k, v] of Object.entries(values)) {
@@ -293,11 +293,8 @@ export function LabAutoCalculator() {
     return out;
   }, [values]);
 
-  const setField = (key: string, v: string) => setValues((prev) => ({ ...prev, [key]: v }));
-
-  const reset = () => setValues({});
-
   const abnormalCount = useMemo(() => {
+    if (!config) return 0;
     let count = 0;
     for (const f of config.fields) {
       const n = numeric[f.key];
@@ -307,6 +304,12 @@ export function LabAutoCalculator() {
     }
     return count;
   }, [config, numeric]);
+
+  if (!config) return null;
+
+  const setField = (key: string, v: string) => setValues((prev) => ({ ...prev, [key]: v }));
+
+  const reset = () => setValues({});
 
   return (
     <Card className="mb-4 border-primary/20 bg-card/95 shadow-sm">
