@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { Scale, Calculator, Info, ChevronDown, ChevronUp, Pill, Target, Activity, AlertCircle, BookOpen, RotateCcw, Home, InfoIcon, Heart, AlertTriangle, BrainCircuit, UtensilsCrossed, FlaskConical, Stethoscope, Syringe, ClipboardList, ExternalLink, Image as ImageIcon } from "lucide-react";
+import { Scale, Calculator, Info, ChevronDown, ChevronUp, Pill, Target, Activity, AlertCircle, BookOpen, RotateCcw, Home, InfoIcon, Heart, AlertTriangle, BrainCircuit, UtensilsCrossed, FlaskConical, Stethoscope, Syringe, ClipboardList, ExternalLink, Image as ImageIcon, Scan } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -47,6 +47,7 @@ import {
   type ObesityCDSAssessment,
 } from "./obesity-cds-engine";
 import IcmrIndiab from "./IcmrIndiab";
+import UsgVisceralFat, { USG_VISCERAL_FAT_BMI_ID, USG_VISCERAL_FAT_ID, USG_VISCERAL_FAT_TITLE } from "./UsgVisceralFat";
 import { ExportableTabPanel, usePageReset } from "@/components/ResultExport";
 
 const bmiSchema = z.object({
@@ -89,6 +90,7 @@ const TABS = [
   { key: "indian-classification", label: "Indian Classification", icon: <Info className="h-4 w-4" /> },
   { key: "cds-engine", label: "CDS Engine", icon: <BrainCircuit className="h-4 w-4" /> },
   { key: "guidelines", label: "ADA 2025 Guidelines", icon: <BookOpen className="h-4 w-4" /> },
+  { key: USG_VISCERAL_FAT_ID, label: USG_VISCERAL_FAT_TITLE, icon: <Scan className="h-4 w-4" /> },
 ];
 
 export default function BmiCalculator() {
@@ -164,6 +166,19 @@ export default function BmiCalculator() {
     } catch {
       // localStorage not available or invalid JSON
     }
+  }, []);
+
+  useEffect(() => {
+    const openFromHash = () => {
+      if (window.location.hash !== `#${USG_VISCERAL_FAT_ID}`) return;
+      setActiveTab(USG_VISCERAL_FAT_ID);
+      window.setTimeout(() => {
+        document.getElementById(USG_VISCERAL_FAT_ID)?.scrollIntoView({ block: "start" });
+      }, 50);
+    };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
   }, []);
 
   const selectedEthnicity = watch("ethnicity") || "standard";
@@ -784,6 +799,8 @@ export default function BmiCalculator() {
                     )}
 
                     </div>
+
+                    <UsgVisceralFat id={USG_VISCERAL_FAT_BMI_ID} embedded />
 
                     {/* BMI Cut-offs Comparison */}
                     <div className="rounded-lg border border-border bg-card/50 p-4">
@@ -1931,6 +1948,12 @@ export default function BmiCalculator() {
               </p>
             </CardContent>
           </Card>
+          </ExportableTabPanel>
+        )}
+
+        {activeTab === USG_VISCERAL_FAT_ID && (
+          <ExportableTabPanel title={USG_VISCERAL_FAT_TITLE}>
+            <UsgVisceralFat />
           </ExportableTabPanel>
         )}
       </main>

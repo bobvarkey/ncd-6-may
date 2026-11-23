@@ -13,6 +13,7 @@ import { GLOSSARY } from "@/data/glossary";
 import { POLYCYTHEMIA_SEARCH } from "@/pages/anemia/components/polycythemiaPathway";
 import { COAGULATION_PATTERNS_SEARCH } from "@/pages/anemia/components/coagulationPatterns";
 import { CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH } from "@/components/lipids/CarotidFemoralPlaqueUltrasound";
+import { USG_VISCERAL_FAT_SEARCH } from "@/calculators/obesity/UsgVisceralFat";
 
 // Normalize HTN meds into the same shape used by the search (drug/drugClass/normalDose).
 const HTN_MEDS_NORMALIZED = HTN_MEDS.map((m) => ({
@@ -160,6 +161,7 @@ const CLINICAL_TOPICS = [
   { id: "bmi-calculator", label: "BMI Calculator", path: "/obesity/bmi-calculator", keywords: ["bmi", "body mass index", "weight"] },
   { id: "waist-height-ratio", label: "Waist-to-Height Ratio", path: "/obesity/waist-height-ratio", keywords: ["waist", "waist height", "waist ratio", "central obesity"] },
   { id: "visceral-fat-ultrasound", label: "Visceral Fat Ultrasound", path: "/obesity/visceral-fat-ultrasound", keywords: ["visceral fat", "vat", "subcutaneous fat", "ultrasound", "intra-abdominal fat"] },
+  { id: USG_VISCERAL_FAT_SEARCH.id, label: USG_VISCERAL_FAT_SEARCH.label, path: USG_VISCERAL_FAT_SEARCH.path, keywords: [...USG_VISCERAL_FAT_SEARCH.keywords] },
   { id: "glp1-agonists", label: "GLP-1 Agonists (Obesity)", path: "/obesity/glp1-algorithm", keywords: ["glp1", "semaglutide", "tirzepatide", "wegovy", "ozempic", "weight loss"] },
   { id: "glp1-assessment", label: "GLP-1 Assessment Calculator", path: "/obesity/glp1-assessment", keywords: ["glp1", "assessment", "eligibility", "titration", "semaglutide", "tirzepatide", "liraglutide", "india"] },
   { id: "glp1-screener", label: "GLP-1 RA 3-Step Easy Screener", path: "/obesity/glp1-screener", keywords: ["glp1", "screener", "triage", "pre-initiation", "eligibility", "safety", "start plan"] },
