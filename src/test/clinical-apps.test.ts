@@ -19,7 +19,7 @@ const EXPECTED_URLS = [
   "https://parkinson-diff-aide.lovable.app/",
   "https://radiology-interpretation.lovable.app/",
   "https://rheum-buddy.lovable.app/",
-  "https://sleepwell-analyzer.lovable.app/",
+  "https://sleep-check.lovable.app",
   "https://stroke-diagnostic-compass.lovable.app/",
   "https://tinnitus-final.lovable.app/",
 ];
