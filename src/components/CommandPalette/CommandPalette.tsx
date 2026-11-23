@@ -6,6 +6,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { POLYCYTHEMIA_SEARCH } from "@/pages/anemia/components/polycythemiaPathway";
 import { COAGULATION_PATTERNS_SEARCH } from "@/pages/anemia/components/coagulationPatterns";
 import { CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH } from "@/components/lipids/CarotidFemoralPlaqueUltrasound";
+import { USG_VISCERAL_FAT_SEARCH } from "@/calculators/obesity/UsgVisceralFat";
 
 interface SearchItem {
   id: string;
@@ -40,6 +41,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: "obesity-bmi", label: "BMI Calculator", category: "calculator", path: "/obesity/bmi-calculator", keywords: ["weight", "bmi", "body mass index"] },
   { id: "waist-height", label: "Waist-to-Height Ratio", category: "calculator", path: "/obesity/waist-height-ratio", keywords: ["waist", "waist height", "waist ratio"] },
   { id: "visceral-fat-us", label: "Visceral Fat Ultrasound", category: "calculator", path: "/obesity/visceral-fat-ultrasound", keywords: ["visceral fat", "vat", "subcutaneous fat", "ultrasound", "intra-abdominal fat"] },
+  { id: USG_VISCERAL_FAT_SEARCH.id, label: USG_VISCERAL_FAT_SEARCH.label, category: "page", path: USG_VISCERAL_FAT_SEARCH.path, keywords: [...USG_VISCERAL_FAT_SEARCH.keywords] },
   { id: "glp1-assessment", label: "GLP-1 Assessment Calculator", category: "calculator", path: "/obesity/glp1-assessment", keywords: ["glp1", "semaglutide", "tirzepatide", "liraglutide", "eligibility", "titration"] },
   { id: "glp1-screener", label: "GLP-1 RA 3-Step Easy Screener", category: "calculator", path: "/obesity/glp1-screener", keywords: ["glp1", "screener", "triage", "pre-initiation", "eligibility", "safety", "start plan"] },
   { id: "glp1", label: "GLP-1 Agonist Selection", category: "calculator", path: "/obesity/glp1-obesity", keywords: ["wegovy", "ozempic", "glp1", "semaglutide"] },
