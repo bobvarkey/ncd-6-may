@@ -22,6 +22,7 @@ import {
 } from "@/lib/liver-scores";
 import { toast } from "@/hooks/use-toast";
 import ZoomableImage from "@/components/ZoomableImage";
+import hepatitisBSerology from "@/assets/hepatitis-b-serology.webp";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 import MasldWorkup from "@/pages/liver/MasldWorkup";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
@@ -90,6 +91,11 @@ const PRESETS: Record<Exclude<PresetKey, "custom">, { label: string; cutoffs: Li
     note: "WHO viral-hepatitis guideline — APRI >2 / FIB-4 >3.25 ≈ cirrhosis.",
   },
 };
+
+export const HEPATITIS_B_SEROLOGY_ID = "hepatitis-b-serology";
+export const HEPATITIS_B_SEROLOGY_ALT =
+  "Interpreting hepatitis B blood test results: HBsAg, anti-HBs and anti-HBc patterns";
+export const HEPATITIS_B_SEROLOGY_CAPTION = "Interpreting Hepatitis B Blood Test Results";
 
 const riskBadge = (r: "low" | "indeterminate" | "high" | null) => {
   if (r === "low") return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Low risk</Badge>;
@@ -327,10 +333,10 @@ export default function LiverMiniApp() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const hash = window.location.hash.replace("#", "");
-    if (hash !== "auto-calc") return;
-    setShowAutoCalc(true);
+    if (hash !== "auto-calc" && hash !== HEPATITIS_B_SEROLOGY_ID) return;
+    if (hash === "auto-calc") setShowAutoCalc(true);
     const t = window.setTimeout(() => {
-      document.getElementById("auto-calc")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
     return () => window.clearTimeout(t);
   }, []);
@@ -667,6 +673,16 @@ export default function LiverMiniApp() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+              <div id={HEPATITIS_B_SEROLOGY_ID} className="scroll-mt-24">
+                <ZoomableImage
+                  src={hepatitisBSerology}
+                  alt={HEPATITIS_B_SEROLOGY_ALT}
+                  caption={HEPATITIS_B_SEROLOGY_CAPTION}
+                  className="h-auto w-full bg-white object-contain"
+                  wrapperClassName="rounded-lg border border-neutral-200 bg-white p-2 shadow-sm"
+                  loading="lazy"
+                />
               </div>
             </div>
 
