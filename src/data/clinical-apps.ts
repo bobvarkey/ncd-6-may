@@ -136,7 +136,7 @@ export const CLINICAL_APPS: ClinicalApp[] = [
   },
   {
     name: "Sleep",
-    url: "https://sleepwell-analyzer.lovable.app/",
+    url: "https://sleep-check.lovable.app",
     description: "Sleep disorder assessment",
     icon: Waves,
     tone: "indigo",
