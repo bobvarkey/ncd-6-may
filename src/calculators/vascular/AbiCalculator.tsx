@@ -16,6 +16,8 @@ const EMPTY_INPUTS: AbiInputs = {
   rightPosteriorTibial: "",
   leftDorsalisPedis: "",
   leftPosteriorTibial: "",
+  rightToe: "",
+  leftToe: "",
 };
 
 const LEVEL_CLASS: Record<AbiLevel, string> = {
@@ -64,16 +66,20 @@ function AnkleCard({
   idPrefix,
   dorsalis,
   posterior,
+  toe,
   onDorsalis,
   onPosterior,
+  onToe,
   side,
 }: {
   title: string;
   idPrefix: string;
   dorsalis: string;
   posterior: string;
+  toe: string;
   onDorsalis: (value: string) => void;
   onPosterior: (value: string) => void;
+  onToe: (value: string) => void;
   side: AbiSideResult;
 }) {
   return (
@@ -96,6 +102,13 @@ function AnkleCard({
           value={posterior}
           onChange={onPosterior}
         />
+        <PressureInput
+          id={`${idPrefix}-toe`}
+          label="Toe pressure (mmHg)"
+          placeholder="e.g. 90"
+          value={toe}
+          onChange={onToe}
+        />
         <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
           <p className="text-3xl font-heading font-bold">
             {side.abi === null ? "—" : side.abi.toFixed(2)}
@@ -110,6 +123,32 @@ function AnkleCard({
           </span>
         </div>
         {side.note ? <p className="text-xs text-muted-foreground">{side.note}</p> : null}
+
+        <div className="space-y-1.5 border-t border-border/40 pt-2">
+          <div className="flex flex-wrap items-center justify-between gap-1.5">
+            <span className="text-xs text-muted-foreground">Toe–brachial index (TBI)</span>
+            <span className="text-base font-semibold">
+              {side.tbi === null ? "—" : side.tbi.toFixed(2)}
+            </span>
+          </div>
+          {side.tbi === null ? (
+            <p className="text-[11px] text-muted-foreground">
+              Enter toe pressure to calculate TBI.
+            </p>
+          ) : (
+            <span
+              className={cn(
+                "inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-semibold",
+                LEVEL_CLASS[side.tbiLevel],
+              )}
+            >
+              {side.tbiCategory}
+            </span>
+          )}
+          {side.tbiNote ? (
+            <p className="text-[11px] text-amber-700 dark:text-amber-300">{side.tbiNote}</p>
+          ) : null}
+        </div>
       </CardContent>
     </Card>
   );
@@ -146,14 +185,21 @@ export default function AbiCalculator() {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Enter systolic pressures in mmHg. The calculator uses the higher brachial pressure from
-            either arm and the higher of dorsalis pedis or posterior tibial pressure for each ankle.
+            Enter systolic pressures in mmHg, including toe pressure where available. The calculator
+            uses the higher brachial pressure from either arm and the higher of dorsalis pedis or
+            posterior tibial pressure for each ankle.
           </p>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/5 p-3 text-sm">
-            <span className="font-semibold">ABI</span> = Higher ankle artery systolic pressure ÷ Higher
-            brachial systolic pressure
+          <div className="space-y-1 rounded-lg border border-cyan-500/30 bg-cyan-500/5 p-3 text-sm">
+            <p>
+              <span className="font-semibold">ABI</span> = Higher ankle artery systolic pressure ÷
+              Higher brachial systolic pressure
+            </p>
+            <p>
+              <span className="font-semibold">TBI</span> = Toe systolic pressure ÷ Higher brachial
+              systolic pressure
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -189,8 +235,10 @@ export default function AbiCalculator() {
           idPrefix="abi-right"
           dorsalis={inputs.rightDorsalisPedis}
           posterior={inputs.rightPosteriorTibial}
+          toe={inputs.rightToe}
           onDorsalis={(value) => update("rightDorsalisPedis", value)}
           onPosterior={(value) => update("rightPosteriorTibial", value)}
+          onToe={(value) => update("rightToe", value)}
           side={result.right}
         />
 
@@ -199,8 +247,10 @@ export default function AbiCalculator() {
           idPrefix="abi-left"
           dorsalis={inputs.leftDorsalisPedis}
           posterior={inputs.leftPosteriorTibial}
+          toe={inputs.leftToe}
           onDorsalis={(value) => update("leftDorsalisPedis", value)}
           onPosterior={(value) => update("leftPosteriorTibial", value)}
+          onToe={(value) => update("leftToe", value)}
           side={result.left}
         />
       </div>
@@ -222,13 +272,20 @@ export default function AbiCalculator() {
           <p>
             <span className="font-semibold">&gt;1.40</span> Noncompressible arteries
           </p>
+          <p>
+            <span className="font-semibold">TBI &lt;0.70</span> Abnormal, consistent with PAD
+          </p>
+          <p>
+            <span className="font-semibold">TBI ≥0.70</span> Normal
+          </p>
           <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted-foreground">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
             <p>
               <span className="font-semibold text-foreground">Clinical caution:</span> ABI &gt;1.40
               suggests noncompressible vessels. Consider toe–brachial index (TBI) with waveforms.
               Normal resting ABI does not exclude PAD in symptomatic patients; consider exercise ABI
-              when appropriate.
+              when appropriate. TBI is useful when ankle arteries are non-compressible; absolute toe
+              pressure &lt;30 mmHg suggests severe ischemia and &lt;50 mmHg may impair wound healing.
             </p>
           </div>
         </CardContent>
@@ -262,10 +319,11 @@ export default function AbiCalculator() {
             </Button>
           </div>
           <p className="text-[11px] leading-relaxed text-muted-foreground">
-            Interpretation follows commonly used ACC/AHA ABI categories. This is a clinical aid, not a
-            substitute for waveform assessment or vascular evaluation. For standardized resting ABI,
-            measure both brachial pressures and both ankle arteries using appropriate Doppler
-            technique.
+            Interpretation follows commonly used ACC/AHA ABI categories and a TBI abnormality
+            threshold of 0.70. This is a clinical aid, not a substitute for waveform assessment or
+            vascular evaluation. For standardized resting ABI, measure both brachial pressures and
+            both ankle arteries using appropriate Doppler technique; measure toe pressure with a
+            toe cuff and plethysmography.
           </p>
         </CardContent>
       </Card>

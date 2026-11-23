@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { abiCategory, calculateAbi, parsePressure, type AbiInputs } from "@/lib/abi";
+import { abiCategory, calculateAbi, parsePressure, tbiCategory, type AbiInputs } from "@/lib/abi";
 
 const empty: AbiInputs = {
   rightBrachial: "",
@@ -8,6 +8,8 @@ const empty: AbiInputs = {
   rightPosteriorTibial: "",
   leftDorsalisPedis: "",
   leftPosteriorTibial: "",
+  rightToe: "",
+  leftToe: "",
 };
 
 describe("ABI pressure parsing", () => {
@@ -42,6 +44,7 @@ describe("ABI categories", () => {
 describe("ABI calculation", () => {
   it("uses the higher brachial pressure and the higher ankle artery on each side", () => {
     const result = calculateAbi({
+      ...empty,
       rightBrachial: "132",
       leftBrachial: "128",
       rightDorsalisPedis: "118",
@@ -162,5 +165,87 @@ describe("ABI calculation", () => {
     expect(result.right.abi?.toFixed(2)).toBe("1.50");
     expect(result.right.category).toBe("Noncompressible");
     expect(result.right.level).toBe("warn");
+  });
+});
+
+describe("toe–brachial index", () => {
+  it.each([
+    [0.5, "Abnormal (PAD range)", "bad"],
+    [0.69, "Abnormal (PAD range)", "bad"],
+    [0.7, "Normal", "good"],
+    [1.2, "Normal", "good"],
+  ])("classifies TBI %s as %s", (value, label, level) => {
+    expect(tbiCategory(value)).toEqual({ label, level });
+  });
+
+  it("calculates TBI from the toe pressure and the higher brachial pressure", () => {
+    const result = calculateAbi({
+      ...empty,
+      rightBrachial: "120",
+      leftBrachial: "140",
+      rightDorsalisPedis: "130",
+      rightPosteriorTibial: "120",
+      rightToe: "100",
+      leftToe: "80",
+    });
+    expect(result.right.toePressure).toBe(100);
+    expect(result.right.tbi?.toFixed(2)).toBe("0.71");
+    expect(result.right.tbiCategory).toBe("Normal");
+    expect(result.right.tbiLevel).toBe("good");
+    expect(result.left.tbi?.toFixed(2)).toBe("0.57");
+    expect(result.left.tbiCategory).toBe("Abnormal (PAD range)");
+  });
+
+  it("adds toe pressure and TBI lines to the report", () => {
+    const result = calculateAbi({
+      ...empty,
+      rightBrachial: "100",
+      leftBrachial: "100",
+      rightDorsalisPedis: "90",
+      rightPosteriorTibial: "80",
+      rightToe: "70",
+    });
+    expect(result.report).toContain("Right toe pressure: 70 mmHg.");
+    expect(result.report).toContain("Right TBI: 0.70 (Normal)");
+    expect(result.report).not.toContain("Left TBI:");
+  });
+
+  it("does not add toe lines when no toe pressure is entered", () => {
+    const result = calculateAbi({
+      ...empty,
+      rightBrachial: "120",
+      leftBrachial: "120",
+      rightDorsalisPedis: "100",
+      rightPosteriorTibial: "100",
+    });
+    expect(result.right.tbi).toBeNull();
+    expect(result.report).not.toContain("TBI:");
+    expect(result.report).not.toContain("toe pressure");
+  });
+
+  it("cannot calculate TBI without a brachial reference", () => {
+    const result = calculateAbi({ ...empty, rightToe: "90" });
+    expect(result.right.toePressure).toBe(90);
+    expect(result.right.tbi).toBeNull();
+    expect(result.report).toContain("Right TBI: not calculated");
+  });
+
+  it("flags absolute toe pressures below 50 and 30 mmHg", () => {
+    const low = calculateAbi({
+      ...empty,
+      rightBrachial: "100",
+      leftBrachial: "100",
+      rightToe: "45",
+    });
+    expect(low.right.tbiNote).toBe("Toe pressure <50 mmHg may impair wound healing.");
+    expect(low.report).toContain("Right: Toe pressure <50 mmHg may impair wound healing.");
+
+    const severe = calculateAbi({
+      ...empty,
+      rightBrachial: "100",
+      leftBrachial: "100",
+      rightToe: "20",
+    });
+    expect(severe.right.tbiNote).toBe("Toe pressure <30 mmHg suggests severe limb ischemia.");
   });
 });
