@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Settings as SettingsIcon,
   LayoutDashboard, User, UtensilsCrossed, Pizza, Pill, CalendarDays, TrendingDown, FileText, Syringe, ShieldAlert, FlaskConical, HeartPulse, Bean, Droplet, BookOpen, TableProperties, Activity, BookMarked, TriangleAlert, ArrowLeftRight, MessageSquare, AlertTriangle, Brain, Scale, Shield as ShieldIcon, AlertTriangle as WarningTriangle, Trash2, Search, ChevronDown, X, ChevronsDownUp, ChevronsUpDown, Images, Stethoscope, Eye, Calculator, Bone, AppWindow,
@@ -14,6 +15,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { isSideTabActive } from "@/data/side-nav";
 
 type Item = { title: string; url: string; icon: LucideIcon; keywords?: string };
 type Section = { id: string; label: string; color: string; items: Item[] };
@@ -157,17 +159,35 @@ function matches(item: Item, q: string) {
   );
 }
 
+function sectionMatchesRoute(section: Section, pathname: string, search: string, hash: string) {
+  return section.items.some((item) => isSideTabActive(item.url, pathname, search, hash));
+}
+
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+  const location = useLocation();
+  const activeSectionId =
+    SECTIONS.find((section) => sectionMatchesRoute(section, location.pathname, location.search, location.hash))?.id ??
+    null;
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<Record<string, boolean>>(() => {
     const stored = loadState();
-    // default: everything open unless persisted
+    // Major sections start closed. A saved choice is kept; the active route's group is opened below.
     const initial: Record<string, boolean> = {};
-    SECTIONS.forEach((s) => (initial[s.id] = stored[s.id] ?? true));
+    SECTIONS.forEach((s) => (initial[s.id] = stored[s.id] ?? false));
+    if (activeSectionId) initial[activeSectionId] = true;
     return initial;
   });
+  const seenRoute = useRef<string | null>(null);
+
+  useEffect(() => {
+    const routeKey = `${location.pathname}${location.search}${location.hash}`;
+    if (seenRoute.current === routeKey) return;
+    seenRoute.current = routeKey;
+    if (!activeSectionId) return;
+    setOpen((prev) => (prev[activeSectionId] ? prev : { ...prev, [activeSectionId]: true }));
+  }, [location.pathname, location.search, location.hash, activeSectionId]);
 
   useEffect(() => {
     saveState(open);
@@ -255,7 +275,7 @@ export function AppSidebar() {
 
         {filtered.map((section) => {
           // While searching, force sections open so matches are visible.
-          const isOpen = query ? true : open[section.id] ?? true;
+          const isOpen = query ? true : open[section.id] ?? false;
           return (
             <SidebarGroup key={section.id} className="py-1">
               {collapsed ? (
