@@ -5,7 +5,7 @@ import {
   ChevronDown, Upload, Sparkles, Calculator, Stethoscope, FileSearch, UtensilsCrossed,
   Scan, CheckCircle2, X, AlertTriangle, Weight, AirVent, Filter, Moon, Bug, Shield,
   Zap, Sun, Microscope, ArrowRight, User, Scissors, Brain, Bone, TrendingDown, ArrowLeft,
-  Images, AppWindow,
+  Images, AppWindow, ExternalLink,
 } from "lucide-react";
 import ZoomableImage from "@/components/ZoomableImage";
 import ImageUploadAnalyzer from "@/components/ImageUploadAnalyzer";
@@ -604,6 +604,58 @@ const DiseaseCard = React.memo(function DiseaseCard({ title, description, icon, 
   );
 });
 
+/**
+ * Same tile as DiseaseCard, for a destination outside this app.
+ * No description line — the label is the whole card.
+ */
+const ExternalDiseaseCard = React.memo(function ExternalDiseaseCard({
+  title,
+  icon,
+  href,
+  tone,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  href: string;
+  tone: EntryTone;
+}) {
+  const t = ENTRY_TONES[tone];
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+    >
+      <div
+        className={cn(
+          "relative h-full p-4 rounded-xl border transition-all duration-200 cursor-pointer overflow-hidden",
+          t.card,
+        )}
+      >
+        <div className={cn("absolute top-0 left-0 right-0 h-1", t.bar)} />
+        <div className="relative flex items-start gap-3">
+          <div
+            className={cn(
+              "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform",
+              t.iconWrap,
+            )}
+          >
+            <span className="[&_svg]:text-white">{icon}</span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className={cn("text-sm font-semibold text-foreground transition-colors", t.titleHover)}>
+              {title}
+              <span className="sr-only"> (opens in a new tab)</span>
+            </h3>
+          </div>
+          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0 mt-0.5" aria-hidden="true" />
+        </div>
+      </div>
+    </a>
+  );
+});
+
 // ── Section Group ──
 interface DiseaseGroupProps {
   title: string;
@@ -953,6 +1005,12 @@ export default function Home() {
                 icon={<TrendingDown className="h-5 w-5" />}
                 to="/steroid-taper"
                 tone="emerald"
+              />
+              <ExternalDiseaseCard
+                title="MDCalc"
+                icon={<Calculator className="h-5 w-5" />}
+                href="https://www.mdcalc.com/"
+                tone="sky"
               />
             </DiseaseGroup>
           </TabsContent>
