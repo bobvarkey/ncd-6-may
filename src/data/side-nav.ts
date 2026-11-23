@@ -220,6 +220,21 @@ export function sideTabPathname(href: string): string {
   return cut === undefined ? href : href.slice(0, cut);
 }
 
+/** True when a side-tab href matches the current location, including query and hash. */
+export function isSideTabActive(href: string, pathname: string, search: string, hash: string): boolean {
+  const [pathAndQuery, hrefHash = ""] = href.split("#");
+  const [path, query = ""] = pathAndQuery.split("?");
+  if (path !== pathname) return false;
+  if (hrefHash && hrefHash !== hash.replace(/^#/, "")) return false;
+  if (!query) return true;
+  const expected = new URLSearchParams(query);
+  const actual = new URLSearchParams(search);
+  for (const [key, value] of expected) {
+    if (actual.get(key) !== value) return false;
+  }
+  return true;
+}
+
 export function allSideNavEntries(): SideTab[] {
   return [
     ...MAIN_SIDE_TABS,
