@@ -1217,7 +1217,7 @@ export default function IronReplacementCalculator() {
                     </thead>
                     <tbody>
                       {[
-                        ["Restless Legs Syndrome (RLS)", "Target > 75–100", "< 45%", "Treat even without anemia. Target ferritin > 100 µg/L to alleviate neurological symptoms."],
+                        ["Restless Legs Syndrome (RLS)", "≤ 75; 75–100 favors IV iron", "< 20% (AASM 2025); < 45% broader IV", "AASM 2025: treat adults if ferritin ≤ 75 ng/mL or TSAT < 20%; IV iron favored at 75–100 ng/mL. Children: < 50 ng/mL. Target ferritin > 100 µg/L."],
                         ["Chronic Heart Failure", "< 100, or 100–299 if TSAT low", "< 20%", "IV iron recommended regardless of anemia status (ESC Guidelines). Improves QoL and exercise capacity."],
                         ["CKD (Non-Dialysis)", "< 100–500", "< 30%", "Higher cutoffs used — inflammation impairs normal iron usage."],
                         ["CKD on Hemodialysis", "< 200", "< 30%", "Aggressively maintained to support RBC production."],

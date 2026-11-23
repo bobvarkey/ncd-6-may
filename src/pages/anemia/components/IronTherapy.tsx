@@ -28,9 +28,9 @@ const ironCutoffs = [
   {
     condition: 'Restless Legs Syndrome',
     subtext: 'RLS',
-    ferritin: '< 75–100 µg/L',
-    tsat: '< 45%',
-    goal: 'Target ferritin > 100 µg/L to alleviate neurological symptoms.',
+    ferritin: '≤ 75 µg/L; 75–100 µg/L favors IV iron',
+    tsat: '< 20% (AASM 2025); < 45% for broader IV use',
+    goal: 'AASM 2025: treat adults if ferritin ≤ 75 ng/mL or TSAT < 20%; IV iron favored at ferritin 75–100 ng/mL. Children: treat if ferritin < 50 ng/mL. Target ferritin > 100 µg/L.',
     severity: 'medium',
   },
   {
@@ -407,10 +407,32 @@ export default function IronTherapy() {
                     <h3 className="text-sm font-semibold text-foreground">Iron Therapy for Restless Legs Syndrome (RLS)</h3>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-                    Iron is central to RLS management. Target ferritin &gt; 100 µg/L and TSAT &lt; 45% to qualify for replacement. Oral iron
-                    is first-line; IV iron (preferably FCM 1000 mg) is reserved for moderate-to-severe RLS with oral failure,
-                    malabsorption, or need for rapid response.
+                    Iron is central to RLS management. AASM 2025 recommends iron supplementation in adults when ferritin
+                    is ≤ 75 ng/mL or TSAT &lt; 20%. Target ferritin &gt; 100 µg/L. Oral iron is first-line; IV iron
+                    (preferably FCM 1000 mg) is reserved for oral failure, malabsorption, or need for rapid response.
                   </p>
+                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 mb-3">
+                    <p className="text-xs font-semibold text-foreground mb-1.5">AASM 2025 guideline — iron supplementation thresholds</p>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      <li>
+                        • <strong className="text-foreground">Adults:</strong> oral or intravenous (IV) iron is generally
+                        recommended if serum ferritin is <strong className="text-foreground">≤ 75 ng/mL</strong> or
+                        transferrin saturation (TSAT) is <strong className="text-foreground">&lt; 20%</strong>. If ferritin
+                        is <strong className="text-foreground">75–100 ng/mL</strong>, IV iron is favored over oral iron.
+                      </li>
+                      <li>
+                        • <strong className="text-foreground">Children:</strong> oral or IV iron supplementation is
+                        recommended when serum ferritin is <strong className="text-foreground">&lt; 50 ng/mL</strong>.
+                      </li>
+                      <li>
+                        • <strong className="text-foreground">Broader IV iron thresholds:</strong> an updated RLS
+                        management algorithm notes that IV iron may also be considered with serum ferritin up to
+                        <strong className="text-foreground"> 300 µg/L</strong> (with TSAT <strong className="text-foreground">&lt; 45%</strong>)
+                        in select cases; clinical benefit can appear <strong className="text-foreground">6–8 weeks</strong>
+                        after infusion. (Ferritin ng/mL and µg/L are equivalent.)
+                      </li>
+                    </ul>
+                  </div>
                   <div className="rounded-xl border border-purple-500/30 bg-purple-500/5 p-3 mb-3">
                     <p className="text-xs font-semibold text-foreground mb-1.5">Updated RLS Foundation Treatment Algorithm — IV Iron Criteria</p>
                     <p className="text-xs text-muted-foreground leading-relaxed">
