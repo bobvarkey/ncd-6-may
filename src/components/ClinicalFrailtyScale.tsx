@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Info, RotateCcw, Activity, User } from "lucide-react";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
+import { ModifiedRankinScale } from "@/components/ModifiedRankinScale";
 import ZoomableImage from "@/components/ZoomableImage";
 import frailtyQuestionnaireImg from "@/assets/frailty-questionnaire.jpg";
 import veryFitImg from "@/assets/cfs/01_very_fit.png.asset.json";
@@ -285,6 +286,8 @@ export function ClinicalFrailtyScale({
         →Score 9 (terminally ill) applies even when other frailty signs are not evident
         →Use alongside cognition, falls, medication, and social support screening
       </TakeHomeMessage>
+
+      <ModifiedRankinScale />
     </div>
   );
 }

@@ -71,6 +71,12 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   RVS: { term: "RVS", full: "Renal Vein Sampling" },
   JG: { term: "JG", full: "Juxtaglomerular", description: "Refers to the renin-producing cells of the kidney." },
   CFS: { term: "CFS", full: "Clinical Frailty Scale", description: "9-point Rockwood scale classifying frailty by function and dependence.", synonyms: ["Rockwood Clinical Frailty Scale"] },
+  mRS: {
+    term: "mRS",
+    full: "Modified Rankin Scale",
+    description: "7-point scale of disability from no symptoms (0) to death (6).",
+    synonyms: ["MRS", "Modified Rankin Scale"],
+  },
   "F2–F3 fibrosis": {
     term: "F2–F3 fibrosis",
     full: "Non-Invasive Elastography Criteria (FibroScan / Liver Stiffness)",
