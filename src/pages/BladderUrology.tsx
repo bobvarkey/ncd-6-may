@@ -11,13 +11,13 @@ import {
 
 function Doodle({ children }: { children: string }) {
   return (
-    <span className="font-handwritten text-amber-700 text-sm">{children}</span>
+    <span className="font-handwritten text-sm">{children}</span>
   );
 }
 
 function UrineDoodle({ children }: { children: string }) {
   return (
-    <span className="font-handwritten text-yellow-700 text-sm">{children}</span>
+    <span className="font-handwritten text-sm">{children}</span>
   );
 }
 
@@ -29,14 +29,14 @@ function MedTable({
   rows: string[][];
 }) {
   return (
-    <div className="overflow-x-auto rounded-xl border-2 border-amber-700/30 bg-amber-50/50">
+    <div className="bladder-table overflow-x-auto rounded-xl border-2">
       <table className="min-w-full text-sm">
         <thead>
-          <tr className="border-b-2 border-amber-700/30 bg-amber-100/60">
+          <tr className="border-b-2">
             {headers.map((h) => (
               <th
                 key={h}
-                className="px-3 py-2 text-left font-handwritten font-bold text-amber-900"
+                className="px-3 py-2 text-left font-handwritten font-bold"
               >
                 {h}
               </th>
@@ -45,9 +45,9 @@ function MedTable({
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={i} className="border-b border-amber-700/15 last:border-0">
+            <tr key={i} className="border-b last:border-0">
               {row.map((cell, j) => (
-                <td key={j} className="px-3 py-2 align-top text-amber-900/90">
+                <td key={j} className="px-3 py-2 align-top">
                   {cell}
                 </td>
               ))}
@@ -63,24 +63,28 @@ export default function BladderUrology() {
   const [tab, setTab] = useState<"physiology" | "dosing">("physiology");
 
   const btn = (active: boolean) =>
-    `rounded-xl border-2 px-4 py-2 font-handwritten text-sm transition-colors ${
-      active
-        ? "border-amber-700/40 bg-amber-200/70 font-bold text-amber-900"
-        : "border-amber-700/25 bg-amber-50/60 text-amber-800 hover:bg-amber-100/70"
+    `bladder-tab rounded-xl border-2 px-4 py-2 font-handwritten text-sm transition-colors ${
+      active ? "font-bold" : ""
     }`;
 
   return (
-    <div className="space-y-4">
+    <div className="bladder-urology-page -mx-4 -mb-4 min-h-[calc(100dvh-8.5rem)] space-y-4 px-4 py-4 md:-mx-6 md:-mb-6 md:px-6 md:py-6">
       <div className="flex flex-wrap gap-2">
         <button
+          type="button"
           onClick={() => setTab("physiology")}
           className={btn(tab === "physiology")}
+          data-active={tab === "physiology" ? "true" : "false"}
+          aria-pressed={tab === "physiology"}
         >
           Bladder Control — Physiology
         </button>
         <button
+          type="button"
           onClick={() => setTab("dosing")}
           className={btn(tab === "dosing")}
+          data-active={tab === "dosing" ? "true" : "false"}
+          aria-pressed={tab === "dosing"}
         >
           Bladder/Urology Dosages
         </button>
@@ -88,22 +92,22 @@ export default function BladderUrology() {
 
       {tab === "physiology" && (
         <div className="space-y-4">
-          <div className="rounded-xl border-2 border-amber-700/30 bg-amber-50/60 p-3">
-            <p className="font-handwritten text-amber-800">
+          <div className="bladder-card rounded-xl border-2 p-3">
+            <p className="font-handwritten">
               <Doodle>Storage vs voiding — who squeezes, who relaxes,</Doodle>{" "}
               <UrineDoodle>and which nerve does what ★</UrineDoodle>
             </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border-2 border-yellow-600/40 bg-yellow-50/60 p-4">
+            <div className="bladder-card bladder-card-store rounded-xl border-2 p-4">
               <div className="mb-2 flex items-center gap-2">
-                <Droplets className="h-5 w-5 text-yellow-700" />
-                <h3 className="font-handwritten text-lg font-bold text-yellow-900">
+                <Droplets className="h-5 w-5" />
+                <h3 className="font-handwritten text-lg font-bold">
                   STORE (sympathetic)
                 </h3>
               </div>
-              <ul className="space-y-1.5 text-sm text-yellow-900/90">
+              <ul className="space-y-1.5 text-sm">
                 <li>
                   <UrineDoodle>Full bladder, storage phase →</UrineDoodle>{" "}
                   <strong>hypogastric nerve</strong> (T11–L2)
@@ -120,14 +124,14 @@ export default function BladderUrology() {
               </ul>
             </div>
 
-            <div className="rounded-xl border-2 border-purple-600/40 bg-purple-50/60 p-4">
+            <div className="bladder-card bladder-card-void rounded-xl border-2 p-4">
               <div className="mb-2 flex items-center gap-2">
-                <HeartPulse className="h-5 w-5 text-purple-700" />
-                <h3 className="font-handwritten text-lg font-bold text-purple-900">
+                <HeartPulse className="h-5 w-5" />
+                <h3 className="font-handwritten text-lg font-bold">
                   VOID (parasympathetic)
                 </h3>
               </div>
-              <ul className="space-y-1.5 text-sm text-purple-900/90">
+              <ul className="space-y-1.5 text-sm">
                 <li>
                   <Doodle>Emptying bladder →</Doodle>{" "}
                   <strong>pelvic nerves</strong> (S2–S4)
@@ -144,11 +148,11 @@ export default function BladderUrology() {
             </div>
           </div>
 
-          <div className="rounded-xl border-2 border-teal-700/30 bg-teal-50/50 p-4">
-            <h3 className="mb-2 font-handwritten text-lg font-bold text-teal-900">
+          <div className="bladder-card bladder-card-sphincter rounded-xl border-2 p-4">
+            <h3 className="mb-2 font-handwritten text-lg font-bold">
               Voluntary control — external urethral sphincter
             </h3>
-            <p className="text-sm text-teal-900/90">
+            <p className="text-sm">
               Somatic (voluntary) control of the{" "}
               <strong>external urethral sphincter</strong> is mediated by{" "}
               <strong>skeletal muscle</strong> through the{" "}
@@ -160,11 +164,11 @@ export default function BladderUrology() {
             </p>
           </div>
 
-          <div className="rounded-xl border-2 border-amber-700/30 bg-amber-50/60 p-4">
-            <h3 className="mb-2 font-handwritten text-lg font-bold text-amber-900">
+          <div className="bladder-card rounded-xl border-2 p-4">
+            <h3 className="mb-2 font-handwritten text-lg font-bold">
               Drug targets on the same map
             </h3>
-            <ul className="space-y-1.5 text-sm text-amber-900/90">
+            <ul className="space-y-1.5 text-sm">
               <li>
                 <strong>Antimuscarinics (oxybutynin)</strong> — block M3 in the
                 storage phase → fewer detrusor overactivity contractions (urge,
@@ -191,9 +195,9 @@ export default function BladderUrology() {
             <ZoomableImage
               src="/images/bladder-control.jpg"
               alt="Bladder control infographic: STORE panel (sympathetic, hypogastric T11-L2, beta-3 relaxes detrusor, alpha-1 contracts bladder neck) versus VOID panel (parasympathetic, pelvic S2-S4, M3 contracts detrusor); external urethral sphincter under somatic pudendal S2-S4 control"
-              className="w-full rounded-xl border border-border"
+              className="w-full rounded-xl border"
             />
-            <p className="mt-2 text-center font-handwritten text-xs text-amber-700/60">
+            <p className="mt-2 text-center font-handwritten text-xs">
               Storage versus voiding phases — tap to zoom
             </p>
           </div>
@@ -202,8 +206,8 @@ export default function BladderUrology() {
 
       {tab === "dosing" && (
         <div className="space-y-4">
-          <div className="rounded-xl border-2 border-amber-700/30 bg-amber-50/60 p-3">
-            <p className="flex items-start gap-2 font-handwritten text-amber-800">
+          <div className="bladder-card rounded-xl border-2 p-3">
+            <p className="flex items-start gap-2 font-handwritten">
               <Info className="mt-0.5 h-4 w-4 shrink-0" />
               <span>
                 For adults, typical oral dosing is: mirabegron 25–50 mg once
@@ -221,17 +225,17 @@ export default function BladderUrology() {
             <ZoomableImage
               src="/images/bladder-pharmacology.jpg"
               alt="Bladder pharmacology infographic: improve storage — mirabegron beta-3 agonist relaxes detrusor, oxybutynin muscarinic antagonist reduces detrusor contractions (overactive bladder); improve emptying — bethanechol muscarinic agonist contracts detrusor for nonobstructive urinary retention (contraindicated in mechanical obstruction), tamsulosin alpha-1 blocker relaxes bladder neck and prostate for BPH urinary symptoms"
-              className="w-full rounded-xl border border-border"
+              className="w-full rounded-xl border"
             />
-            <p className="mt-2 text-center font-handwritten text-xs text-amber-700/60">
+            <p className="mt-2 text-center font-handwritten text-xs">
               Drug classes mapped to storage versus emptying — tap to zoom
             </p>
           </div>
 
-          <div className="rounded-xl border-2 border-amber-700/30 bg-amber-50/60 p-4">
+          <div className="bladder-card rounded-xl border-2 p-4">
             <div className="mb-3 flex items-center gap-2">
-              <Pill className="h-5 w-5 text-amber-700" />
-              <h3 className="font-handwritten text-lg font-bold text-amber-900">
+              <Pill className="h-5 w-5" />
+              <h3 className="font-handwritten text-lg font-bold">
                 Typical adult doses
               </h3>
             </div>
@@ -267,11 +271,11 @@ export default function BladderUrology() {
             />
           </div>
 
-          <div className="rounded-xl border-2 border-amber-700/30 bg-amber-50/60 p-4">
-            <h3 className="mb-2 font-handwritten text-lg font-bold text-amber-900">
+          <div className="bladder-card rounded-xl border-2 p-4">
+            <h3 className="mb-2 font-handwritten text-lg font-bold">
               Practical starting points
             </h3>
-            <ul className="space-y-2 text-sm text-amber-900/90">
+            <ul className="space-y-2 text-sm">
               <li>
                 <strong>Overactive bladder:</strong> Mirabegron 25 mg daily, or
                 oxybutynin ER 5 mg daily; reassess at 4–8 weeks before
@@ -297,14 +301,14 @@ export default function BladderUrology() {
             </ul>
           </div>
 
-          <div className="rounded-xl border-2 border-red-700/30 bg-red-50/50 p-4">
+          <div className="bladder-card bladder-card-caution rounded-xl border-2 p-4">
             <div className="mb-2 flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-red-700" />
-              <h3 className="font-handwritten text-lg font-bold text-red-900">
+              <AlertTriangle className="h-5 w-5" />
+              <h3 className="font-handwritten text-lg font-bold">
                 Combination caution
               </h3>
             </div>
-            <p className="text-sm text-red-900/90">
+            <p className="text-sm">
               Mirabegron and oxybutynin may be combined for refractory
               overactive bladder, but the mirabegron label advises caution with
               muscarinic antagonists and clinically significant bladder outlet
@@ -315,8 +319,8 @@ export default function BladderUrology() {
             </p>
           </div>
 
-          <div className="rounded-xl border-2 border-amber-700/30 bg-amber-50/60 p-3">
-            <p className="font-handwritten text-xs text-amber-700/70">
+          <div className="bladder-card rounded-xl border-2 p-3">
+            <p className="font-handwritten text-xs">
               <Doodle>
                 Dosing summary compiled from the referenced labels/guidance;
                 always titrate to response and tolerability, desu~ ★
@@ -326,10 +330,10 @@ export default function BladderUrology() {
         </div>
       )}
 
-      <div className="rounded-xl border-2 border-amber-700/30 bg-amber-50/60 p-3 text-center">
+      <div className="bladder-card rounded-xl border-2 p-3 text-center">
         <Link
           to="/"
-          className="font-handwritten text-sm text-amber-800 underline decoration-dotted hover:text-amber-900"
+          className="font-handwritten text-sm underline decoration-dotted"
         >
           ← Back
         </Link>
