@@ -44,13 +44,6 @@ export const CLINICAL_APPS: ClinicalApp[] = [
     tone: "rose",
   },
   {
-    name: "Encephalitis & Paraneoplasia",
-    url: "https://paraneoplasia.lovable.app/",
-    description: "Autoimmune encephalitis and paraneoplastic syndromes",
-    icon: Brain,
-    tone: "violet",
-  },
-  {
     name: "Endocrine",
     url: "https://diabetes-treatment-complete.lovable.app/",
     description: "Diabetes and endocrine treatment companion",
@@ -112,6 +105,13 @@ export const CLINICAL_APPS: ClinicalApp[] = [
     description: "Oncology medications and supportive care",
     icon: Pill,
     tone: "rose",
+  },
+  {
+    name: "Paraneoplasia",
+    url: "https://paraneoplasia.lovable.app/",
+    description: "Paraneoplastic neurological syndromes, onconeural antibodies, and associated tumor markers",
+    icon: Brain,
+    tone: "violet",
   },
   {
     name: "Parkinson's",
