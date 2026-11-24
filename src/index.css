@@ -665,6 +665,93 @@
     --htab-ink: var(--htab-3-ink);
     --htab-line: var(--htab-3-line);
   }
+
+  /* ============================================================
+     Bladder & Urology only. Opaque dark surfaces and light ink
+     in both themes. Beats pastel utilities and the global
+     foreground lock. Pairs are asserted in
+     src/test/bladder-urology-contrast.test.ts.
+     bladder-urology-contrast:start
+     ============================================================ */
+  .bladder-urology-page {
+    --bladder-ink: #f8fafc;
+    --bladder-bg-page: #0b1220;
+    --bladder-bg-card: #152033;
+    --bladder-bg-store: #1c1608;
+    --bladder-bg-void: #16122a;
+    --bladder-bg-sphincter: #0c1c1b;
+    --bladder-bg-caution: #2a1014;
+    --bladder-bg-tab: #152033;
+    --bladder-bg-tab-active: #1e3a5f;
+    --bladder-bg-tab-hover: #243044;
+    --bladder-bg-table-head: #1e293b;
+    --bladder-line: #cbd5e1;
+    --bladder-line-store: #fbbf24;
+    --bladder-line-void: #c4b5fd;
+    --bladder-line-sphincter: #5eead4;
+    --bladder-line-caution: #fca5a5;
+    background-color: var(--bladder-bg-page) !important;
+    color: var(--bladder-ink) !important;
+  }
+
+  .bladder-urology-page[class][class],
+  .bladder-urology-page[class][class] * {
+    color: var(--bladder-ink) !important;
+  }
+
+  .bladder-urology-page .bladder-card {
+    background-color: var(--bladder-bg-card) !important;
+    border-color: var(--bladder-line) !important;
+  }
+  .bladder-urology-page .bladder-card-store {
+    background-color: var(--bladder-bg-store) !important;
+    border-color: var(--bladder-line-store) !important;
+  }
+  .bladder-urology-page .bladder-card-void {
+    background-color: var(--bladder-bg-void) !important;
+    border-color: var(--bladder-line-void) !important;
+  }
+  .bladder-urology-page .bladder-card-sphincter {
+    background-color: var(--bladder-bg-sphincter) !important;
+    border-color: var(--bladder-line-sphincter) !important;
+  }
+  .bladder-urology-page .bladder-card-caution {
+    background-color: var(--bladder-bg-caution) !important;
+    border-color: var(--bladder-line-caution) !important;
+  }
+
+  .bladder-urology-page .bladder-tab {
+    background-color: var(--bladder-bg-tab) !important;
+    border-color: var(--bladder-line) !important;
+  }
+  .bladder-urology-page .bladder-tab:hover {
+    background-color: var(--bladder-bg-tab-hover) !important;
+  }
+  .bladder-urology-page .bladder-tab[data-active="true"] {
+    background-color: var(--bladder-bg-tab-active) !important;
+    border-color: var(--bladder-line) !important;
+    font-weight: 700;
+  }
+
+  .bladder-urology-page .bladder-table {
+    background-color: var(--bladder-bg-card) !important;
+    border-color: var(--bladder-line) !important;
+  }
+  .bladder-urology-page .bladder-table thead tr {
+    background-color: var(--bladder-bg-table-head) !important;
+    border-color: var(--bladder-line) !important;
+  }
+  .bladder-urology-page .bladder-table tbody tr {
+    border-color: #334155 !important;
+  }
+
+  .bladder-urology-page a {
+    text-decoration-color: var(--bladder-ink);
+  }
+  .bladder-urology-page img {
+    border-color: var(--bladder-line) !important;
+  }
+  /* bladder-urology-contrast:end */
 }
 
 @layer components {
