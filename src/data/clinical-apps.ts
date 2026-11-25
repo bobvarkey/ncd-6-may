@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  Activity, Brain, Droplets, ExternalLink, Footprints, HeartPulse, Pill,
+  Activity, Brain, Droplets, Ear, ExternalLink, Footprints, HeartPulse, Pill,
   ScanLine, Stethoscope, Waves, Zap,
 } from "lucide-react";
 import type { EntryTone } from "@/lib/entry-tones";
@@ -153,6 +153,13 @@ export const CLINICAL_APPS: ClinicalApp[] = [
     url: "https://tinnitus-final.lovable.app/",
     description: "Tinnitus evaluation",
     icon: Waves,
+    tone: "cyan",
+  },
+  {
+    name: "Vertigo",
+    url: "https://dizzy-diagnose.lovable.app",
+    description: "Vertigo and dizziness diagnosis: bedside exam checklist and testing reference",
+    icon: Ear,
     tone: "cyan",
   },
 ];
