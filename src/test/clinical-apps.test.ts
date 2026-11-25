@@ -22,6 +22,7 @@ const EXPECTED_URLS = [
   "https://sleep-check.lovable.app",
   "https://stroke-diagnostic-compass.lovable.app/",
   "https://tinnitus-final.lovable.app/",
+  "https://dizzy-diagnose.lovable.app",
 ];
 
 describe("clinical apps directory", () => {
@@ -47,6 +48,16 @@ describe("clinical apps directory", () => {
       expect(app.description.trim().length).toBeGreaterThan(0);
       expect(clinicalAppHost(app.url)).toBe(`${app.url.replace("https://", "").replace(/\/$/, "")}`);
     }
+  });
+
+  it("lists Vertigo as the dizzy-diagnose companion", () => {
+    const vertigo = CLINICAL_APPS.find((app) => app.name === "Vertigo");
+    expect(vertigo).toMatchObject({
+      name: "Vertigo",
+      url: "https://dizzy-diagnose.lovable.app",
+      description: "Vertigo and dizziness diagnosis: bedside exam checklist and testing reference",
+    });
+    expect(clinicalAppHost(vertigo?.url ?? "")).toBe("dizzy-diagnose.lovable.app");
   });
 
   it("shows each app once", () => {
