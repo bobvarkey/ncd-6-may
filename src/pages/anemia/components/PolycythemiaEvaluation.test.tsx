@@ -248,7 +248,7 @@ describe("polycythemia search", () => {
       target: { value: "polycythemia" },
     });
 
-    const result = screen.getByRole("button", { name: /Polycythemia evaluation/i });
+    const result = screen.getByRole("link", { name: /Polycythemia evaluation/i });
     expect(result).toHaveTextContent(/erythrocytosis/i);
     fireEvent.click(result);
     expect(screen.getByTestId("location")).toHaveTextContent(POLYCYTHEMIA_SEARCH.path);

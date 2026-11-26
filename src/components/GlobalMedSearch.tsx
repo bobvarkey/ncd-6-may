@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Search, Pill, X, FileText } from "lucide-react";
 import { RENAL_DATA } from "@/calculators/diabetes/RenalDosing";
 import { ANTIBIOTICS_DATA } from "@/calculators/diabetes/antibiotics-data";
@@ -291,7 +291,12 @@ export function GlobalMedSearch() {
     const glossaryResults = Object.values(GLOSSARY)
       .map((entry) => {
         const haystack = [entry.term, entry.full, entry.description ?? "", ...(entry.synonyms ?? [])].join(" ").toLowerCase();
-        return { type: "glossary" as const, ...entry, score: entry.term.toLowerCase() === term ? 100 : haystack.includes(term) ? 40 : 0 };
+        return {
+          type: "glossary" as const,
+          ...entry,
+          path: `/glossary#${encodeURIComponent(entry.term)}`,
+          score: entry.term.toLowerCase() === term ? 100 : haystack.includes(term) ? 40 : 0,
+        };
       })
       .filter((entry) => entry.score > 0)
       .sort((a, b) => b.score - a.score)
@@ -364,12 +369,23 @@ export function GlobalMedSearch() {
     }
   }
 
+  function openResult(item: (typeof results)[number]) {
+    if (item.type === "medication") {
+      goToDrug(item.drug, "_target" in item && item._target === "htn" ? "htn" : undefined);
+      return;
+    }
+    setOpen(false);
+    setQ("");
+    navigate(item.path);
+  }
+
   return (
     <div
       ref={wrapRef}
-      className="fixed top-0 left-0 right-0 z-[60] h-12 border-b border-border bg-card/95 backdrop-blur-md shadow-sm overflow-hidden"
+      data-testid="global-med-search"
+      className="fixed top-0 left-0 right-0 z-[60] h-12 border-b border-border bg-card/95 backdrop-blur-md shadow-sm overflow-visible"
     >
-      <div className="flex items-center h-full max-w-7xl mx-auto px-4 gap-3 min-w-0">
+      <div className="relative z-20 flex items-center h-full max-w-7xl mx-auto px-4 gap-3 min-w-0">
         <Search className="h-4 w-4 text-primary shrink-0" />
         <input
           type="text"
@@ -382,9 +398,16 @@ export function GlobalMedSearch() {
           placeholder="Search any topic — reninoma, hypothyroidism, medications…"
           className="min-w-0 flex-1 bg-transparent py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none"
           aria-label="Search medications"
+          aria-controls="global-search-results"
+          aria-expanded={open && Boolean(q.trim())}
           onKeyDown={(e) => {
             if (e.key === "Enter" && q.trim()) {
-              goToDrug(q.trim());
+              e.preventDefault();
+              const exactGlossary = results.find(
+                (item) => item.type === "glossary" && item.term.toLowerCase() === q.trim().toLowerCase(),
+              );
+              const firstResult = exactGlossary ?? results[0];
+              if (firstResult) openResult(firstResult);
             }
           }}
         />
@@ -411,7 +434,7 @@ export function GlobalMedSearch() {
           className="fixed inset-0 z-0 backdrop-blur-lg bg-background/50"
           onClick={() => { setOpen(false); setQ(""); }}
         />
-        <div className="absolute top-full left-0 right-0 mt-0 max-h-[60vh] overflow-y-auto border-b border-border bg-card/95 backdrop-blur-xl shadow-xl">
+        <div id="global-search-results" className="absolute top-full left-0 right-0 z-10 mt-0 max-h-[60vh] overflow-y-auto border-b border-border bg-card/95 backdrop-blur-xl shadow-xl">
           {results.length === 0 ? (
             <div className="p-4 text-sm text-muted-foreground">
               No medications or topics found for "{q}".
@@ -444,16 +467,16 @@ export function GlobalMedSearch() {
                             Hepatic: {item.hepatic}
                           </div>
                         )}
+                        <div className="mt-0.5 break-all font-mono text-[11px] text-primary/80">
+                          /hypertension/medication-guide?q={encodeURIComponent(item.drug)}
+                        </div>
                       </div>
                     </button>
                   ) : item.type === 'topic' ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setOpen(false);
-                        setQ("");
-                        navigate(item.path);
-                      }}
+                    <Link
+                      to={item.path}
+                      aria-label={`Open topic ${item.label}`}
+                      onClick={() => { setOpen(false); setQ(""); }}
                       className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-muted/60 transition-colors"
                     >
                       <FileText className="mt-0.5 h-4 w-4 text-blue-500 shrink-0" />
@@ -467,12 +490,14 @@ export function GlobalMedSearch() {
                           </span>
                         </div>
                         <div className="text-xs text-muted-foreground truncate">{item.keywords?.slice(0, 3).join(", ")}</div>
+                        <div className="mt-0.5 break-all font-mono text-[11px] text-primary/80">{item.path}</div>
                       </div>
-                    </button>
+                    </Link>
                   ) : (
-                    <button
-                      type="button"
-                      onClick={() => { setOpen(false); setQ(""); navigate(`/glossary#${encodeURIComponent(item.term)}`); }}
+                    <Link
+                      to={item.path}
+                      aria-label={`Open glossary entry ${item.term}`}
+                      onClick={() => { setOpen(false); setQ(""); }}
                       className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-muted/60 transition-colors"
                     >
                       <FileText className="mt-0.5 h-4 w-4 text-emerald-500 shrink-0" />
@@ -482,15 +507,16 @@ export function GlobalMedSearch() {
                           <span className="text-xs uppercase tracking-wide text-emerald-600 shrink-0">Glossary</span>
                         </div>
                         <div className="text-xs text-muted-foreground truncate"><HighlightedText text={item.full} /></div>
+                        <div className="mt-0.5 break-all font-mono text-[11px] text-primary/80">{item.path}</div>
                       </div>
-                    </button>
+                    </Link>
                   )}
                 </li>
               ))}
             </ul>
           )}
           <div className="border-t border-border px-3 py-2 text-xs text-muted-foreground">
-            <kbd className="rounded bg-muted px-1">↵</kbd> to open • Medications or clinical topics
+            <kbd className="rounded bg-muted px-1">↵</kbd> to open first result • Medications, clinical topics and glossary
           </div>
         </div>
       </>}

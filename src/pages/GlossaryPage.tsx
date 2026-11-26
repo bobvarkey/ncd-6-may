@@ -1,16 +1,16 @@
 import { useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { BookOpen, ArrowLeft } from "lucide-react";
 import { GLOSSARY } from "@/data/glossary";
 import { GlossaryTerm } from "@/components/GlossaryTerm";
 
 export default function GlossaryPage() {
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   useEffect(() => {
-    const hash = decodeURIComponent(window.location.hash.slice(1));
+    const hash = decodeURIComponent(location.hash.slice(1));
     if (hash) document.getElementById(`glossary-${hash}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [searchParams]);
+  }, [location.hash]);
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 md:px-8">

@@ -143,7 +143,7 @@ describe("coagulation patterns search", () => {
       target: { value: "coagulation patterns" },
     });
 
-    const result = screen.getByRole("button", { name: /Coagulation patterns\s*: PT and aPTT/i });
+    const result = screen.getByRole("link", { name: /Coagulation patterns\s*: PT and aPTT/i });
     fireEvent.click(result);
     expect(screen.getByTestId("location")).toHaveTextContent(COAGULATION_PATTERNS_SEARCH.path);
   });
