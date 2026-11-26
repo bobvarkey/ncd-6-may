@@ -18,7 +18,7 @@ import {
   LABORATORY_TRAPS,
   LABORATORY_TRAPS_HEADING,
   serializeCoagulationPatterns,
-} from "./coagulationPatterns";
+} from "./coagulationPatternsData";
 
 const SOURCE = `aPTT PROLONGED, PT NORMAL?
 BLEEDING OR CLOTTING?

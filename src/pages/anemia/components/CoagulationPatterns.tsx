@@ -13,7 +13,7 @@ import {
   COAGULATION_WARNING,
   LABORATORY_TRAPS,
   LABORATORY_TRAPS_HEADING,
-} from "./coagulationPatterns";
+} from "./coagulationPatternsData";
 
 const PANEL_BORDER = [
   "border-purple-500/30",

@@ -25,6 +25,7 @@ import ZoomableImage from "@/components/ZoomableImage";
 import hepatitisBSerology from "@/assets/hepatitis-b-serology.webp";
 import masldOverviewAsset from "@/assets/masld-assessment-overview.png.asset.json";
 import MasldWorkup from "@/pages/liver/MasldWorkup";
+import HepaticEncephalopathyManagement from "@/pages/liver/HepaticEncephalopathyManagement";
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
 import { SmartLabelUpload, LIVER_FIELDS } from "@/components/SmartLabelUpload";
 
@@ -542,6 +543,8 @@ export default function LiverMiniApp() {
 
       {/* MASLD investigations, diagnosis, management */}
       <MasldWorkup />
+
+      <HepaticEncephalopathyManagement />
 
 
       {/* Liver infographic */}

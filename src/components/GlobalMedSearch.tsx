@@ -11,7 +11,7 @@ const OBESITY_MEDS = Object.values(ALL_MEDICATIONS).flat();
 import { drugDoseDetails as HTN_MEDS } from "@/pages/hypertension/HypertensionMedicationGuide";
 import { GLOSSARY } from "@/data/glossary";
 import { POLYCYTHEMIA_SEARCH } from "@/pages/anemia/components/polycythemiaPathway";
-import { COAGULATION_PATTERNS_SEARCH } from "@/pages/anemia/components/coagulationPatterns";
+import { COAGULATION_PATTERNS_SEARCH } from "@/pages/anemia/components/coagulationPatternsData";
 import { CAROTID_FEMORAL_PLAQUE_ULTRASOUND_SEARCH } from "@/components/lipids/CarotidFemoralPlaqueUltrasound";
 import { USG_VISCERAL_FAT_SEARCH } from "@/calculators/obesity/UsgVisceralFat";
 
