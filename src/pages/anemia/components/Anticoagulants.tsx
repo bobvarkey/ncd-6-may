@@ -20,6 +20,7 @@ import {
   ArrowRight, Heart, Activity,
 } from 'lucide-react';
 import { TakeHomeMessage } from "@/components/ui/take-home-message";
+import DirectOralAnticoagulantDosing from "./DirectOralAnticoagulantDosing";
 import {
   Dialog,
   DialogContent,
@@ -531,6 +532,7 @@ export default function Anticoagulants() {
             </>
           )}
         />
+        <DirectOralAnticoagulantDosing />
       </CollapsibleSection>
 
       {/* Dosing in DVT/PE */}
